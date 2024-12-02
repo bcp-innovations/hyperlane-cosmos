@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: cosmosregistry/example/v1/tx.proto
+// source: KYVENetwork/mailbox/v1/tx.proto
 
-package examplev1
+package mailboxv1
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_IncrementCounter_FullMethodName = "/cosmosregistry.example.v1.Msg/IncrementCounter"
-	Msg_UpdateParams_FullMethodName     = "/cosmosregistry.example.v1.Msg/UpdateParams"
+	Msg_IncrementCounter_FullMethodName = "/KYVENetwork.mailbox.v1.Msg/IncrementCounter"
+	Msg_UpdateParams_FullMethodName     = "/KYVENetwork.mailbox.v1.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -133,7 +133,7 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "cosmosregistry.example.v1.Msg",
+	ServiceName: "KYVENetwork.mailbox.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -146,5 +146,5 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "cosmosregistry/example/v1/tx.proto",
+	Metadata: "KYVENetwork/mailbox/v1/tx.proto",
 }

@@ -1,4 +1,4 @@
-module github.com/cosmosregistry/example
+module github.com/KYVENetwork/mailbox
 
 go 1.21
 

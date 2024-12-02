@@ -3,11 +3,11 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmosregistry/example"
+	"github.com/KYVENetwork/mailbox"
 )
 
 // InitGenesis initializes the module state from a genesis state.
-func (k *Keeper) InitGenesis(ctx context.Context, data *example.GenesisState) error {
+func (k *Keeper) InitGenesis(ctx context.Context, data *mailbox.GenesisState) error {
 	if err := k.Params.Set(ctx, data.Params); err != nil {
 		return err
 	}
@@ -22,15 +22,15 @@ func (k *Keeper) InitGenesis(ctx context.Context, data *example.GenesisState) er
 }
 
 // ExportGenesis exports the module state to a genesis state.
-func (k *Keeper) ExportGenesis(ctx context.Context) (*example.GenesisState, error) {
+func (k *Keeper) ExportGenesis(ctx context.Context) (*mailbox.GenesisState, error) {
 	params, err := k.Params.Get(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	var counters []example.Counter
+	var counters []mailbox.Counter
 	if err := k.Counter.Walk(ctx, nil, func(address string, count uint64) (bool, error) {
-		counters = append(counters, example.Counter{
+		counters = append(counters, mailbox.Counter{
 			Address: address,
 			Count:   count,
 		})
@@ -40,7 +40,7 @@ func (k *Keeper) ExportGenesis(ctx context.Context) (*example.GenesisState, erro
 		return nil, err
 	}
 
-	return &example.GenesisState{
+	return &mailbox.GenesisState{
 		Params:   params,
 		Counters: counters,
 	}, nil

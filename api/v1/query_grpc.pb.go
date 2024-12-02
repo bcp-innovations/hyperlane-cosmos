@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: cosmosregistry/example/v1/query.proto
+// source: KYVENetwork/mailbox/v1/query.proto
 
-package examplev1
+package mailboxv1
 
 import (
 	context "context"
@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Counter_FullMethodName  = "/cosmosregistry.example.v1.Query/Counter"
-	Query_Counters_FullMethodName = "/cosmosregistry.example.v1.Query/Counters"
-	Query_Params_FullMethodName   = "/cosmosregistry.example.v1.Query/Params"
+	Query_Counter_FullMethodName  = "/KYVENetwork.mailbox.v1.Query/Counter"
+	Query_Counters_FullMethodName = "/KYVENetwork.mailbox.v1.Query/Counters"
+	Query_Params_FullMethodName   = "/KYVENetwork.mailbox.v1.Query/Params"
 )
 
 // QueryClient is the client API for Query service.
@@ -168,7 +168,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "cosmosregistry.example.v1.Query",
+	ServiceName: "KYVENetwork.mailbox.v1.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -185,5 +185,5 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "cosmosregistry/example/v1/query.proto",
+	Metadata: "KYVENetwork/mailbox/v1/query.proto",
 }

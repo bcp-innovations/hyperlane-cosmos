@@ -40,7 +40,7 @@ List and describe CLI commands and gRPC and REST endpoints.
 
 ## Params
 
-List all module parameters, their types (in JSON) and examples.
+List all module parameters, their types (in JSON) and mailboxs.
 
 ## Future Improvements
 

@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	// blank import for app wiring registration
+	_ "github.com/KYVENetwork/mailbox/module"
 	_ "github.com/cosmos/cosmos-sdk/x/auth"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	_ "github.com/cosmos/cosmos-sdk/x/bank"
@@ -13,7 +14,6 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/x/genutil"
 	_ "github.com/cosmos/cosmos-sdk/x/mint"
 	_ "github.com/cosmos/cosmos-sdk/x/staking"
-	_ "github.com/cosmosregistry/example/module"
 
 	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
 	"cosmossdk.io/core/appconfig"
@@ -22,17 +22,17 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/configurator"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 
-	"github.com/cosmosregistry/example"
-	examplemodulev1 "github.com/cosmosregistry/example/api/module/v1"
-	"github.com/cosmosregistry/example/keeper"
+	"github.com/KYVENetwork/mailbox"
+	mailboxmodulev1 "github.com/KYVENetwork/mailbox/api/module/v1"
+	"github.com/KYVENetwork/mailbox/keeper"
 )
 
-// ExampleModule is a configurator.ModuleOption that add the example module to the app config.
+// ExampleModule is a configurator.ModuleOption that add the mailbox module to the app config.
 var ExampleModule = func() configurator.ModuleOption {
 	return func(config *configurator.Config) {
-		config.ModuleConfigs[example.ModuleName] = &appv1alpha1.ModuleConfig{
-			Name:   example.ModuleName,
-			Config: appconfig.WrapAny(&examplemodulev1.Module{}),
+		config.ModuleConfigs[mailbox.ModuleName] = &appv1alpha1.ModuleConfig{
+			Name:   mailbox.ModuleName,
+			Config: appconfig.WrapAny(&mailboxmodulev1.Module{}),
 		}
 	}
 }
@@ -58,7 +58,7 @@ func TestIntegration(t *testing.T) {
 				"mint",
 				"genutil",
 				"consensus",
-				example.ModuleName,
+				mailbox.ModuleName,
 			),
 		),
 		depinject.Supply(logger))
