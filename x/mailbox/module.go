@@ -1,10 +1,11 @@
-package module
+package mailbox
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	keeper2 "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
+	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 
 	"cosmossdk.io/core/appmodule"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -14,8 +15,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-
-	"github.com/KYVENetwork/hyperlane-cosmos"
 )
 
 var (
@@ -45,7 +44,7 @@ func NewAppModuleBasic(m AppModule) module.AppModuleBasic {
 }
 
 // Name returns the mailbox module's name.
-func (AppModule) Name() string { return mailbox.ModuleName }
+func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the mailbox module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
@@ -53,14 +52,14 @@ func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.
 func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwruntime.ServeMux) {
-	if err := mailbox.RegisterQueryHandlerClient(context.Background(), mux, mailbox.NewQueryClient(clientCtx)); err != nil {
+	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
 		panic(err)
 	}
 }
 
 // RegisterInterfaces registers interfaces and implementations of the mailbox module.
 func (AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	mailbox.RegisterInterfaces(registry)
+	types.RegisterInterfaces(registry)
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
@@ -68,8 +67,8 @@ func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	mailbox.RegisterMsgServer(cfg.MsgServer(), keeper2.NewMsgServerImpl(am.keeper))
-	mailbox.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQueryServerImpl(am.keeper))
+	types.RegisterMsgServer(cfg.MsgServer(), keeper2.NewMsgServerImpl(am.keeper))
+	types.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQueryServerImpl(am.keeper))
 
 	// Register in place module state migration migrations
 	// m := keeper.NewMigrator(am.keeper)
@@ -80,14 +79,14 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
 func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
-	return cdc.MustMarshalJSON(mailbox.NewGenesisState())
+	return cdc.MustMarshalJSON(types.NewGenesisState())
 }
 
 // ValidateGenesis performs genesis state validation for the circuit module.
 func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
-	var data mailbox.GenesisState
+	var data types.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
-		return fmt.Errorf("failed to unmarshal %s genesis state: %w", mailbox.ModuleName, err)
+		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 
 	return data.Validate()
@@ -96,11 +95,11 @@ func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig,
 // InitGenesis performs genesis initialization for the mailbox module.
 // It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {
-	var genesisState mailbox.GenesisState
+	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
 	if err := am.keeper.InitGenesis(ctx, &genesisState); err != nil {
-		panic(fmt.Sprintf("failed to initialize %s genesis state: %v", mailbox.ModuleName, err))
+		panic(fmt.Sprintf("failed to initialize %s genesis state: %v", types.ModuleName, err))
 	}
 }
 
@@ -109,7 +108,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	gs, err := am.keeper.ExportGenesis(ctx)
 	if err != nil {
-		panic(fmt.Sprintf("failed to export %s genesis state: %v", mailbox.ModuleName, err))
+		panic(fmt.Sprintf("failed to export %s genesis state: %v", types.ModuleName, err))
 	}
 
 	return cdc.MustMarshalJSON(gs)

@@ -2,47 +2,29 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 	"strings"
-
-	"cosmossdk.io/collections"
-	"github.com/KYVENetwork/hyperlane-cosmos"
 )
 
 type msgServer struct {
 	k Keeper
 }
 
-var _ mailbox.MsgServer = msgServer{}
+func (ms msgServer) CreateMailbox(ctx context.Context, mailbox *types.MsgCreateMailbox) (*types.MsgCreateMailboxResponse, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+var _ types.MsgServer = msgServer{}
 
 // NewMsgServerImpl returns an implementation of the module MsgServer interface.
-func NewMsgServerImpl(keeper Keeper) mailbox.MsgServer {
+func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-// IncrementCounter defines the handler for the MsgIncrementCounter message.
-func (ms msgServer) IncrementCounter(ctx context.Context, msg *mailbox.MsgIncrementCounter) (*mailbox.MsgIncrementCounterResponse, error) {
-	if _, err := ms.k.addressCodec.StringToBytes(msg.Sender); err != nil {
-		return nil, fmt.Errorf("invalid sender address: %w", err)
-	}
-
-	counter, err := ms.k.Counter.Get(ctx, msg.Sender)
-	if err != nil && !errors.Is(err, collections.ErrNotFound) {
-		return nil, err
-	}
-
-	counter++
-
-	if err := ms.k.Counter.Set(ctx, msg.Sender, counter); err != nil {
-		return nil, err
-	}
-
-	return &mailbox.MsgIncrementCounterResponse{}, nil
-}
-
 // UpdateParams params is defining the handler for the MsgUpdateParams message.
-func (ms msgServer) UpdateParams(ctx context.Context, msg *mailbox.MsgUpdateParams) (*mailbox.MsgUpdateParamsResponse, error) {
+func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if _, err := ms.k.addressCodec.StringToBytes(msg.Authority); err != nil {
 		return nil, fmt.Errorf("invalid authority address: %w", err)
 	}
@@ -59,5 +41,5 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *mailbox.MsgUpdatePara
 		return nil, err
 	}
 
-	return &mailbox.MsgUpdateParamsResponse{}, nil
+	return &types.MsgUpdateParamsResponse{}, nil
 }

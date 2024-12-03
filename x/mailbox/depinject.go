@@ -1,4 +1,4 @@
-package module
+package mailbox
 
 import (
 	"cosmossdk.io/core/address"
@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/KYVENetwork/hyperlane-cosmos/api/module/v1"
+	modulev1 "github.com/KYVENetwork/hyperlane-cosmos/api/mailbox/module"
 )
 
 var _ appmodule.AppModule = AppModule{}

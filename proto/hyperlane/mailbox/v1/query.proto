@@ -1,0 +1,59 @@
+syntax = "proto3";
+package hyperlane.mailbox.v1;
+
+option go_package = "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types";
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "hyperlane/mailbox/v1/types.proto";
+import "hyperlane/mailbox/v1/mailbox.proto";
+import "google/api/annotations.proto";
+import "cosmos/query/v1/query.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the module Msg service.
+service Query {
+// Params returns the module parameters.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/params";
+  }
+
+  rpc Mailboxes(QueryMailboxesRequest) returns (QueryMailboxesResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/mailboxes";
+  }
+
+  rpc Mailbox(QueryMailboxRequest) returns (QueryMailboxResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/mailboxes/{id}";
+  }
+}
+
+message QueryMailboxesRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryMailboxesResponse {
+  // params defines the parameters of the module.
+  repeated Mailbox mailbox = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryMailboxRequest {
+  int64 id = 1;
+}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryMailboxResponse {
+  // params defines the parameters of the module.
+   Mailbox mailbox = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}

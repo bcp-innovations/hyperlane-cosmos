@@ -10,7 +10,7 @@ for dir in $proto_dirs; do
     # this regex checks if a proto file has its go_package set to github.com/KYVENetwork/mailbox/api/...
     # gogo proto files SHOULD ONLY be generated if this is false
     # we don't want gogo proto to run for proto files which are natively built for google.golang.org/protobuf
-    if grep -q "option go_package" "$file" && grep -H -o -c 'option go_package.*github.com/KYVENetwork/mailbox/api' "$file" | grep -q ':0$'; then
+    if grep -q "option go_package" "$file" && grep -H -o -c 'option go_package.*github.com/KYVENetwork/hyperlane-cosmos/api' "$file" | grep -q ':0$'; then
       buf generate --template buf.gen.gogo.yaml $file
     fi
   done
@@ -21,7 +21,7 @@ buf generate --template buf.gen.pulsar.yaml
 
 cd ..
 
-cp -r github.com/KYVENetwork/mailbox/* ./
+cp -r github.com/KYVENetwork/hyperlane-cosmos/* ./
 rm -rf api && mkdir api
-mv KYVENetwork/mailbox/* ./api
-rm -rf github.com KYVENetwork
+mv hyperlane/* ./api
+rm -rf github.com KYVENetwork hyperlane

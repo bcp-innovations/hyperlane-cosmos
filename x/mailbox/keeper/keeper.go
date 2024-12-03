@@ -2,13 +2,12 @@ package keeper
 
 import (
 	"fmt"
+	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
 	"github.com/cosmos/cosmos-sdk/codec"
-
-	"github.com/KYVENetwork/hyperlane-cosmos"
 )
 
 type Keeper struct {
@@ -20,9 +19,8 @@ type Keeper struct {
 	authority string
 
 	// state management
-	Schema  collections.Schema
-	Params  collections.Item[mailbox.Params]
-	Counter collections.Map[string, uint64]
+	Schema collections.Schema
+	Params collections.Item[types.Params]
 }
 
 // NewKeeper creates a new Keeper instance
@@ -36,8 +34,7 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		cdc:          cdc,
 		addressCodec: addressCodec,
 		authority:    authority,
-		Params:       collections.NewItem(sb, mailbox.ParamsKey, "params", codec.CollValue[mailbox.Params](cdc)),
-		Counter:      collections.NewMap(sb, mailbox.CounterKey, "counter", collections.StringKey, collections.Uint64Value),
+		Params:       collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 	}
 
 	schema, err := sb.Build()

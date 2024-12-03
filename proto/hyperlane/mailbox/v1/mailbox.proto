@@ -1,0 +1,10 @@
+syntax = "proto3";
+package hyperlane.mailbox.v1;
+
+option go_package = "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types";
+
+message Mailbox {
+  int64 id = 1;
+  string ism = 2;
+  int64 message_count =3;
+}

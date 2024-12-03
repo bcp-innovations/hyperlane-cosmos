@@ -1,8 +1,8 @@
-package module
+package mailbox
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	mailboxv1 "github.com/KYVENetwork/hyperlane-cosmos/api/v1"
+	mailboxv1 "github.com/KYVENetwork/hyperlane-cosmos/api/mailbox/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
@@ -12,35 +12,21 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			Service: mailboxv1.Query_ServiceDesc.ServiceName,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
-					RpcMethod: "Counter",
-					Use:       "counter [address]",
-					Short:     "Get the current value of the counter for an address",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
-						{ProtoField: "address"},
-					},
-				},
-				{
 					RpcMethod: "Params",
 					Use:       "params",
 					Short:     "Get the current module parameters",
 				},
+				// TODO: Add CreateMailbox
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
 			Service: mailboxv1.Msg_ServiceDesc.ServiceName,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
-					RpcMethod: "IncrementCounter",
-					Use:       "counter [sender]",
-					Short:     "Increments the counter by 1 for the sender",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
-						{ProtoField: "sender"},
-					},
-				},
-				{
 					RpcMethod: "UpdateParams",
 					Skip:      true, // This is a authority gated tx, so we skip it.
 				},
+				// TODO: Add CreateMailbox
 			},
 		},
 	}
