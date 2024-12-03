@@ -8,7 +8,7 @@ import (
 	storetypes "cosmossdk.io/core/store"
 	"github.com/cosmos/cosmos-sdk/codec"
 
-	"github.com/KYVENetwork/mailbox"
+	"github.com/KYVENetwork/hyperlane-cosmos"
 )
 
 type Keeper struct {

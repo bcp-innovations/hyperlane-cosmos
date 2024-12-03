@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/KYVENetwork/mailbox"
+	"github.com/KYVENetwork/hyperlane-cosmos"
 )
 
 // InitGenesis initializes the module state from a genesis state.

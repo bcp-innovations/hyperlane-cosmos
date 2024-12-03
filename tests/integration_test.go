@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	// blank import for app wiring registration
-	_ "github.com/KYVENetwork/mailbox/module"
+	_ "github.com/KYVENetwork/hyperlane-cosmos"
 	_ "github.com/cosmos/cosmos-sdk/x/auth"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	_ "github.com/cosmos/cosmos-sdk/x/bank"

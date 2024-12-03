@@ -1,4 +1,4 @@
-module github.com/KYVENetwork/mailbox
+module github.com/KYVENetwork/hyperlane-cosmos
 
 go 1.21
 

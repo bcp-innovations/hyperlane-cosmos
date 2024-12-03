@@ -2,7 +2,7 @@ package module
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	mailboxv1 "github.com/KYVENetwork/mailbox/api/v1"
+	mailboxv1 "github.com/KYVENetwork/hyperlane-cosmos/api/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

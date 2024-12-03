@@ -1,4 +1,4 @@
-module github.com/KYVENetwork/mailbox/tests
+module github.com/KYVENetwork/hyperlane-cosmos/tests
 
 go 1.21
 

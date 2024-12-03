@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/KYVENetwork/mailbox"
+	"github.com/KYVENetwork/hyperlane-cosmos"
 	"github.com/cosmos/cosmos-sdk/types/query"
 )
 

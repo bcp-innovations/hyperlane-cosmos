@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/KYVENetwork/mailbox"
+	"github.com/KYVENetwork/hyperlane-cosmos"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/stretchr/testify/require"
 )

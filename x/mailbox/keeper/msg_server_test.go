@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/KYVENetwork/mailbox"
+	"github.com/KYVENetwork/hyperlane-cosmos"
 	"github.com/stretchr/testify/require"
 )
 

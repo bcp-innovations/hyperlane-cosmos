@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"cosmossdk.io/collections"
-	"github.com/KYVENetwork/mailbox"
+	"github.com/KYVENetwork/hyperlane-cosmos"
 )
 
 type msgServer struct {

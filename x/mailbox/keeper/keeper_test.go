@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	keeper2 "github.com/KYVENetwork/mailbox/x/mailbox/keeper"
+	keeper2 "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
 	"testing"
 
 	storetypes "cosmossdk.io/store/types"
@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 
-	"github.com/KYVENetwork/mailbox"
+	"github.com/KYVENetwork/hyperlane-cosmos"
 )
 
 type testFixture struct {
