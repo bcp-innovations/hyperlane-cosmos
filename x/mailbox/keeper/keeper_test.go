@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	keeper2 "github.com/KYVENetwork/mailbox/x/mailbox/keeper"
 	"testing"
 
 	storetypes "cosmossdk.io/store/types"
@@ -12,12 +13,11 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 
 	"github.com/KYVENetwork/mailbox"
-	"github.com/KYVENetwork/mailbox/keeper"
 )
 
 type testFixture struct {
 	ctx         sdk.Context
-	k           keeper.Keeper
+	k           keeper2.Keeper
 	msgServer   mailbox.MsgServer
 	queryServer mailbox.QueryServer
 
@@ -31,7 +31,7 @@ func initFixture(t *testing.T) *testFixture {
 	storeService := runtime.NewKVStoreService(key)
 	addrs := simtestutil.CreateIncrementalAccounts(3)
 
-	k := keeper.NewKeeper(encCfg.Codec, addresscodec.NewBech32Codec("cosmos"), storeService, addrs[0].String())
+	k := keeper2.NewKeeper(encCfg.Codec, addresscodec.NewBech32Codec("cosmos"), storeService, addrs[0].String())
 	err := k.InitGenesis(testCtx.Ctx, mailbox.NewGenesisState())
 	if err != nil {
 		panic(err)
@@ -40,8 +40,8 @@ func initFixture(t *testing.T) *testFixture {
 	return &testFixture{
 		ctx:         testCtx.Ctx,
 		k:           k,
-		msgServer:   keeper.NewMsgServerImpl(k),
-		queryServer: keeper.NewQueryServerImpl(k),
+		msgServer:   keeper2.NewMsgServerImpl(k),
+		queryServer: keeper2.NewQueryServerImpl(k),
 		addrs:       addrs,
 	}
 }

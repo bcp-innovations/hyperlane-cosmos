@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	keeper2 "github.com/KYVENetwork/mailbox/x/mailbox/keeper"
 
 	"cosmossdk.io/core/appmodule"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -15,7 +16,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	"github.com/KYVENetwork/mailbox"
-	"github.com/KYVENetwork/mailbox/keeper"
 )
 
 var (
@@ -29,11 +29,11 @@ const ConsensusVersion = 1
 
 type AppModule struct {
 	cdc    codec.Codec
-	keeper keeper.Keeper
+	keeper keeper2.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper2.Keeper) AppModule {
 	return AppModule{
 		cdc:    cdc,
 		keeper: keeper,
@@ -68,8 +68,8 @@ func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	mailbox.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
-	mailbox.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServerImpl(am.keeper))
+	mailbox.RegisterMsgServer(cfg.MsgServer(), keeper2.NewMsgServerImpl(am.keeper))
+	mailbox.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQueryServerImpl(am.keeper))
 
 	// Register in place module state migration migrations
 	// m := keeper.NewMigrator(am.keeper)

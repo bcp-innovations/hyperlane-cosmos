@@ -24,7 +24,7 @@ import (
 
 	"github.com/KYVENetwork/mailbox"
 	mailboxmodulev1 "github.com/KYVENetwork/mailbox/api/module/v1"
-	"github.com/KYVENetwork/mailbox/keeper"
+	"github.com/KYVENetwork/mailbox/x/mailbox/keeper"
 )
 
 // ExampleModule is a configurator.ModuleOption that add the mailbox module to the app config.
