@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName    = "/hyperlane.mailbox.v1.Query/Params"
-	Query_Mailboxes_FullMethodName = "/hyperlane.mailbox.v1.Query/Mailboxes"
-	Query_Mailbox_FullMethodName   = "/hyperlane.mailbox.v1.Query/Mailbox"
+	Query_Params_FullMethodName           = "/hyperlane.mailbox.v1.Query/Params"
+	Query_Mailboxes_FullMethodName        = "/hyperlane.mailbox.v1.Query/Mailboxes"
+	Query_Mailbox_FullMethodName          = "/hyperlane.mailbox.v1.Query/Mailbox"
+	Query_Count_FullMethodName            = "/hyperlane.mailbox.v1.Query/Count"
+	Query_Root_FullMethodName             = "/hyperlane.mailbox.v1.Query/Root"
+	Query_LatestCheckpoint_FullMethodName = "/hyperlane.mailbox.v1.Query/LatestCheckpoint"
 )
 
 // QueryClient is the client API for Query service.
@@ -32,6 +35,9 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	Mailboxes(ctx context.Context, in *QueryMailboxesRequest, opts ...grpc.CallOption) (*QueryMailboxesResponse, error)
 	Mailbox(ctx context.Context, in *QueryMailboxRequest, opts ...grpc.CallOption) (*QueryMailboxResponse, error)
+	Count(ctx context.Context, in *QueryCountRequest, opts ...grpc.CallOption) (*QueryCountResponse, error)
+	Root(ctx context.Context, in *QueryRootRequest, opts ...grpc.CallOption) (*QueryRootResponse, error)
+	LatestCheckpoint(ctx context.Context, in *QueryLatestCheckpointRequest, opts ...grpc.CallOption) (*QueryLatestCheckpointResponse, error)
 }
 
 type queryClient struct {
@@ -69,6 +75,33 @@ func (c *queryClient) Mailbox(ctx context.Context, in *QueryMailboxRequest, opts
 	return out, nil
 }
 
+func (c *queryClient) Count(ctx context.Context, in *QueryCountRequest, opts ...grpc.CallOption) (*QueryCountResponse, error) {
+	out := new(QueryCountResponse)
+	err := c.cc.Invoke(ctx, Query_Count_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Root(ctx context.Context, in *QueryRootRequest, opts ...grpc.CallOption) (*QueryRootResponse, error) {
+	out := new(QueryRootResponse)
+	err := c.cc.Invoke(ctx, Query_Root_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) LatestCheckpoint(ctx context.Context, in *QueryLatestCheckpointRequest, opts ...grpc.CallOption) (*QueryLatestCheckpointResponse, error) {
+	out := new(QueryLatestCheckpointResponse)
+	err := c.cc.Invoke(ctx, Query_LatestCheckpoint_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -77,6 +110,9 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	Mailboxes(context.Context, *QueryMailboxesRequest) (*QueryMailboxesResponse, error)
 	Mailbox(context.Context, *QueryMailboxRequest) (*QueryMailboxResponse, error)
+	Count(context.Context, *QueryCountRequest) (*QueryCountResponse, error)
+	Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error)
+	LatestCheckpoint(context.Context, *QueryLatestCheckpointRequest) (*QueryLatestCheckpointResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -92,6 +128,15 @@ func (UnimplementedQueryServer) Mailboxes(context.Context, *QueryMailboxesReques
 }
 func (UnimplementedQueryServer) Mailbox(context.Context, *QueryMailboxRequest) (*QueryMailboxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Mailbox not implemented")
+}
+func (UnimplementedQueryServer) Count(context.Context, *QueryCountRequest) (*QueryCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Count not implemented")
+}
+func (UnimplementedQueryServer) Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Root not implemented")
+}
+func (UnimplementedQueryServer) LatestCheckpoint(context.Context, *QueryLatestCheckpointRequest) (*QueryLatestCheckpointResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LatestCheckpoint not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -160,6 +205,60 @@ func _Query_Mailbox_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Count_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Count(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Count_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Count(ctx, req.(*QueryCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Root_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRootRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Root(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Root_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Root(ctx, req.(*QueryRootRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_LatestCheckpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLatestCheckpointRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).LatestCheckpoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_LatestCheckpoint_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).LatestCheckpoint(ctx, req.(*QueryLatestCheckpointRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -178,6 +277,18 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Mailbox",
 			Handler:    _Query_Mailbox_Handler,
+		},
+		{
+			MethodName: "Count",
+			Handler:    _Query_Count_Handler,
+		},
+		{
+			MethodName: "Root",
+			Handler:    _Query_Root_Handler,
+		},
+		{
+			MethodName: "LatestCheckpoint",
+			Handler:    _Query_LatestCheckpoint_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -11,11 +11,19 @@ message Mailbox {
   string ism = 2;
   uint32 message_sent =3;
   uint32 message_received = 4;
-  string creator = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  Tree tree = 5;
+  string creator = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MailboxMessage {
   string mailbox_id = 1;
   int64 message_id = 2;
   bool received = 3;
+}
+
+// Tree represents an incremental merkle tree.
+// Contains current branch and the number of inserted leaves in the tree.
+message Tree {
+  repeated bytes branch = 1;
+  uint32 count = 2;
 }
