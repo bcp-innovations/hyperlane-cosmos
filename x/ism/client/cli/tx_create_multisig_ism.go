@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-func CmdCreateIsm() *cobra.Command {
+func CmdCreateMultiSigIsm() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-multisig-ism [validators] [threshold]",
-		Short: "Create a Hyperlane ISM",
+		Short: "Create a Hyperlane MultiSig ISM",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 

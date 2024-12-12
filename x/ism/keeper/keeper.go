@@ -18,7 +18,7 @@ type Keeper struct {
 	authority string
 
 	// state management
-	Isms         collections.Map[string, types.MultiSigIsm]
+	Isms         collections.Map[string, types.Ism]
 	IsmsSequence collections.Sequence
 	Params       collections.Item[types.Params]
 	Schema       collections.Schema
@@ -35,7 +35,7 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		cdc:          cdc,
 		addressCodec: addressCodec,
 		authority:    authority,
-		Isms:         collections.NewMap(sb, types.IsmsKey, "isms", collections.StringKey, codec.CollValue[types.MultiSigIsm](cdc)),
+		Isms:         collections.NewMap(sb, types.IsmsKey, "isms", collections.StringKey, codec.CollValue[types.Ism](cdc)),
 		IsmsSequence: collections.NewSequence(sb, types.IsmsSequencesKey, "isms_sequence"),
 		Params:       collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 	}
