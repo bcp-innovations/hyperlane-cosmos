@@ -14,26 +14,22 @@ import (
 )
 
 var (
-	md_Dispatch                    protoreflect.MessageDescriptor
-	fd_Dispatch_destination_domain protoreflect.FieldDescriptor
-	fd_Dispatch_recipient_address  protoreflect.FieldDescriptor
-	fd_Dispatch_message_body       protoreflect.FieldDescriptor
-	fd_Dispatch_metadata           protoreflect.FieldDescriptor
-	fd_Dispatch_origin_domain      protoreflect.FieldDescriptor
-	fd_Dispatch_origin_mailbox     protoreflect.FieldDescriptor
-	fd_Dispatch_sender             protoreflect.FieldDescriptor
+	md_Dispatch                   protoreflect.MessageDescriptor
+	fd_Dispatch_origin_mailbox_id protoreflect.FieldDescriptor
+	fd_Dispatch_sender            protoreflect.FieldDescriptor
+	fd_Dispatch_destination       protoreflect.FieldDescriptor
+	fd_Dispatch_recipient         protoreflect.FieldDescriptor
+	fd_Dispatch_message           protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_hyperlane_mailbox_v1_events_proto_init()
 	md_Dispatch = File_hyperlane_mailbox_v1_events_proto.Messages().ByName("Dispatch")
-	fd_Dispatch_destination_domain = md_Dispatch.Fields().ByName("destination_domain")
-	fd_Dispatch_recipient_address = md_Dispatch.Fields().ByName("recipient_address")
-	fd_Dispatch_message_body = md_Dispatch.Fields().ByName("message_body")
-	fd_Dispatch_metadata = md_Dispatch.Fields().ByName("metadata")
-	fd_Dispatch_origin_domain = md_Dispatch.Fields().ByName("origin_domain")
-	fd_Dispatch_origin_mailbox = md_Dispatch.Fields().ByName("origin_mailbox")
+	fd_Dispatch_origin_mailbox_id = md_Dispatch.Fields().ByName("origin_mailbox_id")
 	fd_Dispatch_sender = md_Dispatch.Fields().ByName("sender")
+	fd_Dispatch_destination = md_Dispatch.Fields().ByName("destination")
+	fd_Dispatch_recipient = md_Dispatch.Fields().ByName("recipient")
+	fd_Dispatch_message = md_Dispatch.Fields().ByName("message")
 }
 
 var _ protoreflect.Message = (*fastReflection_Dispatch)(nil)
@@ -101,45 +97,33 @@ func (x *fastReflection_Dispatch) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Dispatch) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.DestinationDomain != uint32(0) {
-		value := protoreflect.ValueOfUint32(x.DestinationDomain)
-		if !f(fd_Dispatch_destination_domain, value) {
-			return
-		}
-	}
-	if x.RecipientAddress != "" {
-		value := protoreflect.ValueOfString(x.RecipientAddress)
-		if !f(fd_Dispatch_recipient_address, value) {
-			return
-		}
-	}
-	if x.MessageBody != "" {
-		value := protoreflect.ValueOfString(x.MessageBody)
-		if !f(fd_Dispatch_message_body, value) {
-			return
-		}
-	}
-	if x.Metadata != "" {
-		value := protoreflect.ValueOfString(x.Metadata)
-		if !f(fd_Dispatch_metadata, value) {
-			return
-		}
-	}
-	if x.OriginDomain != uint32(0) {
-		value := protoreflect.ValueOfUint32(x.OriginDomain)
-		if !f(fd_Dispatch_origin_domain, value) {
-			return
-		}
-	}
-	if x.OriginMailbox != "" {
-		value := protoreflect.ValueOfString(x.OriginMailbox)
-		if !f(fd_Dispatch_origin_mailbox, value) {
+	if x.OriginMailboxId != "" {
+		value := protoreflect.ValueOfString(x.OriginMailboxId)
+		if !f(fd_Dispatch_origin_mailbox_id, value) {
 			return
 		}
 	}
 	if x.Sender != "" {
 		value := protoreflect.ValueOfString(x.Sender)
 		if !f(fd_Dispatch_sender, value) {
+			return
+		}
+	}
+	if x.Destination != uint32(0) {
+		value := protoreflect.ValueOfUint32(x.Destination)
+		if !f(fd_Dispatch_destination, value) {
+			return
+		}
+	}
+	if x.Recipient != "" {
+		value := protoreflect.ValueOfString(x.Recipient)
+		if !f(fd_Dispatch_recipient, value) {
+			return
+		}
+	}
+	if x.Message != "" {
+		value := protoreflect.ValueOfString(x.Message)
+		if !f(fd_Dispatch_message, value) {
 			return
 		}
 	}
@@ -158,20 +142,16 @@ func (x *fastReflection_Dispatch) Range(f func(protoreflect.FieldDescriptor, pro
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Dispatch) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.Dispatch.destination_domain":
-		return x.DestinationDomain != uint32(0)
-	case "hyperlane.mailbox.v1.Dispatch.recipient_address":
-		return x.RecipientAddress != ""
-	case "hyperlane.mailbox.v1.Dispatch.message_body":
-		return x.MessageBody != ""
-	case "hyperlane.mailbox.v1.Dispatch.metadata":
-		return x.Metadata != ""
-	case "hyperlane.mailbox.v1.Dispatch.origin_domain":
-		return x.OriginDomain != uint32(0)
-	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox":
-		return x.OriginMailbox != ""
+	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox_id":
+		return x.OriginMailboxId != ""
 	case "hyperlane.mailbox.v1.Dispatch.sender":
 		return x.Sender != ""
+	case "hyperlane.mailbox.v1.Dispatch.destination":
+		return x.Destination != uint32(0)
+	case "hyperlane.mailbox.v1.Dispatch.recipient":
+		return x.Recipient != ""
+	case "hyperlane.mailbox.v1.Dispatch.message":
+		return x.Message != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Dispatch"))
@@ -188,20 +168,16 @@ func (x *fastReflection_Dispatch) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Dispatch) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.Dispatch.destination_domain":
-		x.DestinationDomain = uint32(0)
-	case "hyperlane.mailbox.v1.Dispatch.recipient_address":
-		x.RecipientAddress = ""
-	case "hyperlane.mailbox.v1.Dispatch.message_body":
-		x.MessageBody = ""
-	case "hyperlane.mailbox.v1.Dispatch.metadata":
-		x.Metadata = ""
-	case "hyperlane.mailbox.v1.Dispatch.origin_domain":
-		x.OriginDomain = uint32(0)
-	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox":
-		x.OriginMailbox = ""
+	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox_id":
+		x.OriginMailboxId = ""
 	case "hyperlane.mailbox.v1.Dispatch.sender":
 		x.Sender = ""
+	case "hyperlane.mailbox.v1.Dispatch.destination":
+		x.Destination = uint32(0)
+	case "hyperlane.mailbox.v1.Dispatch.recipient":
+		x.Recipient = ""
+	case "hyperlane.mailbox.v1.Dispatch.message":
+		x.Message = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Dispatch"))
@@ -218,26 +194,20 @@ func (x *fastReflection_Dispatch) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Dispatch) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "hyperlane.mailbox.v1.Dispatch.destination_domain":
-		value := x.DestinationDomain
-		return protoreflect.ValueOfUint32(value)
-	case "hyperlane.mailbox.v1.Dispatch.recipient_address":
-		value := x.RecipientAddress
-		return protoreflect.ValueOfString(value)
-	case "hyperlane.mailbox.v1.Dispatch.message_body":
-		value := x.MessageBody
-		return protoreflect.ValueOfString(value)
-	case "hyperlane.mailbox.v1.Dispatch.metadata":
-		value := x.Metadata
-		return protoreflect.ValueOfString(value)
-	case "hyperlane.mailbox.v1.Dispatch.origin_domain":
-		value := x.OriginDomain
-		return protoreflect.ValueOfUint32(value)
-	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox":
-		value := x.OriginMailbox
+	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox_id":
+		value := x.OriginMailboxId
 		return protoreflect.ValueOfString(value)
 	case "hyperlane.mailbox.v1.Dispatch.sender":
 		value := x.Sender
+		return protoreflect.ValueOfString(value)
+	case "hyperlane.mailbox.v1.Dispatch.destination":
+		value := x.Destination
+		return protoreflect.ValueOfUint32(value)
+	case "hyperlane.mailbox.v1.Dispatch.recipient":
+		value := x.Recipient
+		return protoreflect.ValueOfString(value)
+	case "hyperlane.mailbox.v1.Dispatch.message":
+		value := x.Message
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -259,20 +229,16 @@ func (x *fastReflection_Dispatch) Get(descriptor protoreflect.FieldDescriptor) p
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Dispatch) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.Dispatch.destination_domain":
-		x.DestinationDomain = uint32(value.Uint())
-	case "hyperlane.mailbox.v1.Dispatch.recipient_address":
-		x.RecipientAddress = value.Interface().(string)
-	case "hyperlane.mailbox.v1.Dispatch.message_body":
-		x.MessageBody = value.Interface().(string)
-	case "hyperlane.mailbox.v1.Dispatch.metadata":
-		x.Metadata = value.Interface().(string)
-	case "hyperlane.mailbox.v1.Dispatch.origin_domain":
-		x.OriginDomain = uint32(value.Uint())
-	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox":
-		x.OriginMailbox = value.Interface().(string)
+	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox_id":
+		x.OriginMailboxId = value.Interface().(string)
 	case "hyperlane.mailbox.v1.Dispatch.sender":
 		x.Sender = value.Interface().(string)
+	case "hyperlane.mailbox.v1.Dispatch.destination":
+		x.Destination = uint32(value.Uint())
+	case "hyperlane.mailbox.v1.Dispatch.recipient":
+		x.Recipient = value.Interface().(string)
+	case "hyperlane.mailbox.v1.Dispatch.message":
+		x.Message = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Dispatch"))
@@ -293,20 +259,16 @@ func (x *fastReflection_Dispatch) Set(fd protoreflect.FieldDescriptor, value pro
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Dispatch) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.Dispatch.destination_domain":
-		panic(fmt.Errorf("field destination_domain of message hyperlane.mailbox.v1.Dispatch is not mutable"))
-	case "hyperlane.mailbox.v1.Dispatch.recipient_address":
-		panic(fmt.Errorf("field recipient_address of message hyperlane.mailbox.v1.Dispatch is not mutable"))
-	case "hyperlane.mailbox.v1.Dispatch.message_body":
-		panic(fmt.Errorf("field message_body of message hyperlane.mailbox.v1.Dispatch is not mutable"))
-	case "hyperlane.mailbox.v1.Dispatch.metadata":
-		panic(fmt.Errorf("field metadata of message hyperlane.mailbox.v1.Dispatch is not mutable"))
-	case "hyperlane.mailbox.v1.Dispatch.origin_domain":
-		panic(fmt.Errorf("field origin_domain of message hyperlane.mailbox.v1.Dispatch is not mutable"))
-	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox":
-		panic(fmt.Errorf("field origin_mailbox of message hyperlane.mailbox.v1.Dispatch is not mutable"))
+	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox_id":
+		panic(fmt.Errorf("field origin_mailbox_id of message hyperlane.mailbox.v1.Dispatch is not mutable"))
 	case "hyperlane.mailbox.v1.Dispatch.sender":
 		panic(fmt.Errorf("field sender of message hyperlane.mailbox.v1.Dispatch is not mutable"))
+	case "hyperlane.mailbox.v1.Dispatch.destination":
+		panic(fmt.Errorf("field destination of message hyperlane.mailbox.v1.Dispatch is not mutable"))
+	case "hyperlane.mailbox.v1.Dispatch.recipient":
+		panic(fmt.Errorf("field recipient of message hyperlane.mailbox.v1.Dispatch is not mutable"))
+	case "hyperlane.mailbox.v1.Dispatch.message":
+		panic(fmt.Errorf("field message of message hyperlane.mailbox.v1.Dispatch is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Dispatch"))
@@ -320,19 +282,15 @@ func (x *fastReflection_Dispatch) Mutable(fd protoreflect.FieldDescriptor) proto
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Dispatch) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.Dispatch.destination_domain":
-		return protoreflect.ValueOfUint32(uint32(0))
-	case "hyperlane.mailbox.v1.Dispatch.recipient_address":
-		return protoreflect.ValueOfString("")
-	case "hyperlane.mailbox.v1.Dispatch.message_body":
-		return protoreflect.ValueOfString("")
-	case "hyperlane.mailbox.v1.Dispatch.metadata":
-		return protoreflect.ValueOfString("")
-	case "hyperlane.mailbox.v1.Dispatch.origin_domain":
-		return protoreflect.ValueOfUint32(uint32(0))
-	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox":
+	case "hyperlane.mailbox.v1.Dispatch.origin_mailbox_id":
 		return protoreflect.ValueOfString("")
 	case "hyperlane.mailbox.v1.Dispatch.sender":
+		return protoreflect.ValueOfString("")
+	case "hyperlane.mailbox.v1.Dispatch.destination":
+		return protoreflect.ValueOfUint32(uint32(0))
+	case "hyperlane.mailbox.v1.Dispatch.recipient":
+		return protoreflect.ValueOfString("")
+	case "hyperlane.mailbox.v1.Dispatch.message":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -403,29 +361,22 @@ func (x *fastReflection_Dispatch) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if x.DestinationDomain != 0 {
-			n += 1 + runtime.Sov(uint64(x.DestinationDomain))
-		}
-		l = len(x.RecipientAddress)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.MessageBody)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Metadata)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.OriginDomain != 0 {
-			n += 1 + runtime.Sov(uint64(x.OriginDomain))
-		}
-		l = len(x.OriginMailbox)
+		l = len(x.OriginMailboxId)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.Sender)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Destination != 0 {
+			n += 1 + runtime.Sov(uint64(x.Destination))
+		}
+		l = len(x.Recipient)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Message)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -458,50 +409,38 @@ func (x *fastReflection_Dispatch) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.Message) > 0 {
+			i -= len(x.Message)
+			copy(dAtA[i:], x.Message)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Message)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.Recipient) > 0 {
+			i -= len(x.Recipient)
+			copy(dAtA[i:], x.Recipient)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Recipient)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if x.Destination != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Destination))
+			i--
+			dAtA[i] = 0x18
+		}
 		if len(x.Sender) > 0 {
 			i -= len(x.Sender)
 			copy(dAtA[i:], x.Sender)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Sender)))
 			i--
-			dAtA[i] = 0x3a
-		}
-		if len(x.OriginMailbox) > 0 {
-			i -= len(x.OriginMailbox)
-			copy(dAtA[i:], x.OriginMailbox)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.OriginMailbox)))
-			i--
-			dAtA[i] = 0x32
-		}
-		if x.OriginDomain != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.OriginDomain))
-			i--
-			dAtA[i] = 0x28
-		}
-		if len(x.Metadata) > 0 {
-			i -= len(x.Metadata)
-			copy(dAtA[i:], x.Metadata)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Metadata)))
-			i--
-			dAtA[i] = 0x22
-		}
-		if len(x.MessageBody) > 0 {
-			i -= len(x.MessageBody)
-			copy(dAtA[i:], x.MessageBody)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MessageBody)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if len(x.RecipientAddress) > 0 {
-			i -= len(x.RecipientAddress)
-			copy(dAtA[i:], x.RecipientAddress)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.RecipientAddress)))
-			i--
 			dAtA[i] = 0x12
 		}
-		if x.DestinationDomain != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.DestinationDomain))
+		if len(x.OriginMailboxId) > 0 {
+			i -= len(x.OriginMailboxId)
+			copy(dAtA[i:], x.OriginMailboxId)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.OriginMailboxId)))
 			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -553,10 +492,10 @@ func (x *fastReflection_Dispatch) ProtoMethods() *protoiface.Methods {
 			}
 			switch fieldNum {
 			case 1:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DestinationDomain", wireType)
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OriginMailboxId", wireType)
 				}
-				x.DestinationDomain = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -566,159 +505,25 @@ func (x *fastReflection_Dispatch) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.DestinationDomain |= uint32(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.OriginMailboxId = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RecipientAddress", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.RecipientAddress = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MessageBody", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.MessageBody = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Metadata = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 5:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OriginDomain", wireType)
-				}
-				x.OriginDomain = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.OriginDomain |= uint32(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 6:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OriginMailbox", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.OriginMailbox = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 7:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 				}
@@ -749,6 +554,89 @@ func (x *fastReflection_Dispatch) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.Sender = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Destination", wireType)
+				}
+				x.Destination = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Destination |= uint32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Recipient", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Recipient = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Message = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -788,22 +676,22 @@ func (x *fastReflection_Dispatch) ProtoMethods() *protoiface.Methods {
 var (
 	md_Process                   protoreflect.MessageDescriptor
 	fd_Process_origin_mailbox_id protoreflect.FieldDescriptor
-	fd_Process_origin_domain     protoreflect.FieldDescriptor
+	fd_Process_origin            protoreflect.FieldDescriptor
 	fd_Process_sender            protoreflect.FieldDescriptor
 	fd_Process_recipient         protoreflect.FieldDescriptor
 	fd_Process_message_id        protoreflect.FieldDescriptor
-	fd_Process_message_body      protoreflect.FieldDescriptor
+	fd_Process_message           protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_hyperlane_mailbox_v1_events_proto_init()
 	md_Process = File_hyperlane_mailbox_v1_events_proto.Messages().ByName("Process")
 	fd_Process_origin_mailbox_id = md_Process.Fields().ByName("origin_mailbox_id")
-	fd_Process_origin_domain = md_Process.Fields().ByName("origin_domain")
+	fd_Process_origin = md_Process.Fields().ByName("origin")
 	fd_Process_sender = md_Process.Fields().ByName("sender")
 	fd_Process_recipient = md_Process.Fields().ByName("recipient")
 	fd_Process_message_id = md_Process.Fields().ByName("message_id")
-	fd_Process_message_body = md_Process.Fields().ByName("message_body")
+	fd_Process_message = md_Process.Fields().ByName("message")
 }
 
 var _ protoreflect.Message = (*fastReflection_Process)(nil)
@@ -877,9 +765,9 @@ func (x *fastReflection_Process) Range(f func(protoreflect.FieldDescriptor, prot
 			return
 		}
 	}
-	if x.OriginDomain != uint32(0) {
-		value := protoreflect.ValueOfUint32(x.OriginDomain)
-		if !f(fd_Process_origin_domain, value) {
+	if x.Origin != uint32(0) {
+		value := protoreflect.ValueOfUint32(x.Origin)
+		if !f(fd_Process_origin, value) {
 			return
 		}
 	}
@@ -901,9 +789,9 @@ func (x *fastReflection_Process) Range(f func(protoreflect.FieldDescriptor, prot
 			return
 		}
 	}
-	if x.MessageBody != "" {
-		value := protoreflect.ValueOfString(x.MessageBody)
-		if !f(fd_Process_message_body, value) {
+	if x.Message != "" {
+		value := protoreflect.ValueOfString(x.Message)
+		if !f(fd_Process_message, value) {
 			return
 		}
 	}
@@ -924,16 +812,16 @@ func (x *fastReflection_Process) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.Process.origin_mailbox_id":
 		return x.OriginMailboxId != ""
-	case "hyperlane.mailbox.v1.Process.origin_domain":
-		return x.OriginDomain != uint32(0)
+	case "hyperlane.mailbox.v1.Process.origin":
+		return x.Origin != uint32(0)
 	case "hyperlane.mailbox.v1.Process.sender":
 		return x.Sender != ""
 	case "hyperlane.mailbox.v1.Process.recipient":
 		return x.Recipient != ""
 	case "hyperlane.mailbox.v1.Process.message_id":
 		return x.MessageId != ""
-	case "hyperlane.mailbox.v1.Process.message_body":
-		return x.MessageBody != ""
+	case "hyperlane.mailbox.v1.Process.message":
+		return x.Message != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Process"))
@@ -952,16 +840,16 @@ func (x *fastReflection_Process) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.Process.origin_mailbox_id":
 		x.OriginMailboxId = ""
-	case "hyperlane.mailbox.v1.Process.origin_domain":
-		x.OriginDomain = uint32(0)
+	case "hyperlane.mailbox.v1.Process.origin":
+		x.Origin = uint32(0)
 	case "hyperlane.mailbox.v1.Process.sender":
 		x.Sender = ""
 	case "hyperlane.mailbox.v1.Process.recipient":
 		x.Recipient = ""
 	case "hyperlane.mailbox.v1.Process.message_id":
 		x.MessageId = ""
-	case "hyperlane.mailbox.v1.Process.message_body":
-		x.MessageBody = ""
+	case "hyperlane.mailbox.v1.Process.message":
+		x.Message = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Process"))
@@ -981,8 +869,8 @@ func (x *fastReflection_Process) Get(descriptor protoreflect.FieldDescriptor) pr
 	case "hyperlane.mailbox.v1.Process.origin_mailbox_id":
 		value := x.OriginMailboxId
 		return protoreflect.ValueOfString(value)
-	case "hyperlane.mailbox.v1.Process.origin_domain":
-		value := x.OriginDomain
+	case "hyperlane.mailbox.v1.Process.origin":
+		value := x.Origin
 		return protoreflect.ValueOfUint32(value)
 	case "hyperlane.mailbox.v1.Process.sender":
 		value := x.Sender
@@ -993,8 +881,8 @@ func (x *fastReflection_Process) Get(descriptor protoreflect.FieldDescriptor) pr
 	case "hyperlane.mailbox.v1.Process.message_id":
 		value := x.MessageId
 		return protoreflect.ValueOfString(value)
-	case "hyperlane.mailbox.v1.Process.message_body":
-		value := x.MessageBody
+	case "hyperlane.mailbox.v1.Process.message":
+		value := x.Message
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -1018,16 +906,16 @@ func (x *fastReflection_Process) Set(fd protoreflect.FieldDescriptor, value prot
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.Process.origin_mailbox_id":
 		x.OriginMailboxId = value.Interface().(string)
-	case "hyperlane.mailbox.v1.Process.origin_domain":
-		x.OriginDomain = uint32(value.Uint())
+	case "hyperlane.mailbox.v1.Process.origin":
+		x.Origin = uint32(value.Uint())
 	case "hyperlane.mailbox.v1.Process.sender":
 		x.Sender = value.Interface().(string)
 	case "hyperlane.mailbox.v1.Process.recipient":
 		x.Recipient = value.Interface().(string)
 	case "hyperlane.mailbox.v1.Process.message_id":
 		x.MessageId = value.Interface().(string)
-	case "hyperlane.mailbox.v1.Process.message_body":
-		x.MessageBody = value.Interface().(string)
+	case "hyperlane.mailbox.v1.Process.message":
+		x.Message = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Process"))
@@ -1050,16 +938,16 @@ func (x *fastReflection_Process) Mutable(fd protoreflect.FieldDescriptor) protor
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.Process.origin_mailbox_id":
 		panic(fmt.Errorf("field origin_mailbox_id of message hyperlane.mailbox.v1.Process is not mutable"))
-	case "hyperlane.mailbox.v1.Process.origin_domain":
-		panic(fmt.Errorf("field origin_domain of message hyperlane.mailbox.v1.Process is not mutable"))
+	case "hyperlane.mailbox.v1.Process.origin":
+		panic(fmt.Errorf("field origin of message hyperlane.mailbox.v1.Process is not mutable"))
 	case "hyperlane.mailbox.v1.Process.sender":
 		panic(fmt.Errorf("field sender of message hyperlane.mailbox.v1.Process is not mutable"))
 	case "hyperlane.mailbox.v1.Process.recipient":
 		panic(fmt.Errorf("field recipient of message hyperlane.mailbox.v1.Process is not mutable"))
 	case "hyperlane.mailbox.v1.Process.message_id":
 		panic(fmt.Errorf("field message_id of message hyperlane.mailbox.v1.Process is not mutable"))
-	case "hyperlane.mailbox.v1.Process.message_body":
-		panic(fmt.Errorf("field message_body of message hyperlane.mailbox.v1.Process is not mutable"))
+	case "hyperlane.mailbox.v1.Process.message":
+		panic(fmt.Errorf("field message of message hyperlane.mailbox.v1.Process is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Process"))
@@ -1075,7 +963,7 @@ func (x *fastReflection_Process) NewField(fd protoreflect.FieldDescriptor) proto
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.Process.origin_mailbox_id":
 		return protoreflect.ValueOfString("")
-	case "hyperlane.mailbox.v1.Process.origin_domain":
+	case "hyperlane.mailbox.v1.Process.origin":
 		return protoreflect.ValueOfUint32(uint32(0))
 	case "hyperlane.mailbox.v1.Process.sender":
 		return protoreflect.ValueOfString("")
@@ -1083,7 +971,7 @@ func (x *fastReflection_Process) NewField(fd protoreflect.FieldDescriptor) proto
 		return protoreflect.ValueOfString("")
 	case "hyperlane.mailbox.v1.Process.message_id":
 		return protoreflect.ValueOfString("")
-	case "hyperlane.mailbox.v1.Process.message_body":
+	case "hyperlane.mailbox.v1.Process.message":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -1158,8 +1046,8 @@ func (x *fastReflection_Process) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.OriginDomain != 0 {
-			n += 1 + runtime.Sov(uint64(x.OriginDomain))
+		if x.Origin != 0 {
+			n += 1 + runtime.Sov(uint64(x.Origin))
 		}
 		l = len(x.Sender)
 		if l > 0 {
@@ -1173,7 +1061,7 @@ func (x *fastReflection_Process) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.MessageBody)
+		l = len(x.Message)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1206,10 +1094,10 @@ func (x *fastReflection_Process) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.MessageBody) > 0 {
-			i -= len(x.MessageBody)
-			copy(dAtA[i:], x.MessageBody)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MessageBody)))
+		if len(x.Message) > 0 {
+			i -= len(x.Message)
+			copy(dAtA[i:], x.Message)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Message)))
 			i--
 			dAtA[i] = 0x32
 		}
@@ -1234,8 +1122,8 @@ func (x *fastReflection_Process) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x1a
 		}
-		if x.OriginDomain != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.OriginDomain))
+		if x.Origin != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Origin))
 			i--
 			dAtA[i] = 0x10
 		}
@@ -1329,9 +1217,9 @@ func (x *fastReflection_Process) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OriginDomain", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 				}
-				x.OriginDomain = 0
+				x.Origin = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1341,7 +1229,7 @@ func (x *fastReflection_Process) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.OriginDomain |= uint32(b&0x7F) << shift
+					x.Origin |= uint32(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -1444,7 +1332,7 @@ func (x *fastReflection_Process) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MessageBody", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1472,7 +1360,7 @@ func (x *fastReflection_Process) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.MessageBody = string(dAtA[iNdEx:postIndex])
+				x.Message = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1995,13 +1883,11 @@ type Dispatch struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
-	RecipientAddress  string `protobuf:"bytes,2,opt,name=recipient_address,json=recipientAddress,proto3" json:"recipient_address,omitempty"`
-	MessageBody       string `protobuf:"bytes,3,opt,name=message_body,json=messageBody,proto3" json:"message_body,omitempty"`
-	Metadata          string `protobuf:"bytes,4,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	OriginDomain      uint32 `protobuf:"varint,5,opt,name=origin_domain,json=originDomain,proto3" json:"origin_domain,omitempty"`
-	OriginMailbox     string `protobuf:"bytes,6,opt,name=origin_mailbox,json=originMailbox,proto3" json:"origin_mailbox,omitempty"`
-	Sender            string `protobuf:"bytes,7,opt,name=sender,proto3" json:"sender,omitempty"`
+	OriginMailboxId string `protobuf:"bytes,1,opt,name=origin_mailbox_id,json=originMailboxId,proto3" json:"origin_mailbox_id,omitempty"`
+	Sender          string `protobuf:"bytes,2,opt,name=sender,proto3" json:"sender,omitempty"`
+	Destination     uint32 `protobuf:"varint,3,opt,name=destination,proto3" json:"destination,omitempty"`
+	Recipient       string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
+	Message         string `protobuf:"bytes,5,opt,name=message,proto3" json:"message,omitempty"`
 }
 
 func (x *Dispatch) Reset() {
@@ -2024,44 +1910,9 @@ func (*Dispatch) Descriptor() ([]byte, []int) {
 	return file_hyperlane_mailbox_v1_events_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Dispatch) GetDestinationDomain() uint32 {
+func (x *Dispatch) GetOriginMailboxId() string {
 	if x != nil {
-		return x.DestinationDomain
-	}
-	return 0
-}
-
-func (x *Dispatch) GetRecipientAddress() string {
-	if x != nil {
-		return x.RecipientAddress
-	}
-	return ""
-}
-
-func (x *Dispatch) GetMessageBody() string {
-	if x != nil {
-		return x.MessageBody
-	}
-	return ""
-}
-
-func (x *Dispatch) GetMetadata() string {
-	if x != nil {
-		return x.Metadata
-	}
-	return ""
-}
-
-func (x *Dispatch) GetOriginDomain() uint32 {
-	if x != nil {
-		return x.OriginDomain
-	}
-	return 0
-}
-
-func (x *Dispatch) GetOriginMailbox() string {
-	if x != nil {
-		return x.OriginMailbox
+		return x.OriginMailboxId
 	}
 	return ""
 }
@@ -2073,17 +1924,38 @@ func (x *Dispatch) GetSender() string {
 	return ""
 }
 
+func (x *Dispatch) GetDestination() uint32 {
+	if x != nil {
+		return x.Destination
+	}
+	return 0
+}
+
+func (x *Dispatch) GetRecipient() string {
+	if x != nil {
+		return x.Recipient
+	}
+	return ""
+}
+
+func (x *Dispatch) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type Process struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	OriginMailboxId string `protobuf:"bytes,1,opt,name=origin_mailbox_id,json=originMailboxId,proto3" json:"origin_mailbox_id,omitempty"`
-	OriginDomain    uint32 `protobuf:"varint,2,opt,name=origin_domain,json=originDomain,proto3" json:"origin_domain,omitempty"`
+	Origin          uint32 `protobuf:"varint,2,opt,name=origin,proto3" json:"origin,omitempty"`
 	Sender          string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
 	Recipient       string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
 	MessageId       string `protobuf:"bytes,5,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
-	MessageBody     string `protobuf:"bytes,6,opt,name=message_body,json=messageBody,proto3" json:"message_body,omitempty"`
+	Message         string `protobuf:"bytes,6,opt,name=message,proto3" json:"message,omitempty"`
 }
 
 func (x *Process) Reset() {
@@ -2113,9 +1985,9 @@ func (x *Process) GetOriginMailboxId() string {
 	return ""
 }
 
-func (x *Process) GetOriginDomain() uint32 {
+func (x *Process) GetOrigin() uint32 {
 	if x != nil {
-		return x.OriginDomain
+		return x.Origin
 	}
 	return 0
 }
@@ -2141,9 +2013,9 @@ func (x *Process) GetMessageId() string {
 	return ""
 }
 
-func (x *Process) GetMessageBody() string {
+func (x *Process) GetMessage() string {
 	if x != nil {
-		return x.MessageBody
+		return x.Message
 	}
 	return ""
 }
@@ -2199,60 +2071,51 @@ var file_hyperlane_mailbox_v1_events_proto_rawDesc = []byte{
 	0x6f, 0x74, 0x6f, 0x12, 0x14, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d,
 	0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
 	0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa3, 0x02, 0x0a, 0x08, 0x44, 0x69, 0x73, 0x70, 0x61, 0x74, 0x63,
-	0x68, 0x12, 0x2d, 0x0a, 0x12, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x11, 0x64,
-	0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e,
-	0x12, 0x2b, 0x0a, 0x11, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x5f, 0x61, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x72, 0x65, 0x63,
-	0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x21, 0x0a,
-	0x0c, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x5f, 0x62, 0x6f, 0x64, 0x79, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0b, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0x6f, 0x64, 0x79,
-	0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12, 0x23, 0x0a, 0x0d,
-	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x05, 0x20,
-	0x01, 0x28, 0x0d, 0x52, 0x0c, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69,
-	0x6e, 0x12, 0x25, 0x0a, 0x0e, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x5f, 0x6d, 0x61, 0x69, 0x6c,
-	0x62, 0x6f, 0x78, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x6f, 0x72, 0x69, 0x67, 0x69,
-	0x6e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x65, 0x6e, 0x64,
-	0x65, 0x72, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69,
-	0x6e, 0x67, 0x52, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x22, 0xec, 0x01, 0x0a, 0x07, 0x50,
-	0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x12, 0x2a, 0x0a, 0x11, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e,
-	0x5f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0f, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78,
-	0x49, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x5f, 0x64, 0x6f, 0x6d,
-	0x61, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0c, 0x6f, 0x72, 0x69, 0x67, 0x69,
-	0x6e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12, 0x30, 0x0a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65,
-	0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e,
-	0x67, 0x52, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x12, 0x1c, 0x0a, 0x09, 0x72, 0x65, 0x63,
-	0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x72, 0x65,
-	0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x6d, 0x65, 0x73, 0x73, 0x61,
-	0x67, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
-	0x65, 0x5f, 0x62, 0x6f, 0x64, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0x6f, 0x64, 0x79, 0x22, 0x47, 0x0a, 0x10, 0x49, 0x6e, 0x73,
-	0x65, 0x72, 0x74, 0x65, 0x64, 0x49, 0x6e, 0x74, 0x6f, 0x54, 0x72, 0x65, 0x65, 0x12, 0x1d, 0x0a,
-	0x0a, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x09, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05,
-	0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x69, 0x6e, 0x64,
-	0x65, 0x78, 0x42, 0xe5, 0x01, 0x0a, 0x18, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72,
-	0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x42,
-	0x0b, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4a,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4b, 0x59, 0x56, 0x45, 0x4e,
-	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
-	0x2d, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68, 0x79, 0x70, 0x65,
-	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31,
-	0x3b, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x48, 0x4d, 0x58,
-	0xaa, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x4d, 0x61, 0x69,
-	0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31, 0xe2, 0x02,
-	0x20, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c, 0x62,
-	0x6f, 0x78, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
-	0x61, 0xea, 0x02, 0x16, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x3a, 0x3a, 0x4d,
-	0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0xc2, 0x01, 0x0a, 0x08, 0x44, 0x69, 0x73, 0x70, 0x61, 0x74, 0x63,
+	0x68, 0x12, 0x2a, 0x0a, 0x11, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x5f, 0x6d, 0x61, 0x69, 0x6c,
+	0x62, 0x6f, 0x78, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x6f, 0x72,
+	0x69, 0x67, 0x69, 0x6e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x49, 0x64, 0x12, 0x30, 0x0a,
+	0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
+	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x12,
+	0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x0d, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x12,
+	0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0xbc, 0x01, 0x0a, 0x07, 0x50, 0x72,
+	0x6f, 0x63, 0x65, 0x73, 0x73, 0x12, 0x2a, 0x0a, 0x11, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x5f,
+	0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0f, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x49,
+	0x64, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0d, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x65, 0x6e,
+	0x64, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65,
+	0x72, 0x12, 0x1c, 0x0a, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x12,
+	0x1d, 0x0a, 0x0a, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x49, 0x64, 0x12, 0x18,
+	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x47, 0x0a, 0x10, 0x49, 0x6e, 0x73, 0x65,
+	0x72, 0x74, 0x65, 0x64, 0x49, 0x6e, 0x74, 0x6f, 0x54, 0x72, 0x65, 0x65, 0x12, 0x1d, 0x0a, 0x0a,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x09, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x69,
+	0x6e, 0x64, 0x65, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65,
+	0x78, 0x42, 0xe5, 0x01, 0x0a, 0x18, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
+	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x42, 0x0b,
+	0x45, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4a, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4b, 0x59, 0x56, 0x45, 0x4e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2d,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72,
+	0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x3b,
+	0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x48, 0x4d, 0x58, 0xaa,
+	0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x4d, 0x61, 0x69, 0x6c,
+	0x62, 0x6f, 0x78, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,
+	0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x20,
+	0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f,
+	0x78, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0xea, 0x02, 0x16, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x3a, 0x3a, 0x4d, 0x61,
+	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (

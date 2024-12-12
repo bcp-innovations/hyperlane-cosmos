@@ -52,6 +52,7 @@ func (k Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, c
 
 func (k Keeper) RemoteReceiveSynthetic(ctx sdk.Context, token types.HypToken, payload types.WarpPayload) error {
 
+	// TODO check address format and parse correctly
 	account := sdk.AccAddress(payload.Recipient()[12:32])
 
 	shadowToken := sdk.NewCoin(

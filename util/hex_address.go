@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"strings"
 )
 
@@ -52,4 +53,21 @@ func CreateHexAddress(identifier string, id int64) HexAddress {
 	binary.BigEndian.PutUint64(idBytes, uint64(id))
 	message := append([]byte(identifier), idBytes...)
 	return sha256.Sum256(message)
+}
+
+func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
+
+	bech32, err := sdk.AccAddressFromBech32(cosmosAcc)
+	if err != nil {
+		return [32]byte{}, err
+	}
+
+	if len(bech32) > 32 {
+		return HexAddress{}, errors.New("invalid length")
+	}
+
+	hexAddressBytes := make([]byte, 32)
+	copy(hexAddressBytes[32-len(bech32):], bech32)
+
+	return HexAddress(hexAddressBytes), nil
 }

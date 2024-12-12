@@ -13,11 +13,10 @@ import (
 
 func CmdCreateMailbox() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-mailbox [ism]",
+		Use:   "create-mailbox",
 		Short: "Create a Hyperlane Mailbox",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			ism := args[0]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -26,7 +25,6 @@ func CmdCreateMailbox() *cobra.Command {
 
 			msg := types.MsgCreateMailbox{
 				Creator: clientCtx.GetFromAddress().String(),
-				Ism:     ism,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Creator)

@@ -49,8 +49,7 @@ message QueryTokenResponse {
   string origin_denom = 5;
 
   uint32 receiver_domain = 6;
-  string receiver_mailbox = 7;
-  string receiver_contract = 8;
+  string receiver_contract = 7;
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.

@@ -24,13 +24,11 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Dispatch struct {
-	DestinationDomain uint32 `protobuf:"varint,1,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
-	RecipientAddress  string `protobuf:"bytes,2,opt,name=recipient_address,json=recipientAddress,proto3" json:"recipient_address,omitempty"`
-	MessageBody       string `protobuf:"bytes,3,opt,name=message_body,json=messageBody,proto3" json:"message_body,omitempty"`
-	Metadata          string `protobuf:"bytes,4,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	OriginDomain      uint32 `protobuf:"varint,5,opt,name=origin_domain,json=originDomain,proto3" json:"origin_domain,omitempty"`
-	OriginMailbox     string `protobuf:"bytes,6,opt,name=origin_mailbox,json=originMailbox,proto3" json:"origin_mailbox,omitempty"`
-	Sender            string `protobuf:"bytes,7,opt,name=sender,proto3" json:"sender,omitempty"`
+	OriginMailboxId string `protobuf:"bytes,1,opt,name=origin_mailbox_id,json=originMailboxId,proto3" json:"origin_mailbox_id,omitempty"`
+	Sender          string `protobuf:"bytes,2,opt,name=sender,proto3" json:"sender,omitempty"`
+	Destination     uint32 `protobuf:"varint,3,opt,name=destination,proto3" json:"destination,omitempty"`
+	Recipient       string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
+	Message         string `protobuf:"bytes,5,opt,name=message,proto3" json:"message,omitempty"`
 }
 
 func (m *Dispatch) Reset()         { *m = Dispatch{} }
@@ -66,44 +64,9 @@ func (m *Dispatch) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Dispatch proto.InternalMessageInfo
 
-func (m *Dispatch) GetDestinationDomain() uint32 {
+func (m *Dispatch) GetOriginMailboxId() string {
 	if m != nil {
-		return m.DestinationDomain
-	}
-	return 0
-}
-
-func (m *Dispatch) GetRecipientAddress() string {
-	if m != nil {
-		return m.RecipientAddress
-	}
-	return ""
-}
-
-func (m *Dispatch) GetMessageBody() string {
-	if m != nil {
-		return m.MessageBody
-	}
-	return ""
-}
-
-func (m *Dispatch) GetMetadata() string {
-	if m != nil {
-		return m.Metadata
-	}
-	return ""
-}
-
-func (m *Dispatch) GetOriginDomain() uint32 {
-	if m != nil {
-		return m.OriginDomain
-	}
-	return 0
-}
-
-func (m *Dispatch) GetOriginMailbox() string {
-	if m != nil {
-		return m.OriginMailbox
+		return m.OriginMailboxId
 	}
 	return ""
 }
@@ -115,13 +78,34 @@ func (m *Dispatch) GetSender() string {
 	return ""
 }
 
+func (m *Dispatch) GetDestination() uint32 {
+	if m != nil {
+		return m.Destination
+	}
+	return 0
+}
+
+func (m *Dispatch) GetRecipient() string {
+	if m != nil {
+		return m.Recipient
+	}
+	return ""
+}
+
+func (m *Dispatch) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
 type Process struct {
 	OriginMailboxId string `protobuf:"bytes,1,opt,name=origin_mailbox_id,json=originMailboxId,proto3" json:"origin_mailbox_id,omitempty"`
-	OriginDomain    uint32 `protobuf:"varint,2,opt,name=origin_domain,json=originDomain,proto3" json:"origin_domain,omitempty"`
+	Origin          uint32 `protobuf:"varint,2,opt,name=origin,proto3" json:"origin,omitempty"`
 	Sender          string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
 	Recipient       string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
 	MessageId       string `protobuf:"bytes,5,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
-	MessageBody     string `protobuf:"bytes,6,opt,name=message_body,json=messageBody,proto3" json:"message_body,omitempty"`
+	Message         string `protobuf:"bytes,6,opt,name=message,proto3" json:"message,omitempty"`
 }
 
 func (m *Process) Reset()         { *m = Process{} }
@@ -164,9 +148,9 @@ func (m *Process) GetOriginMailboxId() string {
 	return ""
 }
 
-func (m *Process) GetOriginDomain() uint32 {
+func (m *Process) GetOrigin() uint32 {
 	if m != nil {
-		return m.OriginDomain
+		return m.Origin
 	}
 	return 0
 }
@@ -192,9 +176,9 @@ func (m *Process) GetMessageId() string {
 	return ""
 }
 
-func (m *Process) GetMessageBody() string {
+func (m *Process) GetMessage() string {
 	if m != nil {
-		return m.MessageBody
+		return m.Message
 	}
 	return ""
 }
@@ -260,35 +244,31 @@ func init() {
 func init() { proto.RegisterFile("hyperlane/mailbox/v1/events.proto", fileDescriptor_86975c24bfd3d698) }
 
 var fileDescriptor_86975c24bfd3d698 = []byte{
-	// 447 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0xc1, 0x6e, 0x13, 0x31,
-	0x10, 0x8d, 0x53, 0x9a, 0x76, 0x87, 0x16, 0x1a, 0x2b, 0x87, 0xa5, 0x82, 0x55, 0x1b, 0x84, 0x54,
-	0x81, 0x92, 0xa5, 0xe2, 0xc0, 0x99, 0xa8, 0x08, 0x45, 0x08, 0x04, 0x0b, 0x42, 0x82, 0xcb, 0xca,
-	0x59, 0x8f, 0x36, 0x16, 0x5d, 0x7b, 0x65, 0x9b, 0x90, 0xfd, 0x0b, 0xfe, 0x81, 0x5f, 0xe0, 0x23,
-	0x38, 0x56, 0x9c, 0x38, 0xa2, 0xe4, 0xca, 0x47, 0xa0, 0x7a, 0xcd, 0x96, 0x26, 0x1c, 0x7a, 0x9c,
-	0xf7, 0x9e, 0xc7, 0x6f, 0xde, 0x0c, 0x1c, 0x4e, 0xab, 0x12, 0xf5, 0x29, 0x93, 0x18, 0x17, 0x4c,
-	0x9c, 0x4e, 0xd4, 0x3c, 0x9e, 0x1d, 0xc7, 0x38, 0x43, 0x69, 0xcd, 0xb0, 0xd4, 0xca, 0x2a, 0xda,
-	0x6b, 0x24, 0x43, 0x2f, 0x19, 0xce, 0x8e, 0xf7, 0x6f, 0x65, 0xca, 0x14, 0xca, 0xa4, 0x4e, 0x13,
-	0xd7, 0x45, 0xfd, 0xa0, 0xff, 0xb5, 0x0d, 0xdb, 0x27, 0xc2, 0x94, 0xcc, 0x66, 0x53, 0x3a, 0x00,
-	0xca, 0xd1, 0x58, 0x21, 0x99, 0x15, 0x4a, 0xa6, 0x5c, 0x15, 0x4c, 0xc8, 0x90, 0x1c, 0x90, 0xa3,
-	0xdd, 0xa4, 0xfb, 0x0f, 0x73, 0xe2, 0x08, 0xfa, 0x00, 0xba, 0x1a, 0x33, 0x51, 0x0a, 0x94, 0x36,
-	0x65, 0x9c, 0x6b, 0x34, 0x26, 0x6c, 0x1f, 0x90, 0xa3, 0x20, 0xd9, 0x6b, 0x88, 0x27, 0x35, 0x4e,
-	0x0f, 0x61, 0xa7, 0x40, 0x63, 0x58, 0x8e, 0xe9, 0x44, 0xf1, 0x2a, 0xdc, 0x70, 0xba, 0xeb, 0x1e,
-	0x1b, 0x29, 0x5e, 0xd1, 0x7d, 0xd8, 0x2e, 0xd0, 0x32, 0xce, 0x2c, 0x0b, 0xaf, 0x39, 0xba, 0xa9,
-	0xe9, 0x5d, 0xd8, 0x55, 0x5a, 0xe4, 0xa2, 0x71, 0xb5, 0xe9, 0x5c, 0xed, 0xd4, 0xa0, 0x37, 0x74,
-	0x0f, 0x6e, 0x78, 0x91, 0x1f, 0x3e, 0xec, 0xb8, 0x36, 0xfe, 0xe9, 0x8b, 0x1a, 0xa4, 0x0f, 0xa1,
-	0x63, 0x50, 0x72, 0xd4, 0xe1, 0xd6, 0x39, 0x3d, 0x0a, 0x7f, 0x7c, 0x1b, 0xf4, 0x7c, 0x2a, 0xde,
-	0xee, 0x1b, 0xab, 0x85, 0xcc, 0x13, 0xaf, 0xeb, 0xff, 0x26, 0xb0, 0xf5, 0x4a, 0xab, 0xec, 0x7c,
-	0x90, 0xfb, 0xd0, 0xbd, 0xfc, 0x49, 0x2a, 0xb8, 0xcb, 0x28, 0x48, 0x6e, 0x5e, 0xfa, 0x67, 0xcc,
-	0xd7, 0x5d, 0xb7, 0xff, 0xe3, 0xfa, 0xc2, 0xce, 0xc6, 0xd5, 0xec, 0xd0, 0xdb, 0x10, 0x34, 0xf9,
-	0xfa, 0xa4, 0x2e, 0x00, 0x7a, 0x07, 0xe0, 0x6f, 0xd2, 0x82, 0xbb, 0x9c, 0x82, 0x24, 0xf0, 0xc8,
-	0x98, 0xaf, 0x2d, 0xa2, 0xb3, 0xb6, 0x88, 0xfe, 0x33, 0xd8, 0x1b, 0x4b, 0x83, 0xda, 0x22, 0x1f,
-	0x4b, 0xab, 0xde, 0x6a, 0xc4, 0x95, 0xae, 0x64, 0xb5, 0x6b, 0x0f, 0x36, 0x85, 0xe4, 0x38, 0xf7,
-	0x13, 0xd6, 0xc5, 0xe8, 0xf5, 0xf7, 0x45, 0x44, 0xce, 0x16, 0x11, 0xf9, 0xb5, 0x88, 0xc8, 0x97,
-	0x65, 0xd4, 0x3a, 0x5b, 0x46, 0xad, 0x9f, 0xcb, 0xa8, 0xf5, 0xe1, 0x71, 0x2e, 0xec, 0xf4, 0xd3,
-	0x64, 0x98, 0xa9, 0x22, 0x7e, 0xfe, 0xfe, 0xdd, 0xd3, 0x97, 0x68, 0x3f, 0x2b, 0xfd, 0x31, 0x6e,
-	0xee, 0x77, 0x50, 0x27, 0x10, 0xcf, 0x9b, 0x5b, 0xb7, 0x55, 0x89, 0x66, 0xd2, 0x71, 0x77, 0xfb,
-	0xe8, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x45, 0x08, 0x41, 0x24, 0x0d, 0x03, 0x00, 0x00,
+	// 384 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0x41, 0x4b, 0x1b, 0x41,
+	0x18, 0xcd, 0x34, 0xcd, 0xa6, 0x99, 0x12, 0xda, 0x2e, 0xa1, 0x6c, 0x4b, 0xbb, 0xa4, 0x39, 0x85,
+	0x42, 0x76, 0x0d, 0x1e, 0x3c, 0x1b, 0x14, 0x59, 0x44, 0xd1, 0x55, 0x04, 0xbd, 0x84, 0xcd, 0xce,
+	0xc7, 0x66, 0x30, 0x3b, 0xb3, 0xcc, 0x8c, 0x31, 0xf9, 0x17, 0xfe, 0x18, 0x8f, 0x9e, 0x3c, 0x79,
+	0x0c, 0x9e, 0x3c, 0x4a, 0xf2, 0x47, 0x24, 0x3b, 0x93, 0x18, 0x73, 0x10, 0x3c, 0xbe, 0x37, 0xef,
+	0xfb, 0xbe, 0xf7, 0x98, 0x87, 0xff, 0xf5, 0xc7, 0x19, 0x88, 0x41, 0xc4, 0xc0, 0x4f, 0x23, 0x3a,
+	0xe8, 0xf1, 0x91, 0x3f, 0x6c, 0xfb, 0x30, 0x04, 0xa6, 0xa4, 0x97, 0x09, 0xae, 0xb8, 0x5d, 0x5b,
+	0x4a, 0x3c, 0x23, 0xf1, 0x86, 0xed, 0xdf, 0xbf, 0x62, 0x2e, 0x53, 0x2e, 0xbb, 0xb9, 0xc6, 0xd7,
+	0x40, 0x0f, 0x34, 0xee, 0x11, 0xfe, 0xb2, 0x43, 0x65, 0x16, 0xa9, 0xb8, 0x6f, 0xff, 0xc7, 0x3f,
+	0xb8, 0xa0, 0x09, 0x65, 0x5d, 0x33, 0xdc, 0xa5, 0xc4, 0x41, 0x75, 0xd4, 0xac, 0x84, 0xdf, 0xf4,
+	0xc3, 0x81, 0xe6, 0x03, 0x62, 0x6f, 0x60, 0x4b, 0x02, 0x23, 0x20, 0x9c, 0x4f, 0x73, 0x41, 0xc7,
+	0x79, 0xbc, 0x6d, 0xd5, 0xcc, 0xea, 0x6d, 0x42, 0x04, 0x48, 0x79, 0xa2, 0x04, 0x65, 0x49, 0x68,
+	0x74, 0x76, 0x1d, 0x7f, 0x25, 0x20, 0x15, 0x65, 0x91, 0xa2, 0x9c, 0x39, 0xc5, 0x3a, 0x6a, 0x56,
+	0xc3, 0x55, 0xca, 0xfe, 0x83, 0x2b, 0x02, 0x62, 0x9a, 0x51, 0x60, 0xca, 0xf9, 0x9c, 0xdf, 0x7d,
+	0x25, 0x6c, 0x07, 0x97, 0x53, 0x90, 0x32, 0x4a, 0xc0, 0x29, 0xe5, 0x6f, 0x0b, 0xd8, 0xb8, 0x43,
+	0xb8, 0x7c, 0x24, 0x78, 0x0c, 0x52, 0x7e, 0x28, 0xc3, 0x4f, 0x6c, 0x69, 0x2a, 0xcf, 0x50, 0x0d,
+	0x0d, 0x9a, 0xf3, 0x26, 0x5b, 0x31, 0x1f, 0x5c, 0x24, 0x78, 0xdf, 0xdf, 0x5f, 0x8c, 0x8d, 0xa1,
+	0xf9, 0x49, 0x6d, 0xb1, 0x62, 0x98, 0x80, 0xac, 0xda, 0xb7, 0xde, 0xda, 0xdf, 0xc3, 0xdf, 0x03,
+	0x26, 0x41, 0x28, 0x20, 0x01, 0x53, 0xfc, 0x54, 0x00, 0xac, 0x2d, 0x43, 0xeb, 0xcb, 0x6a, 0xb8,
+	0x44, 0x19, 0x81, 0x91, 0x31, 0xae, 0x41, 0xe7, 0xf8, 0x61, 0xea, 0xa2, 0xc9, 0xd4, 0x45, 0xcf,
+	0x53, 0x17, 0xdd, 0xcc, 0xdc, 0xc2, 0x64, 0xe6, 0x16, 0x9e, 0x66, 0x6e, 0xe1, 0x62, 0x2b, 0xa1,
+	0xaa, 0x7f, 0xd5, 0xf3, 0x62, 0x9e, 0xfa, 0xfb, 0xe7, 0x67, 0xbb, 0x87, 0xa0, 0xae, 0xb9, 0xb8,
+	0xf4, 0x97, 0x75, 0x69, 0xe9, 0xaf, 0xf3, 0x47, 0xcb, 0x6a, 0xa9, 0x71, 0x06, 0xb2, 0x67, 0xe5,
+	0x35, 0xd9, 0x7c, 0x09, 0x00, 0x00, 0xff, 0xff, 0xa3, 0xe8, 0xeb, 0x37, 0x7c, 0x02, 0x00, 0x00,
 }
 
 func (m *Dispatch) Marshal() (dAtA []byte, err error) {
@@ -311,50 +291,38 @@ func (m *Dispatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Recipient) > 0 {
+		i -= len(m.Recipient)
+		copy(dAtA[i:], m.Recipient)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Recipient)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Destination != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Destination))
+		i--
+		dAtA[i] = 0x18
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.Sender)))
 		i--
-		dAtA[i] = 0x3a
-	}
-	if len(m.OriginMailbox) > 0 {
-		i -= len(m.OriginMailbox)
-		copy(dAtA[i:], m.OriginMailbox)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.OriginMailbox)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if m.OriginDomain != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.OriginDomain))
-		i--
-		dAtA[i] = 0x28
-	}
-	if len(m.Metadata) > 0 {
-		i -= len(m.Metadata)
-		copy(dAtA[i:], m.Metadata)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.Metadata)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.MessageBody) > 0 {
-		i -= len(m.MessageBody)
-		copy(dAtA[i:], m.MessageBody)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.MessageBody)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.RecipientAddress) > 0 {
-		i -= len(m.RecipientAddress)
-		copy(dAtA[i:], m.RecipientAddress)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.RecipientAddress)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if m.DestinationDomain != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.DestinationDomain))
+	if len(m.OriginMailboxId) > 0 {
+		i -= len(m.OriginMailboxId)
+		copy(dAtA[i:], m.OriginMailboxId)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.OriginMailboxId)))
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -379,10 +347,10 @@ func (m *Process) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.MessageBody) > 0 {
-		i -= len(m.MessageBody)
-		copy(dAtA[i:], m.MessageBody)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.MessageBody)))
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Message)))
 		i--
 		dAtA[i] = 0x32
 	}
@@ -407,8 +375,8 @@ func (m *Process) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if m.OriginDomain != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.OriginDomain))
+	if m.Origin != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Origin))
 		i--
 		dAtA[i] = 0x10
 	}
@@ -474,29 +442,22 @@ func (m *Dispatch) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.DestinationDomain != 0 {
-		n += 1 + sovEvents(uint64(m.DestinationDomain))
-	}
-	l = len(m.RecipientAddress)
-	if l > 0 {
-		n += 1 + l + sovEvents(uint64(l))
-	}
-	l = len(m.MessageBody)
-	if l > 0 {
-		n += 1 + l + sovEvents(uint64(l))
-	}
-	l = len(m.Metadata)
-	if l > 0 {
-		n += 1 + l + sovEvents(uint64(l))
-	}
-	if m.OriginDomain != 0 {
-		n += 1 + sovEvents(uint64(m.OriginDomain))
-	}
-	l = len(m.OriginMailbox)
+	l = len(m.OriginMailboxId)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.Destination != 0 {
+		n += 1 + sovEvents(uint64(m.Destination))
+	}
+	l = len(m.Recipient)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.Message)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
@@ -513,8 +474,8 @@ func (m *Process) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
-	if m.OriginDomain != 0 {
-		n += 1 + sovEvents(uint64(m.OriginDomain))
+	if m.Origin != 0 {
+		n += 1 + sovEvents(uint64(m.Origin))
 	}
 	l = len(m.Sender)
 	if l > 0 {
@@ -528,7 +489,7 @@ func (m *Process) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
-	l = len(m.MessageBody)
+	l = len(m.Message)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
@@ -587,10 +548,10 @@ func (m *Dispatch) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DestinationDomain", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OriginMailboxId", wireType)
 			}
-			m.DestinationDomain = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvents
@@ -600,159 +561,25 @@ func (m *Dispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.DestinationDomain |= uint32(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.OriginMailboxId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RecipientAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvents
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvents
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.RecipientAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MessageBody", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvents
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvents
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.MessageBody = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvents
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvents
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Metadata = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OriginDomain", wireType)
-			}
-			m.OriginDomain = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.OriginDomain |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OriginMailbox", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvents
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvents
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OriginMailbox = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
@@ -783,6 +610,89 @@ func (m *Dispatch) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Destination", wireType)
+			}
+			m.Destination = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Destination |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Recipient", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Recipient = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -868,9 +778,9 @@ func (m *Process) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OriginDomain", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 			}
-			m.OriginDomain = 0
+			m.Origin = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvents
@@ -880,7 +790,7 @@ func (m *Process) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.OriginDomain |= uint32(b&0x7F) << shift
+				m.Origin |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -983,7 +893,7 @@ func (m *Process) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MessageBody", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1011,7 +921,7 @@ func (m *Process) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.MessageBody = string(dAtA[iNdEx:postIndex])
+			m.Message = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

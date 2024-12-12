@@ -27,7 +27,7 @@ func CmdProcessMessage() *cobra.Command {
 				MailboxId: mailboxId,
 				Metadata:  metadata,
 				Message:   message,
-				Sender:    clientCtx.GetFromAddress().String(),
+				Relayer:   clientCtx.GetFromAddress().String(),
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

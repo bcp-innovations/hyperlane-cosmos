@@ -31,8 +31,9 @@ message MsgCreateCollateralToken {
   string origin_denom = 3;
 
   uint32 receiver_domain = 4;
-  string receiver_mailbox = 5;
-  string receiver_contract = 6;
+  string receiver_contract = 5;
+
+  string ism_id = 6;
 }
 
 message MsgCreateCollateralTokenResponse {}
@@ -47,8 +48,9 @@ message MsgCreateSyntheticToken {
   string origin_mailbox = 2;
 
   uint32 receiver_domain = 3;
-  string receiver_mailbox = 4;
-  string receiver_contract = 5;
+  string receiver_contract = 4;
+
+  string ism_id = 5;
 }
 
 message MsgCreateSyntheticTokenResponse {}

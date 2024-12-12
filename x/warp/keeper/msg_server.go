@@ -32,11 +32,6 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, errors.New("mailbox not found")
 	}
 
-	receiverMailbox, err := util.DecodeHexAddress(msg.ReceiverMailbox)
-	if err != nil {
-		return nil, err
-	}
-
 	receiverContract, err := util.DecodeHexAddress(msg.ReceiverContract)
 	if err != nil {
 		return nil, err
@@ -44,14 +39,22 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
 
+	ismId, err := util.DecodeHexAddress(msg.IsmId)
+	if err != nil {
+		return nil, err
+	}
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, ismId)
+	if err != nil {
+		return nil, err
+	}
+
 	newToken := types.HypToken{
 		Id:               tokenId.Bytes(),
 		Creator:          msg.Creator,
-		TokenType:        types.HYP_TOKEN,
+		TokenType:        types.HYP_TOKEN_SYNTHETIC,
 		OriginMailbox:    mailboxId.Bytes(),
 		OriginDenom:      fmt.Sprintf("hyperlane/%s", tokenId.String()),
 		ReceiverDomain:   msg.ReceiverDomain,
-		ReceiverMailbox:  receiverMailbox.Bytes(),
 		ReceiverContract: receiverContract.Bytes(),
 	}
 
@@ -81,17 +84,21 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		return nil, errors.New("mailbox not found")
 	}
 
-	receiverMailbox, err := util.DecodeHexAddress(msg.ReceiverMailbox)
-	if err != nil {
-		return nil, err
-	}
-
 	receiverContract, err := util.DecodeHexAddress(msg.ReceiverContract)
 	if err != nil {
 		return nil, err
 	}
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
+
+	ismId, err := util.DecodeHexAddress(msg.IsmId)
+	if err != nil {
+		return nil, err
+	}
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, ismId)
+	if err != nil {
+		return nil, err
+	}
 
 	newToken := types.HypToken{
 		Id:               tokenId.Bytes(),
@@ -100,7 +107,6 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		OriginMailbox:    mailboxId.Bytes(),
 		OriginDenom:      msg.OriginDenom,
 		ReceiverDomain:   msg.ReceiverDomain,
-		ReceiverMailbox:  receiverMailbox.Bytes(),
 		ReceiverContract: receiverContract.Bytes(),
 	}
 
@@ -130,7 +136,7 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 			return nil, err
 		}
 		messageResultId = result.String()
-	} else if token.TokenType == types.HYP_TOKEN {
+	} else if token.TokenType == types.HYP_TOKEN_SYNTHETIC {
 		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.Recipient, msg.Amount)
 		if err != nil {
 			return nil, err

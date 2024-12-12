@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 )
@@ -13,21 +12,12 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, err
 	}
 
-	ismExists, err := ms.k.ismKeeper.IsmIdExists(ctx, req.Ism)
-	if err != nil {
-		return nil, err
-	}
-	if !ismExists {
-		return nil, fmt.Errorf("ISM %s doesn't exist", req.Ism)
-	}
-
 	prefixedId := util.CreateHexAddress(types.ModuleName, int64(mailboxCount))
 
 	tree := types.NewTree(types.ZeroHashes, 0)
 
 	newMailbox := types.Mailbox{
 		Id:              prefixedId.String(),
-		Ism:             req.Ism,
 		MessageSent:     0,
 		MessageReceived: 0,
 		Creator:         req.Creator,

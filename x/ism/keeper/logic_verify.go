@@ -6,22 +6,19 @@ import (
 	"fmt"
 	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/ism/types"
+	mailboxTypes "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
-func (k Keeper) Verify(ctx context.Context, ismId string, rawMetadata []byte, messageStr string) (bool, error) {
+func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata []byte, message mailboxTypes.HyperlaneMessage) (verified bool, err error) {
+
 	// Retrieve ISM
-	ism, err := k.Isms.Get(ctx, ismId)
+	ism, err := k.Isms.Get(ctx, ismId.String())
 	if err != nil {
 		return false, err
 	}
 
-	message, err := util.DecodeEthHex(messageStr)
-	if err != nil {
-		return false, err
-	}
-
-	hash := crypto.Keccak256Hash(message)
+	hash := crypto.Keccak256Hash(message.Bytes())
 
 	switch v := ism.Ism.(type) {
 	case *types.Ism_MultiSig:

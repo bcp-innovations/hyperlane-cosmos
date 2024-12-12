@@ -29,7 +29,6 @@ message MsgCreateMailbox {
 
   // sender is the message sender.
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string ism = 2;
 }
 
 message MsgCreateMailboxResponse {}
@@ -38,13 +37,9 @@ message MsgDispatchMessage {
   option (cosmos.msg.v1.signer) = "sender";
   option (amino.name) = "hyperlane/mailbox/MsgDispatchMessage";
 
-  // TODO: Check types
   string mailbox_id = 1;
   string sender = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint32 destination = 3;
-  // TODO: Determine how this should look like to make it EVM-compatible.
-  // Hex encoded
-  // TODO: Use bytes
   string recipient = 4;
   string body = 5;
 }
@@ -54,13 +49,13 @@ message MsgDispatchMessageResponse {
 }
 
 message MsgProcessMessage {
-  option (cosmos.msg.v1.signer) = "sender";
+  option (cosmos.msg.v1.signer) = "relayer";
   option (amino.name) = "hyperlane/mailbox/MsgProcessMessage";
 
   string mailbox_id = 1;
-  string metadata = 2;
-  string message = 3;
-  string sender = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string relayer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string metadata = 3;
+  string message = 4;
 }
 
 message MsgProcessMessageResponse {}

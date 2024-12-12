@@ -14,7 +14,7 @@ import (
 
 func CmdCreateCollateralToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-collateral-token [origin-mailbox] [origin-denom] [receiver-domain] [receiver-mailbox] [receiver-contract]",
+		Use:   "create-collateral-token [origin-mailbox] [origin-denom] [receiver-domain] [receiver-contract] [ism-id]",
 		Short: "Create a Hyperlane Collateral Token",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -34,8 +34,8 @@ func CmdCreateCollateralToken() *cobra.Command {
 				OriginMailbox:    args[0],
 				OriginDenom:      args[1],
 				ReceiverDomain:   uint32(domain),
-				ReceiverMailbox:  args[3],
-				ReceiverContract: args[4],
+				ReceiverContract: args[3],
+				IsmId:            args[4],
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Creator)

@@ -89,7 +89,7 @@ func (k Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin ui
 	if token.TokenType == types.HYP_TOKEN_COLLATERAL {
 		// TODO emit event on failure
 		k.RemoteReceiveCollateral(goCtx, token, payload)
-	} else if token.TokenType == types.HYP_TOKEN {
+	} else if token.TokenType == types.HYP_TOKEN_SYNTHETIC {
 		k.RemoteReceiveSynthetic(goCtx, token, payload)
 	} else {
 		// TODO emit event

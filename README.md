@@ -23,13 +23,13 @@ If the transaction was successfully, you can see the created ISM here: _<api-url
 
 #### Create Mailbox
 ```
-chaind tx mailbox create-mailbox <ism-id> 
+chaind tx mailbox create-mailbox
 ```
 If the transaction was successfully, you can see the created Mailbox here: _<api-url>/hyperlane/mailbox/v1/mailboxes_
 
 #### Create Warp Collateral Token
 ```
-chaind tx warp create-collateral-token <origin-mailbox> <origin-denom> <receiver-domain> <receiver-mailbox> <receiver-contract> 
+chaind tx warp create-collateral-token <origin-mailbox> <origin-denom> <receiver-domain> <receiver-contract> <ism-id> 
 ```
 If the transaction was successfully, you can see the created token here: _<api-url>/hyperlane/warp/v1/tokens_
 

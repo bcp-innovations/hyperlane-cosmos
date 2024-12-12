@@ -11,3 +11,5 @@ func SignatureAt(metadata []byte, index uint32) []byte {
 	end := start + SIGNATURE_LENGTH
 	return metadata[start:end]
 }
+
+// TODO add structs for MerkleMultiSigISM and MessageIdISM

@@ -80,7 +80,6 @@ func parseTokenResponse(get types.HypToken) types.QueryTokenResponse {
 		OriginMailbox:    util.HexAddress(get.OriginMailbox).String(),
 		OriginDenom:      get.OriginDenom,
 		ReceiverDomain:   get.ReceiverDomain,
-		ReceiverMailbox:  util.HexAddress(get.ReceiverMailbox).String(),
 		ReceiverContract: util.HexAddress(get.ReceiverContract).String(),
 	}
 }

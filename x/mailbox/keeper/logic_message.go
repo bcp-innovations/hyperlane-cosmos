@@ -6,7 +6,6 @@ import (
 	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
 func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessage []byte, metadata []byte) error {
@@ -46,7 +45,14 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 		return err
 	}
 
-	verified, err := k.ismKeeper.Verify(ctx, mailbox.Ism, metadata, message.String())
+	rawIsmAddress, err := k.ReceiverIsmMapping.Get(ctx, message.Recipient.Bytes())
+	if err != nil {
+		return err
+	}
+
+	ismId := util.HexAddress(rawIsmAddress)
+
+	verified, err := k.ismKeeper.Verify(ctx, ismId, metadata, message)
 	if err != nil {
 		return err
 	}
@@ -57,12 +63,12 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 	_ = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.Process{
-		// TODO: Add OriginMailboxId, check if OriginMailboxId should be used as sender
-		OriginDomain: message.Origin,
-		Sender:       message.Sender.String(),
-		Recipient:    message.Recipient.String(),
-		MessageId:    message.Id().String(),
-		MessageBody:  hexutil.Encode(message.Body),
+		OriginMailboxId: mailboxIdString,
+		Origin:          message.Origin,
+		Sender:          message.Sender.String(),
+		Recipient:       message.Recipient.String(),
+		MessageId:       message.Id().String(),
+		Message:         message.String(),
 	})
 
 	return nil
@@ -88,7 +94,7 @@ func (k Keeper) DispatchMessage(
 	hypMsg := types.HyperlaneMessage{
 		Version:     1,
 		Nonce:       mailbox.MessageSent,
-		Origin:      uint32(1), // TODO origin domain in gov
+		Origin:      k.LocalDomain(),
 		Sender:      sender,
 		Destination: destinationDomain,
 		Recipient:   recipient,
@@ -96,6 +102,9 @@ func (k Keeper) DispatchMessage(
 	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
 
 	count := tree.GetCount()
 
@@ -118,13 +127,17 @@ func (k Keeper) DispatchMessage(
 	}
 
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.Dispatch{
-		DestinationDomain: destinationDomain,
-		RecipientAddress:  recipient.String(),
-		MessageBody:       hypMsg.String(),
-		OriginDomain:      uint32(types.Domain),
-		OriginMailbox:     originMailboxId.String(),
-		Sender:            sender.String(),
+		OriginMailboxId: originMailboxId.String(),
+		Sender:          sender.String(),
+		Destination:     destinationDomain,
+		Recipient:       recipient.String(),
+		Message:         hypMsg.String(),
 	})
 
 	return hypMsg.Id(), nil
+}
+
+func (k Keeper) LocalDomain() uint32 {
+	// TODO use global param
+	return 100
 }

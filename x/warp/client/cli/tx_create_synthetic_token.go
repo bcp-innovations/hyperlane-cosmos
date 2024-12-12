@@ -14,7 +14,7 @@ import (
 
 func CmdCreateSyntheticToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-synthetic-token [origin-mailbox] [receiver-domain] [receiver-mailbox] [receiver-contract]",
+		Use:   "create-synthetic-token [origin-mailbox] [receiver-domain] [receiver-contract] [ism-id]",
 		Short: "Create a Hyperlane Synthetic Token",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -33,8 +33,8 @@ func CmdCreateSyntheticToken() *cobra.Command {
 				Creator:          clientCtx.GetFromAddress().String(),
 				OriginMailbox:    args[0],
 				ReceiverDomain:   uint32(domain),
-				ReceiverMailbox:  args[2],
-				ReceiverContract: args[3],
+				ReceiverContract: args[2],
+				IsmId:            args[3],
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Creator)

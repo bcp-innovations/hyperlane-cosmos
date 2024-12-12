@@ -33,8 +33,7 @@ message HypToken {
   string origin_denom = 5;
 
   uint32 receiver_domain = 6;
-  bytes receiver_mailbox = 7;
-  bytes receiver_contract = 8;
+  bytes receiver_contract = 7;
 }
 
 enum HypTokenType {
@@ -44,5 +43,5 @@ enum HypTokenType {
   HYP_TOKEN_COLLATERAL = 0;
 
   // HYP_TOKEN ...
-  HYP_TOKEN = 1;
+  HYP_TOKEN_SYNTHETIC = 1;
 }

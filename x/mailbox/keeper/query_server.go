@@ -22,6 +22,21 @@ type queryServer struct {
 	k *Keeper
 }
 
+func (qs queryServer) RecipientIsm(ctx context.Context, request *types.RecipientIsmRequest) (*types.RecipientIsmResponse, error) {
+
+	address, err := util.DecodeHexAddress(request.Recipient)
+	if err != nil {
+		return nil, err
+	}
+
+	get, err := qs.k.ReceiverIsmMapping.Get(ctx, address.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.RecipientIsmResponse{IsmId: util.HexAddress(get).String()}, nil
+}
+
 func (qs queryServer) Mailboxes(ctx context.Context, _ *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {
 	it, err := qs.k.Mailboxes.Iterate(ctx, nil)
 	if err != nil {

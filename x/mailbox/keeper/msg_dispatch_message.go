@@ -22,7 +22,7 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 		return nil, err
 	}
 
-	sender, err := util.DecodeHexAddress(req.Sender)
+	sender, err := util.ParseFromCosmosAcc(req.Sender)
 	if err != nil {
 		return nil, err
 	}

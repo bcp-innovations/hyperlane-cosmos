@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
 	"fmt"
+	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -22,11 +23,13 @@ type Keeper struct {
 	hooks     types.MailboxHooks
 	ismKeeper types.IsmKeeper
 	// state management
-	Mailboxes         collections.Map[[]byte, types.Mailbox]
-	Messages          collections.KeySet[collections.Pair[[]byte, []byte]]
-	MailboxesSequence collections.Sequence
-	Params            collections.Item[types.Params]
-	Schema            collections.Schema
+	Mailboxes collections.Map[[]byte, types.Mailbox]
+	Messages  collections.KeySet[collections.Pair[[]byte, []byte]]
+	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
+	ReceiverIsmMapping collections.Map[[]byte, []byte]
+	MailboxesSequence  collections.Sequence
+	Params             collections.Item[types.Params]
+	Schema             collections.Schema
 }
 
 // NewKeeper creates a new Keeper instance
@@ -37,15 +40,16 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 
 	sb := collections.NewSchemaBuilder(storeService)
 	k := Keeper{
-		cdc:               cdc,
-		addressCodec:      addressCodec,
-		authority:         authority,
-		Mailboxes:         collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
-		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.BytesKey, collections.BytesKey)),
-		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		hooks:             nil,
-		MailboxesSequence: collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
-		ismKeeper:         ismKeeper,
+		cdc:                cdc,
+		addressCodec:       addressCodec,
+		authority:          authority,
+		Mailboxes:          collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
+		Messages:           collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.BytesKey, collections.BytesKey)),
+		Params:             collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		hooks:              nil,
+		MailboxesSequence:  collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
+		ismKeeper:          ismKeeper,
+		ReceiverIsmMapping: collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
 	}
 
 	schema, err := sb.Build()
@@ -56,6 +60,20 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 	k.Schema = schema
 
 	return k
+}
+
+func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddress, ismId util.HexAddress) error {
+	exists, err := k.ismKeeper.IsmIdExists(ctx, ismId.String())
+	if err != nil || !exists {
+		return err
+	}
+
+	has, err := k.ReceiverIsmMapping.Has(ctx, receiver.Bytes())
+	if err != nil || has {
+		return err
+	}
+
+	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), ismId.Bytes())
 }
 
 func (k *Keeper) PostDispatchMerkleTree(ctx context.Context, messageId string, index uint32) {
