@@ -4,6 +4,7 @@ import (
 	"context"
 	"cosmossdk.io/collections"
 	"errors"
+	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -37,9 +38,72 @@ func (qs queryServer) Mailboxes(ctx context.Context, _ *types.QueryMailboxesRequ
 	}, nil
 }
 
-func (qs queryServer) Mailbox(ctx context.Context, request *types.QueryMailboxRequest) (*types.QueryMailboxResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxRequest) (*types.QueryMailboxResponse, error) {
+	id, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	return &types.QueryMailboxResponse{
+		Mailbox: mailbox,
+	}, nil
+}
+
+func (qs queryServer) Count(ctx context.Context, req *types.QueryCountRequest) (*types.QueryCountResponse, error) {
+	id, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	tree, err := types.TreeFromProto(mailbox.Tree)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryCountResponse{
+		Count: tree.GetCount(),
+	}, nil
+}
+
+func (qs queryServer) Root(ctx context.Context, req *types.QueryRootRequest) (*types.QueryRootResponse, error) {
+	id, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	tree, err := types.TreeFromProto(mailbox.Tree)
+	if err != nil {
+		return nil, err
+	}
+
+	root := tree.GetRoot()
+
+	return &types.QueryRootResponse{
+		Root: root[:],
+	}, nil
+}
+
+func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLatestCheckpointRequest) (*types.QueryLatestCheckpointResponse, error) {
+	id, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	tree, err := types.TreeFromProto(mailbox.Tree)
+	if err != nil {
+		return nil, err
+	}
+
+	root, count := tree.GetLatestCheckpoint()
+
+	return &types.QueryLatestCheckpointResponse{
+		Root:  root[:],
+		Count: count,
+	}, nil
 }
 
 // Params defines the handler for the Query/Params RPC method.
