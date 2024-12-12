@@ -17,23 +17,23 @@ import (
 )
 
 var (
-	md_QueryMultiSigIsmRequest protoreflect.MessageDescriptor
+	md_QueryIsmsRequest protoreflect.MessageDescriptor
 )
 
 func init() {
 	file_hyperlane_ism_v1_query_proto_init()
-	md_QueryMultiSigIsmRequest = File_hyperlane_ism_v1_query_proto.Messages().ByName("QueryMultiSigIsmRequest")
+	md_QueryIsmsRequest = File_hyperlane_ism_v1_query_proto.Messages().ByName("QueryIsmsRequest")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryMultiSigIsmRequest)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryIsmsRequest)(nil)
 
-type fastReflection_QueryMultiSigIsmRequest QueryMultiSigIsmRequest
+type fastReflection_QueryIsmsRequest QueryIsmsRequest
 
-func (x *QueryMultiSigIsmRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryMultiSigIsmRequest)(x)
+func (x *QueryIsmsRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryIsmsRequest)(x)
 }
 
-func (x *QueryMultiSigIsmRequest) slowProtoReflect() protoreflect.Message {
+func (x *QueryIsmsRequest) slowProtoReflect() protoreflect.Message {
 	mi := &file_hyperlane_ism_v1_query_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -45,43 +45,43 @@ func (x *QueryMultiSigIsmRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryMultiSigIsmRequest_messageType fastReflection_QueryMultiSigIsmRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryMultiSigIsmRequest_messageType{}
+var _fastReflection_QueryIsmsRequest_messageType fastReflection_QueryIsmsRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryIsmsRequest_messageType{}
 
-type fastReflection_QueryMultiSigIsmRequest_messageType struct{}
+type fastReflection_QueryIsmsRequest_messageType struct{}
 
-func (x fastReflection_QueryMultiSigIsmRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryMultiSigIsmRequest)(nil)
+func (x fastReflection_QueryIsmsRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryIsmsRequest)(nil)
 }
-func (x fastReflection_QueryMultiSigIsmRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryMultiSigIsmRequest)
+func (x fastReflection_QueryIsmsRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryIsmsRequest)
 }
-func (x fastReflection_QueryMultiSigIsmRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMultiSigIsmRequest
+func (x fastReflection_QueryIsmsRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryIsmsRequest
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryMultiSigIsmRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMultiSigIsmRequest
+func (x *fastReflection_QueryIsmsRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryIsmsRequest
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryMultiSigIsmRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QueryMultiSigIsmRequest_messageType
+func (x *fastReflection_QueryIsmsRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryIsmsRequest_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryMultiSigIsmRequest) New() protoreflect.Message {
-	return new(fastReflection_QueryMultiSigIsmRequest)
+func (x *fastReflection_QueryIsmsRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryIsmsRequest)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryMultiSigIsmRequest) Interface() protoreflect.ProtoMessage {
-	return (*QueryMultiSigIsmRequest)(x)
+func (x *fastReflection_QueryIsmsRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryIsmsRequest)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -89,7 +89,7 @@ func (x *fastReflection_QueryMultiSigIsmRequest) Interface() protoreflect.ProtoM
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryMultiSigIsmRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QueryIsmsRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 }
 
 // Has reports whether a field is populated.
@@ -103,13 +103,13 @@ func (x *fastReflection_QueryMultiSigIsmRequest) Range(f func(protoreflect.Field
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryMultiSigIsmRequest) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryIsmsRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsRequest"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -119,13 +119,13 @@ func (x *fastReflection_QueryMultiSigIsmRequest) Has(fd protoreflect.FieldDescri
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMultiSigIsmRequest) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryIsmsRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsRequest"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -135,13 +135,13 @@ func (x *fastReflection_QueryMultiSigIsmRequest) Clear(fd protoreflect.FieldDesc
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryMultiSigIsmRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryIsmsRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsRequest"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmRequest does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsRequest does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -155,13 +155,13 @@ func (x *fastReflection_QueryMultiSigIsmRequest) Get(descriptor protoreflect.Fie
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMultiSigIsmRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryIsmsRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsRequest"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -175,36 +175,36 @@ func (x *fastReflection_QueryMultiSigIsmRequest) Set(fd protoreflect.FieldDescri
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMultiSigIsmRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryIsmsRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsRequest"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryMultiSigIsmRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryIsmsRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsRequest"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryMultiSigIsmRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryIsmsRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in hyperlane.ism.v1.QueryMultiSigIsmRequest", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in hyperlane.ism.v1.QueryIsmsRequest", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -212,7 +212,7 @@ func (x *fastReflection_QueryMultiSigIsmRequest) WhichOneof(d protoreflect.Oneof
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryMultiSigIsmRequest) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryIsmsRequest) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -223,7 +223,7 @@ func (x *fastReflection_QueryMultiSigIsmRequest) GetUnknown() protoreflect.RawFi
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMultiSigIsmRequest) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryIsmsRequest) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -235,7 +235,7 @@ func (x *fastReflection_QueryMultiSigIsmRequest) SetUnknown(fields protoreflect.
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryMultiSigIsmRequest) IsValid() bool {
+func (x *fastReflection_QueryIsmsRequest) IsValid() bool {
 	return x != nil
 }
 
@@ -245,9 +245,9 @@ func (x *fastReflection_QueryMultiSigIsmRequest) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryMultiSigIsmRequest) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryIsmsRequest) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryMultiSigIsmRequest)
+		x := input.Message.Interface().(*QueryIsmsRequest)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -269,7 +269,7 @@ func (x *fastReflection_QueryMultiSigIsmRequest) ProtoMethods() *protoiface.Meth
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMultiSigIsmRequest)
+		x := input.Message.Interface().(*QueryIsmsRequest)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -299,7 +299,7 @@ func (x *fastReflection_QueryMultiSigIsmRequest) ProtoMethods() *protoiface.Meth
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMultiSigIsmRequest)
+		x := input.Message.Interface().(*QueryIsmsRequest)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -331,10 +331,10 @@ func (x *fastReflection_QueryMultiSigIsmRequest) ProtoMethods() *protoiface.Meth
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMultiSigIsmRequest: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryIsmsRequest: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMultiSigIsmRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryIsmsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			default:
@@ -372,77 +372,77 @@ func (x *fastReflection_QueryMultiSigIsmRequest) ProtoMethods() *protoiface.Meth
 	}
 }
 
-var _ protoreflect.List = (*_QueryMultiSigIsmResponse_1_list)(nil)
+var _ protoreflect.List = (*_QueryIsmsResponse_1_list)(nil)
 
-type _QueryMultiSigIsmResponse_1_list struct {
-	list *[]*MultiSigIsm
+type _QueryIsmsResponse_1_list struct {
+	list *[]*Ism
 }
 
-func (x *_QueryMultiSigIsmResponse_1_list) Len() int {
+func (x *_QueryIsmsResponse_1_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_QueryMultiSigIsmResponse_1_list) Get(i int) protoreflect.Value {
+func (x *_QueryIsmsResponse_1_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_QueryMultiSigIsmResponse_1_list) Set(i int, value protoreflect.Value) {
+func (x *_QueryIsmsResponse_1_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*MultiSigIsm)
+	concreteValue := valueUnwrapped.Interface().(*Ism)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_QueryMultiSigIsmResponse_1_list) Append(value protoreflect.Value) {
+func (x *_QueryIsmsResponse_1_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*MultiSigIsm)
+	concreteValue := valueUnwrapped.Interface().(*Ism)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_QueryMultiSigIsmResponse_1_list) AppendMutable() protoreflect.Value {
-	v := new(MultiSigIsm)
+func (x *_QueryIsmsResponse_1_list) AppendMutable() protoreflect.Value {
+	v := new(Ism)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_QueryMultiSigIsmResponse_1_list) Truncate(n int) {
+func (x *_QueryIsmsResponse_1_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_QueryMultiSigIsmResponse_1_list) NewElement() protoreflect.Value {
-	v := new(MultiSigIsm)
+func (x *_QueryIsmsResponse_1_list) NewElement() protoreflect.Value {
+	v := new(Ism)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_QueryMultiSigIsmResponse_1_list) IsValid() bool {
+func (x *_QueryIsmsResponse_1_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_QueryMultiSigIsmResponse     protoreflect.MessageDescriptor
-	fd_QueryMultiSigIsmResponse_ism protoreflect.FieldDescriptor
+	md_QueryIsmsResponse     protoreflect.MessageDescriptor
+	fd_QueryIsmsResponse_ism protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_hyperlane_ism_v1_query_proto_init()
-	md_QueryMultiSigIsmResponse = File_hyperlane_ism_v1_query_proto.Messages().ByName("QueryMultiSigIsmResponse")
-	fd_QueryMultiSigIsmResponse_ism = md_QueryMultiSigIsmResponse.Fields().ByName("ism")
+	md_QueryIsmsResponse = File_hyperlane_ism_v1_query_proto.Messages().ByName("QueryIsmsResponse")
+	fd_QueryIsmsResponse_ism = md_QueryIsmsResponse.Fields().ByName("ism")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryMultiSigIsmResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryIsmsResponse)(nil)
 
-type fastReflection_QueryMultiSigIsmResponse QueryMultiSigIsmResponse
+type fastReflection_QueryIsmsResponse QueryIsmsResponse
 
-func (x *QueryMultiSigIsmResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryMultiSigIsmResponse)(x)
+func (x *QueryIsmsResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryIsmsResponse)(x)
 }
 
-func (x *QueryMultiSigIsmResponse) slowProtoReflect() protoreflect.Message {
+func (x *QueryIsmsResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_hyperlane_ism_v1_query_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -454,43 +454,43 @@ func (x *QueryMultiSigIsmResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryMultiSigIsmResponse_messageType fastReflection_QueryMultiSigIsmResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryMultiSigIsmResponse_messageType{}
+var _fastReflection_QueryIsmsResponse_messageType fastReflection_QueryIsmsResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryIsmsResponse_messageType{}
 
-type fastReflection_QueryMultiSigIsmResponse_messageType struct{}
+type fastReflection_QueryIsmsResponse_messageType struct{}
 
-func (x fastReflection_QueryMultiSigIsmResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryMultiSigIsmResponse)(nil)
+func (x fastReflection_QueryIsmsResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryIsmsResponse)(nil)
 }
-func (x fastReflection_QueryMultiSigIsmResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryMultiSigIsmResponse)
+func (x fastReflection_QueryIsmsResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryIsmsResponse)
 }
-func (x fastReflection_QueryMultiSigIsmResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMultiSigIsmResponse
+func (x fastReflection_QueryIsmsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryIsmsResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryMultiSigIsmResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryMultiSigIsmResponse
+func (x *fastReflection_QueryIsmsResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryIsmsResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryMultiSigIsmResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryMultiSigIsmResponse_messageType
+func (x *fastReflection_QueryIsmsResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryIsmsResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryMultiSigIsmResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryMultiSigIsmResponse)
+func (x *fastReflection_QueryIsmsResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryIsmsResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryMultiSigIsmResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryMultiSigIsmResponse)(x)
+func (x *fastReflection_QueryIsmsResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryIsmsResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -498,10 +498,10 @@ func (x *fastReflection_QueryMultiSigIsmResponse) Interface() protoreflect.Proto
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryMultiSigIsmResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QueryIsmsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if len(x.Ism) != 0 {
-		value := protoreflect.ValueOfList(&_QueryMultiSigIsmResponse_1_list{list: &x.Ism})
-		if !f(fd_QueryMultiSigIsmResponse_ism, value) {
+		value := protoreflect.ValueOfList(&_QueryIsmsResponse_1_list{list: &x.Ism})
+		if !f(fd_QueryIsmsResponse_ism, value) {
 			return
 		}
 	}
@@ -518,15 +518,15 @@ func (x *fastReflection_QueryMultiSigIsmResponse) Range(f func(protoreflect.Fiel
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryMultiSigIsmResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryIsmsResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "hyperlane.ism.v1.QueryMultiSigIsmResponse.ism":
+	case "hyperlane.ism.v1.QueryIsmsResponse.ism":
 		return len(x.Ism) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsResponse"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -536,15 +536,15 @@ func (x *fastReflection_QueryMultiSigIsmResponse) Has(fd protoreflect.FieldDescr
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMultiSigIsmResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryIsmsResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "hyperlane.ism.v1.QueryMultiSigIsmResponse.ism":
+	case "hyperlane.ism.v1.QueryIsmsResponse.ism":
 		x.Ism = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsResponse"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -554,19 +554,19 @@ func (x *fastReflection_QueryMultiSigIsmResponse) Clear(fd protoreflect.FieldDes
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryMultiSigIsmResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryIsmsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "hyperlane.ism.v1.QueryMultiSigIsmResponse.ism":
+	case "hyperlane.ism.v1.QueryIsmsResponse.ism":
 		if len(x.Ism) == 0 {
-			return protoreflect.ValueOfList(&_QueryMultiSigIsmResponse_1_list{})
+			return protoreflect.ValueOfList(&_QueryIsmsResponse_1_list{})
 		}
-		listValue := &_QueryMultiSigIsmResponse_1_list{list: &x.Ism}
+		listValue := &_QueryIsmsResponse_1_list{list: &x.Ism}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsResponse"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -580,17 +580,17 @@ func (x *fastReflection_QueryMultiSigIsmResponse) Get(descriptor protoreflect.Fi
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMultiSigIsmResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryIsmsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "hyperlane.ism.v1.QueryMultiSigIsmResponse.ism":
+	case "hyperlane.ism.v1.QueryIsmsResponse.ism":
 		lv := value.List()
-		clv := lv.(*_QueryMultiSigIsmResponse_1_list)
+		clv := lv.(*_QueryIsmsResponse_1_list)
 		x.Ism = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsResponse"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -604,45 +604,45 @@ func (x *fastReflection_QueryMultiSigIsmResponse) Set(fd protoreflect.FieldDescr
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMultiSigIsmResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryIsmsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.ism.v1.QueryMultiSigIsmResponse.ism":
+	case "hyperlane.ism.v1.QueryIsmsResponse.ism":
 		if x.Ism == nil {
-			x.Ism = []*MultiSigIsm{}
+			x.Ism = []*Ism{}
 		}
-		value := &_QueryMultiSigIsmResponse_1_list{list: &x.Ism}
+		value := &_QueryIsmsResponse_1_list{list: &x.Ism}
 		return protoreflect.ValueOfList(value)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsResponse"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryMultiSigIsmResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryIsmsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.ism.v1.QueryMultiSigIsmResponse.ism":
-		list := []*MultiSigIsm{}
-		return protoreflect.ValueOfList(&_QueryMultiSigIsmResponse_1_list{list: &list})
+	case "hyperlane.ism.v1.QueryIsmsResponse.ism":
+		list := []*Ism{}
+		return protoreflect.ValueOfList(&_QueryIsmsResponse_1_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryMultiSigIsmResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.ism.v1.QueryIsmsResponse"))
 		}
-		panic(fmt.Errorf("message hyperlane.ism.v1.QueryMultiSigIsmResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message hyperlane.ism.v1.QueryIsmsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryMultiSigIsmResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryIsmsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in hyperlane.ism.v1.QueryMultiSigIsmResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in hyperlane.ism.v1.QueryIsmsResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -650,7 +650,7 @@ func (x *fastReflection_QueryMultiSigIsmResponse) WhichOneof(d protoreflect.Oneo
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryMultiSigIsmResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryIsmsResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -661,7 +661,7 @@ func (x *fastReflection_QueryMultiSigIsmResponse) GetUnknown() protoreflect.RawF
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryMultiSigIsmResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryIsmsResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -673,7 +673,7 @@ func (x *fastReflection_QueryMultiSigIsmResponse) SetUnknown(fields protoreflect
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryMultiSigIsmResponse) IsValid() bool {
+func (x *fastReflection_QueryIsmsResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -683,9 +683,9 @@ func (x *fastReflection_QueryMultiSigIsmResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryMultiSigIsmResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryIsmsResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryMultiSigIsmResponse)
+		x := input.Message.Interface().(*QueryIsmsResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -713,7 +713,7 @@ func (x *fastReflection_QueryMultiSigIsmResponse) ProtoMethods() *protoiface.Met
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMultiSigIsmResponse)
+		x := input.Message.Interface().(*QueryIsmsResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -759,7 +759,7 @@ func (x *fastReflection_QueryMultiSigIsmResponse) ProtoMethods() *protoiface.Met
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryMultiSigIsmResponse)
+		x := input.Message.Interface().(*QueryIsmsResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -791,10 +791,10 @@ func (x *fastReflection_QueryMultiSigIsmResponse) ProtoMethods() *protoiface.Met
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMultiSigIsmResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryIsmsResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryMultiSigIsmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryIsmsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -826,7 +826,7 @@ func (x *fastReflection_QueryMultiSigIsmResponse) ProtoMethods() *protoiface.Met
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Ism = append(x.Ism, &MultiSigIsm{})
+				x.Ism = append(x.Ism, &Ism{})
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Ism[len(x.Ism)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
@@ -1670,14 +1670,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type QueryMultiSigIsmRequest struct {
+type QueryIsmsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *QueryMultiSigIsmRequest) Reset() {
-	*x = QueryMultiSigIsmRequest{}
+func (x *QueryIsmsRequest) Reset() {
+	*x = QueryIsmsRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_hyperlane_ism_v1_query_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1685,29 +1685,27 @@ func (x *QueryMultiSigIsmRequest) Reset() {
 	}
 }
 
-func (x *QueryMultiSigIsmRequest) String() string {
+func (x *QueryIsmsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryMultiSigIsmRequest) ProtoMessage() {}
+func (*QueryIsmsRequest) ProtoMessage() {}
 
-// Deprecated: Use QueryMultiSigIsmRequest.ProtoReflect.Descriptor instead.
-func (*QueryMultiSigIsmRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryIsmsRequest.ProtoReflect.Descriptor instead.
+func (*QueryIsmsRequest) Descriptor() ([]byte, []int) {
 	return file_hyperlane_ism_v1_query_proto_rawDescGZIP(), []int{0}
 }
 
-// QueryParamsResponse is the response type for the Query/Params RPC method.
-type QueryMultiSigIsmResponse struct {
+type QueryIsmsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// params defines the parameters of the module.
-	Ism []*MultiSigIsm `protobuf:"bytes,1,rep,name=ism,proto3" json:"ism,omitempty"`
+	Ism []*Ism `protobuf:"bytes,1,rep,name=ism,proto3" json:"ism,omitempty"`
 }
 
-func (x *QueryMultiSigIsmResponse) Reset() {
-	*x = QueryMultiSigIsmResponse{}
+func (x *QueryIsmsResponse) Reset() {
+	*x = QueryIsmsResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_hyperlane_ism_v1_query_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1715,18 +1713,18 @@ func (x *QueryMultiSigIsmResponse) Reset() {
 	}
 }
 
-func (x *QueryMultiSigIsmResponse) String() string {
+func (x *QueryIsmsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryMultiSigIsmResponse) ProtoMessage() {}
+func (*QueryIsmsResponse) ProtoMessage() {}
 
-// Deprecated: Use QueryMultiSigIsmResponse.ProtoReflect.Descriptor instead.
-func (*QueryMultiSigIsmResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryIsmsResponse.ProtoReflect.Descriptor instead.
+func (*QueryIsmsResponse) Descriptor() ([]byte, []int) {
 	return file_hyperlane_ism_v1_query_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *QueryMultiSigIsmResponse) GetIsm() []*MultiSigIsm {
+func (x *QueryIsmsResponse) GetIsm() []*Ism {
 	if x != nil {
 		return x.Ism
 	}
@@ -1811,50 +1809,47 @@ var file_hyperlane_ism_v1_query_proto_rawDesc = []byte{
 	0x74, 0x6f, 0x1a, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x71, 0x75, 0x65, 0x72, 0x79,
 	0x2f, 0x76, 0x31, 0x2f, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
 	0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x22, 0x19, 0x0a, 0x17, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x75, 0x6c, 0x74, 0x69,
-	0x53, 0x69, 0x67, 0x49, 0x73, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x56, 0x0a,
-	0x18, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x53, 0x69, 0x67, 0x49, 0x73,
-	0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3a, 0x0a, 0x03, 0x69, 0x73, 0x6d,
-	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,
-	0x6e, 0x65, 0x2e, 0x69, 0x73, 0x6d, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x53,
-	0x69, 0x67, 0x49, 0x73, 0x6d, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01,
-	0x52, 0x03, 0x69, 0x73, 0x6d, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x52, 0x0a, 0x13, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x3b, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x18, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69,
-	0x73, 0x6d, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde,
-	0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x32,
-	0xff, 0x01, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x7d, 0x0a, 0x04, 0x49, 0x73, 0x6d,
-	0x73, 0x12, 0x29, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69, 0x73,
-	0x6d, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x53,
-	0x69, 0x67, 0x49, 0x73, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2a, 0x2e, 0x68,
+	0x74, 0x6f, 0x22, 0x12, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x73, 0x6d, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x47, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49,
+	0x73, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x32, 0x0a, 0x03, 0x69,
+	0x73, 0x6d, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72,
+	0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69, 0x73, 0x6d, 0x2e, 0x76, 0x31, 0x2e, 0x49, 0x73, 0x6d, 0x42,
+	0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x03, 0x69, 0x73, 0x6d, 0x22,
+	0x14, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x52, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x06,
+	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x68,
 	0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69, 0x73, 0x6d, 0x2e, 0x76, 0x31, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x53, 0x69, 0x67, 0x49, 0x73, 0x6d,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x1e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x18,
-	0x12, 0x16, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x69, 0x73, 0x6d,
-	0x2f, 0x76, 0x31, 0x2f, 0x69, 0x73, 0x6d, 0x73, 0x12, 0x77, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x12, 0x24, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69,
-	0x73, 0x6d, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72,
-	0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69, 0x73, 0x6d, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0x20, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1a, 0x12, 0x18, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x2f, 0x69, 0x73, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x42, 0xc8, 0x01, 0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x2e, 0x69, 0x73, 0x6d, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x42, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4b, 0x59, 0x56, 0x45, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
-	0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2d, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f,
-	0x69, 0x73, 0x6d, 0x2f, 0x76, 0x31, 0x3b, 0x69, 0x73, 0x6d, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x48,
-	0x49, 0x58, 0xaa, 0x02, 0x10, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x49,
-	0x73, 0x6d, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x10, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e,
-	0x65, 0x5c, 0x49, 0x73, 0x6d, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1c, 0x48, 0x79, 0x70, 0x65, 0x72,
-	0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x49, 0x73, 0x6d, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x3a, 0x3a, 0x49, 0x73, 0x6d, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a,
+	0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x32, 0xf1, 0x01, 0x0a, 0x05, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x12, 0x6f, 0x0a, 0x04, 0x49, 0x73, 0x6d, 0x73, 0x12, 0x22, 0x2e, 0x68, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69, 0x73, 0x6d, 0x2e, 0x76, 0x31, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x49, 0x73, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x23, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69, 0x73, 0x6d, 0x2e,
+	0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x49, 0x73, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x1e, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x18, 0x12, 0x16, 0x2f, 0x68,
+	0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x69, 0x73, 0x6d, 0x2f, 0x76, 0x31, 0x2f,
+	0x69, 0x73, 0x6d, 0x73, 0x12, 0x77, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x24,
+	0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x69, 0x73, 0x6d, 0x2e, 0x76,
+	0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
+	0x2e, 0x69, 0x73, 0x6d, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x20, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x1a, 0x12, 0x18, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f,
+	0x69, 0x73, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0xc8, 0x01,
+	0x0a, 0x14, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e,
+	0x69, 0x73, 0x6d, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x42, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x4b, 0x59, 0x56, 0x45, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x2f, 0x68, 0x79, 0x70,
+	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2d, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x69, 0x73, 0x6d, 0x2f,
+	0x76, 0x31, 0x3b, 0x69, 0x73, 0x6d, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x48, 0x49, 0x58, 0xaa, 0x02,
+	0x10, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x49, 0x73, 0x6d, 0x2e, 0x56,
+	0x31, 0xca, 0x02, 0x10, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x49, 0x73,
+	0x6d, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1c, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
+	0x5c, 0x49, 0x73, 0x6d, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64,
+	0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x3a,
+	0x3a, 0x49, 0x73, 0x6d, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1871,19 +1866,19 @@ func file_hyperlane_ism_v1_query_proto_rawDescGZIP() []byte {
 
 var file_hyperlane_ism_v1_query_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_hyperlane_ism_v1_query_proto_goTypes = []interface{}{
-	(*QueryMultiSigIsmRequest)(nil),  // 0: hyperlane.ism.v1.QueryMultiSigIsmRequest
-	(*QueryMultiSigIsmResponse)(nil), // 1: hyperlane.ism.v1.QueryMultiSigIsmResponse
-	(*QueryParamsRequest)(nil),       // 2: hyperlane.ism.v1.QueryParamsRequest
-	(*QueryParamsResponse)(nil),      // 3: hyperlane.ism.v1.QueryParamsResponse
-	(*MultiSigIsm)(nil),              // 4: hyperlane.ism.v1.MultiSigIsm
-	(*Params)(nil),                   // 5: hyperlane.ism.v1.Params
+	(*QueryIsmsRequest)(nil),    // 0: hyperlane.ism.v1.QueryIsmsRequest
+	(*QueryIsmsResponse)(nil),   // 1: hyperlane.ism.v1.QueryIsmsResponse
+	(*QueryParamsRequest)(nil),  // 2: hyperlane.ism.v1.QueryParamsRequest
+	(*QueryParamsResponse)(nil), // 3: hyperlane.ism.v1.QueryParamsResponse
+	(*Ism)(nil),                 // 4: hyperlane.ism.v1.Ism
+	(*Params)(nil),              // 5: hyperlane.ism.v1.Params
 }
 var file_hyperlane_ism_v1_query_proto_depIdxs = []int32{
-	4, // 0: hyperlane.ism.v1.QueryMultiSigIsmResponse.ism:type_name -> hyperlane.ism.v1.MultiSigIsm
+	4, // 0: hyperlane.ism.v1.QueryIsmsResponse.ism:type_name -> hyperlane.ism.v1.Ism
 	5, // 1: hyperlane.ism.v1.QueryParamsResponse.params:type_name -> hyperlane.ism.v1.Params
-	0, // 2: hyperlane.ism.v1.Query.Isms:input_type -> hyperlane.ism.v1.QueryMultiSigIsmRequest
+	0, // 2: hyperlane.ism.v1.Query.Isms:input_type -> hyperlane.ism.v1.QueryIsmsRequest
 	2, // 3: hyperlane.ism.v1.Query.Params:input_type -> hyperlane.ism.v1.QueryParamsRequest
-	1, // 4: hyperlane.ism.v1.Query.Isms:output_type -> hyperlane.ism.v1.QueryMultiSigIsmResponse
+	1, // 4: hyperlane.ism.v1.Query.Isms:output_type -> hyperlane.ism.v1.QueryIsmsResponse
 	3, // 5: hyperlane.ism.v1.Query.Params:output_type -> hyperlane.ism.v1.QueryParamsResponse
 	4, // [4:6] is the sub-list for method output_type
 	2, // [2:4] is the sub-list for method input_type
@@ -1900,7 +1895,7 @@ func file_hyperlane_ism_v1_query_proto_init() {
 	file_hyperlane_ism_v1_types_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_hyperlane_ism_v1_query_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryMultiSigIsmRequest); i {
+			switch v := v.(*QueryIsmsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1912,7 +1907,7 @@ func file_hyperlane_ism_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_ism_v1_query_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryMultiSigIsmResponse); i {
+			switch v := v.(*QueryIsmsResponse); i {
 			case 0:
 				return &v.state
 			case 1:

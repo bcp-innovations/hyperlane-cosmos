@@ -17,13 +17,24 @@ message GenesisState {
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message MultiSigIsm {
+message Ism {
   option (gogoproto.goproto_getters) = false;
-  option (amino.name) = "hyperlane/ism/MultiSig";
 
   string id = 1;
   uint32 ism_type = 2;
-  repeated string validator_pub_keys = 3;
-  uint32 threshold = 4;
-  string creator = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  oneof ism {
+    MultiSigIsm multi_sig = 4;
+    NoopIsm noop = 5;
+  }
+}
+
+message MultiSigIsm {
+  repeated string validator_pub_keys = 1;
+  uint32 threshold = 2;
+}
+
+message NoopIsm {
+  // No fields needed for Noop
 }

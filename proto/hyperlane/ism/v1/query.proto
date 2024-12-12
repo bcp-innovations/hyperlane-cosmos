@@ -11,7 +11,7 @@ import "amino/amino.proto";
 
 // Msg defines the module Msg service.
 service Query {
-  rpc Isms(QueryMultiSigIsmRequest) returns (QueryMultiSigIsmResponse) {
+  rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
     option (google.api.http).get = "/hyperlane/ism/v1/isms";
   }
 
@@ -21,12 +21,10 @@ service Query {
   }
 }
 
-message QueryMultiSigIsmRequest {}
+message QueryIsmsRequest {}
 
-// QueryParamsResponse is the response type for the Query/Params RPC method.
-message QueryMultiSigIsmResponse {
-  // params defines the parameters of the module.
-  repeated MultiSigIsm ism = 1
+message QueryIsmsResponse {
+  repeated Ism ism = 1
   [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 

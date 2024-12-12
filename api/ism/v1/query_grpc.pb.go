@@ -27,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
-	Isms(ctx context.Context, in *QueryMultiSigIsmRequest, opts ...grpc.CallOption) (*QueryMultiSigIsmResponse, error)
+	Isms(ctx context.Context, in *QueryIsmsRequest, opts ...grpc.CallOption) (*QueryIsmsResponse, error)
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 }
@@ -40,8 +40,8 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) Isms(ctx context.Context, in *QueryMultiSigIsmRequest, opts ...grpc.CallOption) (*QueryMultiSigIsmResponse, error) {
-	out := new(QueryMultiSigIsmResponse)
+func (c *queryClient) Isms(ctx context.Context, in *QueryIsmsRequest, opts ...grpc.CallOption) (*QueryIsmsResponse, error) {
+	out := new(QueryIsmsResponse)
 	err := c.cc.Invoke(ctx, Query_Isms_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
-	Isms(context.Context, *QueryMultiSigIsmRequest) (*QueryMultiSigIsmResponse, error)
+	Isms(context.Context, *QueryIsmsRequest) (*QueryIsmsResponse, error)
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	mustEmbedUnimplementedQueryServer()
@@ -72,7 +72,7 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
-func (UnimplementedQueryServer) Isms(context.Context, *QueryMultiSigIsmRequest) (*QueryMultiSigIsmResponse, error) {
+func (UnimplementedQueryServer) Isms(context.Context, *QueryIsmsRequest) (*QueryIsmsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Isms not implemented")
 }
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
@@ -92,7 +92,7 @@ func RegisterQueryServer(s grpc.ServiceRegistrar, srv QueryServer) {
 }
 
 func _Query_Isms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryMultiSigIsmRequest)
+	in := new(QueryIsmsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func _Query_Isms_Handler(srv interface{}, ctx context.Context, dec func(interfac
 		FullMethod: Query_Isms_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Isms(ctx, req.(*QueryMultiSigIsmRequest))
+		return srv.(QueryServer).Isms(ctx, req.(*QueryIsmsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
