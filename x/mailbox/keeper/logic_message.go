@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"cosmossdk.io/collections"
-	"encoding/hex"
 	"fmt"
 	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
@@ -47,9 +46,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 		return err
 	}
 
-	// TODO: Use message.String()
-	// message.String() != fmt.Sprintf("0x%s", hex.EncodeToString(rawMessage))
-	verified, err := k.ismKeeper.Verify(ctx, mailbox.Ism, metadata, fmt.Sprintf("0x%s", hex.EncodeToString(rawMessage)))
+	verified, err := k.ismKeeper.Verify(ctx, mailbox.Ism, metadata, message.String())
 	if err != nil {
 		return err
 	}
@@ -88,11 +85,6 @@ func (k Keeper) DispatchMessage(
 
 	mailbox.MessageSent++
 
-	err = k.Mailboxes.Set(ctx, originMailboxId.Bytes(), mailbox)
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-
 	hypMsg := types.HyperlaneMessage{
 		Version:     1,
 		Nonce:       mailbox.MessageSent,
@@ -103,7 +95,27 @@ func (k Keeper) DispatchMessage(
 		Body:        body,
 	}
 
+	tree, err := types.TreeFromProto(mailbox.Tree)
+
+	count := tree.GetCount()
+
+	if err = tree.Insert(hypMsg.Id()); err != nil {
+		return util.HexAddress{}, err
+	}
+
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
+		MessageId: hypMsg.String(),
+		Index:     count,
+	})
+
+	mailbox.Tree = types.ProtoFromTree(tree)
+
+	err = k.Mailboxes.Set(ctx, originMailboxId.Bytes(), mailbox)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
 
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.Dispatch{
 		DestinationDomain: destinationDomain,

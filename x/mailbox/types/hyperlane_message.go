@@ -41,7 +41,7 @@ func ParseHyperlaneMessage(raw []byte) (HyperlaneMessage, error) {
 	message.Nonce = binary.BigEndian.Uint32(raw[NonceOffset:OriginOffset])
 	message.Origin = binary.BigEndian.Uint32(raw[OriginOffset:SenderOffset])
 	message.Sender = util.HexAddress(raw[SenderOffset:DestinationOffset])
-	message.Origin = binary.BigEndian.Uint32(raw[DestinationOffset:RecipientOffset])
+	message.Destination = binary.BigEndian.Uint32(raw[DestinationOffset:RecipientOffset])
 	message.Recipient = util.HexAddress(raw[RecipientOffset:BodyOffset])
 	message.Body = raw[BodyOffset:]
 
