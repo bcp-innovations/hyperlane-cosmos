@@ -20,7 +20,7 @@ type queryServer struct {
 	k Keeper
 }
 
-func (qs queryServer) Isms(ctx context.Context, request *types.QueryMultiSigIsmRequest) (*types.QueryMultiSigIsmResponse, error) {
+func (qs queryServer) Isms(ctx context.Context, _ *types.QueryIsmsRequest) (*types.QueryIsmsResponse, error) {
 	it, err := qs.k.Isms.Iterate(ctx, nil)
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ func (qs queryServer) Isms(ctx context.Context, request *types.QueryMultiSigIsmR
 		return nil, err
 	}
 
-	return &types.QueryMultiSigIsmResponse{
+	return &types.QueryIsmsResponse{
 		Ism: isms,
 	}, nil
 }
