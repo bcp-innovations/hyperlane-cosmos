@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_CreateMailbox_FullMethodName   = "/hyperlane.mailbox.v1.Msg/CreateMailbox"
-	Msg_DispatchMessage_FullMethodName = "/hyperlane.mailbox.v1.Msg/DispatchMessage"
-	Msg_ProcessMessage_FullMethodName  = "/hyperlane.mailbox.v1.Msg/ProcessMessage"
-	Msg_UpdateParams_FullMethodName    = "/hyperlane.mailbox.v1.Msg/UpdateParams"
+	Msg_CreateMailbox_FullMethodName     = "/hyperlane.mailbox.v1.Msg/CreateMailbox"
+	Msg_DispatchMessage_FullMethodName   = "/hyperlane.mailbox.v1.Msg/DispatchMessage"
+	Msg_ProcessMessage_FullMethodName    = "/hyperlane.mailbox.v1.Msg/ProcessMessage"
+	Msg_AnnounceValidator_FullMethodName = "/hyperlane.mailbox.v1.Msg/AnnounceValidator"
+	Msg_UpdateParams_FullMethodName      = "/hyperlane.mailbox.v1.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -32,6 +33,7 @@ type MsgClient interface {
 	CreateMailbox(ctx context.Context, in *MsgCreateMailbox, opts ...grpc.CallOption) (*MsgCreateMailboxResponse, error)
 	DispatchMessage(ctx context.Context, in *MsgDispatchMessage, opts ...grpc.CallOption) (*MsgDispatchMessageResponse, error)
 	ProcessMessage(ctx context.Context, in *MsgProcessMessage, opts ...grpc.CallOption) (*MsgProcessMessageResponse, error)
+	AnnounceValidator(ctx context.Context, in *MsgAnnounceValidator, opts ...grpc.CallOption) (*MsgAnnounceValidatorResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -71,6 +73,15 @@ func (c *msgClient) ProcessMessage(ctx context.Context, in *MsgProcessMessage, o
 	return out, nil
 }
 
+func (c *msgClient) AnnounceValidator(ctx context.Context, in *MsgAnnounceValidator, opts ...grpc.CallOption) (*MsgAnnounceValidatorResponse, error) {
+	out := new(MsgAnnounceValidatorResponse)
+	err := c.cc.Invoke(ctx, Msg_AnnounceValidator_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_UpdateParams_FullMethodName, in, out, opts...)
@@ -87,6 +98,7 @@ type MsgServer interface {
 	CreateMailbox(context.Context, *MsgCreateMailbox) (*MsgCreateMailboxResponse, error)
 	DispatchMessage(context.Context, *MsgDispatchMessage) (*MsgDispatchMessageResponse, error)
 	ProcessMessage(context.Context, *MsgProcessMessage) (*MsgProcessMessageResponse, error)
+	AnnounceValidator(context.Context, *MsgAnnounceValidator) (*MsgAnnounceValidatorResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -104,6 +116,9 @@ func (UnimplementedMsgServer) DispatchMessage(context.Context, *MsgDispatchMessa
 }
 func (UnimplementedMsgServer) ProcessMessage(context.Context, *MsgProcessMessage) (*MsgProcessMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProcessMessage not implemented")
+}
+func (UnimplementedMsgServer) AnnounceValidator(context.Context, *MsgAnnounceValidator) (*MsgAnnounceValidatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AnnounceValidator not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -175,6 +190,24 @@ func _Msg_ProcessMessage_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_AnnounceValidator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAnnounceValidator)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AnnounceValidator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AnnounceValidator_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AnnounceValidator(ctx, req.(*MsgAnnounceValidator))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -211,6 +244,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProcessMessage",
 			Handler:    _Msg_ProcessMessage_Handler,
+		},
+		{
+			MethodName: "AnnounceValidator",
+			Handler:    _Msg_AnnounceValidator_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

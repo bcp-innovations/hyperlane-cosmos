@@ -28,6 +28,8 @@ type Keeper struct {
 	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
 	ReceiverIsmMapping collections.Map[[]byte, []byte]
 	MailboxesSequence  collections.Sequence
+	Validators         collections.Map[[]byte, types.Validator]
+	ValidatorsSequence collections.Sequence
 	Params             collections.Item[types.Params]
 	Schema             collections.Schema
 }
@@ -48,6 +50,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		Params:             collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		hooks:              nil,
 		MailboxesSequence:  collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
+		Validators:         collections.NewMap(sb, types.ValidatorsKey, "validators", collections.BytesKey, codec.CollValue[types.Validator](cdc)),
+		ValidatorsSequence: collections.NewSequence(sb, types.ValidatorsSequencesKey, "validators_sequence"),
 		ismKeeper:          ismKeeper,
 		ReceiverIsmMapping: collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
 	}

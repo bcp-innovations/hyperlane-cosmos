@@ -23,6 +23,13 @@ message Tree {
   uint32 count = 2;
 }
 
+message Validator {
+  option (gogoproto.goproto_getters) = false;
+
+  string address = 1;
+  string storageLocation = 2;
+}
+
 // Params defines the parameters of the module.
 message Params {
   option (amino.name) = "hyperlane/mailbox/Params";

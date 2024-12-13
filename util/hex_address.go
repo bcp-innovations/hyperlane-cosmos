@@ -48,6 +48,10 @@ func DecodeEthHex(s string) ([]byte, error) {
 	return b, nil
 }
 
+func EncodeEthHex(b []byte) string {
+	return fmt.Sprintf("0x%s", hex.EncodeToString(b))
+}
+
 func CreateHexAddress(identifier string, id int64) HexAddress {
 	idBytes := make([]byte, 8)
 	binary.BigEndian.PutUint64(idBytes, uint64(id))
@@ -70,4 +74,8 @@ func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
 	copy(hexAddressBytes[32-len(bech32):], bech32)
 
 	return HexAddress(hexAddressBytes), nil
+}
+
+func CreateValidatorStorageKey(validator []byte, storageLocation string) HexAddress {
+	return sha256.Sum256(append(validator, []byte(storageLocation)...))
 }

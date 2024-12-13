@@ -18,6 +18,7 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
+		CmdAnnounceValidator(),
 		CmdCreateMailbox(),
 		CmdDispatchMessage(),
 		CmdProcessMessage(),

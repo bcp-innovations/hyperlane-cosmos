@@ -121,6 +121,22 @@ func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLate
 	}, nil
 }
 
+func (qs queryServer) Validators(ctx context.Context, _ *types.QueryValidatorsRequest) (*types.QueryValidatorsResponse, error) {
+	it, err := qs.k.Validators.Iterate(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	validators, err := it.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryValidatorsResponse{
+		Validator: validators,
+	}, nil
+}
+
 // Params defines the handler for the Query/Params RPC method.
 func (qs queryServer) Params(ctx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	params, err := qs.k.Params.Get(ctx)
