@@ -2,7 +2,7 @@ package ism
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	mailboxv1 "github.com/KYVENetwork/hyperlane-cosmos/api/ism/v1"
+	mailboxv1 "github.com/bcp-innovations/hyperlane-cosmos/api/ism/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

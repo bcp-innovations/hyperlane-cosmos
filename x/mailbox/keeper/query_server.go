@@ -4,11 +4,11 @@ import (
 	"context"
 	"cosmossdk.io/collections"
 	"errors"
-	"github.com/KYVENetwork/hyperlane-cosmos/util"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 )
 
 var _ types.QueryServer = queryServer{}

@@ -2,7 +2,7 @@ package types
 
 import (
 	"context"
-	"github.com/KYVENetwork/hyperlane-cosmos/util"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 
 // Event Hooks

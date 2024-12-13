@@ -1,4 +1,4 @@
 syntax = "proto3";
 package hyperlane.ism.v1;
 
-option go_package = "github.com/KYVENetwork/hyperlane-cosmos/x/ism/types";
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/ism/types";

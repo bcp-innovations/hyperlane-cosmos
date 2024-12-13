@@ -2,7 +2,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/KYVENetwork/hyperlane-cosmos/api
+    default: github.com/bcp-innovations/hyperlane-cosmos/api
     except:
       - buf.build/googleapis/googleapis
       - buf.build/cosmos/gogo-proto

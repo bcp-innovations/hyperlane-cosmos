@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/client/cli"
-	keeper2 "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/client/cli"
+	keeper2 "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/keeper"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
@@ -29,8 +29,8 @@ var (
 const ConsensusVersion = 1
 
 type AppModule struct {
-	cdc    codec.Codec
-	keeper *keeper2.Keeper
+	cdc       codec.Codec
+	keeper    *keeper2.Keeper
 	ismKeeper types.IsmKeeper
 }
 

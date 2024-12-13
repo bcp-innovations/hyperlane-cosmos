@@ -6,16 +6,16 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"fmt"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/keeper"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"golang.org/x/exp/maps"
 	"sort"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/KYVENetwork/hyperlane-cosmos/api/mailbox/module"
-	mailboxTypes "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/mailbox/module"
+	mailboxTypes "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 )
 
 var _ appmodule.AppModule = AppModule{}

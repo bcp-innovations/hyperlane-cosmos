@@ -5,12 +5,12 @@ import (
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/ism/keeper"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/ism/keeper"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/KYVENetwork/hyperlane-cosmos/api/ism/module"
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/ism/module"
 )
 
 var _ appmodule.AppModule = AppModule{}

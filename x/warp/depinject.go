@@ -5,14 +5,14 @@ import (
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-	mailboxkeeper "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
-	mailboxTypes "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/warp/keeper"
+	mailboxkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/keeper"
+	mailboxTypes "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	modulev1 "github.com/KYVENetwork/hyperlane-cosmos/api/warp/module"
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module"
 )
 
 var _ appmodule.AppModule = AppModule{}

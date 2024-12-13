@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/warp/client/cli"
-	keeper2 "github.com/KYVENetwork/hyperlane-cosmos/x/warp/keeper"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/warp/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/client/cli"
+	keeper2 "github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
