@@ -2,8 +2,8 @@ package keeper
 
 import (
 	"context"
-	"github.com/KYVENetwork/hyperlane-cosmos/util"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

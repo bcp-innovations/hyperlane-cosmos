@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"strconv"
 
-	"github.com/KYVENetwork/hyperlane-cosmos/x/warp/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
 func CmdCreateCollateralToken() *cobra.Command {

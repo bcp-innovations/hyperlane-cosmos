@@ -4,7 +4,7 @@ import (
 	"context"
 	"cosmossdk.io/collections"
 	"errors"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/ism/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/ism/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

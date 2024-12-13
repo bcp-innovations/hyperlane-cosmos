@@ -6,8 +6,8 @@ import (
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
 	"fmt"
-	"github.com/KYVENetwork/hyperlane-cosmos/util"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

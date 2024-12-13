@@ -2,7 +2,7 @@ package warp
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	warpv1 "github.com/KYVENetwork/hyperlane-cosmos/api/warp/v1"
+	warpv1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

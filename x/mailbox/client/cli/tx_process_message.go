@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"

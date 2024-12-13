@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"context"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/ism/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/ism/types"
 )
 
 // InitGenesis initializes the module state from a genesis state.

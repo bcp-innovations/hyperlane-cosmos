@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 
-	"github.com/KYVENetwork/hyperlane-cosmos/x/ism/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/ism/types"
 )
 
 func GetTxCmd() *cobra.Command {

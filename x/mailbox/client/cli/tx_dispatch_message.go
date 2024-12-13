@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"strconv"
 
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 )
 
 func CmdDispatchMessage() *cobra.Command {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/KYVENetwork/hyperlane-cosmos/x/ism/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/ism/types"
 )
 
 // UpdateParams params is defining the handler for the MsgUpdateParams message.

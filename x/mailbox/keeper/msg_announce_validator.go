@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/KYVENetwork/hyperlane-cosmos/util"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"slices"
 )

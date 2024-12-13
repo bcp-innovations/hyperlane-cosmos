@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 )
 
 type msgServer struct {
