@@ -19,6 +19,8 @@ service Msg {
 
   rpc ProcessMessage(MsgProcessMessage) returns (MsgProcessMessageResponse);
 
+  rpc AnnounceValidator(MsgAnnounceValidator) returns (MsgAnnounceValidatorResponse);
+
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
@@ -59,6 +61,19 @@ message MsgProcessMessage {
 }
 
 message MsgProcessMessageResponse {}
+
+message MsgAnnounceValidator {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/announce/MsgAnnounceValidator";
+
+  string validator = 1;
+  string storageLocation = 2;
+  string signature = 3;
+  string mailbox_id = 4;
+  string creator = 5;
+}
+
+message MsgAnnounceValidatorResponse {}
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {

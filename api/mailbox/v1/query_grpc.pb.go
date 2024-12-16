@@ -26,6 +26,7 @@ const (
 	Query_Root_FullMethodName             = "/hyperlane.mailbox.v1.Query/Root"
 	Query_LatestCheckpoint_FullMethodName = "/hyperlane.mailbox.v1.Query/LatestCheckpoint"
 	Query_RecipientIsm_FullMethodName     = "/hyperlane.mailbox.v1.Query/RecipientIsm"
+	Query_Validators_FullMethodName       = "/hyperlane.mailbox.v1.Query/Validators"
 )
 
 // QueryClient is the client API for Query service.
@@ -40,6 +41,7 @@ type QueryClient interface {
 	Root(ctx context.Context, in *QueryRootRequest, opts ...grpc.CallOption) (*QueryRootResponse, error)
 	LatestCheckpoint(ctx context.Context, in *QueryLatestCheckpointRequest, opts ...grpc.CallOption) (*QueryLatestCheckpointResponse, error)
 	RecipientIsm(ctx context.Context, in *RecipientIsmRequest, opts ...grpc.CallOption) (*RecipientIsmResponse, error)
+	Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error)
 }
 
 type queryClient struct {
@@ -113,6 +115,15 @@ func (c *queryClient) RecipientIsm(ctx context.Context, in *RecipientIsmRequest,
 	return out, nil
 }
 
+func (c *queryClient) Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error) {
+	out := new(QueryValidatorsResponse)
+	err := c.cc.Invoke(ctx, Query_Validators_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -125,6 +136,7 @@ type QueryServer interface {
 	Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error)
 	LatestCheckpoint(context.Context, *QueryLatestCheckpointRequest) (*QueryLatestCheckpointResponse, error)
 	RecipientIsm(context.Context, *RecipientIsmRequest) (*RecipientIsmResponse, error)
+	Validators(context.Context, *QueryValidatorsRequest) (*QueryValidatorsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -152,6 +164,9 @@ func (UnimplementedQueryServer) LatestCheckpoint(context.Context, *QueryLatestCh
 }
 func (UnimplementedQueryServer) RecipientIsm(context.Context, *RecipientIsmRequest) (*RecipientIsmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RecipientIsm not implemented")
+}
+func (UnimplementedQueryServer) Validators(context.Context, *QueryValidatorsRequest) (*QueryValidatorsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Validators not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -292,6 +307,24 @@ func _Query_RecipientIsm_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Validators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryValidatorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Validators(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Validators_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Validators(ctx, req.(*QueryValidatorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -326,6 +359,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RecipientIsm",
 			Handler:    _Query_RecipientIsm_Handler,
+		},
+		{
+			MethodName: "Validators",
+			Handler:    _Query_Validators_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
