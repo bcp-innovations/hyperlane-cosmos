@@ -426,14 +426,14 @@ func (x *_QueryMailboxesResponse_1_list) IsValid() bool {
 }
 
 var (
-	md_QueryMailboxesResponse         protoreflect.MessageDescriptor
-	fd_QueryMailboxesResponse_mailbox protoreflect.FieldDescriptor
+	md_QueryMailboxesResponse           protoreflect.MessageDescriptor
+	fd_QueryMailboxesResponse_mailboxes protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_hyperlane_mailbox_v1_query_proto_init()
 	md_QueryMailboxesResponse = File_hyperlane_mailbox_v1_query_proto.Messages().ByName("QueryMailboxesResponse")
-	fd_QueryMailboxesResponse_mailbox = md_QueryMailboxesResponse.Fields().ByName("mailbox")
+	fd_QueryMailboxesResponse_mailboxes = md_QueryMailboxesResponse.Fields().ByName("mailboxes")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryMailboxesResponse)(nil)
@@ -501,9 +501,9 @@ func (x *fastReflection_QueryMailboxesResponse) Interface() protoreflect.ProtoMe
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QueryMailboxesResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Mailbox) != 0 {
-		value := protoreflect.ValueOfList(&_QueryMailboxesResponse_1_list{list: &x.Mailbox})
-		if !f(fd_QueryMailboxesResponse_mailbox, value) {
+	if len(x.Mailboxes) != 0 {
+		value := protoreflect.ValueOfList(&_QueryMailboxesResponse_1_list{list: &x.Mailboxes})
+		if !f(fd_QueryMailboxesResponse_mailboxes, value) {
 			return
 		}
 	}
@@ -522,8 +522,8 @@ func (x *fastReflection_QueryMailboxesResponse) Range(f func(protoreflect.FieldD
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_QueryMailboxesResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailbox":
-		return len(x.Mailbox) != 0
+	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailboxes":
+		return len(x.Mailboxes) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryMailboxesResponse"))
@@ -540,8 +540,8 @@ func (x *fastReflection_QueryMailboxesResponse) Has(fd protoreflect.FieldDescrip
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryMailboxesResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailbox":
-		x.Mailbox = nil
+	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailboxes":
+		x.Mailboxes = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryMailboxesResponse"))
@@ -558,11 +558,11 @@ func (x *fastReflection_QueryMailboxesResponse) Clear(fd protoreflect.FieldDescr
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_QueryMailboxesResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailbox":
-		if len(x.Mailbox) == 0 {
+	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailboxes":
+		if len(x.Mailboxes) == 0 {
 			return protoreflect.ValueOfList(&_QueryMailboxesResponse_1_list{})
 		}
-		listValue := &_QueryMailboxesResponse_1_list{list: &x.Mailbox}
+		listValue := &_QueryMailboxesResponse_1_list{list: &x.Mailboxes}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -584,10 +584,10 @@ func (x *fastReflection_QueryMailboxesResponse) Get(descriptor protoreflect.Fiel
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryMailboxesResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailbox":
+	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailboxes":
 		lv := value.List()
 		clv := lv.(*_QueryMailboxesResponse_1_list)
-		x.Mailbox = *clv.list
+		x.Mailboxes = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryMailboxesResponse"))
@@ -608,11 +608,11 @@ func (x *fastReflection_QueryMailboxesResponse) Set(fd protoreflect.FieldDescrip
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryMailboxesResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailbox":
-		if x.Mailbox == nil {
-			x.Mailbox = []*Mailbox{}
+	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailboxes":
+		if x.Mailboxes == nil {
+			x.Mailboxes = []*Mailbox{}
 		}
-		value := &_QueryMailboxesResponse_1_list{list: &x.Mailbox}
+		value := &_QueryMailboxesResponse_1_list{list: &x.Mailboxes}
 		return protoreflect.ValueOfList(value)
 	default:
 		if fd.IsExtension() {
@@ -627,7 +627,7 @@ func (x *fastReflection_QueryMailboxesResponse) Mutable(fd protoreflect.FieldDes
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_QueryMailboxesResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailbox":
+	case "hyperlane.mailbox.v1.QueryMailboxesResponse.mailboxes":
 		list := []*Mailbox{}
 		return protoreflect.ValueOfList(&_QueryMailboxesResponse_1_list{list: &list})
 	default:
@@ -699,8 +699,8 @@ func (x *fastReflection_QueryMailboxesResponse) ProtoMethods() *protoiface.Metho
 		var n int
 		var l int
 		_ = l
-		if len(x.Mailbox) > 0 {
-			for _, e := range x.Mailbox {
+		if len(x.Mailboxes) > 0 {
+			for _, e := range x.Mailboxes {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -734,9 +734,9 @@ func (x *fastReflection_QueryMailboxesResponse) ProtoMethods() *protoiface.Metho
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Mailbox) > 0 {
-			for iNdEx := len(x.Mailbox) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Mailbox[iNdEx])
+		if len(x.Mailboxes) > 0 {
+			for iNdEx := len(x.Mailboxes) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Mailboxes[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -801,7 +801,7 @@ func (x *fastReflection_QueryMailboxesResponse) ProtoMethods() *protoiface.Metho
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Mailbox", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Mailboxes", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -828,8 +828,8 @@ func (x *fastReflection_QueryMailboxesResponse) ProtoMethods() *protoiface.Metho
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Mailbox = append(x.Mailbox, &Mailbox{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Mailbox[len(x.Mailbox)-1]); err != nil {
+				x.Mailboxes = append(x.Mailboxes, &Mailbox{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Mailboxes[len(x.Mailboxes)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
@@ -3390,6 +3390,836 @@ func (x *fastReflection_QueryRootResponse) ProtoMethods() *protoiface.Methods {
 }
 
 var (
+	md_QueryDeliveredRequest            protoreflect.MessageDescriptor
+	fd_QueryDeliveredRequest_message_id protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_hyperlane_mailbox_v1_query_proto_init()
+	md_QueryDeliveredRequest = File_hyperlane_mailbox_v1_query_proto.Messages().ByName("QueryDeliveredRequest")
+	fd_QueryDeliveredRequest_message_id = md_QueryDeliveredRequest.Fields().ByName("message_id")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryDeliveredRequest)(nil)
+
+type fastReflection_QueryDeliveredRequest QueryDeliveredRequest
+
+func (x *QueryDeliveredRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryDeliveredRequest)(x)
+}
+
+func (x *QueryDeliveredRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryDeliveredRequest_messageType fastReflection_QueryDeliveredRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryDeliveredRequest_messageType{}
+
+type fastReflection_QueryDeliveredRequest_messageType struct{}
+
+func (x fastReflection_QueryDeliveredRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryDeliveredRequest)(nil)
+}
+func (x fastReflection_QueryDeliveredRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryDeliveredRequest)
+}
+func (x fastReflection_QueryDeliveredRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryDeliveredRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryDeliveredRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryDeliveredRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryDeliveredRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryDeliveredRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryDeliveredRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryDeliveredRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryDeliveredRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryDeliveredRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryDeliveredRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.MessageId != "" {
+		value := protoreflect.ValueOfString(x.MessageId)
+		if !f(fd_QueryDeliveredRequest_message_id, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryDeliveredRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredRequest.message_id":
+		return x.MessageId != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryDeliveredRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredRequest.message_id":
+		x.MessageId = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryDeliveredRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredRequest.message_id":
+		value := x.MessageId
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryDeliveredRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredRequest.message_id":
+		x.MessageId = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryDeliveredRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredRequest.message_id":
+		panic(fmt.Errorf("field message_id of message hyperlane.mailbox.v1.QueryDeliveredRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryDeliveredRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredRequest.message_id":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryDeliveredRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in hyperlane.mailbox.v1.QueryDeliveredRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryDeliveredRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryDeliveredRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryDeliveredRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryDeliveredRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryDeliveredRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.MessageId)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryDeliveredRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.MessageId) > 0 {
+			i -= len(x.MessageId)
+			copy(dAtA[i:], x.MessageId)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MessageId)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryDeliveredRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryDeliveredRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryDeliveredRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MessageId", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MessageId = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryDeliveredResponse           protoreflect.MessageDescriptor
+	fd_QueryDeliveredResponse_delivered protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_hyperlane_mailbox_v1_query_proto_init()
+	md_QueryDeliveredResponse = File_hyperlane_mailbox_v1_query_proto.Messages().ByName("QueryDeliveredResponse")
+	fd_QueryDeliveredResponse_delivered = md_QueryDeliveredResponse.Fields().ByName("delivered")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryDeliveredResponse)(nil)
+
+type fastReflection_QueryDeliveredResponse QueryDeliveredResponse
+
+func (x *QueryDeliveredResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryDeliveredResponse)(x)
+}
+
+func (x *QueryDeliveredResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryDeliveredResponse_messageType fastReflection_QueryDeliveredResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryDeliveredResponse_messageType{}
+
+type fastReflection_QueryDeliveredResponse_messageType struct{}
+
+func (x fastReflection_QueryDeliveredResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryDeliveredResponse)(nil)
+}
+func (x fastReflection_QueryDeliveredResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryDeliveredResponse)
+}
+func (x fastReflection_QueryDeliveredResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryDeliveredResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryDeliveredResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryDeliveredResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryDeliveredResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryDeliveredResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryDeliveredResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryDeliveredResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryDeliveredResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryDeliveredResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryDeliveredResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Delivered != false {
+		value := protoreflect.ValueOfBool(x.Delivered)
+		if !f(fd_QueryDeliveredResponse_delivered, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryDeliveredResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredResponse.delivered":
+		return x.Delivered != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryDeliveredResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredResponse.delivered":
+		x.Delivered = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryDeliveredResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredResponse.delivered":
+		value := x.Delivered
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryDeliveredResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredResponse.delivered":
+		x.Delivered = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryDeliveredResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredResponse.delivered":
+		panic(fmt.Errorf("field delivered of message hyperlane.mailbox.v1.QueryDeliveredResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryDeliveredResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryDeliveredResponse.delivered":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryDeliveredResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryDeliveredResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryDeliveredResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in hyperlane.mailbox.v1.QueryDeliveredResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryDeliveredResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryDeliveredResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryDeliveredResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryDeliveredResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryDeliveredResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Delivered {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryDeliveredResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Delivered {
+			i--
+			if x.Delivered {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryDeliveredResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryDeliveredResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryDeliveredResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Delivered", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Delivered = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
 	md_QueryLatestCheckpointRequest    protoreflect.MessageDescriptor
 	fd_QueryLatestCheckpointRequest_id protoreflect.FieldDescriptor
 )
@@ -3409,7 +4239,7 @@ func (x *QueryLatestCheckpointRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryLatestCheckpointRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[8]
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3831,7 +4661,7 @@ func (x *QueryLatestCheckpointResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryLatestCheckpointResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[9]
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4299,7 +5129,7 @@ func (x *RecipientIsmRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *RecipientIsmRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[10]
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4719,7 +5549,7 @@ func (x *RecipientIsmResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *RecipientIsmResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[11]
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5137,7 +5967,7 @@ func (x *QueryValidatorsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryValidatorsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[12]
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5527,14 +6357,14 @@ func (x *_QueryValidatorsResponse_1_list) IsValid() bool {
 }
 
 var (
-	md_QueryValidatorsResponse           protoreflect.MessageDescriptor
-	fd_QueryValidatorsResponse_validator protoreflect.FieldDescriptor
+	md_QueryValidatorsResponse            protoreflect.MessageDescriptor
+	fd_QueryValidatorsResponse_validators protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_hyperlane_mailbox_v1_query_proto_init()
 	md_QueryValidatorsResponse = File_hyperlane_mailbox_v1_query_proto.Messages().ByName("QueryValidatorsResponse")
-	fd_QueryValidatorsResponse_validator = md_QueryValidatorsResponse.Fields().ByName("validator")
+	fd_QueryValidatorsResponse_validators = md_QueryValidatorsResponse.Fields().ByName("validators")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryValidatorsResponse)(nil)
@@ -5546,7 +6376,7 @@ func (x *QueryValidatorsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryValidatorsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[13]
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5602,9 +6432,9 @@ func (x *fastReflection_QueryValidatorsResponse) Interface() protoreflect.ProtoM
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QueryValidatorsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Validator) != 0 {
-		value := protoreflect.ValueOfList(&_QueryValidatorsResponse_1_list{list: &x.Validator})
-		if !f(fd_QueryValidatorsResponse_validator, value) {
+	if len(x.Validators) != 0 {
+		value := protoreflect.ValueOfList(&_QueryValidatorsResponse_1_list{list: &x.Validators})
+		if !f(fd_QueryValidatorsResponse_validators, value) {
 			return
 		}
 	}
@@ -5623,8 +6453,8 @@ func (x *fastReflection_QueryValidatorsResponse) Range(f func(protoreflect.Field
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_QueryValidatorsResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validator":
-		return len(x.Validator) != 0
+	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validators":
+		return len(x.Validators) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryValidatorsResponse"))
@@ -5641,8 +6471,8 @@ func (x *fastReflection_QueryValidatorsResponse) Has(fd protoreflect.FieldDescri
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryValidatorsResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validator":
-		x.Validator = nil
+	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validators":
+		x.Validators = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryValidatorsResponse"))
@@ -5659,11 +6489,11 @@ func (x *fastReflection_QueryValidatorsResponse) Clear(fd protoreflect.FieldDesc
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_QueryValidatorsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validator":
-		if len(x.Validator) == 0 {
+	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validators":
+		if len(x.Validators) == 0 {
 			return protoreflect.ValueOfList(&_QueryValidatorsResponse_1_list{})
 		}
-		listValue := &_QueryValidatorsResponse_1_list{list: &x.Validator}
+		listValue := &_QueryValidatorsResponse_1_list{list: &x.Validators}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -5685,10 +6515,10 @@ func (x *fastReflection_QueryValidatorsResponse) Get(descriptor protoreflect.Fie
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryValidatorsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validator":
+	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validators":
 		lv := value.List()
 		clv := lv.(*_QueryValidatorsResponse_1_list)
-		x.Validator = *clv.list
+		x.Validators = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryValidatorsResponse"))
@@ -5709,11 +6539,11 @@ func (x *fastReflection_QueryValidatorsResponse) Set(fd protoreflect.FieldDescri
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryValidatorsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validator":
-		if x.Validator == nil {
-			x.Validator = []*Validator{}
+	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validators":
+		if x.Validators == nil {
+			x.Validators = []*Validator{}
 		}
-		value := &_QueryValidatorsResponse_1_list{list: &x.Validator}
+		value := &_QueryValidatorsResponse_1_list{list: &x.Validators}
 		return protoreflect.ValueOfList(value)
 	default:
 		if fd.IsExtension() {
@@ -5728,7 +6558,7 @@ func (x *fastReflection_QueryValidatorsResponse) Mutable(fd protoreflect.FieldDe
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_QueryValidatorsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validator":
+	case "hyperlane.mailbox.v1.QueryValidatorsResponse.validators":
 		list := []*Validator{}
 		return protoreflect.ValueOfList(&_QueryValidatorsResponse_1_list{list: &list})
 	default:
@@ -5800,8 +6630,8 @@ func (x *fastReflection_QueryValidatorsResponse) ProtoMethods() *protoiface.Meth
 		var n int
 		var l int
 		_ = l
-		if len(x.Validator) > 0 {
-			for _, e := range x.Validator {
+		if len(x.Validators) > 0 {
+			for _, e := range x.Validators {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -5835,9 +6665,9 @@ func (x *fastReflection_QueryValidatorsResponse) ProtoMethods() *protoiface.Meth
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Validator) > 0 {
-			for iNdEx := len(x.Validator) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Validator[iNdEx])
+		if len(x.Validators) > 0 {
+			for iNdEx := len(x.Validators) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Validators[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -5902,7 +6732,7 @@ func (x *fastReflection_QueryValidatorsResponse) ProtoMethods() *protoiface.Meth
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Validators", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -5929,10 +6759,910 @@ func (x *fastReflection_QueryValidatorsResponse) ProtoMethods() *protoiface.Meth
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Validator = append(x.Validator, &Validator{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Validator[len(x.Validator)-1]); err != nil {
+				x.Validators = append(x.Validators, &Validator{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Validators[len(x.Validators)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryAnnouncedStorageLocationsRequest                   protoreflect.MessageDescriptor
+	fd_QueryAnnouncedStorageLocationsRequest_validator_address protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_hyperlane_mailbox_v1_query_proto_init()
+	md_QueryAnnouncedStorageLocationsRequest = File_hyperlane_mailbox_v1_query_proto.Messages().ByName("QueryAnnouncedStorageLocationsRequest")
+	fd_QueryAnnouncedStorageLocationsRequest_validator_address = md_QueryAnnouncedStorageLocationsRequest.Fields().ByName("validator_address")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryAnnouncedStorageLocationsRequest)(nil)
+
+type fastReflection_QueryAnnouncedStorageLocationsRequest QueryAnnouncedStorageLocationsRequest
+
+func (x *QueryAnnouncedStorageLocationsRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryAnnouncedStorageLocationsRequest)(x)
+}
+
+func (x *QueryAnnouncedStorageLocationsRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryAnnouncedStorageLocationsRequest_messageType fastReflection_QueryAnnouncedStorageLocationsRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryAnnouncedStorageLocationsRequest_messageType{}
+
+type fastReflection_QueryAnnouncedStorageLocationsRequest_messageType struct{}
+
+func (x fastReflection_QueryAnnouncedStorageLocationsRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryAnnouncedStorageLocationsRequest)(nil)
+}
+func (x fastReflection_QueryAnnouncedStorageLocationsRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryAnnouncedStorageLocationsRequest)
+}
+func (x fastReflection_QueryAnnouncedStorageLocationsRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryAnnouncedStorageLocationsRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryAnnouncedStorageLocationsRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryAnnouncedStorageLocationsRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryAnnouncedStorageLocationsRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryAnnouncedStorageLocationsRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.ValidatorAddress != "" {
+		value := protoreflect.ValueOfString(x.ValidatorAddress)
+		if !f(fd_QueryAnnouncedStorageLocationsRequest_validator_address, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest.validator_address":
+		return x.ValidatorAddress != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest.validator_address":
+		x.ValidatorAddress = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest.validator_address":
+		value := x.ValidatorAddress
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest.validator_address":
+		x.ValidatorAddress = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest.validator_address":
+		panic(fmt.Errorf("field validator_address of message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest.validator_address":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryAnnouncedStorageLocationsRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryAnnouncedStorageLocationsRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.ValidatorAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryAnnouncedStorageLocationsRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.ValidatorAddress) > 0 {
+			i -= len(x.ValidatorAddress)
+			copy(dAtA[i:], x.ValidatorAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ValidatorAddress)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryAnnouncedStorageLocationsRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAnnouncedStorageLocationsRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAnnouncedStorageLocationsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ValidatorAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_QueryAnnouncedStorageLocationsResponse_1_list)(nil)
+
+type _QueryAnnouncedStorageLocationsResponse_1_list struct {
+	list *[]string
+}
+
+func (x *_QueryAnnouncedStorageLocationsResponse_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_QueryAnnouncedStorageLocationsResponse_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_QueryAnnouncedStorageLocationsResponse_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_QueryAnnouncedStorageLocationsResponse_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_QueryAnnouncedStorageLocationsResponse_1_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message QueryAnnouncedStorageLocationsResponse at list field StorageLocations as it is not of Message kind"))
+}
+
+func (x *_QueryAnnouncedStorageLocationsResponse_1_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_QueryAnnouncedStorageLocationsResponse_1_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_QueryAnnouncedStorageLocationsResponse_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_QueryAnnouncedStorageLocationsResponse                   protoreflect.MessageDescriptor
+	fd_QueryAnnouncedStorageLocationsResponse_storage_locations protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_hyperlane_mailbox_v1_query_proto_init()
+	md_QueryAnnouncedStorageLocationsResponse = File_hyperlane_mailbox_v1_query_proto.Messages().ByName("QueryAnnouncedStorageLocationsResponse")
+	fd_QueryAnnouncedStorageLocationsResponse_storage_locations = md_QueryAnnouncedStorageLocationsResponse.Fields().ByName("storage_locations")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryAnnouncedStorageLocationsResponse)(nil)
+
+type fastReflection_QueryAnnouncedStorageLocationsResponse QueryAnnouncedStorageLocationsResponse
+
+func (x *QueryAnnouncedStorageLocationsResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryAnnouncedStorageLocationsResponse)(x)
+}
+
+func (x *QueryAnnouncedStorageLocationsResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryAnnouncedStorageLocationsResponse_messageType fastReflection_QueryAnnouncedStorageLocationsResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryAnnouncedStorageLocationsResponse_messageType{}
+
+type fastReflection_QueryAnnouncedStorageLocationsResponse_messageType struct{}
+
+func (x fastReflection_QueryAnnouncedStorageLocationsResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryAnnouncedStorageLocationsResponse)(nil)
+}
+func (x fastReflection_QueryAnnouncedStorageLocationsResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryAnnouncedStorageLocationsResponse)
+}
+func (x fastReflection_QueryAnnouncedStorageLocationsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryAnnouncedStorageLocationsResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryAnnouncedStorageLocationsResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryAnnouncedStorageLocationsResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryAnnouncedStorageLocationsResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryAnnouncedStorageLocationsResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.StorageLocations) != 0 {
+		value := protoreflect.ValueOfList(&_QueryAnnouncedStorageLocationsResponse_1_list{list: &x.StorageLocations})
+		if !f(fd_QueryAnnouncedStorageLocationsResponse_storage_locations, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse.storage_locations":
+		return len(x.StorageLocations) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse.storage_locations":
+		x.StorageLocations = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse.storage_locations":
+		if len(x.StorageLocations) == 0 {
+			return protoreflect.ValueOfList(&_QueryAnnouncedStorageLocationsResponse_1_list{})
+		}
+		listValue := &_QueryAnnouncedStorageLocationsResponse_1_list{list: &x.StorageLocations}
+		return protoreflect.ValueOfList(listValue)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse.storage_locations":
+		lv := value.List()
+		clv := lv.(*_QueryAnnouncedStorageLocationsResponse_1_list)
+		x.StorageLocations = *clv.list
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse.storage_locations":
+		if x.StorageLocations == nil {
+			x.StorageLocations = []string{}
+		}
+		value := &_QueryAnnouncedStorageLocationsResponse_1_list{list: &x.StorageLocations}
+		return protoreflect.ValueOfList(value)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse.storage_locations":
+		list := []string{}
+		return protoreflect.ValueOfList(&_QueryAnnouncedStorageLocationsResponse_1_list{list: &list})
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse"))
+		}
+		panic(fmt.Errorf("message hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryAnnouncedStorageLocationsResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryAnnouncedStorageLocationsResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.StorageLocations) > 0 {
+			for _, s := range x.StorageLocations {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryAnnouncedStorageLocationsResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.StorageLocations) > 0 {
+			for iNdEx := len(x.StorageLocations) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.StorageLocations[iNdEx])
+				copy(dAtA[i:], x.StorageLocations[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StorageLocations[iNdEx])))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryAnnouncedStorageLocationsResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAnnouncedStorageLocationsResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryAnnouncedStorageLocationsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StorageLocations", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.StorageLocations = append(x.StorageLocations, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -5987,7 +7717,7 @@ func (x *QueryParamsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryParamsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[14]
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6345,7 +8075,7 @@ func (x *QueryParamsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryParamsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[15]
+	mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6804,7 +8534,7 @@ type QueryMailboxesResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Mailbox []*Mailbox `protobuf:"bytes,1,rep,name=mailbox,proto3" json:"mailbox,omitempty"`
+	Mailboxes []*Mailbox `protobuf:"bytes,1,rep,name=mailboxes,proto3" json:"mailboxes,omitempty"`
 }
 
 func (x *QueryMailboxesResponse) Reset() {
@@ -6827,9 +8557,9 @@ func (*QueryMailboxesResponse) Descriptor() ([]byte, []int) {
 	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *QueryMailboxesResponse) GetMailbox() []*Mailbox {
+func (x *QueryMailboxesResponse) GetMailboxes() []*Mailbox {
 	if x != nil {
-		return x.Mailbox
+		return x.Mailboxes
 	}
 	return nil
 }
@@ -7044,6 +8774,76 @@ func (x *QueryRootResponse) GetRoot() []byte {
 	return nil
 }
 
+type QueryDeliveredRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	MessageId string `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+}
+
+func (x *QueryDeliveredRequest) Reset() {
+	*x = QueryDeliveredRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryDeliveredRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryDeliveredRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryDeliveredRequest.ProtoReflect.Descriptor instead.
+func (*QueryDeliveredRequest) Descriptor() ([]byte, []int) {
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *QueryDeliveredRequest) GetMessageId() string {
+	if x != nil {
+		return x.MessageId
+	}
+	return ""
+}
+
+type QueryDeliveredResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Delivered bool `protobuf:"varint,1,opt,name=delivered,proto3" json:"delivered,omitempty"`
+}
+
+func (x *QueryDeliveredResponse) Reset() {
+	*x = QueryDeliveredResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryDeliveredResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryDeliveredResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryDeliveredResponse.ProtoReflect.Descriptor instead.
+func (*QueryDeliveredResponse) Descriptor() ([]byte, []int) {
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *QueryDeliveredResponse) GetDelivered() bool {
+	if x != nil {
+		return x.Delivered
+	}
+	return false
+}
+
 type QueryLatestCheckpointRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -7055,7 +8855,7 @@ type QueryLatestCheckpointRequest struct {
 func (x *QueryLatestCheckpointRequest) Reset() {
 	*x = QueryLatestCheckpointRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[8]
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7069,7 +8869,7 @@ func (*QueryLatestCheckpointRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryLatestCheckpointRequest.ProtoReflect.Descriptor instead.
 func (*QueryLatestCheckpointRequest) Descriptor() ([]byte, []int) {
-	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{8}
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *QueryLatestCheckpointRequest) GetId() string {
@@ -7091,7 +8891,7 @@ type QueryLatestCheckpointResponse struct {
 func (x *QueryLatestCheckpointResponse) Reset() {
 	*x = QueryLatestCheckpointResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[9]
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7105,7 +8905,7 @@ func (*QueryLatestCheckpointResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryLatestCheckpointResponse.ProtoReflect.Descriptor instead.
 func (*QueryLatestCheckpointResponse) Descriptor() ([]byte, []int) {
-	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{9}
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *QueryLatestCheckpointResponse) GetRoot() []byte {
@@ -7133,7 +8933,7 @@ type RecipientIsmRequest struct {
 func (x *RecipientIsmRequest) Reset() {
 	*x = RecipientIsmRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[10]
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7147,7 +8947,7 @@ func (*RecipientIsmRequest) ProtoMessage() {}
 
 // Deprecated: Use RecipientIsmRequest.ProtoReflect.Descriptor instead.
 func (*RecipientIsmRequest) Descriptor() ([]byte, []int) {
-	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{10}
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *RecipientIsmRequest) GetRecipient() string {
@@ -7168,7 +8968,7 @@ type RecipientIsmResponse struct {
 func (x *RecipientIsmResponse) Reset() {
 	*x = RecipientIsmResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[11]
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7182,7 +8982,7 @@ func (*RecipientIsmResponse) ProtoMessage() {}
 
 // Deprecated: Use RecipientIsmResponse.ProtoReflect.Descriptor instead.
 func (*RecipientIsmResponse) Descriptor() ([]byte, []int) {
-	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{11}
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *RecipientIsmResponse) GetIsmId() string {
@@ -7201,7 +9001,7 @@ type QueryValidatorsRequest struct {
 func (x *QueryValidatorsRequest) Reset() {
 	*x = QueryValidatorsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[12]
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7215,7 +9015,7 @@ func (*QueryValidatorsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryValidatorsRequest.ProtoReflect.Descriptor instead.
 func (*QueryValidatorsRequest) Descriptor() ([]byte, []int) {
-	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{12}
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{14}
 }
 
 type QueryValidatorsResponse struct {
@@ -7223,13 +9023,13 @@ type QueryValidatorsResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Validator []*Validator `protobuf:"bytes,1,rep,name=validator,proto3" json:"validator,omitempty"`
+	Validators []*Validator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators,omitempty"`
 }
 
 func (x *QueryValidatorsResponse) Reset() {
 	*x = QueryValidatorsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[13]
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7243,12 +9043,82 @@ func (*QueryValidatorsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryValidatorsResponse.ProtoReflect.Descriptor instead.
 func (*QueryValidatorsResponse) Descriptor() ([]byte, []int) {
-	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{13}
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *QueryValidatorsResponse) GetValidator() []*Validator {
+func (x *QueryValidatorsResponse) GetValidators() []*Validator {
 	if x != nil {
-		return x.Validator
+		return x.Validators
+	}
+	return nil
+}
+
+type QueryAnnouncedStorageLocationsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
+}
+
+func (x *QueryAnnouncedStorageLocationsRequest) Reset() {
+	*x = QueryAnnouncedStorageLocationsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryAnnouncedStorageLocationsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryAnnouncedStorageLocationsRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryAnnouncedStorageLocationsRequest.ProtoReflect.Descriptor instead.
+func (*QueryAnnouncedStorageLocationsRequest) Descriptor() ([]byte, []int) {
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *QueryAnnouncedStorageLocationsRequest) GetValidatorAddress() string {
+	if x != nil {
+		return x.ValidatorAddress
+	}
+	return ""
+}
+
+type QueryAnnouncedStorageLocationsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	StorageLocations []string `protobuf:"bytes,1,rep,name=storage_locations,json=storageLocations,proto3" json:"storage_locations,omitempty"`
+}
+
+func (x *QueryAnnouncedStorageLocationsResponse) Reset() {
+	*x = QueryAnnouncedStorageLocationsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryAnnouncedStorageLocationsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryAnnouncedStorageLocationsResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryAnnouncedStorageLocationsResponse.ProtoReflect.Descriptor instead.
+func (*QueryAnnouncedStorageLocationsResponse) Descriptor() ([]byte, []int) {
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *QueryAnnouncedStorageLocationsResponse) GetStorageLocations() []string {
+	if x != nil {
+		return x.StorageLocations
 	}
 	return nil
 }
@@ -7263,7 +9133,7 @@ type QueryParamsRequest struct {
 func (x *QueryParamsRequest) Reset() {
 	*x = QueryParamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[14]
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7277,7 +9147,7 @@ func (*QueryParamsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryParamsRequest.ProtoReflect.Descriptor instead.
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{14}
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{18}
 }
 
 // QueryParamsResponse is the response type for the Query/Params RPC method.
@@ -7293,7 +9163,7 @@ type QueryParamsResponse struct {
 func (x *QueryParamsResponse) Reset() {
 	*x = QueryParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[15]
+		mi := &file_hyperlane_mailbox_v1_query_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7307,7 +9177,7 @@ func (*QueryParamsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryParamsResponse.ProtoReflect.Descriptor instead.
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{15}
+	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *QueryParamsResponse) GetParams() *Params {
@@ -7337,151 +9207,193 @@ var file_hyperlane_mailbox_v1_query_proto_rawDesc = []byte{
 	0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d,
 	0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x17, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x61,
-	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x5c,
+	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x60,
 	0x0a, 0x16, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x42, 0x0a, 0x07, 0x6d, 0x61, 0x69, 0x6c,
-	0x62, 0x6f, 0x78, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x68, 0x79, 0x70, 0x65,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x46, 0x0a, 0x09, 0x6d, 0x61, 0x69, 0x6c,
+	0x62, 0x6f, 0x78, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x68, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e,
+	0x76, 0x31, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00,
+	0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x09, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73,
+	0x22, 0x25, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x5a, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x42, 0x0a, 0x07, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x1d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69,
+	0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x42,
+	0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x07, 0x6d, 0x61, 0x69, 0x6c,
+	0x62, 0x6f, 0x78, 0x22, 0x23, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x75, 0x6e,
+	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x2a, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14,
+	0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x22, 0x22, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x6f, 0x6f,
+	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x27, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x52, 0x6f, 0x6f, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a,
+	0x04, 0x72, 0x6f, 0x6f, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x72, 0x6f, 0x6f,
+	0x74, 0x22, 0x36, 0x0a, 0x15, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x6c, 0x69, 0x76, 0x65,
+	0x72, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x49, 0x64, 0x22, 0x36, 0x0a, 0x16, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x44, 0x65, 0x6c, 0x69, 0x76, 0x65, 0x72, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x65, 0x6c, 0x69, 0x76, 0x65, 0x72, 0x65, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x64, 0x65, 0x6c, 0x69, 0x76, 0x65, 0x72, 0x65,
+	0x64, 0x22, 0x2e, 0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74,
+	0x43, 0x68, 0x65, 0x63, 0x6b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x64, 0x22, 0x49, 0x0a, 0x1d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74,
+	0x43, 0x68, 0x65, 0x63, 0x6b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6f, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c,
+	0x52, 0x04, 0x72, 0x6f, 0x6f, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x33, 0x0a, 0x13,
+	0x52, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e,
+	0x74, 0x22, 0x2d, 0x0a, 0x14, 0x52, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73,
+	0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x15, 0x0a, 0x06, 0x69, 0x73, 0x6d,
+	0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x73, 0x6d, 0x49, 0x64,
+	0x22, 0x18, 0x0a, 0x16, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74,
+	0x6f, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x65, 0x0a, 0x17, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4a, 0x0a, 0x0a, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74,
+	0x6f, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x68, 0x79, 0x70, 0x65,
 	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31,
-	0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7,
-	0xb0, 0x2a, 0x01, 0x52, 0x07, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x22, 0x25, 0x0a, 0x13,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x02, 0x69, 0x64, 0x22, 0x5a, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c,
-	0x62, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x42, 0x0a, 0x07, 0x6d,
-	0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x68,
-	0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78,
-	0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x42, 0x09, 0xc8, 0xde, 0x1f,
-	0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x07, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x22,
-	0x23, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x02, 0x69, 0x64, 0x22, 0x2a, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x75,
-	0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f,
-	0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x22, 0x22, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x6f, 0x6f, 0x74, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x02, 0x69, 0x64, 0x22, 0x27, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x6f, 0x6f,
-	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6f,
-	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x72, 0x6f, 0x6f, 0x74, 0x22, 0x2e, 0x0a,
-	0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x43, 0x68, 0x65, 0x63,
-	0x6b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a,
-	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x49, 0x0a,
-	0x1d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x43, 0x68, 0x65, 0x63,
-	0x6b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12,
-	0x0a, 0x04, 0x72, 0x6f, 0x6f, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x72, 0x6f,
-	0x6f, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x0d, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x33, 0x0a, 0x13, 0x52, 0x65, 0x63, 0x69,
-	0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x1c, 0x0a, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x09, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x2d, 0x0a,
-	0x14, 0x52, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x15, 0x0a, 0x06, 0x69, 0x73, 0x6d, 0x5f, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x73, 0x6d, 0x49, 0x64, 0x22, 0x18, 0x0a, 0x16,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x63, 0x0a, 0x17, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56,
-	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x48, 0x0a, 0x09, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x01,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
-	0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x61, 0x6c, 0x69,
-	0x64, 0x61, 0x74, 0x6f, 0x72, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01,
-	0x52, 0x09, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x22, 0x14, 0x0a, 0x12, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x22, 0x56, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3f, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72,
-	0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a,
-	0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x32, 0xb4, 0x09, 0x0a, 0x05, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x12, 0x83, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x28,
-	0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62,
-	0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72,
-	0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x24, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1e, 0x12, 0x1c, 0x2f, 0x68, 0x79,
-	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f,
-	0x76, 0x31, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x8f, 0x01, 0x0a, 0x09, 0x4d, 0x61,
-	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x12, 0x2b, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
-	0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x27, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x21, 0x12, 0x1f, 0x2f, 0x68, 0x79, 0x70,
-	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76,
-	0x31, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x12, 0x8e, 0x01, 0x0a, 0x07,
-	0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x12, 0x29, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x2a, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d,
-	0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d,
-	0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2c,
-	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,
-	0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x61,
-	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x89, 0x01, 0x0a,
-	0x05, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x27, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,
-	0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x28, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c,
-	0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x75, 0x6e,
-	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2d, 0x82, 0xd3, 0xe4, 0x93, 0x02,
-	0x27, 0x12, 0x25, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61,
-	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x74, 0x72, 0x65, 0x65, 0x2f, 0x63, 0x6f,
-	0x75, 0x6e, 0x74, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x85, 0x01, 0x0a, 0x04, 0x52, 0x6f, 0x6f,
-	0x74, 0x12, 0x26, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61,
-	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x6f,
-	0x6f, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x27, 0x2e, 0x68, 0x79, 0x70, 0x65,
-	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x6f, 0x6f, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24, 0x2f, 0x68, 0x79, 0x70,
-	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76,
-	0x31, 0x2f, 0x74, 0x72, 0x65, 0x65, 0x2f, 0x72, 0x6f, 0x6f, 0x74, 0x2f, 0x7b, 0x69, 0x64, 0x7d,
-	0x12, 0xb6, 0x01, 0x0a, 0x10, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x43, 0x68, 0x65, 0x63, 0x6b,
-	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x12, 0x32, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e,
-	0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x70, 0x6f, 0x69,
-	0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x33, 0x2e, 0x68, 0x79, 0x70, 0x65,
-	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x43, 0x68, 0x65, 0x63,
-	0x6b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x39,
-	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x33, 0x12, 0x31, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,
-	0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x74, 0x72,
-	0x65, 0x65, 0x2f, 0x6c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x70,
-	0x6f, 0x69, 0x6e, 0x74, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x9e, 0x01, 0x0a, 0x0c, 0x52, 0x65,
-	0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d, 0x12, 0x29, 0x2e, 0x68, 0x79, 0x70,
+	0x2e, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00,
+	0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x0a, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72,
+	0x73, 0x22, 0x54, 0x0a, 0x25, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6e, 0x6e, 0x6f, 0x75, 0x6e,
+	0x63, 0x65, 0x64, 0x53, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2b, 0x0a, 0x11, 0x76, 0x61,
+	0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72,
+	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x55, 0x0a, 0x26, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x41, 0x6e, 0x6e, 0x6f, 0x75, 0x6e, 0x63, 0x65, 0x64, 0x53, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65,
+	0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x2b, 0x0a, 0x11, 0x73, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6c, 0x6f, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x10, 0x73, 0x74,
+	0x6f, 0x72, 0x61, 0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x14,
+	0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x22, 0x56, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3f, 0x0a, 0x06, 0x70,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x68, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e,
+	0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8,
+	0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x32, 0xbb, 0x0c, 0x0a,
+	0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x83, 0x01, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x12, 0x28, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61,
+	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x68, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e,
+	0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x24, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1e, 0x12, 0x1c,
+	0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62,
+	0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x8f, 0x01, 0x0a,
+	0x09, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x12, 0x2b, 0x2e, 0x68, 0x79, 0x70,
 	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76,
-	0x31, 0x2e, 0x52, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d, 0x52, 0x65,
+	0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
+	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x27, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x21, 0x12, 0x1f, 0x2f,
+	0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f,
+	0x78, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x12, 0x8e,
+	0x01, 0x0a, 0x07, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x12, 0x29, 0x2e, 0x68, 0x79, 0x70,
+	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76,
+	0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2a, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e,
-	0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x63,
-	0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x68, 0x79, 0x70, 0x65,
+	0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24, 0x2f, 0x68, 0x79, 0x70, 0x65,
 	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31,
-	0x2f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x73, 0x6d, 0x2f, 0x7b,
-	0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x7d, 0x12, 0x93, 0x01, 0x0a, 0x0a, 0x56,
-	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x12, 0x2c, 0x2e, 0x68, 0x79, 0x70, 0x65,
+	0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x65, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12,
+	0x89, 0x01, 0x0a, 0x05, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x27, 0x2e, 0x68, 0x79, 0x70, 0x65,
+	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x28, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d,
+	0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x43,
+	0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2d, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x27, 0x12, 0x25, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
+	0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x74, 0x72, 0x65, 0x65,
+	0x2f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x85, 0x01, 0x0a, 0x04,
+	0x52, 0x6f, 0x6f, 0x74, 0x12, 0x26, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
+	0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x52, 0x6f, 0x6f, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x27, 0x2e, 0x68,
+	0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78,
+	0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x6f, 0x6f, 0x74, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24, 0x2f,
+	0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f,
+	0x78, 0x2f, 0x76, 0x31, 0x2f, 0x74, 0x72, 0x65, 0x65, 0x2f, 0x72, 0x6f, 0x6f, 0x74, 0x2f, 0x7b,
+	0x69, 0x64, 0x7d, 0x12, 0x9c, 0x01, 0x0a, 0x09, 0x44, 0x65, 0x6c, 0x69, 0x76, 0x65, 0x72, 0x65,
+	0x64, 0x12, 0x2b, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61,
+	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65,
+	0x6c, 0x69, 0x76, 0x65, 0x72, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c,
+	0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62,
+	0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x6c, 0x69, 0x76,
+	0x65, 0x72, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x34, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x2e, 0x12, 0x2c, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
+	0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x64, 0x65, 0x6c, 0x69,
+	0x76, 0x65, 0x72, 0x65, 0x64, 0x2f, 0x7b, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x5f, 0x69,
+	0x64, 0x7d, 0x12, 0xb6, 0x01, 0x0a, 0x10, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x43, 0x68, 0x65,
+	0x63, 0x6b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x12, 0x32, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
+	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x70,
+	0x6f, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x33, 0x2e, 0x68, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e,
+	0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x43, 0x68,
+	0x65, 0x63, 0x6b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x39, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x33, 0x12, 0x31, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72,
+	0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f,
+	0x74, 0x72, 0x65, 0x65, 0x2f, 0x6c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x63, 0x68, 0x65, 0x63,
+	0x6b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x9e, 0x01, 0x0a, 0x0c,
+	0x52, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d, 0x12, 0x29, 0x2e, 0x68,
+	0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78,
+	0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2a, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
+	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x52,
+	0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x73, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x68, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f,
+	0x76, 0x31, 0x2f, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x5f, 0x69, 0x73, 0x6d,
+	0x2f, 0x7b, 0x72, 0x65, 0x63, 0x69, 0x70, 0x69, 0x65, 0x6e, 0x74, 0x7d, 0x12, 0x93, 0x01, 0x0a,
+	0x0a, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x12, 0x2c, 0x2e, 0x68, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e,
+	0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f,
+	0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x68, 0x79, 0x70, 0x65,
 	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31,
 	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x28, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x22, 0x12, 0x20,
-	0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62,
-	0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73,
-	0x42, 0xe8, 0x01, 0x0a, 0x18, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,
-	0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4e, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x63, 0x70, 0x2d, 0x69, 0x6e, 0x6e, 0x6f,
-	0x76, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e,
-	0x65, 0x2d, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68, 0x79, 0x70,
-	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76,
-	0x31, 0x3b, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x48, 0x4d,
-	0x58, 0xaa, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x4d, 0x61,
-	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72,
-	0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31, 0xe2,
-	0x02, 0x20, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c,
-	0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
-	0x74, 0x61, 0xea, 0x02, 0x16, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x3a, 0x3a,
-	0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x28, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x22,
+	0x12, 0x20, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69,
+	0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f,
+	0x72, 0x73, 0x12, 0xe5, 0x01, 0x0a, 0x19, 0x41, 0x6e, 0x6e, 0x6f, 0x75, 0x6e, 0x63, 0x65, 0x64,
+	0x53, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x12, 0x3b, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69,
+	0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6e, 0x6e,
+	0x6f, 0x75, 0x6e, 0x63, 0x65, 0x64, 0x53, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x4c, 0x6f, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x3c, 0x2e,
+	0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f,
+	0x78, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x41, 0x6e, 0x6e, 0x6f, 0x75, 0x6e,
+	0x63, 0x65, 0x64, 0x53, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x4d, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x47, 0x12, 0x45, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f,
+	0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x75,
+	0x6e, 0x63, 0x65, 0x64, 0x5f, 0x73, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6c, 0x6f, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x7b, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f,
+	0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x42, 0xe8, 0x01, 0x0a, 0x18, 0x63,
+	0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69,
+	0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72,
+	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
+	0x6d, 0x2f, 0x62, 0x63, 0x70, 0x2d, 0x69, 0x6e, 0x6e, 0x6f, 0x76, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2d, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
+	0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x76, 0x31, 0x3b, 0x6d, 0x61, 0x69, 0x6c,
+	0x62, 0x6f, 0x78, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x48, 0x4d, 0x58, 0xaa, 0x02, 0x14, 0x48, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e,
+	0x56, 0x31, 0xca, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d,
+	0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x20, 0x48, 0x79, 0x70, 0x65,
+	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31,
+	0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x16, 0x48,
+	0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x3a, 0x3a, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f,
+	0x78, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -7496,51 +9408,59 @@ func file_hyperlane_mailbox_v1_query_proto_rawDescGZIP() []byte {
 	return file_hyperlane_mailbox_v1_query_proto_rawDescData
 }
 
-var file_hyperlane_mailbox_v1_query_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_hyperlane_mailbox_v1_query_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_hyperlane_mailbox_v1_query_proto_goTypes = []interface{}{
-	(*QueryMailboxesRequest)(nil),         // 0: hyperlane.mailbox.v1.QueryMailboxesRequest
-	(*QueryMailboxesResponse)(nil),        // 1: hyperlane.mailbox.v1.QueryMailboxesResponse
-	(*QueryMailboxRequest)(nil),           // 2: hyperlane.mailbox.v1.QueryMailboxRequest
-	(*QueryMailboxResponse)(nil),          // 3: hyperlane.mailbox.v1.QueryMailboxResponse
-	(*QueryCountRequest)(nil),             // 4: hyperlane.mailbox.v1.QueryCountRequest
-	(*QueryCountResponse)(nil),            // 5: hyperlane.mailbox.v1.QueryCountResponse
-	(*QueryRootRequest)(nil),              // 6: hyperlane.mailbox.v1.QueryRootRequest
-	(*QueryRootResponse)(nil),             // 7: hyperlane.mailbox.v1.QueryRootResponse
-	(*QueryLatestCheckpointRequest)(nil),  // 8: hyperlane.mailbox.v1.QueryLatestCheckpointRequest
-	(*QueryLatestCheckpointResponse)(nil), // 9: hyperlane.mailbox.v1.QueryLatestCheckpointResponse
-	(*RecipientIsmRequest)(nil),           // 10: hyperlane.mailbox.v1.RecipientIsmRequest
-	(*RecipientIsmResponse)(nil),          // 11: hyperlane.mailbox.v1.RecipientIsmResponse
-	(*QueryValidatorsRequest)(nil),        // 12: hyperlane.mailbox.v1.QueryValidatorsRequest
-	(*QueryValidatorsResponse)(nil),       // 13: hyperlane.mailbox.v1.QueryValidatorsResponse
-	(*QueryParamsRequest)(nil),            // 14: hyperlane.mailbox.v1.QueryParamsRequest
-	(*QueryParamsResponse)(nil),           // 15: hyperlane.mailbox.v1.QueryParamsResponse
-	(*Mailbox)(nil),                       // 16: hyperlane.mailbox.v1.Mailbox
-	(*Validator)(nil),                     // 17: hyperlane.mailbox.v1.Validator
-	(*Params)(nil),                        // 18: hyperlane.mailbox.v1.Params
+	(*QueryMailboxesRequest)(nil),                  // 0: hyperlane.mailbox.v1.QueryMailboxesRequest
+	(*QueryMailboxesResponse)(nil),                 // 1: hyperlane.mailbox.v1.QueryMailboxesResponse
+	(*QueryMailboxRequest)(nil),                    // 2: hyperlane.mailbox.v1.QueryMailboxRequest
+	(*QueryMailboxResponse)(nil),                   // 3: hyperlane.mailbox.v1.QueryMailboxResponse
+	(*QueryCountRequest)(nil),                      // 4: hyperlane.mailbox.v1.QueryCountRequest
+	(*QueryCountResponse)(nil),                     // 5: hyperlane.mailbox.v1.QueryCountResponse
+	(*QueryRootRequest)(nil),                       // 6: hyperlane.mailbox.v1.QueryRootRequest
+	(*QueryRootResponse)(nil),                      // 7: hyperlane.mailbox.v1.QueryRootResponse
+	(*QueryDeliveredRequest)(nil),                  // 8: hyperlane.mailbox.v1.QueryDeliveredRequest
+	(*QueryDeliveredResponse)(nil),                 // 9: hyperlane.mailbox.v1.QueryDeliveredResponse
+	(*QueryLatestCheckpointRequest)(nil),           // 10: hyperlane.mailbox.v1.QueryLatestCheckpointRequest
+	(*QueryLatestCheckpointResponse)(nil),          // 11: hyperlane.mailbox.v1.QueryLatestCheckpointResponse
+	(*RecipientIsmRequest)(nil),                    // 12: hyperlane.mailbox.v1.RecipientIsmRequest
+	(*RecipientIsmResponse)(nil),                   // 13: hyperlane.mailbox.v1.RecipientIsmResponse
+	(*QueryValidatorsRequest)(nil),                 // 14: hyperlane.mailbox.v1.QueryValidatorsRequest
+	(*QueryValidatorsResponse)(nil),                // 15: hyperlane.mailbox.v1.QueryValidatorsResponse
+	(*QueryAnnouncedStorageLocationsRequest)(nil),  // 16: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest
+	(*QueryAnnouncedStorageLocationsResponse)(nil), // 17: hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse
+	(*QueryParamsRequest)(nil),                     // 18: hyperlane.mailbox.v1.QueryParamsRequest
+	(*QueryParamsResponse)(nil),                    // 19: hyperlane.mailbox.v1.QueryParamsResponse
+	(*Mailbox)(nil),                                // 20: hyperlane.mailbox.v1.Mailbox
+	(*Validator)(nil),                              // 21: hyperlane.mailbox.v1.Validator
+	(*Params)(nil),                                 // 22: hyperlane.mailbox.v1.Params
 }
 var file_hyperlane_mailbox_v1_query_proto_depIdxs = []int32{
-	16, // 0: hyperlane.mailbox.v1.QueryMailboxesResponse.mailbox:type_name -> hyperlane.mailbox.v1.Mailbox
-	16, // 1: hyperlane.mailbox.v1.QueryMailboxResponse.mailbox:type_name -> hyperlane.mailbox.v1.Mailbox
-	17, // 2: hyperlane.mailbox.v1.QueryValidatorsResponse.validator:type_name -> hyperlane.mailbox.v1.Validator
-	18, // 3: hyperlane.mailbox.v1.QueryParamsResponse.params:type_name -> hyperlane.mailbox.v1.Params
-	14, // 4: hyperlane.mailbox.v1.Query.Params:input_type -> hyperlane.mailbox.v1.QueryParamsRequest
+	20, // 0: hyperlane.mailbox.v1.QueryMailboxesResponse.mailboxes:type_name -> hyperlane.mailbox.v1.Mailbox
+	20, // 1: hyperlane.mailbox.v1.QueryMailboxResponse.mailbox:type_name -> hyperlane.mailbox.v1.Mailbox
+	21, // 2: hyperlane.mailbox.v1.QueryValidatorsResponse.validators:type_name -> hyperlane.mailbox.v1.Validator
+	22, // 3: hyperlane.mailbox.v1.QueryParamsResponse.params:type_name -> hyperlane.mailbox.v1.Params
+	18, // 4: hyperlane.mailbox.v1.Query.Params:input_type -> hyperlane.mailbox.v1.QueryParamsRequest
 	0,  // 5: hyperlane.mailbox.v1.Query.Mailboxes:input_type -> hyperlane.mailbox.v1.QueryMailboxesRequest
 	2,  // 6: hyperlane.mailbox.v1.Query.Mailbox:input_type -> hyperlane.mailbox.v1.QueryMailboxRequest
 	4,  // 7: hyperlane.mailbox.v1.Query.Count:input_type -> hyperlane.mailbox.v1.QueryCountRequest
 	6,  // 8: hyperlane.mailbox.v1.Query.Root:input_type -> hyperlane.mailbox.v1.QueryRootRequest
-	8,  // 9: hyperlane.mailbox.v1.Query.LatestCheckpoint:input_type -> hyperlane.mailbox.v1.QueryLatestCheckpointRequest
-	10, // 10: hyperlane.mailbox.v1.Query.RecipientIsm:input_type -> hyperlane.mailbox.v1.RecipientIsmRequest
-	12, // 11: hyperlane.mailbox.v1.Query.Validators:input_type -> hyperlane.mailbox.v1.QueryValidatorsRequest
-	15, // 12: hyperlane.mailbox.v1.Query.Params:output_type -> hyperlane.mailbox.v1.QueryParamsResponse
-	1,  // 13: hyperlane.mailbox.v1.Query.Mailboxes:output_type -> hyperlane.mailbox.v1.QueryMailboxesResponse
-	3,  // 14: hyperlane.mailbox.v1.Query.Mailbox:output_type -> hyperlane.mailbox.v1.QueryMailboxResponse
-	5,  // 15: hyperlane.mailbox.v1.Query.Count:output_type -> hyperlane.mailbox.v1.QueryCountResponse
-	7,  // 16: hyperlane.mailbox.v1.Query.Root:output_type -> hyperlane.mailbox.v1.QueryRootResponse
-	9,  // 17: hyperlane.mailbox.v1.Query.LatestCheckpoint:output_type -> hyperlane.mailbox.v1.QueryLatestCheckpointResponse
-	11, // 18: hyperlane.mailbox.v1.Query.RecipientIsm:output_type -> hyperlane.mailbox.v1.RecipientIsmResponse
-	13, // 19: hyperlane.mailbox.v1.Query.Validators:output_type -> hyperlane.mailbox.v1.QueryValidatorsResponse
-	12, // [12:20] is the sub-list for method output_type
-	4,  // [4:12] is the sub-list for method input_type
+	8,  // 9: hyperlane.mailbox.v1.Query.Delivered:input_type -> hyperlane.mailbox.v1.QueryDeliveredRequest
+	10, // 10: hyperlane.mailbox.v1.Query.LatestCheckpoint:input_type -> hyperlane.mailbox.v1.QueryLatestCheckpointRequest
+	12, // 11: hyperlane.mailbox.v1.Query.RecipientIsm:input_type -> hyperlane.mailbox.v1.RecipientIsmRequest
+	14, // 12: hyperlane.mailbox.v1.Query.Validators:input_type -> hyperlane.mailbox.v1.QueryValidatorsRequest
+	16, // 13: hyperlane.mailbox.v1.Query.AnnouncedStorageLocations:input_type -> hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsRequest
+	19, // 14: hyperlane.mailbox.v1.Query.Params:output_type -> hyperlane.mailbox.v1.QueryParamsResponse
+	1,  // 15: hyperlane.mailbox.v1.Query.Mailboxes:output_type -> hyperlane.mailbox.v1.QueryMailboxesResponse
+	3,  // 16: hyperlane.mailbox.v1.Query.Mailbox:output_type -> hyperlane.mailbox.v1.QueryMailboxResponse
+	5,  // 17: hyperlane.mailbox.v1.Query.Count:output_type -> hyperlane.mailbox.v1.QueryCountResponse
+	7,  // 18: hyperlane.mailbox.v1.Query.Root:output_type -> hyperlane.mailbox.v1.QueryRootResponse
+	9,  // 19: hyperlane.mailbox.v1.Query.Delivered:output_type -> hyperlane.mailbox.v1.QueryDeliveredResponse
+	11, // 20: hyperlane.mailbox.v1.Query.LatestCheckpoint:output_type -> hyperlane.mailbox.v1.QueryLatestCheckpointResponse
+	13, // 21: hyperlane.mailbox.v1.Query.RecipientIsm:output_type -> hyperlane.mailbox.v1.RecipientIsmResponse
+	15, // 22: hyperlane.mailbox.v1.Query.Validators:output_type -> hyperlane.mailbox.v1.QueryValidatorsResponse
+	17, // 23: hyperlane.mailbox.v1.Query.AnnouncedStorageLocations:output_type -> hyperlane.mailbox.v1.QueryAnnouncedStorageLocationsResponse
+	14, // [14:24] is the sub-list for method output_type
+	4,  // [4:14] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -7650,7 +9570,7 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_mailbox_v1_query_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryLatestCheckpointRequest); i {
+			switch v := v.(*QueryDeliveredRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7662,7 +9582,7 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_mailbox_v1_query_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryLatestCheckpointResponse); i {
+			switch v := v.(*QueryDeliveredResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7674,7 +9594,7 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_mailbox_v1_query_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RecipientIsmRequest); i {
+			switch v := v.(*QueryLatestCheckpointRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7686,7 +9606,7 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_mailbox_v1_query_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RecipientIsmResponse); i {
+			switch v := v.(*QueryLatestCheckpointResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7698,7 +9618,7 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_mailbox_v1_query_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryValidatorsRequest); i {
+			switch v := v.(*RecipientIsmRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7710,7 +9630,7 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_mailbox_v1_query_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryValidatorsResponse); i {
+			switch v := v.(*RecipientIsmResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7722,7 +9642,7 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_mailbox_v1_query_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryParamsRequest); i {
+			switch v := v.(*QueryValidatorsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7734,6 +9654,54 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			}
 		}
 		file_hyperlane_mailbox_v1_query_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryValidatorsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_hyperlane_mailbox_v1_query_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryAnnouncedStorageLocationsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_hyperlane_mailbox_v1_query_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryAnnouncedStorageLocationsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_hyperlane_mailbox_v1_query_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryParamsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_hyperlane_mailbox_v1_query_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*QueryParamsResponse); i {
 			case 0:
 				return &v.state
@@ -7752,7 +9720,7 @@ func file_hyperlane_mailbox_v1_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_hyperlane_mailbox_v1_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

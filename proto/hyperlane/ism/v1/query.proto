@@ -24,7 +24,7 @@ service Query {
 message QueryIsmsRequest {}
 
 message QueryIsmsResponse {
-  repeated Ism ism = 1
+  repeated Ism isms = 1
   [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 

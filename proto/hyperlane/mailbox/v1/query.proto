@@ -34,6 +34,10 @@ service Query {
     option (google.api.http).get = "/hyperlane/mailbox/v1/tree/root/{id}";
   }
 
+  rpc Delivered(QueryDeliveredRequest) returns (QueryDeliveredResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/delivered/{message_id}";
+  }
+
   rpc LatestCheckpoint(QueryLatestCheckpointRequest) returns (QueryLatestCheckpointResponse) {
     option (google.api.http).get = "/hyperlane/mailbox/v1/tree/latest_checkpoint/{id}";
   }
@@ -45,12 +49,16 @@ service Query {
   rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
     option (google.api.http).get = "/hyperlane/mailbox/v1/validators";
   }
+
+  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest) returns (QueryAnnouncedStorageLocationsResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/announced_storage_locations/{validator_address}";
+  }
 }
 
 message QueryMailboxesRequest {}
 
 message QueryMailboxesResponse {
-  repeated Mailbox mailbox = 1
+  repeated Mailbox mailboxes = 1
   [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
@@ -79,6 +87,14 @@ message QueryRootResponse {
   bytes root = 1;
 }
 
+message QueryDeliveredRequest {
+  string message_id = 1;
+}
+
+message QueryDeliveredResponse {
+  bool delivered = 1;
+}
+
 message QueryLatestCheckpointRequest {
   string id = 1;
 }
@@ -99,8 +115,16 @@ message RecipientIsmResponse {
 message QueryValidatorsRequest {}
 
 message QueryValidatorsResponse {
-  repeated Validator validator = 1
+  repeated Validator validators = 1
   [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryAnnouncedStorageLocationsRequest {
+  string validator_address = 1;
+}
+
+message QueryAnnouncedStorageLocationsResponse {
+  repeated string storage_locations = 1;
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
