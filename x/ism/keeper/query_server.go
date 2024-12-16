@@ -32,7 +32,7 @@ func (qs queryServer) Isms(ctx context.Context, _ *types.QueryIsmsRequest) (*typ
 	}
 
 	return &types.QueryIsmsResponse{
-		Ism: isms,
+		Isms: isms,
 	}, nil
 }
 

@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/collections"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
@@ -9,7 +8,6 @@ import (
 )
 
 func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessage []byte, metadata []byte) error {
-
 	message, err := types.ParseHyperlaneMessage(rawMessage)
 	if err != nil {
 		return err
@@ -33,14 +31,14 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 	}
 
 	// Check replay protection
-	received, err := k.Messages.Has(ctx, collections.Join(message.Recipient.Bytes(), message.Id().Bytes()))
+	received, err := k.Messages.Has(ctx, message.Id().Bytes())
 	if err != nil {
 		return err
 	}
 	if received {
 		return fmt.Errorf("already received messsage")
 	}
-	err = k.Messages.Set(ctx, collections.Join(message.Recipient.Bytes(), message.Id().Bytes()))
+	err = k.Messages.Set(ctx, message.Id().Bytes())
 	if err != nil {
 		return err
 	}
@@ -109,6 +107,11 @@ func (k Keeper) DispatchMessage(
 	count := tree.GetCount()
 
 	if err = tree.Insert(hypMsg.Id()); err != nil {
+		return util.HexAddress{}, err
+	}
+
+	err = k.Messages.Set(ctx, hypMsg.Id().Bytes())
+	if err != nil {
 		return util.HexAddress{}, err
 	}
 

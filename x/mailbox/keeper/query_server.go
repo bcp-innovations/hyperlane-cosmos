@@ -4,6 +4,7 @@ import (
 	"context"
 	"cosmossdk.io/collections"
 	"errors"
+	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,9 +23,40 @@ type queryServer struct {
 	k *Keeper
 }
 
-func (qs queryServer) RecipientIsm(ctx context.Context, request *types.RecipientIsmRequest) (*types.RecipientIsmResponse, error) {
+func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.QueryAnnouncedStorageLocationsRequest) (*types.QueryAnnouncedStorageLocationsResponse, error) {
+	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
+	if err != nil {
+		return nil, err
+	}
 
-	address, err := util.DecodeHexAddress(request.Recipient)
+	prefixedId := util.CreateValidatorStorageKey(validatorAddress)
+
+	validator, err := qs.k.Validators.Get(ctx, prefixedId.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryAnnouncedStorageLocationsResponse{
+		StorageLocations: validator.StorageLocations,
+	}, nil
+}
+
+func (qs queryServer) Delivered(ctx context.Context, req *types.QueryDeliveredRequest) (*types.QueryDeliveredResponse, error) {
+	messageId, err := util.DecodeEthHex(req.MessageId)
+	if err != nil {
+		return nil, err
+	}
+
+	delivered, err := qs.k.Messages.Has(ctx, messageId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryDeliveredResponse{Delivered: delivered}, nil
+}
+
+func (qs queryServer) RecipientIsm(ctx context.Context, req *types.RecipientIsmRequest) (*types.RecipientIsmResponse, error) {
+	address, err := util.DecodeHexAddress(req.Recipient)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +81,7 @@ func (qs queryServer) Mailboxes(ctx context.Context, _ *types.QueryMailboxesRequ
 	}
 
 	return &types.QueryMailboxesResponse{
-		Mailbox: mailboxes,
+		Mailboxes: mailboxes,
 	}, nil
 }
 
@@ -58,6 +90,15 @@ func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxReques
 	if err != nil {
 		return nil, err
 	}
+
+	mailboxExists, err := qs.k.Mailboxes.Has(ctx, id.Bytes())
+	if err != nil {
+		return nil, err
+	}
+	if !mailboxExists {
+		return nil, fmt.Errorf("mailbox with id %s doesn't exist", id.String())
+	}
+
 	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
 
 	return &types.QueryMailboxResponse{
@@ -133,7 +174,7 @@ func (qs queryServer) Validators(ctx context.Context, _ *types.QueryValidatorsRe
 	}
 
 	return &types.QueryValidatorsResponse{
-		Validator: validators,
+		Validators: validators,
 	}, nil
 }
 
