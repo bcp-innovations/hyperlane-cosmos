@@ -12,21 +12,39 @@ import (
 )
 
 func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounceValidator) (*types.MsgAnnounceValidatorResponse, error) {
-	validator, err := util.DecodeEthHex(req.Validator)
+	validatorKey, err := util.DecodeEthHex(req.Validator)
 	if err != nil {
 		return nil, err
 	}
 
 	// Ensure that validator hasn't already announced storage location.
-	prefixedId := util.CreateValidatorStorageKey(validator, req.StorageLocation)
+	prefixedId := util.CreateValidatorStorageKey(validatorKey)
 
 	exists, err := ms.k.Validators.Has(ctx, prefixedId.Bytes())
 	if err != nil {
 		return nil, err
 	}
 
+	var validator types.Validator
+
 	if exists {
-		return nil, fmt.Errorf("validator %s already announced storage location %s", req.Validator, req.StorageLocation)
+		validator, err = ms.k.Validators.Get(ctx, prefixedId.Bytes())
+		if err != nil {
+			return nil, err
+		}
+
+		for _, location := range validator.StorageLocation {
+			if location == req.StorageLocation {
+				return nil, fmt.Errorf("validator %s already announced storage location %s", req.Validator, req.StorageLocation)
+			}
+		}
+
+		validator.StorageLocation = append(validator.StorageLocation, req.StorageLocation)
+	} else {
+		validator = types.Validator{
+			Address:         util.EncodeEthHex(validatorKey),
+			StorageLocation: []string{req.StorageLocation},
+		}
 	}
 
 	sig, err := util.DecodeEthHex(req.Signature)
@@ -46,16 +64,11 @@ func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounc
 		return nil, err
 	}
 
-	if !bytes.Equal(crypto.FromECDSAPub(recoveredPubKey), validator) {
-		return nil, fmt.Errorf("validator %s doesn't match signature", util.EncodeEthHex(validator))
+	if !bytes.Equal(crypto.FromECDSAPub(recoveredPubKey), validatorKey) {
+		return nil, fmt.Errorf("validator %s doesn't match signature", util.EncodeEthHex(validatorKey))
 	}
 
-	v := types.Validator{
-		Address:         util.EncodeEthHex(validator),
-		StorageLocation: req.StorageLocation,
-	}
-
-	if err = ms.k.Validators.Set(ctx, validator, v); err != nil {
+	if err = ms.k.Validators.Set(ctx, prefixedId.Bytes(), validator); err != nil {
 		return nil, err
 	}
 

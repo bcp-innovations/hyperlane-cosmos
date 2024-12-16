@@ -27,7 +27,7 @@ message Validator {
   option (gogoproto.goproto_getters) = false;
 
   string address = 1;
-  string storageLocation = 2;
+  repeated string storageLocation = 2;
 }
 
 // Params defines the parameters of the module.

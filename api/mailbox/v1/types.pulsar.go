@@ -1202,6 +1202,52 @@ func (x *fastReflection_Tree) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.List = (*_Validator_2_list)(nil)
+
+type _Validator_2_list struct {
+	list *[]string
+}
+
+func (x *_Validator_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Validator_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_Validator_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Validator_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Validator_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Validator at list field StorageLocation as it is not of Message kind"))
+}
+
+func (x *_Validator_2_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Validator_2_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Validator_2_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
 	md_Validator                 protoreflect.MessageDescriptor
 	fd_Validator_address         protoreflect.FieldDescriptor
@@ -1286,8 +1332,8 @@ func (x *fastReflection_Validator) Range(f func(protoreflect.FieldDescriptor, pr
 			return
 		}
 	}
-	if x.StorageLocation != "" {
-		value := protoreflect.ValueOfString(x.StorageLocation)
+	if len(x.StorageLocation) != 0 {
+		value := protoreflect.ValueOfList(&_Validator_2_list{list: &x.StorageLocation})
 		if !f(fd_Validator_storageLocation, value) {
 			return
 		}
@@ -1310,7 +1356,7 @@ func (x *fastReflection_Validator) Has(fd protoreflect.FieldDescriptor) bool {
 	case "hyperlane.mailbox.v1.Validator.address":
 		return x.Address != ""
 	case "hyperlane.mailbox.v1.Validator.storageLocation":
-		return x.StorageLocation != ""
+		return len(x.StorageLocation) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Validator"))
@@ -1330,7 +1376,7 @@ func (x *fastReflection_Validator) Clear(fd protoreflect.FieldDescriptor) {
 	case "hyperlane.mailbox.v1.Validator.address":
 		x.Address = ""
 	case "hyperlane.mailbox.v1.Validator.storageLocation":
-		x.StorageLocation = ""
+		x.StorageLocation = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Validator"))
@@ -1351,8 +1397,11 @@ func (x *fastReflection_Validator) Get(descriptor protoreflect.FieldDescriptor) 
 		value := x.Address
 		return protoreflect.ValueOfString(value)
 	case "hyperlane.mailbox.v1.Validator.storageLocation":
-		value := x.StorageLocation
-		return protoreflect.ValueOfString(value)
+		if len(x.StorageLocation) == 0 {
+			return protoreflect.ValueOfList(&_Validator_2_list{})
+		}
+		listValue := &_Validator_2_list{list: &x.StorageLocation}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Validator"))
@@ -1376,7 +1425,9 @@ func (x *fastReflection_Validator) Set(fd protoreflect.FieldDescriptor, value pr
 	case "hyperlane.mailbox.v1.Validator.address":
 		x.Address = value.Interface().(string)
 	case "hyperlane.mailbox.v1.Validator.storageLocation":
-		x.StorageLocation = value.Interface().(string)
+		lv := value.List()
+		clv := lv.(*_Validator_2_list)
+		x.StorageLocation = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Validator"))
@@ -1397,10 +1448,14 @@ func (x *fastReflection_Validator) Set(fd protoreflect.FieldDescriptor, value pr
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Validator) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "hyperlane.mailbox.v1.Validator.storageLocation":
+		if x.StorageLocation == nil {
+			x.StorageLocation = []string{}
+		}
+		value := &_Validator_2_list{list: &x.StorageLocation}
+		return protoreflect.ValueOfList(value)
 	case "hyperlane.mailbox.v1.Validator.address":
 		panic(fmt.Errorf("field address of message hyperlane.mailbox.v1.Validator is not mutable"))
-	case "hyperlane.mailbox.v1.Validator.storageLocation":
-		panic(fmt.Errorf("field storageLocation of message hyperlane.mailbox.v1.Validator is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Validator"))
@@ -1417,7 +1472,8 @@ func (x *fastReflection_Validator) NewField(fd protoreflect.FieldDescriptor) pro
 	case "hyperlane.mailbox.v1.Validator.address":
 		return protoreflect.ValueOfString("")
 	case "hyperlane.mailbox.v1.Validator.storageLocation":
-		return protoreflect.ValueOfString("")
+		list := []string{}
+		return protoreflect.ValueOfList(&_Validator_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Validator"))
@@ -1491,9 +1547,11 @@ func (x *fastReflection_Validator) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.StorageLocation)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
+		if len(x.StorageLocation) > 0 {
+			for _, s := range x.StorageLocation {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -1525,11 +1583,13 @@ func (x *fastReflection_Validator) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.unknownFields)
 		}
 		if len(x.StorageLocation) > 0 {
-			i -= len(x.StorageLocation)
-			copy(dAtA[i:], x.StorageLocation)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StorageLocation)))
-			i--
-			dAtA[i] = 0x12
+			for iNdEx := len(x.StorageLocation) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.StorageLocation[iNdEx])
+				copy(dAtA[i:], x.StorageLocation[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StorageLocation[iNdEx])))
+				i--
+				dAtA[i] = 0x12
+			}
 		}
 		if len(x.Address) > 0 {
 			i -= len(x.Address)
@@ -1649,7 +1709,7 @@ func (x *fastReflection_Validator) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.StorageLocation = string(dAtA[iNdEx:postIndex])
+				x.StorageLocation = append(x.StorageLocation, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -2655,8 +2715,8 @@ type Validator struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Address         string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	StorageLocation string `protobuf:"bytes,2,opt,name=storageLocation,proto3" json:"storageLocation,omitempty"`
+	Address         string   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	StorageLocation []string `protobuf:"bytes,2,rep,name=storageLocation,proto3" json:"storageLocation,omitempty"`
 }
 
 func (x *Validator) Reset() {
@@ -2686,11 +2746,11 @@ func (x *Validator) GetAddress() string {
 	return ""
 }
 
-func (x *Validator) GetStorageLocation() string {
+func (x *Validator) GetStorageLocation() []string {
 	if x != nil {
 		return x.StorageLocation
 	}
-	return ""
+	return nil
 }
 
 // Params defines the parameters of the module.
@@ -2796,7 +2856,7 @@ var file_hyperlane_mailbox_v1_types_proto_rawDesc = []byte{
 	0x22, 0x55, 0x0a, 0x09, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x18, 0x0a,
 	0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
 	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x28, 0x0a, 0x0f, 0x73, 0x74, 0x6f, 0x72, 0x61,
-	0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09,
 	0x52, 0x0f, 0x73, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f,
 	0x6e, 0x3a, 0x04, 0x88, 0xa0, 0x1f, 0x00, 0x22, 0x3f, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d,
 	0x73, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
