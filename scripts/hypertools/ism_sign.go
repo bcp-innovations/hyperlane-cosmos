@@ -3,9 +3,11 @@ package main
 import (
 	"crypto/ecdsa"
 	"errors"
+	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/spf13/cobra"
 	"log"
 )
 
@@ -16,6 +18,28 @@ var PRIVATE_KEYS = []string{
 	"c87509a1c067bbde78beb793e6fa49e3462d7e7bcfbb4e3f79e926fc27ae42c4",
 	// PubKey: 0x04ce7edc292d7b747fab2f23584bbafaffde5c8ff17cf689969614441e0527b90015ea9fee96aed6d9c0fc2fbe0bd1883dee223b3200246ff1e21976bdbc9a0fc8
 	"ae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f",
+}
+
+func init() {
+	signCmd.Flags().StringVarP(&message, "message", "m", "", "Message to sign")
+	if err := signCmd.MarkFlagRequired("message"); err != nil {
+		panic(fmt.Errorf("failed to mark 'message' flag as required: %w", err))
+	}
+
+	signCmd.Flags().StringArrayVar(&privateKeys, "private-keys", []string{}, "Custom private keys")
+}
+
+var signCmd = &cobra.Command{
+	Use:   "sign",
+	Short: "Signs a message with the given private keys",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		signature, err := signMessage(message)
+		if err != nil {
+			return err
+		}
+		fmt.Println(signature)
+		return nil
+	},
 }
 
 func signMessage(message string) (string, error) {
