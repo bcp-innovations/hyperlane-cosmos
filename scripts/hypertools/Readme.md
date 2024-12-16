@@ -13,7 +13,7 @@ make build
 ### Message decoding
 
 ```shell
-./build/hypertools decode-message <hex-encoded message>
+./build/hypertools decode-message [hex-encoded message]
 ```
 
 **Example**
@@ -38,7 +38,7 @@ Used to generate generic warp transfer messages. The explanation and example
 will cover the case when tokens are sent from an EVM chain to a Cosmos chain.
 
 ```shell
- hypertools warp-transfer [sender-contract] [recipient-contract] [recipient-user] [amount] [flags]
+./build/hypertools warp-transfer [sender-contract] [recipient-contract] [recipient-user] [amount]
 ```
 
 **sender-contract**: is the contract id from the EVM chain. It must match the receiver-contract field in `http://localhost:1317/hyperlane/warp/v1/tokens`
@@ -64,7 +64,7 @@ Signs a message for usage with the MultiSig ISM. Use the `--private-keys` flag t
 specify a custom key-set. Otherwise, the default keys will be used.
 
 ```shell
-./build/hypertools sign <message>
+./build/hypertools sign [message]
 ```
 
 **Example**
