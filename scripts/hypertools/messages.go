@@ -66,11 +66,11 @@ func GenerateWarpTransfer(senderContract string, recipientContract string, recip
 	}
 
 	msg := util.HyperlaneMessage{
-		Version:     1,
+		Version:     3,
 		Nonce:       3,
 		Origin:      1,
 		Sender:      sender,
-		Destination: 0,
+		Destination: 1287,
 		Recipient:   recipient,
 		Body:        payload.Bytes(),
 	}
