@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Msg_CreateMultisigIsm_FullMethodName = "/hyperlane.ism.v1.Msg/CreateMultisigIsm"
 	Msg_CreateNoopIsm_FullMethodName     = "/hyperlane.ism.v1.Msg/CreateNoopIsm"
+	Msg_VerifyDryRun_FullMethodName      = "/hyperlane.ism.v1.Msg/VerifyDryRun"
 	Msg_UpdateParams_FullMethodName      = "/hyperlane.ism.v1.Msg/UpdateParams"
 )
 
@@ -30,6 +31,7 @@ const (
 type MsgClient interface {
 	CreateMultisigIsm(ctx context.Context, in *MsgCreateMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMultisigIsmResponse, error)
 	CreateNoopIsm(ctx context.Context, in *MsgCreateNoopIsm, opts ...grpc.CallOption) (*MsgCreateNoopIsmResponse, error)
+	VerifyDryRun(ctx context.Context, in *MsgVerifyDryRun, opts ...grpc.CallOption) (*MsgVerifyDryRunResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -60,6 +62,15 @@ func (c *msgClient) CreateNoopIsm(ctx context.Context, in *MsgCreateNoopIsm, opt
 	return out, nil
 }
 
+func (c *msgClient) VerifyDryRun(ctx context.Context, in *MsgVerifyDryRun, opts ...grpc.CallOption) (*MsgVerifyDryRunResponse, error) {
+	out := new(MsgVerifyDryRunResponse)
+	err := c.cc.Invoke(ctx, Msg_VerifyDryRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_UpdateParams_FullMethodName, in, out, opts...)
@@ -75,6 +86,7 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 type MsgServer interface {
 	CreateMultisigIsm(context.Context, *MsgCreateMultisigIsm) (*MsgCreateMultisigIsmResponse, error)
 	CreateNoopIsm(context.Context, *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error)
+	VerifyDryRun(context.Context, *MsgVerifyDryRun) (*MsgVerifyDryRunResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -89,6 +101,9 @@ func (UnimplementedMsgServer) CreateMultisigIsm(context.Context, *MsgCreateMulti
 }
 func (UnimplementedMsgServer) CreateNoopIsm(context.Context, *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNoopIsm not implemented")
+}
+func (UnimplementedMsgServer) VerifyDryRun(context.Context, *MsgVerifyDryRun) (*MsgVerifyDryRunResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyDryRun not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -142,6 +157,24 @@ func _Msg_CreateNoopIsm_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_VerifyDryRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgVerifyDryRun)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).VerifyDryRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_VerifyDryRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).VerifyDryRun(ctx, req.(*MsgVerifyDryRun))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -174,6 +207,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateNoopIsm",
 			Handler:    _Msg_CreateNoopIsm_Handler,
+		},
+		{
+			MethodName: "VerifyDryRun",
+			Handler:    _Msg_VerifyDryRun_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

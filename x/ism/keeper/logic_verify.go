@@ -11,7 +11,6 @@ import (
 )
 
 func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata []byte, message mailboxTypes.HyperlaneMessage) (verified bool, err error) {
-
 	// Retrieve ISM
 	ism, err := k.Isms.Get(ctx, ismId.String())
 	if err != nil {
