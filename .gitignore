@@ -26,3 +26,5 @@ debug_container.dot
 
 .idea
 /scripts/hypertools/build/
+/scripts/ethers/node_modules
+/scripts/ethers/.env
