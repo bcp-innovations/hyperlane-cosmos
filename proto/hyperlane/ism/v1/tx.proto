@@ -17,8 +17,6 @@ service Msg {
 
   rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
 
-  rpc VerifyDryRun(MsgVerifyDryRun) returns (MsgVerifyDryRunResponse);
-
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
@@ -43,21 +41,6 @@ message MsgCreateNoopIsm {
 }
 
 message MsgCreateNoopIsmResponse {}
-
-message MsgVerifyDryRun {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/ism/MsgVerifyDryRun";
-
-  // sender is the message sender.
-  string ism_id = 1;
-  string message = 2;
-  string metadata = 3;
-  string creator = 4;
-}
-
-message MsgVerifyDryRunResponse {
-  bool verified = 1;
-}
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {

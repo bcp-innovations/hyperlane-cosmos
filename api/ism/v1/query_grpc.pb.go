@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Isms_FullMethodName   = "/hyperlane.ism.v1.Query/Isms"
-	Query_Params_FullMethodName = "/hyperlane.ism.v1.Query/Params"
+	Query_Isms_FullMethodName         = "/hyperlane.ism.v1.Query/Isms"
+	Query_Params_FullMethodName       = "/hyperlane.ism.v1.Query/Params"
+	Query_VerifyDryRun_FullMethodName = "/hyperlane.ism.v1.Query/VerifyDryRun"
 )
 
 // QueryClient is the client API for Query service.
@@ -30,6 +31,7 @@ type QueryClient interface {
 	Isms(ctx context.Context, in *QueryIsmsRequest, opts ...grpc.CallOption) (*QueryIsmsResponse, error)
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	VerifyDryRun(ctx context.Context, in *QueryVerifyDryRunRequest, opts ...grpc.CallOption) (*QueryVerifyDryRunResponse, error)
 }
 
 type queryClient struct {
@@ -58,6 +60,15 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) VerifyDryRun(ctx context.Context, in *QueryVerifyDryRunRequest, opts ...grpc.CallOption) (*QueryVerifyDryRunResponse, error) {
+	out := new(QueryVerifyDryRunResponse)
+	err := c.cc.Invoke(ctx, Query_VerifyDryRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -65,6 +76,7 @@ type QueryServer interface {
 	Isms(context.Context, *QueryIsmsRequest) (*QueryIsmsResponse, error)
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	VerifyDryRun(context.Context, *QueryVerifyDryRunRequest) (*QueryVerifyDryRunResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -77,6 +89,9 @@ func (UnimplementedQueryServer) Isms(context.Context, *QueryIsmsRequest) (*Query
 }
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) VerifyDryRun(context.Context, *QueryVerifyDryRunRequest) (*QueryVerifyDryRunResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyDryRun not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -127,6 +142,24 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_VerifyDryRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVerifyDryRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).VerifyDryRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_VerifyDryRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).VerifyDryRun(ctx, req.(*QueryVerifyDryRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -141,6 +174,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "VerifyDryRun",
+			Handler:    _Query_VerifyDryRun_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

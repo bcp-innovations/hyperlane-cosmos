@@ -19,6 +19,10 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/hyperlane/ism/v1/params";
   }
+
+  rpc VerifyDryRun(QueryVerifyDryRunRequest) returns (QueryVerifyDryRunResponse) {
+    option (google.api.http).get = "/hyperlane/ism/v1/verify_dry_run/{ism_id}/{message}/{metadata}";
+  }
 }
 
 message QueryIsmsRequest {}
@@ -26,6 +30,16 @@ message QueryIsmsRequest {}
 message QueryIsmsResponse {
   repeated Ism isms = 1
   [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryVerifyDryRunRequest {
+  string ism_id = 1;
+  string message = 2;
+  string metadata = 3;
+}
+
+message QueryVerifyDryRunResponse {
+  bool verified = 1;
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.

@@ -111,6 +111,110 @@ func (m *QueryIsmsResponse) GetIsms() []Ism {
 	return nil
 }
 
+type QueryVerifyDryRunRequest struct {
+	IsmId    string `protobuf:"bytes,1,opt,name=ism_id,json=ismId,proto3" json:"ism_id,omitempty"`
+	Message  string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Metadata string `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+}
+
+func (m *QueryVerifyDryRunRequest) Reset()         { *m = QueryVerifyDryRunRequest{} }
+func (m *QueryVerifyDryRunRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryVerifyDryRunRequest) ProtoMessage()    {}
+func (*QueryVerifyDryRunRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4dfd752fcec82ce5, []int{2}
+}
+func (m *QueryVerifyDryRunRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryVerifyDryRunRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryVerifyDryRunRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryVerifyDryRunRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryVerifyDryRunRequest.Merge(m, src)
+}
+func (m *QueryVerifyDryRunRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryVerifyDryRunRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryVerifyDryRunRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryVerifyDryRunRequest proto.InternalMessageInfo
+
+func (m *QueryVerifyDryRunRequest) GetIsmId() string {
+	if m != nil {
+		return m.IsmId
+	}
+	return ""
+}
+
+func (m *QueryVerifyDryRunRequest) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *QueryVerifyDryRunRequest) GetMetadata() string {
+	if m != nil {
+		return m.Metadata
+	}
+	return ""
+}
+
+type QueryVerifyDryRunResponse struct {
+	Verified bool `protobuf:"varint,1,opt,name=verified,proto3" json:"verified,omitempty"`
+}
+
+func (m *QueryVerifyDryRunResponse) Reset()         { *m = QueryVerifyDryRunResponse{} }
+func (m *QueryVerifyDryRunResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryVerifyDryRunResponse) ProtoMessage()    {}
+func (*QueryVerifyDryRunResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4dfd752fcec82ce5, []int{3}
+}
+func (m *QueryVerifyDryRunResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryVerifyDryRunResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryVerifyDryRunResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryVerifyDryRunResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryVerifyDryRunResponse.Merge(m, src)
+}
+func (m *QueryVerifyDryRunResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryVerifyDryRunResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryVerifyDryRunResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryVerifyDryRunResponse proto.InternalMessageInfo
+
+func (m *QueryVerifyDryRunResponse) GetVerified() bool {
+	if m != nil {
+		return m.Verified
+	}
+	return false
+}
+
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 type QueryParamsRequest struct {
 }
@@ -119,7 +223,7 @@ func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
 func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsRequest) ProtoMessage()    {}
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4dfd752fcec82ce5, []int{2}
+	return fileDescriptor_4dfd752fcec82ce5, []int{4}
 }
 func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -158,7 +262,7 @@ func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
 func (m *QueryParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsResponse) ProtoMessage()    {}
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4dfd752fcec82ce5, []int{3}
+	return fileDescriptor_4dfd752fcec82ce5, []int{5}
 }
 func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -197,6 +301,8 @@ func (m *QueryParamsResponse) GetParams() Params {
 func init() {
 	proto.RegisterType((*QueryIsmsRequest)(nil), "hyperlane.ism.v1.QueryIsmsRequest")
 	proto.RegisterType((*QueryIsmsResponse)(nil), "hyperlane.ism.v1.QueryIsmsResponse")
+	proto.RegisterType((*QueryVerifyDryRunRequest)(nil), "hyperlane.ism.v1.QueryVerifyDryRunRequest")
+	proto.RegisterType((*QueryVerifyDryRunResponse)(nil), "hyperlane.ism.v1.QueryVerifyDryRunResponse")
 	proto.RegisterType((*QueryParamsRequest)(nil), "hyperlane.ism.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "hyperlane.ism.v1.QueryParamsResponse")
 }
@@ -204,32 +310,40 @@ func init() {
 func init() { proto.RegisterFile("hyperlane/ism/v1/query.proto", fileDescriptor_4dfd752fcec82ce5) }
 
 var fileDescriptor_4dfd752fcec82ce5 = []byte{
-	// 385 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xc9, 0xa8, 0x2c, 0x48,
-	0x2d, 0xca, 0x49, 0xcc, 0x4b, 0xd5, 0xcf, 0x2c, 0xce, 0xd5, 0x2f, 0x33, 0xd4, 0x2f, 0x2c, 0x4d,
-	0x2d, 0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x80, 0xcb, 0xea, 0x65, 0x16, 0xe7,
-	0xea, 0x95, 0x19, 0x4a, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x25, 0xf5, 0x41, 0x2c, 0x88, 0x3a,
-	0x29, 0x4c, 0x53, 0x4a, 0x2a, 0x0b, 0x52, 0x8b, 0x61, 0xb2, 0xe9, 0xf9, 0xf9, 0xe9, 0x39, 0xa9,
-	0xfa, 0x89, 0x05, 0x99, 0xfa, 0x89, 0x79, 0x79, 0xf9, 0x25, 0x89, 0x25, 0x99, 0xf9, 0x79, 0x30,
-	0x59, 0xe9, 0xe4, 0xfc, 0xe2, 0xdc, 0xfc, 0x62, 0x88, 0xbd, 0x68, 0x0e, 0x90, 0x12, 0x4c, 0xcc,
-	0xcd, 0xcc, 0xcb, 0xd7, 0x07, 0x93, 0x10, 0x21, 0x25, 0x21, 0x2e, 0x81, 0x40, 0x90, 0x0a, 0xcf,
-	0xe2, 0xdc, 0xe2, 0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0x25, 0x4f, 0x2e, 0x41, 0x24, 0xb1,
-	0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54, 0x21, 0x13, 0x2e, 0x96, 0xcc, 0xe2, 0xdc, 0x62, 0x09, 0x46,
-	0x05, 0x66, 0x0d, 0x6e, 0x23, 0x51, 0x3d, 0x74, 0xbf, 0xe8, 0x79, 0x16, 0xe7, 0x3a, 0x71, 0x9e,
-	0xb8, 0x27, 0xcf, 0xb0, 0xe2, 0xf9, 0x06, 0x2d, 0xc6, 0x20, 0xb0, 0x6a, 0x25, 0x11, 0x2e, 0x21,
-	0xb0, 0x51, 0x01, 0x89, 0x45, 0x89, 0x08, 0x0b, 0x82, 0xb8, 0x84, 0x51, 0x44, 0xa1, 0x56, 0x58,
-	0x73, 0xb1, 0x15, 0x80, 0x45, 0x24, 0x18, 0x15, 0x18, 0x35, 0xb8, 0x8d, 0x24, 0x30, 0x2d, 0x81,
-	0xe8, 0x40, 0xb6, 0x07, 0xaa, 0xc5, 0xe8, 0x23, 0x23, 0x17, 0x2b, 0xd8, 0x50, 0xa1, 0x7c, 0x2e,
-	0x16, 0x90, 0xcb, 0x85, 0x94, 0x30, 0xb5, 0xa3, 0x7b, 0x55, 0x4a, 0x19, 0xaf, 0x1a, 0x88, 0xbb,
-	0x94, 0xe4, 0x9a, 0x2e, 0x3f, 0x99, 0xcc, 0x24, 0x21, 0x24, 0xa6, 0x8f, 0x11, 0x31, 0x20, 0x4f,
-	0x0a, 0x95, 0x73, 0xb1, 0x41, 0xdc, 0x25, 0xa4, 0x82, 0xc3, 0x38, 0x14, 0xef, 0x4b, 0xa9, 0x12,
-	0x50, 0x05, 0xb5, 0x56, 0x01, 0x6c, 0xad, 0x94, 0x90, 0x04, 0xa6, 0xb5, 0x10, 0x3f, 0x3b, 0x05,
-	0x9e, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb,
-	0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x79, 0x7a, 0x66, 0x49, 0x46,
-	0x69, 0x92, 0x5e, 0x72, 0x7e, 0xae, 0x7e, 0x52, 0x72, 0x81, 0x6e, 0x66, 0x5e, 0x5e, 0x7e, 0x19,
-	0x24, 0xa1, 0x20, 0x4c, 0xd3, 0x85, 0xa6, 0x95, 0x0a, 0xb0, 0xb1, 0xe0, 0x34, 0x96, 0xc4, 0x06,
-	0x4e, 0x16, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb3, 0x9b, 0xc5, 0xbc, 0xca, 0x02, 0x00,
-	0x00,
+	// 522 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x53, 0x4d, 0x6b, 0x13, 0x41,
+	0x18, 0xce, 0x36, 0x6d, 0x4c, 0xa7, 0x1e, 0xda, 0xb1, 0x95, 0x75, 0x94, 0x35, 0xac, 0x0a, 0xa5,
+	0xd2, 0x1d, 0x1a, 0x85, 0x1e, 0x04, 0x91, 0x22, 0x42, 0x6e, 0x76, 0x0f, 0x1e, 0xbc, 0x84, 0x49,
+	0x32, 0x6e, 0x07, 0x3a, 0x33, 0xdb, 0x9d, 0xdd, 0xe8, 0x52, 0x7a, 0xf1, 0x17, 0x08, 0xfe, 0x04,
+	0x2f, 0xde, 0xf4, 0x67, 0xf4, 0x58, 0xf0, 0xe2, 0x49, 0x24, 0x11, 0xfc, 0x1b, 0xb2, 0xef, 0x6c,
+	0xd2, 0x34, 0xdb, 0xaa, 0x97, 0x65, 0xe7, 0xfd, 0x78, 0x9e, 0xe7, 0xfd, 0x42, 0x77, 0x0e, 0xf2,
+	0x98, 0x27, 0x87, 0x4c, 0x71, 0x2a, 0x8c, 0xa4, 0xc3, 0x1d, 0x7a, 0x94, 0xf1, 0x24, 0x0f, 0xe2,
+	0x44, 0xa7, 0x1a, 0xaf, 0x4e, 0xbd, 0x81, 0x30, 0x32, 0x18, 0xee, 0x90, 0xf5, 0x48, 0x47, 0x1a,
+	0x9c, 0xb4, 0xf8, 0xb3, 0x71, 0xa4, 0x8a, 0x92, 0xe6, 0x31, 0x37, 0x13, 0x6f, 0xa4, 0x75, 0x74,
+	0xc8, 0x29, 0x8b, 0x05, 0x65, 0x4a, 0xe9, 0x94, 0xa5, 0x42, 0xab, 0x89, 0xf7, 0x76, 0x5f, 0x1b,
+	0xa9, 0x8d, 0xe5, 0x9d, 0x13, 0x40, 0xd6, 0x98, 0x14, 0x4a, 0x53, 0xf8, 0x5a, 0x93, 0x8f, 0xd1,
+	0xea, 0x7e, 0x11, 0xd1, 0x31, 0xd2, 0x84, 0xfc, 0x28, 0xe3, 0x26, 0xf5, 0x3b, 0x68, 0x6d, 0xc6,
+	0x66, 0x62, 0xad, 0x0c, 0xc7, 0x8f, 0xd1, 0xa2, 0x30, 0xd2, 0xb8, 0x4e, 0xab, 0xbe, 0xb9, 0xd2,
+	0xde, 0x08, 0xe6, 0x6b, 0x09, 0x3a, 0x46, 0xee, 0x2d, 0x9f, 0xfe, 0xb8, 0x5b, 0xfb, 0xfc, 0xfb,
+	0xeb, 0x96, 0x13, 0x42, 0xb4, 0x1f, 0x21, 0x17, 0xa0, 0x5e, 0xf1, 0x44, 0xbc, 0xc9, 0x9f, 0x27,
+	0x79, 0x98, 0xa9, 0x92, 0x06, 0x6f, 0xa0, 0x86, 0x30, 0xb2, 0x2b, 0x06, 0xae, 0xd3, 0x72, 0x36,
+	0x97, 0xc3, 0x25, 0x61, 0x64, 0x67, 0x80, 0x5d, 0x74, 0x4d, 0x72, 0x63, 0x58, 0xc4, 0xdd, 0x05,
+	0xb0, 0x4f, 0x9e, 0x98, 0xa0, 0xa6, 0xe4, 0x29, 0x1b, 0xb0, 0x94, 0xb9, 0x75, 0x70, 0x4d, 0xdf,
+	0xfe, 0x2e, 0xba, 0x75, 0x09, 0x51, 0xa9, 0x9d, 0xa0, 0xe6, 0xb0, 0xb0, 0x0b, 0x6e, 0xb9, 0x9a,
+	0xe1, 0xf4, 0xed, 0xaf, 0x23, 0x0c, 0x89, 0x2f, 0x59, 0xc2, 0xce, 0x5b, 0x10, 0xa2, 0x1b, 0x17,
+	0xac, 0x25, 0xd0, 0x13, 0xd4, 0x88, 0xc1, 0x02, 0x30, 0x2b, 0x6d, 0xb7, 0xda, 0x06, 0x9b, 0x31,
+	0xdb, 0x89, 0x32, 0xa5, 0xfd, 0xa9, 0x8e, 0x96, 0x00, 0x14, 0x6b, 0xb4, 0x58, 0xf4, 0x16, 0xfb,
+	0xd5, 0xf4, 0xf9, 0x61, 0x90, 0x7b, 0x7f, 0x8d, 0xb1, 0xba, 0x7c, 0xef, 0xfd, 0xb7, 0x5f, 0x1f,
+	0x17, 0x5c, 0x7c, 0x93, 0x56, 0x56, 0xa7, 0x18, 0x03, 0x7e, 0x8b, 0x1a, 0x56, 0x17, 0xbe, 0x7f,
+	0x05, 0xdc, 0x85, 0xf2, 0xc9, 0x83, 0x7f, 0x44, 0x95, 0xb4, 0x2d, 0xa0, 0x25, 0xd8, 0xad, 0xd2,
+	0xda, 0x9a, 0xf1, 0x17, 0x07, 0x5d, 0x9f, 0x1d, 0x09, 0xde, 0xba, 0x02, 0xf9, 0x92, 0x05, 0x21,
+	0x0f, 0xff, 0x2b, 0xb6, 0xd4, 0xf2, 0x02, 0xb4, 0x3c, 0xc3, 0x4f, 0xab, 0x5a, 0x60, 0xd6, 0x79,
+	0x77, 0x90, 0xe4, 0xdd, 0x24, 0x53, 0xf4, 0xd8, 0x6e, 0xdd, 0x09, 0x3d, 0x2e, 0x17, 0x0b, 0xfe,
+	0xec, 0x1e, 0x9d, 0xec, 0xed, 0x9f, 0x8e, 0x3c, 0xe7, 0x6c, 0xe4, 0x39, 0x3f, 0x47, 0x9e, 0xf3,
+	0x61, 0xec, 0xd5, 0xce, 0xc6, 0x5e, 0xed, 0xfb, 0xd8, 0xab, 0xbd, 0xde, 0x8d, 0x44, 0x7a, 0x90,
+	0xf5, 0x82, 0xbe, 0x96, 0xb4, 0xd7, 0x8f, 0xb7, 0x85, 0x52, 0x7a, 0x68, 0x8f, 0xef, 0x9c, 0x73,
+	0xbb, 0xbc, 0xbf, 0x77, 0x40, 0x0e, 0x77, 0xdb, 0x6b, 0xc0, 0xa9, 0x3d, 0xfa, 0x13, 0x00, 0x00,
+	0xff, 0xff, 0x3d, 0x5c, 0x2b, 0xcf, 0x1e, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -247,6 +361,7 @@ type QueryClient interface {
 	Isms(ctx context.Context, in *QueryIsmsRequest, opts ...grpc.CallOption) (*QueryIsmsResponse, error)
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	VerifyDryRun(ctx context.Context, in *QueryVerifyDryRunRequest, opts ...grpc.CallOption) (*QueryVerifyDryRunResponse, error)
 }
 
 type queryClient struct {
@@ -275,11 +390,21 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) VerifyDryRun(ctx context.Context, in *QueryVerifyDryRunRequest, opts ...grpc.CallOption) (*QueryVerifyDryRunResponse, error) {
+	out := new(QueryVerifyDryRunResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.ism.v1.Query/VerifyDryRun", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	Isms(context.Context, *QueryIsmsRequest) (*QueryIsmsResponse, error)
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	VerifyDryRun(context.Context, *QueryVerifyDryRunRequest) (*QueryVerifyDryRunResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -291,6 +416,9 @@ func (*UnimplementedQueryServer) Isms(ctx context.Context, req *QueryIsmsRequest
 }
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) VerifyDryRun(ctx context.Context, req *QueryVerifyDryRunRequest) (*QueryVerifyDryRunResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyDryRun not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -333,6 +461,24 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_VerifyDryRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVerifyDryRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).VerifyDryRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.ism.v1.Query/VerifyDryRun",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).VerifyDryRun(ctx, req.(*QueryVerifyDryRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "hyperlane.ism.v1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -344,6 +490,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "VerifyDryRun",
+			Handler:    _Query_VerifyDryRun_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -406,6 +556,83 @@ func (m *QueryIsmsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i--
 			dAtA[i] = 0xa
 		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryVerifyDryRunRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryVerifyDryRunRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryVerifyDryRunRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Metadata) > 0 {
+		i -= len(m.Metadata)
+		copy(dAtA[i:], m.Metadata)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Metadata)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.IsmId) > 0 {
+		i -= len(m.IsmId)
+		copy(dAtA[i:], m.IsmId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.IsmId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryVerifyDryRunResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryVerifyDryRunResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryVerifyDryRunResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Verified {
+		i--
+		if m.Verified {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -497,6 +724,39 @@ func (m *QueryIsmsResponse) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
+	}
+	return n
+}
+
+func (m *QueryVerifyDryRunRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.IsmId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Metadata)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryVerifyDryRunResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Verified {
+		n += 2
 	}
 	return n
 }
@@ -640,6 +900,222 @@ func (m *QueryIsmsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryVerifyDryRunRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryVerifyDryRunRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryVerifyDryRunRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IsmId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Metadata = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryVerifyDryRunResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryVerifyDryRunResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryVerifyDryRunResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Verified", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Verified = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

@@ -20,7 +20,6 @@ func GetTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		CmdCreateMultiSigIsm(),
 		CmdCreateNoopIsm(),
-		CmdVerifyDryRun(),
 	)
 
 	return txCmd

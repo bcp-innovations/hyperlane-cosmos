@@ -4,7 +4,9 @@ import (
 	"context"
 	"cosmossdk.io/collections"
 	"errors"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/ism/types"
+	mailboxTypes "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -33,6 +35,37 @@ func (qs queryServer) Isms(ctx context.Context, _ *types.QueryIsmsRequest) (*typ
 
 	return &types.QueryIsmsResponse{
 		Isms: isms,
+	}, nil
+}
+
+func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDryRunRequest) (*types.QueryVerifyDryRunResponse, error) {
+	rawMessage, err := util.DecodeEthHex(req.Message)
+	if err != nil {
+		return nil, err
+	}
+
+	message, err := mailboxTypes.ParseHyperlaneMessage(rawMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	metadata, err := util.DecodeEthHex(req.Metadata)
+	if err != nil {
+		return nil, err
+	}
+
+	ismId, err := util.DecodeHexAddress(req.IsmId)
+	if err != nil {
+		return nil, err
+	}
+
+	verified, err := qs.k.Verify(ctx, ismId, metadata, message)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryVerifyDryRunResponse{
+		Verified: verified,
 	}, nil
 }
 
