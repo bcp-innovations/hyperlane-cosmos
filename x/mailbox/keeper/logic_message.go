@@ -118,7 +118,7 @@ func (k Keeper) DispatchMessage(
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
-		MessageId: hypMsg.String(),
+		MessageId: hypMsg.Id().String(),
 		Index:     count,
 	})
 
