@@ -120,6 +120,7 @@ func (k Keeper) DispatchMessage(
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
 		MessageId: hypMsg.Id().String(),
 		Index:     count,
+		MailboxId: mailbox.Id,
 	})
 
 	mailbox.Tree = types.ProtoFromTree(tree)

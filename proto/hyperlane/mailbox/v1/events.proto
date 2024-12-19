@@ -26,4 +26,5 @@ message Process {
 message InsertedIntoTree {
   string message_id = 1;
   uint32 index = 2;
+  string mailbox_id = 3;
 }
