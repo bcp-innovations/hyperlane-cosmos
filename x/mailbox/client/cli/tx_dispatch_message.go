@@ -14,7 +14,7 @@ func CmdDispatchMessage() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "dispatch [mailbox-id] [recipient] [destination-domain] [message-body]",
 		Short: "Dispatch a Hyperlane message",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			mailboxId := args[0]
 			recipient := args[1]
