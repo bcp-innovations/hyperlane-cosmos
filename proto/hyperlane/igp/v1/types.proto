@@ -1,0 +1,18 @@
+syntax = "proto3";
+package hyperlane.igp.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/igp/types";
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+
+// Params defines the parameters of the module.
+message Params { option (amino.name) = "hyperlane/igp/Params"; }
+
+// GenesisState is the state that must be provided at genesis.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}

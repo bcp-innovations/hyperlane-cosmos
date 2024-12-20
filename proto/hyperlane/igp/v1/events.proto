@@ -1,0 +1,11 @@
+syntax = "proto3";
+package hyperlane.igp.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/igp/types";
+
+message GasPayment {
+  string message_id = 1;
+  uint32 destination = 2;
+  uint64 gas_amount = 3;
+  uint64 payment = 4;
+}
