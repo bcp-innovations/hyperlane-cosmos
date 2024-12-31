@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -87,10 +88,8 @@ func (k Keeper) DispatchMessage(
 		return util.HexAddress{}, err
 	}
 
-	mailbox.MessageSent++
-
 	hypMsg := types.HyperlaneMessage{
-		Version:     1,
+		Version:     3,
 		Nonce:       mailbox.MessageSent,
 		Origin:      k.LocalDomain(),
 		Sender:      sender,
@@ -98,6 +97,7 @@ func (k Keeper) DispatchMessage(
 		Recipient:   recipient,
 		Body:        body,
 	}
+	mailbox.MessageSent++
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -143,5 +143,5 @@ func (k Keeper) DispatchMessage(
 
 func (k Keeper) LocalDomain() uint32 {
 	// TODO use global param
-	return 100
+	return 75898669
 }
