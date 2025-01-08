@@ -10,7 +10,6 @@ import (
 // keeper which must take particular actions
 
 type MailboxHooks interface {
-	// TODO should we return an error?
 	Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message HyperlaneMessage) error
 }
 

@@ -59,7 +59,10 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 		return fmt.Errorf("threshold not reached")
 	}
 
-	_ = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)
+	err = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)
+	if err != nil {
+		return err
+	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.Process{
 		OriginMailboxId: mailboxIdString,

@@ -25,10 +25,11 @@ type Keeper struct {
 	authority string
 
 	// state management
-	HypTokens collections.Map[[]byte, types.HypToken]
-	Params    collections.Item[types.Params]
-	Schema    collections.Schema
-	Sequence  collections.Sequence
+
+	Params         collections.Item[types.Params]
+	Schema         collections.Schema
+	HypTokens      collections.Map[[]byte, types.HypToken]
+	HypTokensCount collections.Sequence
 
 	bankKeeper    bankkeeper.Keeper
 	mailboxKeeper *mailboxkeeper.Keeper
@@ -48,14 +49,14 @@ func NewKeeper(
 	}
 	sb := collections.NewSchemaBuilder(storeService)
 	k := Keeper{
-		cdc:           cdc,
-		addressCodec:  addressCodec,
-		authority:     authority,
-		HypTokens:     collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.BytesKey, codec.CollValue[types.HypToken](cdc)),
-		Params:        collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		Sequence:      collections.NewSequence(sb, types.HypTokensCountKey, "hyptokens_count"),
-		bankKeeper:    bankKeeper,
-		mailboxKeeper: mailboxKeeper,
+		cdc:            cdc,
+		addressCodec:   addressCodec,
+		authority:      authority,
+		HypTokens:      collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.BytesKey, codec.CollValue[types.HypToken](cdc)),
+		Params:         collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		HypTokensCount: collections.NewSequence(sb, types.HypTokensCountKey, "hyptokens_count"),
+		bankKeeper:     bankKeeper,
+		mailboxKeeper:  mailboxKeeper,
 	}
 
 	schema, err := sb.Build()
@@ -68,7 +69,8 @@ func NewKeeper(
 	return k
 }
 
-func (k Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message mailboxTypes.HyperlaneMessage) error {
+func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message mailboxTypes.HyperlaneMessage) error {
+	goCtx := sdk.UnwrapSDKContext(ctx)
 
 	token, err := k.HypTokens.Get(ctx, message.Recipient.Bytes())
 	if err != nil {
@@ -80,20 +82,27 @@ func (k Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin ui
 		return err
 	}
 
-	if util.HexAddress(token.OriginMailbox).String() != mailboxId.String() {
+	if util.HexAddress(token.OriginMailbox) != mailboxId {
 		return fmt.Errorf("invalid origin mailbox address")
 	}
 
-	// Check token type
-	goCtx := sdk.UnwrapSDKContext(ctx)
-	if token.TokenType == types.HYP_TOKEN_COLLATERAL {
-		// TODO emit event on failure
-		k.RemoteReceiveCollateral(goCtx, token, payload)
-	} else if token.TokenType == types.HYP_TOKEN_SYNTHETIC {
-		k.RemoteReceiveSynthetic(goCtx, token, payload)
-	} else {
-		// TODO emit event
+	if origin != token.ReceiverDomain {
+		return fmt.Errorf("invalid origin denom")
 	}
 
-	return nil
+	if sender != util.HexAddress(token.ReceiverContract) {
+		return fmt.Errorf("invalid receiver contract")
+	}
+
+	// Check token type
+	err = nil
+	if token.TokenType == types.HYP_TOKEN_COLLATERAL {
+		err = k.RemoteReceiveCollateral(goCtx, token, payload)
+	} else if token.TokenType == types.HYP_TOKEN_SYNTHETIC {
+		err = k.RemoteReceiveSynthetic(goCtx, token, payload)
+	} else {
+		panic("inconsistent store")
+	}
+
+	return err
 }

@@ -14,7 +14,7 @@ type msgServer struct {
 }
 
 func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCreateSyntheticToken) (*types.MsgCreateSyntheticTokenResponse, error) {
-	next, err := ms.k.Sequence.Next(ctx)
+	next, err := ms.k.HypTokensCount.Next(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 
 func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (*types.MsgCreateCollateralTokenResponse, error) {
 
-	next, err := ms.k.Sequence.Next(ctx)
+	next, err := ms.k.HypTokensCount.Next(ctx)
 	if err != nil {
 		return nil, err
 	}
