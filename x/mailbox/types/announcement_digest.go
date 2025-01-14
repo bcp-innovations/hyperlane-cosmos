@@ -2,11 +2,12 @@ package types
 
 import (
 	"encoding/binary"
-	"github.com/ethereum/go-ethereum/crypto"
 	"slices"
+
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
-func GetAnnouncementDigest(storageLocation string, domainId uint32, mailbox []byte) []byte {
+func GetAnnouncementDigest(storageLocation string, domainId uint32, mailbox []byte) [32]byte {
 	var domainHashBytes []byte
 
 	domainIdBytes := make([]byte, 4)
@@ -26,5 +27,5 @@ func GetAnnouncementDigest(storageLocation string, domainId uint32, mailbox []by
 		[]byte(storageLocation),
 	)
 
-	return crypto.Keccak256(announcementDigestBytes)
+	return crypto.Keccak256Hash(announcementDigestBytes)
 }

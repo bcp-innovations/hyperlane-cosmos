@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -56,13 +57,15 @@ func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounc
 	}
 
 	announcementDigest := types.GetAnnouncementDigest(req.StorageLocation, ms.k.LocalDomain(), mailboxId.Bytes())
+	ethSigningHash := util.GetEthSigningHash(announcementDigest[:])
 
-	recoveredPubKey, err := crypto.SigToPub(announcementDigest, sig)
+	recoveredPubKey, err := util.RecoverEthSignature(ethSigningHash[:], sig)
 	if err != nil {
 		return nil, err
 	}
 
-	if !bytes.Equal(crypto.FromECDSAPub(recoveredPubKey), validatorKey) {
+	recoveredAddress := crypto.PubkeyToAddress(*recoveredPubKey)
+	if !bytes.Equal(recoveredAddress[:], validatorKey) {
 		return nil, fmt.Errorf("validator %s doesn't match signature", util.EncodeEthHex(validatorKey))
 	}
 

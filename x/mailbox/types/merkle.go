@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/hex"
 	"fmt"
+
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -140,19 +141,19 @@ func (tree *MerkleTree) Insert(node [32]byte) error {
 
 // rootWithCtx calculates and returns tree's current root given array of zero hashes
 func (tree *MerkleTree) rootWithCtx(zeroes [TreeDepth][32]byte) [32]byte {
-	var current []byte
+	var current [32]byte = [32]byte{} // zero initialized 32 byte long hash
 	index := tree.count
 
 	for i := uint64(0); i < TreeDepth; i++ {
 		ithBit := (index >> i) & 0x01
 		next := tree.branch[i]
 		if ithBit == 1 {
-			current = crypto.Keccak256(next[:], current[:])
+			current = crypto.Keccak256Hash(next[:], current[:])
 		} else {
-			current = crypto.Keccak256(current[:], zeroes[i][:])
+			current = crypto.Keccak256Hash(current[:], zeroes[i][:])
 		}
 	}
-	return [32]byte(current)
+	return current
 }
 
 // root calculates and returns tree's current root
