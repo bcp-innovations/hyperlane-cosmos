@@ -13,7 +13,7 @@ import (
 
 func multiSigDigest(metadata *types.Metadata, message *mailboxTypes.HyperlaneMessage) [32]byte {
 	messageId := message.Id()
-	signedRoot := types.BranchRoot(messageId, metadata.Proof(), metadata.MessageIndex())
+	signedRoot := mailboxTypes.BranchRoot(messageId, metadata.Proof(), metadata.MessageIndex())
 
 	return types.CheckpointDigest(
 		message.Origin,
