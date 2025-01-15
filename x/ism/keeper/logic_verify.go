@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
+	"strings"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/ism/types"
@@ -40,7 +41,7 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 		}
 
 		if metadata.SignedIndex() > metadata.MessageIndex() {
-			// TODO: invalid merkle index metadata, have to understand this first!
+			return false, fmt.Errorf("invalid signed index")
 		}
 
 		digest := multiSigDigest(&metadata, &message)
@@ -53,7 +54,7 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 		// Get MultiSig ISM validator public keys
 		validatorPubKeys := make(map[string]bool, len(multiSigIsm.ValidatorPubKeys))
 		for _, pubKeyStr := range multiSigIsm.ValidatorPubKeys {
-			validatorPubKeys[pubKeyStr] = true
+			validatorPubKeys[strings.ToLower(pubKeyStr)] = true
 		}
 
 		signatures, validSignatures := metadata.SignatureCount(), uint32(0)
@@ -75,8 +76,9 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 				continue // Skip invalid signatures
 			}
 
-			pubKeyHex := hex.EncodeToString(crypto.FromECDSAPub(recoveredPubkey))
-			if validatorPubKeys[pubKeyHex] {
+			address := crypto.PubkeyToAddress(*recoveredPubkey)
+			pubKeyHex := hex.EncodeToString(address[:])
+			if validatorPubKeys["0x"+pubKeyHex] { // TODO: custom protbuf type that ensures hex address
 				validSignatures++
 			}
 		}

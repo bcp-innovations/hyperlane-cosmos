@@ -39,6 +39,7 @@ func NewMetadata(metadata []byte) (Metadata, error) {
 	}
 
 	signatures := len(metadata) - SIGNATURES_OFFSET
+
 	if signatures%SIGNATURE_LENGTH != 0 {
 		return Metadata{}, fmt.Errorf("invalid signatures length in metadata")
 	}
@@ -68,7 +69,7 @@ func (m *Metadata) SignedIndex() uint32 {
 
 func (m *Metadata) SignedMessageId() [32]byte {
 	var messageId [32]byte
-	copy(messageId[:], (m.raw)[:32])
+	copy(messageId[:], (m.raw)[MESSAGE_ID_OFFSET:MESSAGE_ID_OFFSET+32])
 	return messageId
 }
 
@@ -91,7 +92,7 @@ func (m *Metadata) Proof() [32][32]byte {
 func CheckpointDigest(origin uint32, merkleTreeHook, checkpointRoot [32]byte, checkpointIndex uint32, messageId [32]byte) [32]byte {
 	domainHash := DomainHash(origin, merkleTreeHook)
 
-	bytes := make([]byte, 32+32+4+32)
+	bytes := make([]byte, 0, 32+32+4+32)
 	bytes = append(bytes, domainHash[:]...)
 	bytes = append(bytes, checkpointRoot[:]...)
 	bytes = binary.BigEndian.AppendUint32(bytes, checkpointIndex)
@@ -101,9 +102,11 @@ func CheckpointDigest(origin uint32, merkleTreeHook, checkpointRoot [32]byte, ch
 }
 
 func DomainHash(origin uint32, merkleTreeHook [32]byte) [32]byte {
-	bytes := make([]byte, 46)
+	bytes := make([]byte, 0, 46)
+
 	bytes = binary.BigEndian.AppendUint32(bytes, origin)
 	bytes = append(bytes, merkleTreeHook[:]...)
 	bytes = append(bytes, []byte("HYPERLANE")...)
+
 	return crypto.Keccak256Hash(bytes)
 }
