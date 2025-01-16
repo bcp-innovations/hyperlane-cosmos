@@ -17,7 +17,11 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	txCmd.AddCommand()
+	txCmd.AddCommand(
+		CmdCreateIgp(),
+		CmdPayForGas(),
+		CmdSetDestinationGasConfig(),
+	)
 
 	return txCmd
 }
