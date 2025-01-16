@@ -60,5 +60,5 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 
 	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.BankKeeper, in.MailboxKeeper)
 	m := NewAppModule(in.Cdc, k)
-	return ModuleOutputs{Module: m, Keeper: k, Hooks: mailboxTypes.MailboxHooksWrapper{MailboxHooks: k}}
+	return ModuleOutputs{Module: m, Keeper: k, Hooks: mailboxTypes.MailboxHooksWrapper{MailboxHooks: &k}}
 }

@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, externalRecipient string, amount math.Int) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, externalRecipient string, amount math.Int) (messageId util.HexAddress, err error) {
 
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
@@ -50,10 +50,9 @@ func (k Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, c
 	return dispatchMsg, nil
 }
 
-func (k Keeper) RemoteReceiveSynthetic(ctx sdk.Context, token types.HypToken, payload types.WarpPayload) error {
+func (k *Keeper) RemoteReceiveSynthetic(ctx sdk.Context, token types.HypToken, payload types.WarpPayload) error {
 
-	// TODO check address format and parse correctly
-	account := sdk.AccAddress(payload.Recipient()[12:32])
+	account := payload.GetCosmosAccount()
 
 	shadowToken := sdk.NewCoin(
 		token.OriginDenom,
@@ -67,8 +66,6 @@ func (k Keeper) RemoteReceiveSynthetic(ctx sdk.Context, token types.HypToken, pa
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, account, sdk.NewCoins(shadowToken)); err != nil {
 		return err
 	}
-
-	// TODO track balance for each token
 
 	return nil
 }

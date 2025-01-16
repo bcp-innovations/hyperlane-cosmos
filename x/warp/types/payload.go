@@ -1,7 +1,9 @@
 package types
 
 import (
+	"bytes"
 	"errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"math/big"
 	"slices"
 )
@@ -33,6 +35,15 @@ func ParseWarpPayload(payload []byte) (WarpPayload, error) {
 		recipient: payload[0:32],
 		amount:    *amount,
 	}, nil
+}
+
+func (p WarpPayload) GetCosmosAccount() sdk.AccAddress {
+	// If address is zero padded it is a 20-byte default cosmos address
+	if bytes.HasPrefix(p.recipient, make([]byte, 0, 12)) {
+		return p.recipient[12:32]
+	}
+	// if the address is not zero-padded, it might be a 32-byte address
+	return p.recipient
 }
 
 func (p WarpPayload) Recipient() []byte {

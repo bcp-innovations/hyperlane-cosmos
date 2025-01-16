@@ -34,6 +34,11 @@ message HypToken {
 
   uint32 receiver_domain = 6;
   bytes receiver_contract = 7;
+
+  string collateral_balance = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 enum HypTokenType {

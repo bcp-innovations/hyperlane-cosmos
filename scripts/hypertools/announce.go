@@ -3,11 +3,12 @@ package main
 import (
 	"crypto/ecdsa"
 	"fmt"
+	"log"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 func init() {
@@ -52,6 +53,7 @@ func announce(privKey, storageLocation, mailbox string, localDomain uint32) (str
 	}
 
 	announcementDigest := types.GetAnnouncementDigest(storageLocation, localDomain, mailboxId.Bytes())
+	ethDigest := util.GetEthSigningHash(announcementDigest[:])
 
 	privateKey, err := crypto.HexToECDSA(privKey)
 	if err != nil {
@@ -64,7 +66,7 @@ func announce(privKey, storageLocation, mailbox string, localDomain uint32) (str
 		return "", fmt.Errorf("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
 	}
 
-	signedAnnouncement, err := crypto.Sign(announcementDigest, privateKey)
+	signedAnnouncement, err := crypto.Sign(ethDigest[:], privateKey)
 	if err != nil {
 		log.Fatal(err)
 	}
