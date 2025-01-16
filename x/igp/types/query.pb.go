@@ -31,6 +31,86 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type QueryIgpsRequest struct {
+}
+
+func (m *QueryIgpsRequest) Reset()         { *m = QueryIgpsRequest{} }
+func (m *QueryIgpsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIgpsRequest) ProtoMessage()    {}
+func (*QueryIgpsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df73ac8b27e264f2, []int{0}
+}
+func (m *QueryIgpsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIgpsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIgpsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIgpsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIgpsRequest.Merge(m, src)
+}
+func (m *QueryIgpsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIgpsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIgpsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIgpsRequest proto.InternalMessageInfo
+
+type QueryIgpsResponse struct {
+	Igps []Igp `protobuf:"bytes,1,rep,name=igps,proto3" json:"igps"`
+}
+
+func (m *QueryIgpsResponse) Reset()         { *m = QueryIgpsResponse{} }
+func (m *QueryIgpsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIgpsResponse) ProtoMessage()    {}
+func (*QueryIgpsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df73ac8b27e264f2, []int{1}
+}
+func (m *QueryIgpsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIgpsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIgpsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIgpsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIgpsResponse.Merge(m, src)
+}
+func (m *QueryIgpsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIgpsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIgpsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIgpsResponse proto.InternalMessageInfo
+
+func (m *QueryIgpsResponse) GetIgps() []Igp {
+	if m != nil {
+		return m.Igps
+	}
+	return nil
+}
+
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 type QueryParamsRequest struct {
 }
@@ -39,7 +119,7 @@ func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
 func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsRequest) ProtoMessage()    {}
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df73ac8b27e264f2, []int{0}
+	return fileDescriptor_df73ac8b27e264f2, []int{2}
 }
 func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -78,7 +158,7 @@ func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
 func (m *QueryParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsResponse) ProtoMessage()    {}
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df73ac8b27e264f2, []int{1}
+	return fileDescriptor_df73ac8b27e264f2, []int{3}
 }
 func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -115,6 +195,8 @@ func (m *QueryParamsResponse) GetParams() Params {
 }
 
 func init() {
+	proto.RegisterType((*QueryIgpsRequest)(nil), "hyperlane.igp.v1.QueryIgpsRequest")
+	proto.RegisterType((*QueryIgpsResponse)(nil), "hyperlane.igp.v1.QueryIgpsResponse")
 	proto.RegisterType((*QueryParamsRequest)(nil), "hyperlane.igp.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "hyperlane.igp.v1.QueryParamsResponse")
 }
@@ -122,27 +204,31 @@ func init() {
 func init() { proto.RegisterFile("hyperlane/igp/v1/query.proto", fileDescriptor_df73ac8b27e264f2) }
 
 var fileDescriptor_df73ac8b27e264f2 = []byte{
-	// 312 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xc9, 0xa8, 0x2c, 0x48,
-	0x2d, 0xca, 0x49, 0xcc, 0x4b, 0xd5, 0xcf, 0x4c, 0x2f, 0xd0, 0x2f, 0x33, 0xd4, 0x2f, 0x2c, 0x4d,
-	0x2d, 0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x80, 0xcb, 0xea, 0x65, 0xa6, 0x17,
-	0xe8, 0x95, 0x19, 0x4a, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x25, 0xf5, 0x41, 0x2c, 0x88, 0x3a,
-	0x29, 0x4c, 0x53, 0x4a, 0x2a, 0x0b, 0x52, 0x8b, 0x61, 0xb2, 0xe9, 0xf9, 0xf9, 0xe9, 0x39, 0xa9,
-	0xfa, 0x89, 0x05, 0x99, 0xfa, 0x89, 0x79, 0x79, 0xf9, 0x25, 0x89, 0x25, 0x99, 0xf9, 0x79, 0x30,
-	0x59, 0xe9, 0xe4, 0xfc, 0xe2, 0xdc, 0xfc, 0x62, 0x88, 0xbd, 0x68, 0x0e, 0x90, 0x12, 0x4c, 0xcc,
-	0xcd, 0xcc, 0xcb, 0xd7, 0x07, 0x93, 0x10, 0x21, 0x25, 0x11, 0x2e, 0xa1, 0x40, 0x90, 0x8a, 0x80,
-	0xc4, 0xa2, 0xc4, 0xdc, 0xe2, 0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0xa5, 0x20, 0x2e, 0x61,
-	0x14, 0xd1, 0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54, 0x21, 0x6b, 0x2e, 0xb6, 0x02, 0xb0, 0x88, 0x04,
-	0xa3, 0x02, 0xa3, 0x06, 0xb7, 0x91, 0x84, 0x1e, 0xba, 0x8f, 0xf4, 0x20, 0x3a, 0x9c, 0x38, 0x4f,
-	0xdc, 0x93, 0x67, 0x58, 0xf1, 0x7c, 0x83, 0x16, 0x63, 0x10, 0x54, 0x8b, 0x51, 0x03, 0x23, 0x17,
-	0x2b, 0xd8, 0x50, 0xa1, 0x72, 0x2e, 0x36, 0x88, 0x32, 0x21, 0x15, 0x4c, 0x03, 0x30, 0x5d, 0x23,
-	0xa5, 0x4a, 0x40, 0x15, 0xc4, 0x75, 0x4a, 0x0a, 0x4d, 0x97, 0x9f, 0x4c, 0x66, 0x92, 0x12, 0x92,
-	0xd0, 0xc7, 0x08, 0x3f, 0x88, 0x13, 0x9c, 0x02, 0x4f, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e,
-	0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58,
-	0x8e, 0x21, 0xca, 0x3c, 0x3d, 0xb3, 0x24, 0xa3, 0x34, 0x49, 0x2f, 0x39, 0x3f, 0x57, 0x3f, 0x29,
-	0xb9, 0x40, 0x37, 0x33, 0x2f, 0x2f, 0xbf, 0x0c, 0x12, 0xb0, 0x08, 0xd3, 0x74, 0xa1, 0x61, 0x5b,
-	0x01, 0x36, 0x16, 0x1c, 0x27, 0x49, 0x6c, 0xe0, 0x60, 0x34, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff,
-	0x5a, 0xcd, 0x3c, 0x49, 0xfa, 0x01, 0x00, 0x00,
+	// 384 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xc1, 0x4e, 0xea, 0x40,
+	0x14, 0x86, 0x3b, 0xf7, 0x72, 0x49, 0xee, 0xb0, 0x81, 0xb9, 0x5c, 0xd3, 0x54, 0x53, 0x49, 0xd5,
+	0x84, 0x98, 0xd0, 0x09, 0x68, 0xe2, 0xc2, 0x1d, 0x3b, 0x76, 0xc2, 0xd2, 0x5d, 0x21, 0x93, 0x61,
+	0x12, 0x3a, 0x33, 0x74, 0x0a, 0xca, 0xd6, 0x27, 0x30, 0xf1, 0x25, 0x5c, 0xfa, 0x18, 0x2c, 0x49,
+	0xdc, 0xb8, 0x32, 0x06, 0x4c, 0x5c, 0xfb, 0x06, 0xa6, 0x33, 0x05, 0x81, 0x46, 0xdd, 0x34, 0xcd,
+	0x39, 0xff, 0xf9, 0xbf, 0xf3, 0x67, 0x0e, 0xdc, 0xeb, 0x4f, 0x24, 0x89, 0x06, 0x01, 0x27, 0x98,
+	0x51, 0x89, 0xc7, 0x75, 0x3c, 0x1c, 0x91, 0x68, 0xe2, 0xcb, 0x48, 0xc4, 0x02, 0x15, 0x57, 0x5d,
+	0x9f, 0x51, 0xe9, 0x8f, 0xeb, 0x4e, 0x99, 0x0a, 0x2a, 0x74, 0x13, 0x27, 0x7f, 0x46, 0xe7, 0x64,
+	0x5d, 0xe2, 0x89, 0x24, 0x6a, 0xd9, 0xa5, 0x42, 0xd0, 0x01, 0xc1, 0x81, 0x64, 0x38, 0xe0, 0x5c,
+	0xc4, 0x41, 0xcc, 0x04, 0x5f, 0x76, 0x77, 0x7b, 0x42, 0x85, 0x42, 0x19, 0xee, 0xd6, 0x02, 0x4e,
+	0x29, 0x08, 0x19, 0x17, 0x58, 0x7f, 0x4d, 0xc9, 0x43, 0xb0, 0xd8, 0x4e, 0x14, 0x2d, 0x2a, 0x55,
+	0x87, 0x0c, 0x47, 0x44, 0xc5, 0x5e, 0x0b, 0x96, 0xd6, 0x6a, 0x4a, 0x0a, 0xae, 0x08, 0x3a, 0x85,
+	0x39, 0x46, 0xa5, 0xb2, 0x41, 0xe5, 0x77, 0xb5, 0xd0, 0xf8, 0xef, 0x6f, 0x67, 0xf1, 0x5b, 0x54,
+	0x36, 0xff, 0x4e, 0x9f, 0xf7, 0xad, 0xfb, 0xb7, 0x87, 0x63, 0xd0, 0xd1, 0x6a, 0xaf, 0x0c, 0x91,
+	0xb6, 0xba, 0x08, 0xa2, 0x20, 0x5c, 0x01, 0x3a, 0xf0, 0xdf, 0x46, 0x35, 0x45, 0x9c, 0xc3, 0xbc,
+	0xd4, 0x15, 0x1b, 0x54, 0x40, 0xb5, 0xd0, 0xb0, 0xb3, 0x10, 0x33, 0xb1, 0xce, 0x49, 0x47, 0x1a,
+	0xef, 0x00, 0xfe, 0xd1, 0xa6, 0x48, 0xc0, 0x5c, 0xb2, 0x39, 0xf2, 0xb2, 0xe3, 0xdb, 0x51, 0x9d,
+	0x83, 0x6f, 0x35, 0x66, 0x2f, 0xcf, 0xbd, 0x79, 0x7c, 0xbd, 0xfb, 0x65, 0xa3, 0x1d, 0x9c, 0x79,
+	0x98, 0x24, 0x24, 0xba, 0x82, 0x79, 0xb3, 0x17, 0x3a, 0xfc, 0xc2, 0x6e, 0x23, 0xbe, 0x73, 0xf4,
+	0x83, 0x2a, 0xc5, 0x56, 0x34, 0xd6, 0x41, 0x76, 0x16, 0x6b, 0x32, 0x37, 0xdb, 0xd3, 0xb9, 0x0b,
+	0x66, 0x73, 0x17, 0xbc, 0xcc, 0x5d, 0x70, 0xbb, 0x70, 0xad, 0xd9, 0xc2, 0xb5, 0x9e, 0x16, 0xae,
+	0x75, 0x79, 0x46, 0x59, 0xdc, 0x1f, 0x75, 0xfd, 0x9e, 0x08, 0x71, 0xb7, 0x27, 0x6b, 0x8c, 0x73,
+	0x31, 0x36, 0x87, 0xf2, 0xe9, 0x56, 0x4b, 0x6f, 0xe5, 0x5a, 0xdb, 0xea, 0x1b, 0xeb, 0xe6, 0xf5,
+	0x59, 0x9c, 0x7c, 0x04, 0x00, 0x00, 0xff, 0xff, 0x41, 0x56, 0xff, 0x5e, 0xca, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -157,6 +243,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
+	Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error)
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 }
@@ -167,6 +254,15 @@ type queryClient struct {
 
 func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
+}
+
+func (c *queryClient) Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error) {
+	out := new(QueryIgpsResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.igp.v1.Query/Igps", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
@@ -180,6 +276,7 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
+	Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error)
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 }
@@ -188,12 +285,33 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
+func (*UnimplementedQueryServer) Igps(ctx context.Context, req *QueryIgpsRequest) (*QueryIgpsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Igps not implemented")
+}
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
+}
+
+func _Query_Igps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIgpsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Igps(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.igp.v1.Query/Igps",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Igps(ctx, req.(*QueryIgpsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -219,12 +337,76 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "Igps",
+			Handler:    _Query_Igps_Handler,
+		},
+		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "hyperlane/igp/v1/query.proto",
+}
+
+func (m *QueryIgpsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIgpsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIgpsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIgpsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIgpsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIgpsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Igps) > 0 {
+		for iNdEx := len(m.Igps) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Igps[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *QueryParamsRequest) Marshal() (dAtA []byte, err error) {
@@ -294,6 +476,30 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *QueryIgpsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryIgpsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Igps) > 0 {
+		for _, e := range m.Igps {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
 func (m *QueryParamsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -319,6 +525,140 @@ func sovQuery(x uint64) (n int) {
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *QueryIgpsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIgpsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIgpsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIgpsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIgpsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIgpsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Igps", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Igps = append(m.Igps, Igp{})
+			if err := m.Igps[len(m.Igps)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

@@ -8,4 +8,5 @@ message GasPayment {
   uint32 destination = 2;
   uint64 gas_amount = 3;
   uint64 payment = 4;
+  string igp_id = 5;
 }

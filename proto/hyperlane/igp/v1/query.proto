@@ -11,10 +11,21 @@ import "amino/amino.proto";
 
 // Msg defines the module Msg service.
 service Query {
-// Params returns the module parameters.
+  rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
+    option (google.api.http).get = "/hyperlane/igp/v1/igps";
+  }
+
+  // Params returns the module parameters.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/hyperlane/igp/v1/params";
   }
+}
+
+message QueryIgpsRequest {}
+
+message QueryIgpsResponse {
+  repeated Igp igps = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/igp/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 
 type Keeper struct {
@@ -18,12 +19,22 @@ type Keeper struct {
 	authority string
 
 	// state management
-	Params collections.Item[types.Params]
-	Schema collections.Schema
+	Igp         collections.Map[[]byte, types.Igp]
+	IgpSequence collections.Sequence
+	Params      collections.Item[types.Params]
+	Schema      collections.Schema
+
+	bankKeeper bankkeeper.Keeper
 }
 
 // NewKeeper creates a new Keeper instance
-func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string) Keeper {
+func NewKeeper(
+	cdc codec.BinaryCodec,
+	addressCodec address.Codec,
+	storeService storetypes.KVStoreService,
+	authority string,
+	bankKeeper bankkeeper.Keeper,
+) Keeper {
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic(fmt.Errorf("invalid authority address: %w", err))
 	}
@@ -33,7 +44,12 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		cdc:          cdc,
 		addressCodec: addressCodec,
 		authority:    authority,
-		Params:       collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+
+		Igp:         collections.NewMap(sb, types.IgpKey, "igp", collections.BytesKey, codec.CollValue[types.Igp](cdc)),
+		IgpSequence: collections.NewSequence(sb, types.IgpSequenceKey, "igp_sequence"),
+		Params:      collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+
+		bankKeeper: bankKeeper,
 	}
 
 	schema, err := sb.Build()

@@ -4,21 +4,15 @@ import "cosmossdk.io/collections"
 
 const ModuleName = "igp"
 
-const (
-	UNUSED uint32 = iota
-	ROUTING
-	AGGREGATION
-	LEGACY_MULTISIG
-	MERKLE_ROOT_MULTISIG
-	MESSAGE_ID_MULTISIG
-	NULL // used with relayer carrying no metadata
-	CCIP_READ
-	ARB_L2_TO_L1
-	WEIGHTED_MERKLE_ROOT_MULTISIG
-	WEIGHTED_MESSAGE_ID_MULTISIG
-	OP_L2_TO_L1
-)
+const Denom = "tkyve"
 
 var (
-	ParamsKey = collections.NewPrefix(0)
+	ParamsKey      = collections.NewPrefix(0)
+	IgpKey         = collections.NewPrefix(1)
+	IgpSequenceKey = collections.NewPrefix(2)
+)
+
+const (
+	MaxDestinationGasConfigs        = 50
+	TokenExchangeRateScale   uint64 = 1e10
 )

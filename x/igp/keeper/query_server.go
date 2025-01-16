@@ -20,6 +20,22 @@ type queryServer struct {
 	k Keeper
 }
 
+func (qs queryServer) Igps(ctx context.Context, _ *types.QueryIgpsRequest) (*types.QueryIgpsResponse, error) {
+	it, err := qs.k.Igp.Iterate(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	igps, err := it.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryIgpsResponse{
+		Igps: igps,
+	}, nil
+}
+
 // Params defines the handler for the Query/Params RPC method.
 func (qs queryServer) Params(ctx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	params, err := qs.k.Params.Get(ctx)
