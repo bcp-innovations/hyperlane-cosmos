@@ -76,7 +76,7 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 		return nil, err
 	}
 
-	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, req.Destination, recipient, sender, bodyBytes, req.IgpId, req.GasLimit, req.MaxFee)
+	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, req.Destination, recipient, sender, bodyBytes, sender.String(), req.IgpId, req.GasLimit, req.MaxFee)
 	if err != nil {
 		return nil, err
 	}

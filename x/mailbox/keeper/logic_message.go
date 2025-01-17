@@ -86,6 +86,7 @@ func (k Keeper) DispatchMessage(
 	sender util.HexAddress,
 	body []byte,
 	// Custom IGP settings
+	cosmosSender string,
 	customIgpId string,
 	gasLimit uint64,
 	maxFee uint64,
@@ -150,7 +151,7 @@ func (k Keeper) DispatchMessage(
 		}
 	}
 
-	err = k.PayForGas(ctx, sender.String(), igpId, messageId.String(), destinationDomain, gasLimit, maxFee)
+	err = k.PayForGas(ctx, cosmosSender, igpId, messageId.String(), destinationDomain, gasLimit, maxFee)
 	if err != nil {
 		return util.HexAddress{}, err
 	}

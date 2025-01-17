@@ -18,5 +18,5 @@ var (
 )
 
 const (
-	TokenExchangeRateScale uint64 = 1e10
+	TokenExchangeRateScale uint64 = 1
 )
