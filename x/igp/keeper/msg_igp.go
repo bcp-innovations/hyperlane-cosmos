@@ -8,6 +8,45 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/igp/types"
 )
 
+func (ms msgServer) Claim(ctx context.Context, req *types.MsgClaim) (*types.MsgClaimResponse, error) {
+	igpId, err := util.DecodeHexAddress(req.IgpId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgClaimResponse{}, ms.k.Claim(ctx, req.Sender, igpId)
+}
+
+func (ms msgServer) CreateIGP(ctx context.Context, req *types.MsgCreateIgp) (*types.MsgCreateIgpResponse, error) {
+	igpCount, err := ms.k.IgpSequence.Next(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	prefixedId := util.CreateHexAddress(types.ModuleName, int64(igpCount))
+
+	newIgp := types.Igp{
+		Id:    prefixedId.String(),
+		Owner: req.Owner,
+		Denom: req.Denom,
+	}
+
+	if err = ms.k.Igp.Set(ctx, prefixedId.Bytes(), newIgp); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgCreateIgpResponse{}, nil
+}
+
+func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*types.MsgPayForGasResponse, error) {
+	igpId, err := util.DecodeHexAddress(req.IgpId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgPayForGasResponse{}, ms.k.PayForGas(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, req.GasLimit, req.MaxFee)
+}
+
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
