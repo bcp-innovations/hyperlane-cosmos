@@ -10,9 +10,8 @@ import "amino/amino.proto";
 message Igp {
   string id = 1;
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string beneficiary = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-
-  repeated DestinationGasConfig destination_gas_configs = 4;
+  string denom = 3;
+  uint64 claimable_fees = 4;
 }
 
 message DestinationGasConfig {

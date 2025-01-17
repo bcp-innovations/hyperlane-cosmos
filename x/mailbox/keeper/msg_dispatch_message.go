@@ -32,18 +32,10 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 		return nil, err
 	}
 
-	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, req.Destination, recipient, sender, bodyBytes)
+	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, req.Destination, recipient, sender, bodyBytes, req.IgpId, req.GasLimit, req.MaxFee)
 	if err != nil {
 		return nil, err
 	}
-
-	// TODO: Find cleaner solution
-	mailbox, err := ms.k.Mailboxes.Get(ctx, mailBoxId.Bytes())
-	if err != nil {
-		return nil, err
-	}
-
-	ms.k.PostDispatchMerkleTree(ctx, msgId.String(), mailbox.MessageSent)
 
 	return &types.MsgDispatchMessageResponse{
 		MessageId: msgId.String(),

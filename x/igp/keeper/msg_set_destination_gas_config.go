@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/collections"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/igp/types"
@@ -28,26 +29,10 @@ func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgS
 		GasOverhead:  req.DestinationGasConfig.GasOverhead,
 	}
 
-	// TODO: Find a better way to store destination configs
-	for i := range igp.DestinationGasConfigs {
-		if igp.DestinationGasConfigs[i].RemoteDomain == req.DestinationGasConfig.RemoteDomain {
-			igp.DestinationGasConfigs[i] = &updatedDestinationGasConfig
+	key := collections.Join(igpId.Bytes(), req.DestinationGasConfig.RemoteDomain)
 
-			if err = ms.k.Igp.Set(ctx, igpId.Bytes(), igp); err != nil {
-				return nil, err
-			}
-
-			return &types.MsgSetDestinationGasConfigResponse{}, nil
-		}
-	}
-
-	if len(igp.DestinationGasConfigs) >= types.MaxDestinationGasConfigs {
-		return nil, fmt.Errorf("max DestinationGasConfigs are reached: %v", types.MaxDestinationGasConfigs)
-	}
-
-	igp.DestinationGasConfigs = append(igp.DestinationGasConfigs, &updatedDestinationGasConfig)
-
-	if err = ms.k.Igp.Set(ctx, igpId.Bytes(), igp); err != nil {
+	err = ms.k.IgpDestinationGasConfigMap.Set(ctx, key, updatedDestinationGasConfig)
+	if err != nil {
 		return nil, err
 	}
 

@@ -2,41 +2,75 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/collections"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/igp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddress, messageId string, destinationDomain uint32, gasLimit uint64) error {
+func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress) error {
+	igp, err := k.Igp.Get(ctx, igpId.Bytes())
+	if err != nil {
+		return err
+	}
+
+	if sender != igp.Owner {
+		return fmt.Errorf("failed to claim: %s is not permitted to claim", sender)
+	}
+
+	ownerAcc, err := sdk.AccAddressFromBech32(igp.Owner)
+	if err != nil {
+		return err
+	}
+
+	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, int64(igp.ClaimableFees)))
+
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, ownerAcc, coins)
+	if err != nil {
+		return err
+	}
+
+	igp.ClaimableFees = 0
+
+	err = k.Igp.Set(ctx, igpId.Bytes(), igp)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddress, messageId string, destinationDomain uint32, gasLimit uint64, maxFee uint64) error {
 	igp, err := k.Igp.Get(ctx, igpId.Bytes())
 	if err != nil {
 		return err
 	}
 
 	requiredPayment, err := k.QuoteGasPayment(ctx, igpId, destinationDomain, gasLimit)
+	if err != nil {
+		return err
+	}
+
+	if requiredPayment > maxFee {
+		return fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
+	}
 
 	senderAcc, err := sdk.AccAddressFromBech32(sender)
 	if err != nil {
 		return err
 	}
 
-	beneficiaryAcc, err := sdk.AccAddressFromBech32(igp.Beneficiary)
+	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, int64(requiredPayment)))
+
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, types.ModuleName, coins)
 	if err != nil {
 		return err
 	}
 
-	// TODO: Get denom from global params
-	balance := k.bankKeeper.GetBalance(ctx, senderAcc, types.Denom).Amount.Uint64()
+	igp.ClaimableFees += requiredPayment
 
-	if balance < requiredPayment {
-		return fmt.Errorf("insufficient balance to pay gas; got %v required %v", balance, requiredPayment)
-	}
-
-	// TODO: Get denom from global params
-	coins := sdk.NewCoins(sdk.NewInt64Coin(types.Denom, int64(requiredPayment)))
-
-	err = k.bankKeeper.SendCoins(ctx, senderAcc, beneficiaryAcc, coins)
+	err = k.Igp.Set(ctx, igpId.Bytes(), igp)
 	if err != nil {
 		return err
 	}
@@ -55,17 +89,9 @@ func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddr
 }
 
 func (k Keeper) QuoteGasPayment(ctx context.Context, igpId util.HexAddress, destinationDomain uint32, gasLimit uint64) (uint64, error) {
-	igp, err := k.Igp.Get(ctx, igpId.Bytes())
+	destinationGasConfig, err := k.IgpDestinationGasConfigMap.Get(ctx, collections.Join(igpId.Bytes(), destinationDomain))
 	if err != nil {
-		return 0, err
-	}
-
-	var destinationGasConfig *types.DestinationGasConfig
-
-	for _, c := range igp.DestinationGasConfigs {
-		if c.RemoteDomain == destinationDomain {
-			destinationGasConfig = c
-		}
+		return 0, fmt.Errorf("remote domain %v is not supported: %e", destinationDomain, err)
 	}
 
 	destinationCost := gasLimit * destinationGasConfig.GasOracle.GasPrice

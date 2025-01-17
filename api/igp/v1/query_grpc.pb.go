@@ -19,8 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Igps_FullMethodName   = "/hyperlane.igp.v1.Query/Igps"
-	Query_Params_FullMethodName = "/hyperlane.igp.v1.Query/Params"
+	Query_Igps_FullMethodName                  = "/hyperlane.igp.v1.Query/Igps"
+	Query_DestinationGasConfigs_FullMethodName = "/hyperlane.igp.v1.Query/DestinationGasConfigs"
+	Query_QuoteGasPayment_FullMethodName       = "/hyperlane.igp.v1.Query/QuoteGasPayment"
+	Query_Params_FullMethodName                = "/hyperlane.igp.v1.Query/Params"
 )
 
 // QueryClient is the client API for Query service.
@@ -28,6 +30,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
 	Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error)
+	DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error)
+	QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error)
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 }
@@ -49,6 +53,24 @@ func (c *queryClient) Igps(ctx context.Context, in *QueryIgpsRequest, opts ...gr
 	return out, nil
 }
 
+func (c *queryClient) DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error) {
+	out := new(QueryDestinationGasConfigsResponse)
+	err := c.cc.Invoke(ctx, Query_DestinationGasConfigs_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error) {
+	out := new(QueryQuoteGasPaymentResponse)
+	err := c.cc.Invoke(ctx, Query_QuoteGasPayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, Query_Params_FullMethodName, in, out, opts...)
@@ -63,6 +85,8 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 // for forward compatibility
 type QueryServer interface {
 	Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error)
+	DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error)
+	QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error)
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	mustEmbedUnimplementedQueryServer()
@@ -74,6 +98,12 @@ type UnimplementedQueryServer struct {
 
 func (UnimplementedQueryServer) Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Igps not implemented")
+}
+func (UnimplementedQueryServer) DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestinationGasConfigs not implemented")
+}
+func (UnimplementedQueryServer) QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuoteGasPayment not implemented")
 }
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
@@ -109,6 +139,42 @@ func _Query_Igps_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_DestinationGasConfigs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDestinationGasConfigsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DestinationGasConfigs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_DestinationGasConfigs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DestinationGasConfigs(ctx, req.(*QueryDestinationGasConfigsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QuoteGasPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryQuoteGasPaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QuoteGasPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QuoteGasPayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QuoteGasPayment(ctx, req.(*QueryQuoteGasPaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryParamsRequest)
 	if err := dec(in); err != nil {
@@ -137,6 +203,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Igps",
 			Handler:    _Query_Igps_Handler,
+		},
+		{
+			MethodName: "DestinationGasConfigs",
+			Handler:    _Query_DestinationGasConfigs_Handler,
+		},
+		{
+			MethodName: "QuoteGasPayment",
+			Handler:    _Query_QuoteGasPayment_Handler,
 		},
 		{
 			MethodName: "Params",

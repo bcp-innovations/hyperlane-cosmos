@@ -13,7 +13,10 @@ message Mailbox {
 
   uint32 message_sent = 3;
   uint32 message_received = 4;
-  Tree tree = 5;
+
+  InterchainGasPaymaster igp = 5;
+
+  Tree tree = 6;
 }
 
 // Tree represents an incremental merkle tree.
@@ -21,6 +24,11 @@ message Mailbox {
 message Tree {
   repeated bytes branch = 1;
   uint32 count = 2;
+}
+
+message InterchainGasPaymaster {
+  string id = 1;
+  bool required = 2;
 }
 
 message Validator {

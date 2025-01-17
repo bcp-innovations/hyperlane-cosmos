@@ -13,7 +13,7 @@ import (
 
 func CmdCreateIgp() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-igp [beneficiary]",
+		Use:   "create-igp [denom]",
 		Short: "Create a Hyperlane Interchain Gas Paymaster",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -24,18 +24,13 @@ func CmdCreateIgp() *cobra.Command {
 			}
 
 			msg := types.MsgCreateIgp{
-				Owner:       clientCtx.GetFromAddress().String(),
-				Beneficiary: args[0],
+				Owner: clientCtx.GetFromAddress().String(),
+				Denom: args[0],
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)
 			if err != nil {
 				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
-			}
-
-			_, err = sdk.AccAddressFromBech32(msg.Beneficiary)
-			if err != nil {
-				panic(fmt.Errorf("invalid beneficiary address (%s)", msg.Beneficiary))
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

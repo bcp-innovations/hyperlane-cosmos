@@ -43,6 +43,7 @@ type ModuleInputs struct {
 
 	Config *modulev1.Module
 
+	IgpKeeper mailboxTypes.IgpKeeper
 	IsmKeeper mailboxTypes.IsmKeeper
 }
 
@@ -60,7 +61,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
 
-	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.IsmKeeper)
+	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.IsmKeeper, in.IgpKeeper)
 	m := NewAppModule(in.Cdc, &k, in.IsmKeeper)
 
 	return ModuleOutputs{Module: m, Keeper: &k}

@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, externalRecipient string, amount math.Int) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, externalRecipient string, amount math.Int, customIgpId string, gasLimit uint64, maxFee uint64) (messageId util.HexAddress, err error) {
 
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
@@ -43,6 +43,9 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		util.HexAddress(token.ReceiverContract),
 		util.HexAddress(token.Id),
 		warpPayload.Bytes(),
+		customIgpId,
+		gasLimit,
+		maxFee,
 	)
 	if err != nil {
 		return util.HexAddress{}, err

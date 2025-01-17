@@ -15,10 +15,9 @@ func (ms msgServer) CreateIGP(ctx context.Context, req *types.MsgCreateIgp) (*ty
 	prefixedId := util.CreateHexAddress(types.ModuleName, int64(igpCount))
 
 	newIgp := types.Igp{
-		Id:                    prefixedId.String(),
-		Owner:                 req.Owner,
-		Beneficiary:           req.Beneficiary,
-		DestinationGasConfigs: []*types.DestinationGasConfig{},
+		Id:    prefixedId.String(),
+		Owner: req.Owner,
+		Denom: req.Denom,
 	}
 
 	if err = ms.k.Igp.Set(ctx, prefixedId.Bytes(), newIgp); err != nil {

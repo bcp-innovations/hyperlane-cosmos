@@ -9,7 +9,6 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Keeper struct {
@@ -21,6 +20,7 @@ type Keeper struct {
 	authority string
 
 	hooks     types.MailboxHooks
+	igpKeeper types.IgpKeeper
 	ismKeeper types.IsmKeeper
 	// state management
 	Mailboxes collections.Map[[]byte, types.Mailbox]
@@ -35,7 +35,7 @@ type Keeper struct {
 }
 
 // NewKeeper creates a new Keeper instance
-func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string, ismKeeper types.IsmKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string, ismKeeper types.IsmKeeper, igpKeeper types.IgpKeeper) Keeper {
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic(fmt.Errorf("invalid authority address: %w", err))
 	}
@@ -52,6 +52,7 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		MailboxesSequence:  collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
 		Validators:         collections.NewMap(sb, types.ValidatorsKey, "validators", collections.BytesKey, codec.CollValue[types.Validator](cdc)),
 		ValidatorsSequence: collections.NewSequence(sb, types.ValidatorsSequencesKey, "validators_sequence"),
+		igpKeeper:          igpKeeper,
 		ismKeeper:          ismKeeper,
 		ReceiverIsmMapping: collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
 	}
@@ -67,7 +68,7 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 }
 
 func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddress, ismId util.HexAddress) error {
-	exists, err := k.ismKeeper.IsmIdExists(ctx, ismId.String())
+	exists, err := k.ismKeeper.IsmIdExists(ctx, ismId)
 	if err != nil || !exists {
 		return err
 	}
@@ -78,15 +79,6 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 	}
 
 	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), ismId.Bytes())
-}
-
-func (k *Keeper) PostDispatchMerkleTree(ctx context.Context, messageId string, index uint32) {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
-	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
-		MessageId: messageId,
-		Index:     index,
-	})
 }
 
 // Hooks gets the hooks for staking *Keeper {

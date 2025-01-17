@@ -12,10 +12,5 @@ func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*ty
 		return nil, err
 	}
 
-	err = ms.k.PayForGas(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, req.GasLimit)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.MsgPayForGasResponse{}, nil
+	return &types.MsgPayForGasResponse{}, ms.k.PayForGas(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, req.GasLimit, req.MaxFee)
 }

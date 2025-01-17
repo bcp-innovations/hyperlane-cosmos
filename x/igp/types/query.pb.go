@@ -111,6 +111,198 @@ func (m *QueryIgpsResponse) GetIgps() []Igp {
 	return nil
 }
 
+type QueryDestinationGasConfigsRequest struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryDestinationGasConfigsRequest) Reset()         { *m = QueryDestinationGasConfigsRequest{} }
+func (m *QueryDestinationGasConfigsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryDestinationGasConfigsRequest) ProtoMessage()    {}
+func (*QueryDestinationGasConfigsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df73ac8b27e264f2, []int{2}
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryDestinationGasConfigsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDestinationGasConfigsRequest.Merge(m, src)
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDestinationGasConfigsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDestinationGasConfigsRequest proto.InternalMessageInfo
+
+func (m *QueryDestinationGasConfigsRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+type QueryDestinationGasConfigsResponse struct {
+	DestinationGasConfigs []*DestinationGasConfig `protobuf:"bytes,1,rep,name=destination_gas_configs,json=destinationGasConfigs,proto3" json:"destination_gas_configs,omitempty"`
+}
+
+func (m *QueryDestinationGasConfigsResponse) Reset()         { *m = QueryDestinationGasConfigsResponse{} }
+func (m *QueryDestinationGasConfigsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryDestinationGasConfigsResponse) ProtoMessage()    {}
+func (*QueryDestinationGasConfigsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df73ac8b27e264f2, []int{3}
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryDestinationGasConfigsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDestinationGasConfigsResponse.Merge(m, src)
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDestinationGasConfigsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDestinationGasConfigsResponse proto.InternalMessageInfo
+
+func (m *QueryDestinationGasConfigsResponse) GetDestinationGasConfigs() []*DestinationGasConfig {
+	if m != nil {
+		return m.DestinationGasConfigs
+	}
+	return nil
+}
+
+type QueryQuoteGasPaymentRequest struct {
+	IgpId             string `protobuf:"bytes,1,opt,name=igp_id,json=igpId,proto3" json:"igp_id,omitempty"`
+	DestinationDomain string `protobuf:"bytes,2,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
+	GasLimit          string `protobuf:"bytes,3,opt,name=gas_limit,json=gasLimit,proto3" json:"gas_limit,omitempty"`
+}
+
+func (m *QueryQuoteGasPaymentRequest) Reset()         { *m = QueryQuoteGasPaymentRequest{} }
+func (m *QueryQuoteGasPaymentRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryQuoteGasPaymentRequest) ProtoMessage()    {}
+func (*QueryQuoteGasPaymentRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df73ac8b27e264f2, []int{4}
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryQuoteGasPaymentRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryQuoteGasPaymentRequest.Merge(m, src)
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryQuoteGasPaymentRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryQuoteGasPaymentRequest proto.InternalMessageInfo
+
+func (m *QueryQuoteGasPaymentRequest) GetIgpId() string {
+	if m != nil {
+		return m.IgpId
+	}
+	return ""
+}
+
+func (m *QueryQuoteGasPaymentRequest) GetDestinationDomain() string {
+	if m != nil {
+		return m.DestinationDomain
+	}
+	return ""
+}
+
+func (m *QueryQuoteGasPaymentRequest) GetGasLimit() string {
+	if m != nil {
+		return m.GasLimit
+	}
+	return ""
+}
+
+type QueryQuoteGasPaymentResponse struct {
+	GasPayment uint64 `protobuf:"varint,1,opt,name=gas_payment,json=gasPayment,proto3" json:"gas_payment,omitempty"`
+}
+
+func (m *QueryQuoteGasPaymentResponse) Reset()         { *m = QueryQuoteGasPaymentResponse{} }
+func (m *QueryQuoteGasPaymentResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryQuoteGasPaymentResponse) ProtoMessage()    {}
+func (*QueryQuoteGasPaymentResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_df73ac8b27e264f2, []int{5}
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryQuoteGasPaymentResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryQuoteGasPaymentResponse.Merge(m, src)
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryQuoteGasPaymentResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryQuoteGasPaymentResponse proto.InternalMessageInfo
+
+func (m *QueryQuoteGasPaymentResponse) GetGasPayment() uint64 {
+	if m != nil {
+		return m.GasPayment
+	}
+	return 0
+}
+
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 type QueryParamsRequest struct {
 }
@@ -119,7 +311,7 @@ func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
 func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsRequest) ProtoMessage()    {}
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df73ac8b27e264f2, []int{2}
+	return fileDescriptor_df73ac8b27e264f2, []int{6}
 }
 func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -158,7 +350,7 @@ func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
 func (m *QueryParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsResponse) ProtoMessage()    {}
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df73ac8b27e264f2, []int{3}
+	return fileDescriptor_df73ac8b27e264f2, []int{7}
 }
 func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -197,6 +389,10 @@ func (m *QueryParamsResponse) GetParams() Params {
 func init() {
 	proto.RegisterType((*QueryIgpsRequest)(nil), "hyperlane.igp.v1.QueryIgpsRequest")
 	proto.RegisterType((*QueryIgpsResponse)(nil), "hyperlane.igp.v1.QueryIgpsResponse")
+	proto.RegisterType((*QueryDestinationGasConfigsRequest)(nil), "hyperlane.igp.v1.QueryDestinationGasConfigsRequest")
+	proto.RegisterType((*QueryDestinationGasConfigsResponse)(nil), "hyperlane.igp.v1.QueryDestinationGasConfigsResponse")
+	proto.RegisterType((*QueryQuoteGasPaymentRequest)(nil), "hyperlane.igp.v1.QueryQuoteGasPaymentRequest")
+	proto.RegisterType((*QueryQuoteGasPaymentResponse)(nil), "hyperlane.igp.v1.QueryQuoteGasPaymentResponse")
 	proto.RegisterType((*QueryParamsRequest)(nil), "hyperlane.igp.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "hyperlane.igp.v1.QueryParamsResponse")
 }
@@ -204,31 +400,47 @@ func init() {
 func init() { proto.RegisterFile("hyperlane/igp/v1/query.proto", fileDescriptor_df73ac8b27e264f2) }
 
 var fileDescriptor_df73ac8b27e264f2 = []byte{
-	// 384 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xc1, 0x4e, 0xea, 0x40,
-	0x14, 0x86, 0x3b, 0xf7, 0x72, 0x49, 0xee, 0xb0, 0x81, 0xb9, 0x5c, 0xd3, 0x54, 0x53, 0x49, 0xd5,
-	0x84, 0x98, 0xd0, 0x09, 0x68, 0xe2, 0xc2, 0x1d, 0x3b, 0x76, 0xc2, 0xd2, 0x5d, 0x21, 0x93, 0x61,
-	0x12, 0x3a, 0x33, 0x74, 0x0a, 0xca, 0xd6, 0x27, 0x30, 0xf1, 0x25, 0x5c, 0xfa, 0x18, 0x2c, 0x49,
-	0xdc, 0xb8, 0x32, 0x06, 0x4c, 0x5c, 0xfb, 0x06, 0xa6, 0x33, 0x05, 0x81, 0x46, 0xdd, 0x34, 0xcd,
-	0x39, 0xff, 0xf9, 0xbf, 0xf3, 0x67, 0x0e, 0xdc, 0xeb, 0x4f, 0x24, 0x89, 0x06, 0x01, 0x27, 0x98,
-	0x51, 0x89, 0xc7, 0x75, 0x3c, 0x1c, 0x91, 0x68, 0xe2, 0xcb, 0x48, 0xc4, 0x02, 0x15, 0x57, 0x5d,
-	0x9f, 0x51, 0xe9, 0x8f, 0xeb, 0x4e, 0x99, 0x0a, 0x2a, 0x74, 0x13, 0x27, 0x7f, 0x46, 0xe7, 0x64,
-	0x5d, 0xe2, 0x89, 0x24, 0x6a, 0xd9, 0xa5, 0x42, 0xd0, 0x01, 0xc1, 0x81, 0x64, 0x38, 0xe0, 0x5c,
-	0xc4, 0x41, 0xcc, 0x04, 0x5f, 0x76, 0x77, 0x7b, 0x42, 0x85, 0x42, 0x19, 0xee, 0xd6, 0x02, 0x4e,
-	0x29, 0x08, 0x19, 0x17, 0x58, 0x7f, 0x4d, 0xc9, 0x43, 0xb0, 0xd8, 0x4e, 0x14, 0x2d, 0x2a, 0x55,
-	0x87, 0x0c, 0x47, 0x44, 0xc5, 0x5e, 0x0b, 0x96, 0xd6, 0x6a, 0x4a, 0x0a, 0xae, 0x08, 0x3a, 0x85,
-	0x39, 0x46, 0xa5, 0xb2, 0x41, 0xe5, 0x77, 0xb5, 0xd0, 0xf8, 0xef, 0x6f, 0x67, 0xf1, 0x5b, 0x54,
-	0x36, 0xff, 0x4e, 0x9f, 0xf7, 0xad, 0xfb, 0xb7, 0x87, 0x63, 0xd0, 0xd1, 0x6a, 0xaf, 0x0c, 0x91,
-	0xb6, 0xba, 0x08, 0xa2, 0x20, 0x5c, 0x01, 0x3a, 0xf0, 0xdf, 0x46, 0x35, 0x45, 0x9c, 0xc3, 0xbc,
-	0xd4, 0x15, 0x1b, 0x54, 0x40, 0xb5, 0xd0, 0xb0, 0xb3, 0x10, 0x33, 0xb1, 0xce, 0x49, 0x47, 0x1a,
-	0xef, 0x00, 0xfe, 0xd1, 0xa6, 0x48, 0xc0, 0x5c, 0xb2, 0x39, 0xf2, 0xb2, 0xe3, 0xdb, 0x51, 0x9d,
-	0x83, 0x6f, 0x35, 0x66, 0x2f, 0xcf, 0xbd, 0x79, 0x7c, 0xbd, 0xfb, 0x65, 0xa3, 0x1d, 0x9c, 0x79,
-	0x98, 0x24, 0x24, 0xba, 0x82, 0x79, 0xb3, 0x17, 0x3a, 0xfc, 0xc2, 0x6e, 0x23, 0xbe, 0x73, 0xf4,
-	0x83, 0x2a, 0xc5, 0x56, 0x34, 0xd6, 0x41, 0x76, 0x16, 0x6b, 0x32, 0x37, 0xdb, 0xd3, 0xb9, 0x0b,
-	0x66, 0x73, 0x17, 0xbc, 0xcc, 0x5d, 0x70, 0xbb, 0x70, 0xad, 0xd9, 0xc2, 0xb5, 0x9e, 0x16, 0xae,
-	0x75, 0x79, 0x46, 0x59, 0xdc, 0x1f, 0x75, 0xfd, 0x9e, 0x08, 0x71, 0xb7, 0x27, 0x6b, 0x8c, 0x73,
-	0x31, 0x36, 0x87, 0xf2, 0xe9, 0x56, 0x4b, 0x6f, 0xe5, 0x5a, 0xdb, 0xea, 0x1b, 0xeb, 0xe6, 0xf5,
-	0x59, 0x9c, 0x7c, 0x04, 0x00, 0x00, 0xff, 0xff, 0x41, 0x56, 0xff, 0x5e, 0xca, 0x02, 0x00, 0x00,
+	// 637 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0x4f, 0x6b, 0x13, 0x4f,
+	0x18, 0xc7, 0xb3, 0x69, 0x1a, 0x7e, 0x9d, 0xc2, 0xcf, 0x76, 0x6c, 0x74, 0xd9, 0x96, 0x6d, 0x5d,
+	0xff, 0x50, 0x84, 0xec, 0xd0, 0xa6, 0xe2, 0xa1, 0x07, 0xa1, 0x16, 0x4a, 0x40, 0xb1, 0x5d, 0xf0,
+	0xe2, 0xc1, 0x30, 0xcd, 0x8e, 0xd3, 0x81, 0xec, 0xcc, 0x34, 0xb3, 0x89, 0x86, 0x10, 0x10, 0xf1,
+	0x05, 0x08, 0xbe, 0x09, 0x8f, 0xbe, 0x03, 0x8f, 0xf6, 0x58, 0xf0, 0xe2, 0x49, 0x24, 0x11, 0x7c,
+	0x15, 0x82, 0xec, 0xec, 0x26, 0x4d, 0xb3, 0x9b, 0xa8, 0x97, 0x90, 0x3c, 0xcf, 0xf7, 0xf9, 0xce,
+	0x27, 0x3b, 0xdf, 0x7d, 0xc0, 0xda, 0x49, 0x47, 0x92, 0x66, 0x03, 0x73, 0x82, 0x18, 0x95, 0xa8,
+	0xbd, 0x85, 0x4e, 0x5b, 0xa4, 0xd9, 0x71, 0x65, 0x53, 0x84, 0x02, 0x2e, 0x8d, 0xba, 0x2e, 0xa3,
+	0xd2, 0x6d, 0x6f, 0x59, 0x2b, 0x54, 0x50, 0xa1, 0x9b, 0x28, 0xfa, 0x16, 0xeb, 0xac, 0xb4, 0x4b,
+	0xd8, 0x91, 0x44, 0x0d, 0xbb, 0x54, 0x08, 0xda, 0x20, 0x08, 0x4b, 0x86, 0x30, 0xe7, 0x22, 0xc4,
+	0x21, 0x13, 0x7c, 0xd8, 0x5d, 0xad, 0x0b, 0x15, 0x08, 0x15, 0x9f, 0x3b, 0x01, 0x60, 0x2d, 0xe3,
+	0x80, 0x71, 0x81, 0xf4, 0x67, 0x5c, 0x72, 0x20, 0x58, 0x3a, 0x8a, 0x14, 0x55, 0x2a, 0x95, 0x47,
+	0x4e, 0x5b, 0x44, 0x85, 0x4e, 0x15, 0x2c, 0x8f, 0xd5, 0x94, 0x14, 0x5c, 0x11, 0xb8, 0x03, 0x0a,
+	0x8c, 0x4a, 0x65, 0x1a, 0x1b, 0x73, 0x9b, 0x8b, 0xdb, 0x25, 0x77, 0xf2, 0xbf, 0xb8, 0x55, 0x2a,
+	0xf7, 0x16, 0xce, 0xbe, 0xad, 0xe7, 0x3e, 0xfc, 0xfc, 0x78, 0xd7, 0xf0, 0xb4, 0xda, 0xa9, 0x80,
+	0x1b, 0xda, 0x6a, 0x9f, 0xa8, 0x90, 0x71, 0x4d, 0x7a, 0x80, 0xd5, 0x43, 0xc1, 0x5f, 0x30, 0x3a,
+	0x3c, 0x0f, 0xfe, 0x0f, 0xf2, 0xcc, 0x37, 0x8d, 0x0d, 0x63, 0x73, 0xc1, 0xcb, 0x33, 0xdf, 0x79,
+	0x6b, 0x00, 0x67, 0xd6, 0x54, 0x42, 0xf4, 0x1c, 0x5c, 0xf7, 0x2f, 0x04, 0x35, 0x8a, 0x55, 0xad,
+	0x1e, 0x4b, 0x12, 0xc8, 0x3b, 0x69, 0xc8, 0x2c, 0x47, 0xaf, 0xe4, 0x67, 0x9d, 0xe3, 0xbc, 0x36,
+	0xc0, 0xaa, 0xc6, 0x38, 0x6a, 0x89, 0x90, 0x1c, 0x60, 0x75, 0x88, 0x3b, 0x01, 0xe1, 0xe1, 0x10,
+	0xbb, 0x04, 0x8a, 0x8c, 0xca, 0xda, 0x08, 0x7d, 0x9e, 0x51, 0x59, 0xf5, 0x61, 0x19, 0xc0, 0x71,
+	0x2c, 0x5f, 0x04, 0x98, 0x71, 0x33, 0xaf, 0x25, 0xcb, 0x63, 0x9d, 0x7d, 0xdd, 0x80, 0xab, 0x60,
+	0x21, 0x22, 0x6f, 0xb0, 0x80, 0x85, 0xe6, 0x9c, 0x56, 0xfd, 0x47, 0xb1, 0x7a, 0x14, 0xfd, 0x76,
+	0x1e, 0x80, 0xb5, 0x6c, 0x82, 0xe4, 0x11, 0xac, 0x83, 0xc5, 0x68, 0x58, 0xc6, 0x65, 0xcd, 0x51,
+	0xf0, 0x00, 0x1d, 0x09, 0x9d, 0x15, 0x00, 0xb5, 0xc1, 0x21, 0x6e, 0xe2, 0x60, 0x74, 0xc1, 0x1e,
+	0xb8, 0x7a, 0xa9, 0x9a, 0xb8, 0xed, 0x82, 0xa2, 0xd4, 0x15, 0x6d, 0xb4, 0xb8, 0x6d, 0xa6, 0x9f,
+	0x5f, 0x3c, 0x31, 0x7e, 0xcf, 0xc9, 0xc8, 0xf6, 0xaf, 0x02, 0x98, 0xd7, 0xa6, 0x50, 0x80, 0x42,
+	0x94, 0x1c, 0xe8, 0xa4, 0xc7, 0x27, 0xa3, 0x66, 0xdd, 0x9c, 0xa9, 0x89, 0xb9, 0x1c, 0xfb, 0xcd,
+	0x97, 0x1f, 0xef, 0xf3, 0x26, 0xbc, 0x86, 0x52, 0x2f, 0x46, 0x14, 0x32, 0xf8, 0xc9, 0x00, 0xa5,
+	0xcc, 0xa8, 0xc0, 0xca, 0x14, 0xfb, 0x59, 0x71, 0xb4, 0x76, 0xfe, 0x6d, 0x28, 0x81, 0xdc, 0xd5,
+	0x90, 0xf7, 0x60, 0x25, 0x1b, 0x12, 0x75, 0x99, 0xdf, 0x43, 0x53, 0xf2, 0x0a, 0x3f, 0x1b, 0xe0,
+	0xca, 0xc4, 0x1d, 0xc3, 0xf2, 0x14, 0x8c, 0xec, 0x34, 0x5a, 0xee, 0xdf, 0xca, 0x13, 0xde, 0xa7,
+	0x9a, 0xf7, 0x09, 0x7c, 0x8c, 0x32, 0x76, 0x96, 0x08, 0x49, 0x6d, 0x2c, 0x58, 0xa8, 0x1b, 0x07,
+	0xbd, 0x87, 0xba, 0xe9, 0x68, 0xf7, 0x50, 0x77, 0x14, 0xe0, 0x1e, 0x7c, 0x09, 0x8a, 0x71, 0x46,
+	0xe0, 0xad, 0x29, 0x40, 0x97, 0xa2, 0x68, 0xdd, 0xfe, 0x83, 0x2a, 0xa1, 0xdd, 0xd0, 0xb4, 0x16,
+	0x34, 0xd3, 0xb4, 0x71, 0xfe, 0xf6, 0x8e, 0xce, 0xfa, 0xb6, 0x71, 0xde, 0xb7, 0x8d, 0xef, 0x7d,
+	0xdb, 0x78, 0x37, 0xb0, 0x73, 0xe7, 0x03, 0x3b, 0xf7, 0x75, 0x60, 0xe7, 0x9e, 0xdd, 0xa7, 0x2c,
+	0x3c, 0x69, 0x1d, 0xbb, 0x75, 0x11, 0xa0, 0xe3, 0xba, 0x2c, 0x33, 0xce, 0x45, 0x3b, 0x5e, 0x9a,
+	0x17, 0x6e, 0xe5, 0x64, 0x6f, 0xbe, 0xd2, 0xb6, 0x7a, 0xdf, 0x1e, 0x17, 0xf5, 0x8a, 0xac, 0xfc,
+	0x0e, 0x00, 0x00, 0xff, 0xff, 0xbd, 0x30, 0x91, 0xd1, 0xd6, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -244,6 +456,8 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error)
+	DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error)
+	QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error)
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 }
@@ -265,6 +479,24 @@ func (c *queryClient) Igps(ctx context.Context, in *QueryIgpsRequest, opts ...gr
 	return out, nil
 }
 
+func (c *queryClient) DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error) {
+	out := new(QueryDestinationGasConfigsResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.igp.v1.Query/DestinationGasConfigs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error) {
+	out := new(QueryQuoteGasPaymentResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.igp.v1.Query/QuoteGasPayment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, "/hyperlane.igp.v1.Query/Params", in, out, opts...)
@@ -277,6 +509,8 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error)
+	DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error)
+	QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error)
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 }
@@ -287,6 +521,12 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Igps(ctx context.Context, req *QueryIgpsRequest) (*QueryIgpsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Igps not implemented")
+}
+func (*UnimplementedQueryServer) DestinationGasConfigs(ctx context.Context, req *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestinationGasConfigs not implemented")
+}
+func (*UnimplementedQueryServer) QuoteGasPayment(ctx context.Context, req *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuoteGasPayment not implemented")
 }
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
@@ -310,6 +550,42 @@ func _Query_Igps_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Igps(ctx, req.(*QueryIgpsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_DestinationGasConfigs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDestinationGasConfigsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DestinationGasConfigs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.igp.v1.Query/DestinationGasConfigs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DestinationGasConfigs(ctx, req.(*QueryDestinationGasConfigsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QuoteGasPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryQuoteGasPaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QuoteGasPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.igp.v1.Query/QuoteGasPayment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QuoteGasPayment(ctx, req.(*QueryQuoteGasPaymentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -339,6 +615,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Igps",
 			Handler:    _Query_Igps_Handler,
+		},
+		{
+			MethodName: "DestinationGasConfigs",
+			Handler:    _Query_DestinationGasConfigs_Handler,
+		},
+		{
+			MethodName: "QuoteGasPayment",
+			Handler:    _Query_QuoteGasPayment_Handler,
 		},
 		{
 			MethodName: "Params",
@@ -405,6 +689,145 @@ func (m *QueryIgpsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i--
 			dAtA[i] = 0xa
 		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryDestinationGasConfigsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryDestinationGasConfigsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryDestinationGasConfigsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryDestinationGasConfigsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryDestinationGasConfigsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryDestinationGasConfigsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DestinationGasConfigs) > 0 {
+		for iNdEx := len(m.DestinationGasConfigs) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.DestinationGasConfigs[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryQuoteGasPaymentRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryQuoteGasPaymentRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryQuoteGasPaymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.GasLimit) > 0 {
+		i -= len(m.GasLimit)
+		copy(dAtA[i:], m.GasLimit)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.GasLimit)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DestinationDomain) > 0 {
+		i -= len(m.DestinationDomain)
+		copy(dAtA[i:], m.DestinationDomain)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.DestinationDomain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.IgpId) > 0 {
+		i -= len(m.IgpId)
+		copy(dAtA[i:], m.IgpId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.IgpId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryQuoteGasPaymentResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryQuoteGasPaymentResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryQuoteGasPaymentResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.GasPayment != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.GasPayment))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -496,6 +919,67 @@ func (m *QueryIgpsResponse) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
+	}
+	return n
+}
+
+func (m *QueryDestinationGasConfigsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryDestinationGasConfigsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.DestinationGasConfigs) > 0 {
+		for _, e := range m.DestinationGasConfigs {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryQuoteGasPaymentRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.IgpId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.DestinationDomain)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.GasLimit)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryQuoteGasPaymentResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GasPayment != 0 {
+		n += 1 + sovQuery(uint64(m.GasPayment))
 	}
 	return n
 }
@@ -639,6 +1123,387 @@ func (m *QueryIgpsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryDestinationGasConfigsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryDestinationGasConfigsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryDestinationGasConfigsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryDestinationGasConfigsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryDestinationGasConfigsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryDestinationGasConfigsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DestinationGasConfigs", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DestinationGasConfigs = append(m.DestinationGasConfigs, &DestinationGasConfig{})
+			if err := m.DestinationGasConfigs[len(m.DestinationGasConfigs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryQuoteGasPaymentRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryQuoteGasPaymentRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryQuoteGasPaymentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IgpId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IgpId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DestinationDomain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DestinationDomain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasLimit", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GasLimit = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryQuoteGasPaymentResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryQuoteGasPaymentResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryQuoteGasPaymentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasPayment", wireType)
+			}
+			m.GasPayment = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GasPayment |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

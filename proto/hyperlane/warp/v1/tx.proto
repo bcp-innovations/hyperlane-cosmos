@@ -68,6 +68,11 @@ message MsgRemoteTransfer {
     (gogoproto.nullable)   = false,
     (amino.dont_omitempty) = true
   ];
+
+  // IGP
+  string igp_id = 5;
+  uint64 gas_limit = 6;
+  uint64 max_fee = 7;
 }
 
 message MsgRemoteTransferResponse {

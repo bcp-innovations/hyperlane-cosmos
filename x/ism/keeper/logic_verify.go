@@ -94,8 +94,8 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 	}
 }
 
-func (k Keeper) IsmIdExists(ctx context.Context, ismId string) (bool, error) {
-	ism, err := k.Isms.Has(ctx, ismId)
+func (k Keeper) IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+	ism, err := k.Isms.Has(ctx, ismId.String())
 	if err != nil {
 		return false, err
 	}

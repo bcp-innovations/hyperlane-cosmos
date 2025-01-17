@@ -14,9 +14,9 @@ import (
 
 func CmdPayForGas() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pay-for-gas [igp-id] [message-id] [destination-domain] [gas-limit]",
+		Use:   "pay-for-gas [igp-id] [message-id] [destination-domain] [gas-limit] [max-fee]",
 		Short: "Hyperlane Interchain Gas Payment",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -34,12 +34,18 @@ func CmdPayForGas() *cobra.Command {
 				return err
 			}
 
+			maxFee, err := strconv.ParseUint(args[4], 10, 32)
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgPayForGas{
 				Sender:            clientCtx.GetFromAddress().String(),
 				IgpId:             args[0],
 				MessageId:         args[1],
 				DestinationDomain: uint32(destinationDomain),
 				GasLimit:          gasLimit,
+				MaxFee:            maxFee,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Sender)

@@ -8,6 +8,12 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
+var (
+	gasLimit uint64
+	igpId    string
+	maxFee   uint64
+)
+
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,

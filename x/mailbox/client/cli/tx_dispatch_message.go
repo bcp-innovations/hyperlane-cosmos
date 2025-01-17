@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -38,6 +39,9 @@ func CmdDispatchMessage() *cobra.Command {
 				Destination: uint32(destinationDomain),
 				Recipient:   recipient,
 				Body:        messageBody,
+				IgpId:       igpId,
+				GasLimit:    gasLimit,
+				MaxFee:      maxFee,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
@@ -45,6 +49,16 @@ func CmdDispatchMessage() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().StringVar(&igpId, "igp-id", "", "custom InterchainGasPaymaster ID; only used when IGP is not required")
+
+	cmd.Flags().Uint64Var(&gasLimit, "gas-limit", 50000, "InterchainGasPayment gas limit (default: 50,000)")
+
+	// TODO: Use default value
+	cmd.Flags().Uint64Var(&maxFee, "max-hyperlane-fee", 0, "maximum Hyperlane InterchainGasPayment")
+	if err := cmd.MarkFlagRequired("max-hyperlane-fee"); err != nil {
+		panic(fmt.Errorf("flag 'max-hyperlane-fee' is required: %w", err))
+	}
 
 	return cmd
 }

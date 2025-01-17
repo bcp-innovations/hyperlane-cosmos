@@ -18,9 +18,9 @@ service Msg {
 
   rpc SetDestinationGasConfig(MsgSetDestinationGasConfig) returns (MsgSetDestinationGasConfigResponse);
 
-  rpc SetBeneficiary(MsgSetBeneficiary) returns (MsgSetBeneficiaryResponse);
-
   rpc PayForGas(MsgPayForGas) returns (MsgPayForGasResponse);
+
+  rpc Claim(MsgClaim) returns (MsgClaimResponse);
 
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
@@ -31,7 +31,7 @@ message MsgCreateIgp {
   option (amino.name) = "hyperlane/igp/MsgCreateIGP";
 
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string beneficiary = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string denom = 2;
 }
 
 message MsgCreateIgpResponse {}
@@ -48,30 +48,30 @@ message MsgSetDestinationGasConfig {
 
 message MsgSetDestinationGasConfigResponse {}
 
-message MsgSetBeneficiary {
-  option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "hyperlane/igp/MsgSetBeneficiary";
-
-  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string igp_id = 2;
-  string beneficiary = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-}
-
-message MsgSetBeneficiaryResponse {}
-
 message MsgPayForGas {
   option (cosmos.msg.v1.signer) = "sender";
   option (amino.name) = "hyperlane/igp/MsgPayForGas";
 
-  // `sender` is also used for refund overpayment.
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string igp_id = 2;
   string message_id = 3;
   uint32 destination_domain = 4;
+  // TODO: Use math.int (string gas_limit = 5 [(gogoproto.customtype) = "cosmossdk.io/math.Int"];)
   uint64 gas_limit = 5;
+  uint64 max_fee = 6;
 }
 
 message MsgPayForGasResponse {}
+
+message MsgClaim {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/igp/MsgClaim";
+
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string igp_id = 2;
+}
+
+message MsgClaimResponse {}
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {

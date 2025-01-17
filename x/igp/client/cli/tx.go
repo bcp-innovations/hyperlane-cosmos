@@ -18,6 +18,7 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
+		CmdClaim(),
 		CmdCreateIgp(),
 		CmdPayForGas(),
 		CmdSetDestinationGasConfig(),

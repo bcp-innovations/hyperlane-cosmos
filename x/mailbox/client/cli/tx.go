@@ -8,6 +8,13 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 )
 
+var (
+	gasLimit    uint64
+	igpId       string
+	igpRequired bool
+	maxFee      uint64
+)
+
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,

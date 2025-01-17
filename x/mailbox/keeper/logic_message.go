@@ -85,6 +85,10 @@ func (k Keeper) DispatchMessage(
 	// sender address on the origin chain (e.g. token id)
 	sender util.HexAddress,
 	body []byte,
+	// Custom IGP settings
+	customIgpId string,
+	gasLimit uint64,
+	maxFee uint64,
 ) (messageId util.HexAddress, error error) {
 	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())
 	if err != nil {
@@ -129,6 +133,24 @@ func (k Keeper) DispatchMessage(
 	mailbox.Tree = types.ProtoFromTree(tree)
 
 	err = k.Mailboxes.Set(ctx, originMailboxId.Bytes(), mailbox)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	// Interchain Gas Payment
+	igpId, err := util.DecodeHexAddress(mailbox.Igp.Id)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	if !mailbox.Igp.Required && customIgpId != "" {
+		igpId, err = util.DecodeHexAddress(customIgpId)
+		if err != nil {
+			return util.HexAddress{}, nil
+		}
+	}
+
+	err = k.igpKeeper.PayForGas(ctx, sender.String(), igpId, messageId.String(), destinationDomain, gasLimit, maxFee)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
