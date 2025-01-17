@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"golang.org/x/exp/maps"
 	"sort"
 
@@ -43,7 +44,8 @@ type ModuleInputs struct {
 
 	Config *modulev1.Module
 
-	IgpKeeper mailboxTypes.IgpKeeper
+	BankKeeper bankkeeper.Keeper
+
 	IsmKeeper mailboxTypes.IsmKeeper
 }
 
@@ -61,7 +63,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
 
-	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.IsmKeeper, in.IgpKeeper)
+	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.IsmKeeper, in.BankKeeper)
 	m := NewAppModule(in.Cdc, &k, in.IsmKeeper)
 
 	return ModuleOutputs{Module: m, Keeper: &k}

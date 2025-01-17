@@ -19,11 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_CreateMailbox_FullMethodName     = "/hyperlane.mailbox.v1.Msg/CreateMailbox"
-	Msg_DispatchMessage_FullMethodName   = "/hyperlane.mailbox.v1.Msg/DispatchMessage"
-	Msg_ProcessMessage_FullMethodName    = "/hyperlane.mailbox.v1.Msg/ProcessMessage"
-	Msg_AnnounceValidator_FullMethodName = "/hyperlane.mailbox.v1.Msg/AnnounceValidator"
-	Msg_UpdateParams_FullMethodName      = "/hyperlane.mailbox.v1.Msg/UpdateParams"
+	Msg_CreateMailbox_FullMethodName           = "/hyperlane.mailbox.v1.Msg/CreateMailbox"
+	Msg_DispatchMessage_FullMethodName         = "/hyperlane.mailbox.v1.Msg/DispatchMessage"
+	Msg_ProcessMessage_FullMethodName          = "/hyperlane.mailbox.v1.Msg/ProcessMessage"
+	Msg_AnnounceValidator_FullMethodName       = "/hyperlane.mailbox.v1.Msg/AnnounceValidator"
+	Msg_CreateIGP_FullMethodName               = "/hyperlane.mailbox.v1.Msg/CreateIGP"
+	Msg_SetDestinationGasConfig_FullMethodName = "/hyperlane.mailbox.v1.Msg/SetDestinationGasConfig"
+	Msg_PayForGas_FullMethodName               = "/hyperlane.mailbox.v1.Msg/PayForGas"
+	Msg_Claim_FullMethodName                   = "/hyperlane.mailbox.v1.Msg/Claim"
+	Msg_UpdateParams_FullMethodName            = "/hyperlane.mailbox.v1.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -34,6 +38,11 @@ type MsgClient interface {
 	DispatchMessage(ctx context.Context, in *MsgDispatchMessage, opts ...grpc.CallOption) (*MsgDispatchMessageResponse, error)
 	ProcessMessage(ctx context.Context, in *MsgProcessMessage, opts ...grpc.CallOption) (*MsgProcessMessageResponse, error)
 	AnnounceValidator(ctx context.Context, in *MsgAnnounceValidator, opts ...grpc.CallOption) (*MsgAnnounceValidatorResponse, error)
+	// IGP
+	CreateIGP(ctx context.Context, in *MsgCreateIgp, opts ...grpc.CallOption) (*MsgCreateIgpResponse, error)
+	SetDestinationGasConfig(ctx context.Context, in *MsgSetDestinationGasConfig, opts ...grpc.CallOption) (*MsgSetDestinationGasConfigResponse, error)
+	PayForGas(ctx context.Context, in *MsgPayForGas, opts ...grpc.CallOption) (*MsgPayForGasResponse, error)
+	Claim(ctx context.Context, in *MsgClaim, opts ...grpc.CallOption) (*MsgClaimResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -82,6 +91,42 @@ func (c *msgClient) AnnounceValidator(ctx context.Context, in *MsgAnnounceValida
 	return out, nil
 }
 
+func (c *msgClient) CreateIGP(ctx context.Context, in *MsgCreateIgp, opts ...grpc.CallOption) (*MsgCreateIgpResponse, error) {
+	out := new(MsgCreateIgpResponse)
+	err := c.cc.Invoke(ctx, Msg_CreateIGP_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetDestinationGasConfig(ctx context.Context, in *MsgSetDestinationGasConfig, opts ...grpc.CallOption) (*MsgSetDestinationGasConfigResponse, error) {
+	out := new(MsgSetDestinationGasConfigResponse)
+	err := c.cc.Invoke(ctx, Msg_SetDestinationGasConfig_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PayForGas(ctx context.Context, in *MsgPayForGas, opts ...grpc.CallOption) (*MsgPayForGasResponse, error) {
+	out := new(MsgPayForGasResponse)
+	err := c.cc.Invoke(ctx, Msg_PayForGas_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) Claim(ctx context.Context, in *MsgClaim, opts ...grpc.CallOption) (*MsgClaimResponse, error) {
+	out := new(MsgClaimResponse)
+	err := c.cc.Invoke(ctx, Msg_Claim_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_UpdateParams_FullMethodName, in, out, opts...)
@@ -99,6 +144,11 @@ type MsgServer interface {
 	DispatchMessage(context.Context, *MsgDispatchMessage) (*MsgDispatchMessageResponse, error)
 	ProcessMessage(context.Context, *MsgProcessMessage) (*MsgProcessMessageResponse, error)
 	AnnounceValidator(context.Context, *MsgAnnounceValidator) (*MsgAnnounceValidatorResponse, error)
+	// IGP
+	CreateIGP(context.Context, *MsgCreateIgp) (*MsgCreateIgpResponse, error)
+	SetDestinationGasConfig(context.Context, *MsgSetDestinationGasConfig) (*MsgSetDestinationGasConfigResponse, error)
+	PayForGas(context.Context, *MsgPayForGas) (*MsgPayForGasResponse, error)
+	Claim(context.Context, *MsgClaim) (*MsgClaimResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -119,6 +169,18 @@ func (UnimplementedMsgServer) ProcessMessage(context.Context, *MsgProcessMessage
 }
 func (UnimplementedMsgServer) AnnounceValidator(context.Context, *MsgAnnounceValidator) (*MsgAnnounceValidatorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnnounceValidator not implemented")
+}
+func (UnimplementedMsgServer) CreateIGP(context.Context, *MsgCreateIgp) (*MsgCreateIgpResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateIGP not implemented")
+}
+func (UnimplementedMsgServer) SetDestinationGasConfig(context.Context, *MsgSetDestinationGasConfig) (*MsgSetDestinationGasConfigResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetDestinationGasConfig not implemented")
+}
+func (UnimplementedMsgServer) PayForGas(context.Context, *MsgPayForGas) (*MsgPayForGasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PayForGas not implemented")
+}
+func (UnimplementedMsgServer) Claim(context.Context, *MsgClaim) (*MsgClaimResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Claim not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -208,6 +270,78 @@ func _Msg_AnnounceValidator_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateIGP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateIgp)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateIGP(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CreateIGP_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateIGP(ctx, req.(*MsgCreateIgp))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetDestinationGasConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetDestinationGasConfig)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetDestinationGasConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_SetDestinationGasConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetDestinationGasConfig(ctx, req.(*MsgSetDestinationGasConfig))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PayForGas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPayForGas)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PayForGas(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_PayForGas_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PayForGas(ctx, req.(*MsgPayForGas))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_Claim_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgClaim)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).Claim(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_Claim_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).Claim(ctx, req.(*MsgClaim))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -248,6 +382,22 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AnnounceValidator",
 			Handler:    _Msg_AnnounceValidator_Handler,
+		},
+		{
+			MethodName: "CreateIGP",
+			Handler:    _Msg_CreateIGP_Handler,
+		},
+		{
+			MethodName: "SetDestinationGasConfig",
+			Handler:    _Msg_SetDestinationGasConfig_Handler,
+		},
+		{
+			MethodName: "PayForGas",
+			Handler:    _Msg_PayForGas_Handler,
+		},
+		{
+			MethodName: "Claim",
+			Handler:    _Msg_Claim_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

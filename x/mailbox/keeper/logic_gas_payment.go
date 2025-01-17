@@ -5,7 +5,7 @@ import (
 	"cosmossdk.io/collections"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	"github.com/bcp-innovations/hyperlane-cosmos/x/igp/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

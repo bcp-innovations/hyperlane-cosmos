@@ -29,6 +29,12 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateMailbox(),
 		CmdDispatchMessage(),
 		CmdProcessMessage(),
+
+		// IGP
+		CmdClaim(),
+		CmdCreateIgp(),
+		CmdPayForGas(),
+		CmdSetDestinationGasConfig(),
 	)
 
 	return txCmd

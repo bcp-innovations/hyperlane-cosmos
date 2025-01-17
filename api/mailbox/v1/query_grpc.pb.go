@@ -29,6 +29,9 @@ const (
 	Query_RecipientIsm_FullMethodName              = "/hyperlane.mailbox.v1.Query/RecipientIsm"
 	Query_Validators_FullMethodName                = "/hyperlane.mailbox.v1.Query/Validators"
 	Query_AnnouncedStorageLocations_FullMethodName = "/hyperlane.mailbox.v1.Query/AnnouncedStorageLocations"
+	Query_Igps_FullMethodName                      = "/hyperlane.mailbox.v1.Query/Igps"
+	Query_DestinationGasConfigs_FullMethodName     = "/hyperlane.mailbox.v1.Query/DestinationGasConfigs"
+	Query_QuoteGasPayment_FullMethodName           = "/hyperlane.mailbox.v1.Query/QuoteGasPayment"
 )
 
 // QueryClient is the client API for Query service.
@@ -46,6 +49,10 @@ type QueryClient interface {
 	RecipientIsm(ctx context.Context, in *RecipientIsmRequest, opts ...grpc.CallOption) (*RecipientIsmResponse, error)
 	Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error)
 	AnnouncedStorageLocations(ctx context.Context, in *QueryAnnouncedStorageLocationsRequest, opts ...grpc.CallOption) (*QueryAnnouncedStorageLocationsResponse, error)
+	// IGP
+	Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error)
+	DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error)
+	QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error)
 }
 
 type queryClient struct {
@@ -146,6 +153,33 @@ func (c *queryClient) AnnouncedStorageLocations(ctx context.Context, in *QueryAn
 	return out, nil
 }
 
+func (c *queryClient) Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error) {
+	out := new(QueryIgpsResponse)
+	err := c.cc.Invoke(ctx, Query_Igps_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error) {
+	out := new(QueryDestinationGasConfigsResponse)
+	err := c.cc.Invoke(ctx, Query_DestinationGasConfigs_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error) {
+	out := new(QueryQuoteGasPaymentResponse)
+	err := c.cc.Invoke(ctx, Query_QuoteGasPayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -161,6 +195,10 @@ type QueryServer interface {
 	RecipientIsm(context.Context, *RecipientIsmRequest) (*RecipientIsmResponse, error)
 	Validators(context.Context, *QueryValidatorsRequest) (*QueryValidatorsResponse, error)
 	AnnouncedStorageLocations(context.Context, *QueryAnnouncedStorageLocationsRequest) (*QueryAnnouncedStorageLocationsResponse, error)
+	// IGP
+	Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error)
+	DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error)
+	QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -197,6 +235,15 @@ func (UnimplementedQueryServer) Validators(context.Context, *QueryValidatorsRequ
 }
 func (UnimplementedQueryServer) AnnouncedStorageLocations(context.Context, *QueryAnnouncedStorageLocationsRequest) (*QueryAnnouncedStorageLocationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnnouncedStorageLocations not implemented")
+}
+func (UnimplementedQueryServer) Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Igps not implemented")
+}
+func (UnimplementedQueryServer) DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestinationGasConfigs not implemented")
+}
+func (UnimplementedQueryServer) QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuoteGasPayment not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -391,6 +438,60 @@ func _Query_AnnouncedStorageLocations_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Igps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIgpsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Igps(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Igps_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Igps(ctx, req.(*QueryIgpsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_DestinationGasConfigs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDestinationGasConfigsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DestinationGasConfigs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_DestinationGasConfigs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DestinationGasConfigs(ctx, req.(*QueryDestinationGasConfigsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QuoteGasPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryQuoteGasPaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QuoteGasPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QuoteGasPayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QuoteGasPayment(ctx, req.(*QueryQuoteGasPaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -437,6 +538,18 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AnnouncedStorageLocations",
 			Handler:    _Query_AnnouncedStorageLocations_Handler,
+		},
+		{
+			MethodName: "Igps",
+			Handler:    _Query_Igps_Handler,
+		},
+		{
+			MethodName: "DestinationGasConfigs",
+			Handler:    _Query_DestinationGasConfigs_Handler,
+		},
+		{
+			MethodName: "QuoteGasPayment",
+			Handler:    _Query_QuoteGasPayment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

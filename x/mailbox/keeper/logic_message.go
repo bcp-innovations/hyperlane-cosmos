@@ -150,7 +150,7 @@ func (k Keeper) DispatchMessage(
 		}
 	}
 
-	err = k.igpKeeper.PayForGas(ctx, sender.String(), igpId, messageId.String(), destinationDomain, gasLimit, maxFee)
+	err = k.PayForGas(ctx, sender.String(), igpId, messageId.String(), destinationDomain, gasLimit, maxFee)
 	if err != nil {
 		return util.HexAddress{}, err
 	}

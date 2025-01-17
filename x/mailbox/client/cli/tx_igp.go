@@ -2,7 +2,7 @@ package cli
 
 import (
 	"fmt"
-	"github.com/bcp-innovations/hyperlane-cosmos/x/igp/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"

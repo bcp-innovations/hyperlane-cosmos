@@ -53,6 +53,19 @@ service Query {
   rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest) returns (QueryAnnouncedStorageLocationsResponse) {
     option (google.api.http).get = "/hyperlane/mailbox/v1/announced_storage_locations/{validator_address}";
   }
+
+  // IGP
+  rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
+    option (google.api.http).get = "/hyperlane/igp/v1/igps";
+  }
+
+  rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest) returns (QueryDestinationGasConfigsResponse) {
+    option (google.api.http).get = "/hyperlane/igp/v1/igps/{id}/destination_gas_configs";
+  }
+
+  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest) returns (QueryQuoteGasPaymentResponse) {
+    option (google.api.http).get = "/hyperlane/igp/v1/quote_gas_payment/{igp_id}/{destination_domain}/{gas_limit}";
+  }
 }
 
 message QueryMailboxesRequest {}
@@ -126,6 +139,33 @@ message QueryAnnouncedStorageLocationsRequest {
 message QueryAnnouncedStorageLocationsResponse {
   repeated string storage_locations = 1;
 }
+
+// IGP
+message QueryIgpsRequest {}
+
+message QueryIgpsResponse {
+  repeated Igp igps = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryDestinationGasConfigsRequest {
+  string id = 1;
+}
+
+message QueryDestinationGasConfigsResponse {
+  repeated DestinationGasConfig destination_gas_configs = 1;
+}
+
+message QueryQuoteGasPaymentRequest {
+  string igp_id = 1;
+  string destination_domain = 2;
+  string gas_limit = 3;
+}
+
+message QueryQuoteGasPaymentResponse {
+  uint64 gas_payment = 1;
+}
+
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}

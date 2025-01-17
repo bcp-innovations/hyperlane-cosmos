@@ -15,7 +15,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, err
 	}
 
-	exists, err := ms.k.igpKeeper.IgpIdExists(ctx, igpId)
+	exists, err := ms.k.IgpIdExists(ctx, igpId)
 	if err != nil {
 		return nil, err
 	}

@@ -22,8 +22,3 @@ type IsmKeeper interface {
 	IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error)
 	Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message HyperlaneMessage) (valid bool, err error)
 }
-
-type IgpKeeper interface {
-	IgpIdExists(ctx context.Context, igpId util.HexAddress) (bool, error)
-	PayForGas(ctx context.Context, sender string, igpId util.HexAddress, messageId string, destinationDomain uint32, gasLimit uint64, maxFee uint64) error
-}
