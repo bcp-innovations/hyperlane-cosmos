@@ -221,6 +221,22 @@ func (qs queryServer) Igps(ctx context.Context, _ *types.QueryIgpsRequest) (*typ
 	}, nil
 }
 
+func (qs queryServer) Igp(ctx context.Context, req *types.QueryIgpRequest) (*types.QueryIgpResponse, error) {
+	igpId, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	igp, err := qs.k.Igp.Get(ctx, igpId.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryIgpResponse{
+		Igp: igp,
+	}, nil
+}
+
 func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.QueryDestinationGasConfigsRequest) (*types.QueryDestinationGasConfigsResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {

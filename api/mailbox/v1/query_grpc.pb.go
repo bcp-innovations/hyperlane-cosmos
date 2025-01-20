@@ -30,6 +30,7 @@ const (
 	Query_Validators_FullMethodName                = "/hyperlane.mailbox.v1.Query/Validators"
 	Query_AnnouncedStorageLocations_FullMethodName = "/hyperlane.mailbox.v1.Query/AnnouncedStorageLocations"
 	Query_Igps_FullMethodName                      = "/hyperlane.mailbox.v1.Query/Igps"
+	Query_Igp_FullMethodName                       = "/hyperlane.mailbox.v1.Query/Igp"
 	Query_DestinationGasConfigs_FullMethodName     = "/hyperlane.mailbox.v1.Query/DestinationGasConfigs"
 	Query_QuoteGasPayment_FullMethodName           = "/hyperlane.mailbox.v1.Query/QuoteGasPayment"
 )
@@ -51,6 +52,7 @@ type QueryClient interface {
 	AnnouncedStorageLocations(ctx context.Context, in *QueryAnnouncedStorageLocationsRequest, opts ...grpc.CallOption) (*QueryAnnouncedStorageLocationsResponse, error)
 	// IGP
 	Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error)
+	Igp(ctx context.Context, in *QueryIgpRequest, opts ...grpc.CallOption) (*QueryIgpResponse, error)
 	DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error)
 	QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error)
 }
@@ -162,6 +164,15 @@ func (c *queryClient) Igps(ctx context.Context, in *QueryIgpsRequest, opts ...gr
 	return out, nil
 }
 
+func (c *queryClient) Igp(ctx context.Context, in *QueryIgpRequest, opts ...grpc.CallOption) (*QueryIgpResponse, error) {
+	out := new(QueryIgpResponse)
+	err := c.cc.Invoke(ctx, Query_Igp_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error) {
 	out := new(QueryDestinationGasConfigsResponse)
 	err := c.cc.Invoke(ctx, Query_DestinationGasConfigs_FullMethodName, in, out, opts...)
@@ -197,6 +208,7 @@ type QueryServer interface {
 	AnnouncedStorageLocations(context.Context, *QueryAnnouncedStorageLocationsRequest) (*QueryAnnouncedStorageLocationsResponse, error)
 	// IGP
 	Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error)
+	Igp(context.Context, *QueryIgpRequest) (*QueryIgpResponse, error)
 	DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error)
 	QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error)
 	mustEmbedUnimplementedQueryServer()
@@ -238,6 +250,9 @@ func (UnimplementedQueryServer) AnnouncedStorageLocations(context.Context, *Quer
 }
 func (UnimplementedQueryServer) Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Igps not implemented")
+}
+func (UnimplementedQueryServer) Igp(context.Context, *QueryIgpRequest) (*QueryIgpResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Igp not implemented")
 }
 func (UnimplementedQueryServer) DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DestinationGasConfigs not implemented")
@@ -456,6 +471,24 @@ func _Query_Igps_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Igp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIgpRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Igp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Igp_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Igp(ctx, req.(*QueryIgpRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_DestinationGasConfigs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDestinationGasConfigsRequest)
 	if err := dec(in); err != nil {
@@ -542,6 +575,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Igps",
 			Handler:    _Query_Igps_Handler,
+		},
+		{
+			MethodName: "Igp",
+			Handler:    _Query_Igp_Handler,
 		},
 		{
 			MethodName: "DestinationGasConfigs",
