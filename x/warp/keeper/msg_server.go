@@ -131,13 +131,13 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 
 	var messageResultId string
 	if token.TokenType == types.HYP_TOKEN_COLLATERAL {
-		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, *msg.GasLimit, *msg.MaxFee)
+		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
 		if err != nil {
 			return nil, err
 		}
 		messageResultId = result.String()
 	} else if token.TokenType == types.HYP_TOKEN_SYNTHETIC {
-		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, *msg.GasLimit, *msg.MaxFee)
+		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
 		if err != nil {
 			return nil, err
 		}

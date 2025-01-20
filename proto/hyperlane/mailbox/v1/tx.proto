@@ -40,8 +40,9 @@ message MsgCreateMailbox {
 
   // sender is the message sender.
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string default_ism = 2;
 
-  InterchainGasPaymaster igp = 2;
+  InterchainGasPaymaster igp = 3;
 }
 
 message MsgCreateMailboxResponse {}

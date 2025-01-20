@@ -14,9 +14,11 @@ message Mailbox {
   uint32 message_sent = 3;
   uint32 message_received = 4;
 
-  InterchainGasPaymaster igp = 5;
+  string default_ism = 5;
 
-  Tree tree = 6;
+  InterchainGasPaymaster igp = 6;
+
+  Tree tree = 7;
 }
 
 // Tree represents an incremental merkle tree.

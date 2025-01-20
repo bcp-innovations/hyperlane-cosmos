@@ -10,12 +10,22 @@ import (
 )
 
 func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailbox) (*types.MsgCreateMailboxResponse, error) {
+	ismId, err := util.DecodeHexAddress(req.DefaultIsm)
+	if err != nil {
+		return nil, err
+	}
+
+	exists, err := ms.k.ismKeeper.IsmIdExists(ctx, ismId)
+	if err != nil {
+		return nil, err
+	}
+
 	igpId, err := util.DecodeHexAddress(req.Igp.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	exists, err := ms.k.IgpIdExists(ctx, igpId)
+	exists, err = ms.k.IgpIdExists(ctx, igpId)
 	if err != nil {
 		return nil, err
 	}
@@ -38,6 +48,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		MessageSent:     0,
 		MessageReceived: 0,
 		Creator:         req.Creator,
+		DefaultIsm:      ismId.String(),
 		Igp: &types.InterchainGasPaymaster{
 			Id:       req.Igp.Id,
 			Required: req.Igp.Required,

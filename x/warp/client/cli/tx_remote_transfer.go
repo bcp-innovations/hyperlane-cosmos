@@ -46,8 +46,8 @@ func CmdRemoteTransfer() *cobra.Command {
 				Recipient: recipient,
 				Amount:    argAmount,
 				IgpId:     igpId,
-				GasLimit:  &gasLimitInt,
-				MaxFee:    &maxFeeInt,
+				GasLimit:  gasLimitInt,
+				MaxFee:    maxFeeInt,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

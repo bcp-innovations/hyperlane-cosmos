@@ -45,9 +45,9 @@ func CmdAnnounceValidator() *cobra.Command {
 
 func CmdCreateMailbox() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-mailbox [igp-id]",
+		Use:   "create-mailbox [default-ism-id] [igp-id]",
 		Short: "Create a Hyperlane Mailbox",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -56,9 +56,10 @@ func CmdCreateMailbox() *cobra.Command {
 			}
 
 			msg := types.MsgCreateMailbox{
-				Creator: clientCtx.GetFromAddress().String(),
+				Creator:    clientCtx.GetFromAddress().String(),
+				DefaultIsm: args[0],
 				Igp: &types.InterchainGasPaymaster{
-					Id:       args[0],
+					Id:       args[1],
 					Required: igpRequired,
 				},
 			}

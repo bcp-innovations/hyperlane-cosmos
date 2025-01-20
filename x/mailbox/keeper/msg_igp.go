@@ -24,7 +24,7 @@ func (ms msgServer) CreateIGP(ctx context.Context, req *types.MsgCreateIgp) (*ty
 		return nil, err
 	}
 
-	prefixedId := util.CreateHexAddress(types.ModuleName, int64(igpCount))
+	prefixedId := util.CreateHexAddress(fmt.Sprintf(types.ModuleName+"/igp"), int64(igpCount))
 
 	newIgp := types.Igp{
 		Id:            prefixedId.String(),
