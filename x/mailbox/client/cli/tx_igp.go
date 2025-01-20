@@ -163,10 +163,10 @@ func CmdSetDestinationGasConfig() *cobra.Command {
 				DestinationGasConfig: &types.DestinationGasConfig{
 					RemoteDomain: uint32(remoteDomain),
 					GasOracle: &types.GasOracle{
-						TokenExchangeRate: &tokenExchangeRate,
-						GasPrice:          &gasPrice,
+						TokenExchangeRate: tokenExchangeRate,
+						GasPrice:          gasPrice,
 					},
-					GasOverhead: &gasOverhead,
+					GasOverhead: gasOverhead,
 				},
 			}
 

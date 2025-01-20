@@ -95,7 +95,9 @@ func (k Keeper) QuoteGasPayment(ctx context.Context, igpId util.HexAddress, dest
 		return math.Int{}, fmt.Errorf("remote domain %v is not supported: %e", destinationDomain, err)
 	}
 
-	destinationCost := gasLimit.Mul(*destinationGasConfig.GasOracle.GasPrice)
+	gasLimit = gasLimit.Add(destinationGasConfig.GasOverhead)
 
-	return (destinationCost.Mul(*destinationGasConfig.GasOracle.TokenExchangeRate)).Quo(types.TokenExchangeRateScale), nil
+	destinationCost := gasLimit.Mul(destinationGasConfig.GasOracle.GasPrice)
+
+	return (destinationCost.Mul(destinationGasConfig.GasOracle.TokenExchangeRate)).Quo(types.TokenExchangeRateScale), nil
 }
