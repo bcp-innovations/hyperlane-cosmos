@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"cosmossdk.io/math"
+	"errors"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -90,14 +92,14 @@ func CmdPayForGas() *cobra.Command {
 				return err
 			}
 
-			gasLimit, err := strconv.ParseUint(args[3], 10, 32)
-			if err != nil {
-				return err
+			gasLimit, ok := math.NewIntFromString(args[3])
+			if !ok {
+				return errors.New("failed to convert `gasLimit` into math.Int")
 			}
 
-			maxFee, err := strconv.ParseUint(args[4], 10, 32)
-			if err != nil {
-				return err
+			maxFee, ok := math.NewIntFromString(args[4])
+			if !ok {
+				return errors.New("failed to convert `maxFee` into math.Int")
 			}
 
 			msg := types.MsgPayForGas{
@@ -105,8 +107,8 @@ func CmdPayForGas() *cobra.Command {
 				IgpId:             args[0],
 				MessageId:         args[1],
 				DestinationDomain: uint32(destinationDomain),
-				GasLimit:          gasLimit,
-				MaxFee:            maxFee,
+				GasLimit:          &gasLimit,
+				MaxFee:            &maxFee,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Sender)
@@ -140,19 +142,19 @@ func CmdSetDestinationGasConfig() *cobra.Command {
 				return err
 			}
 
-			tokenExchangeRate, err := strconv.ParseUint(args[2], 10, 32)
-			if err != nil {
-				return err
+			tokenExchangeRate, ok := math.NewIntFromString(args[2])
+			if !ok {
+				return errors.New("failed to convert `tokenExchangeRate` into math.Int")
 			}
 
-			gasPrice, err := strconv.ParseUint(args[3], 10, 32)
-			if err != nil {
-				return err
+			gasPrice, ok := math.NewIntFromString(args[3])
+			if !ok {
+				return errors.New("failed to convert `gasPrice` into math.Int")
 			}
 
-			gasOverhead, err := strconv.ParseUint(args[4], 10, 32)
-			if err != nil {
-				return err
+			gasOverhead, ok := math.NewIntFromString(args[4])
+			if !ok {
+				return errors.New("failed to convert `gasOverhead` into math.Int")
 			}
 
 			msg := types.MsgSetDestinationGasConfig{
@@ -161,10 +163,10 @@ func CmdSetDestinationGasConfig() *cobra.Command {
 				DestinationGasConfig: &types.DestinationGasConfig{
 					RemoteDomain: uint32(remoteDomain),
 					GasOracle: &types.GasOracle{
-						TokenExchangeRate: tokenExchangeRate,
-						GasPrice:          gasPrice,
+						TokenExchangeRate: &tokenExchangeRate,
+						GasPrice:          &gasPrice,
 					},
-					GasOverhead: gasOverhead,
+					GasOverhead: &gasOverhead,
 				},
 			}
 

@@ -163,7 +163,7 @@ message QueryQuoteGasPaymentRequest {
 }
 
 message QueryQuoteGasPaymentResponse {
-  uint64 gas_payment = 1;
+  string gas_payment = 1;
 }
 
 

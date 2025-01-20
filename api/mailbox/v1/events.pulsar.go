@@ -2025,14 +2025,14 @@ func (x *fastReflection_GasPayment) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if x.GasAmount != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.GasAmount)
+	if x.GasAmount != "" {
+		value := protoreflect.ValueOfString(x.GasAmount)
 		if !f(fd_GasPayment_gas_amount, value) {
 			return
 		}
 	}
-	if x.Payment != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Payment)
+	if x.Payment != "" {
+		value := protoreflect.ValueOfString(x.Payment)
 		if !f(fd_GasPayment_payment, value) {
 			return
 		}
@@ -2063,9 +2063,9 @@ func (x *fastReflection_GasPayment) Has(fd protoreflect.FieldDescriptor) bool {
 	case "hyperlane.mailbox.v1.GasPayment.destination":
 		return x.Destination != uint32(0)
 	case "hyperlane.mailbox.v1.GasPayment.gas_amount":
-		return x.GasAmount != uint64(0)
+		return x.GasAmount != ""
 	case "hyperlane.mailbox.v1.GasPayment.payment":
-		return x.Payment != uint64(0)
+		return x.Payment != ""
 	case "hyperlane.mailbox.v1.GasPayment.igp_id":
 		return x.IgpId != ""
 	default:
@@ -2089,9 +2089,9 @@ func (x *fastReflection_GasPayment) Clear(fd protoreflect.FieldDescriptor) {
 	case "hyperlane.mailbox.v1.GasPayment.destination":
 		x.Destination = uint32(0)
 	case "hyperlane.mailbox.v1.GasPayment.gas_amount":
-		x.GasAmount = uint64(0)
+		x.GasAmount = ""
 	case "hyperlane.mailbox.v1.GasPayment.payment":
-		x.Payment = uint64(0)
+		x.Payment = ""
 	case "hyperlane.mailbox.v1.GasPayment.igp_id":
 		x.IgpId = ""
 	default:
@@ -2118,10 +2118,10 @@ func (x *fastReflection_GasPayment) Get(descriptor protoreflect.FieldDescriptor)
 		return protoreflect.ValueOfUint32(value)
 	case "hyperlane.mailbox.v1.GasPayment.gas_amount":
 		value := x.GasAmount
-		return protoreflect.ValueOfUint64(value)
+		return protoreflect.ValueOfString(value)
 	case "hyperlane.mailbox.v1.GasPayment.payment":
 		value := x.Payment
-		return protoreflect.ValueOfUint64(value)
+		return protoreflect.ValueOfString(value)
 	case "hyperlane.mailbox.v1.GasPayment.igp_id":
 		value := x.IgpId
 		return protoreflect.ValueOfString(value)
@@ -2150,9 +2150,9 @@ func (x *fastReflection_GasPayment) Set(fd protoreflect.FieldDescriptor, value p
 	case "hyperlane.mailbox.v1.GasPayment.destination":
 		x.Destination = uint32(value.Uint())
 	case "hyperlane.mailbox.v1.GasPayment.gas_amount":
-		x.GasAmount = value.Uint()
+		x.GasAmount = value.Interface().(string)
 	case "hyperlane.mailbox.v1.GasPayment.payment":
-		x.Payment = value.Uint()
+		x.Payment = value.Interface().(string)
 	case "hyperlane.mailbox.v1.GasPayment.igp_id":
 		x.IgpId = value.Interface().(string)
 	default:
@@ -2203,9 +2203,9 @@ func (x *fastReflection_GasPayment) NewField(fd protoreflect.FieldDescriptor) pr
 	case "hyperlane.mailbox.v1.GasPayment.destination":
 		return protoreflect.ValueOfUint32(uint32(0))
 	case "hyperlane.mailbox.v1.GasPayment.gas_amount":
-		return protoreflect.ValueOfUint64(uint64(0))
+		return protoreflect.ValueOfString("")
 	case "hyperlane.mailbox.v1.GasPayment.payment":
-		return protoreflect.ValueOfUint64(uint64(0))
+		return protoreflect.ValueOfString("")
 	case "hyperlane.mailbox.v1.GasPayment.igp_id":
 		return protoreflect.ValueOfString("")
 	default:
@@ -2284,11 +2284,13 @@ func (x *fastReflection_GasPayment) ProtoMethods() *protoiface.Methods {
 		if x.Destination != 0 {
 			n += 1 + runtime.Sov(uint64(x.Destination))
 		}
-		if x.GasAmount != 0 {
-			n += 1 + runtime.Sov(uint64(x.GasAmount))
+		l = len(x.GasAmount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Payment != 0 {
-			n += 1 + runtime.Sov(uint64(x.Payment))
+		l = len(x.Payment)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.IgpId)
 		if l > 0 {
@@ -2330,15 +2332,19 @@ func (x *fastReflection_GasPayment) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x2a
 		}
-		if x.Payment != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Payment))
+		if len(x.Payment) > 0 {
+			i -= len(x.Payment)
+			copy(dAtA[i:], x.Payment)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Payment)))
 			i--
-			dAtA[i] = 0x20
+			dAtA[i] = 0x22
 		}
-		if x.GasAmount != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.GasAmount))
+		if len(x.GasAmount) > 0 {
+			i -= len(x.GasAmount)
+			copy(dAtA[i:], x.GasAmount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.GasAmount)))
 			i--
-			dAtA[i] = 0x18
+			dAtA[i] = 0x1a
 		}
 		if x.Destination != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.Destination))
@@ -2453,10 +2459,10 @@ func (x *fastReflection_GasPayment) ProtoMethods() *protoiface.Methods {
 					}
 				}
 			case 3:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GasAmount", wireType)
 				}
-				x.GasAmount = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -2466,16 +2472,29 @@ func (x *fastReflection_GasPayment) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.GasAmount |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.GasAmount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 4:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Payment", wireType)
 				}
-				x.Payment = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -2485,11 +2504,24 @@ func (x *fastReflection_GasPayment) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Payment |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Payment = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 5:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field IgpId", wireType)
@@ -2771,8 +2803,8 @@ type GasPayment struct {
 
 	MessageId   string `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
 	Destination uint32 `protobuf:"varint,2,opt,name=destination,proto3" json:"destination,omitempty"`
-	GasAmount   uint64 `protobuf:"varint,3,opt,name=gas_amount,json=gasAmount,proto3" json:"gas_amount,omitempty"`
-	Payment     uint64 `protobuf:"varint,4,opt,name=payment,proto3" json:"payment,omitempty"`
+	GasAmount   string `protobuf:"bytes,3,opt,name=gas_amount,json=gasAmount,proto3" json:"gas_amount,omitempty"`
+	Payment     string `protobuf:"bytes,4,opt,name=payment,proto3" json:"payment,omitempty"`
 	IgpId       string `protobuf:"bytes,5,opt,name=igp_id,json=igpId,proto3" json:"igp_id,omitempty"`
 }
 
@@ -2810,18 +2842,18 @@ func (x *GasPayment) GetDestination() uint32 {
 	return 0
 }
 
-func (x *GasPayment) GetGasAmount() uint64 {
+func (x *GasPayment) GetGasAmount() string {
 	if x != nil {
 		return x.GasAmount
 	}
-	return 0
+	return ""
 }
 
-func (x *GasPayment) GetPayment() uint64 {
+func (x *GasPayment) GetPayment() string {
 	if x != nil {
 		return x.Payment
 	}
-	return 0
+	return ""
 }
 
 func (x *GasPayment) GetIgpId() string {
@@ -2876,8 +2908,8 @@ var file_hyperlane_mailbox_v1_events_proto_rawDesc = []byte{
 	0x0a, 0x0b, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20,
 	0x01, 0x28, 0x0d, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
 	0x12, 0x1d, 0x0a, 0x0a, 0x67, 0x61, 0x73, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x67, 0x61, 0x73, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12,
-	0x18, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67, 0x61, 0x73, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12,
+	0x18, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x07, 0x70, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x15, 0x0a, 0x06, 0x69, 0x67, 0x70,
 	0x5f, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x67, 0x70, 0x49, 0x64,
 	0x42, 0xe9, 0x01, 0x0a, 0x18, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,

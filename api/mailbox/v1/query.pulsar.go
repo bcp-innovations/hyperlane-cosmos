@@ -10087,8 +10087,8 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) Interface() protoreflect.P
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QueryQuoteGasPaymentResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.GasPayment != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.GasPayment)
+	if x.GasPayment != "" {
+		value := protoreflect.ValueOfString(x.GasPayment)
 		if !f(fd_QueryQuoteGasPaymentResponse_gas_payment, value) {
 			return
 		}
@@ -10109,7 +10109,7 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) Range(f func(protoreflect.
 func (x *fastReflection_QueryQuoteGasPaymentResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse.gas_payment":
-		return x.GasPayment != uint64(0)
+		return x.GasPayment != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse"))
@@ -10127,7 +10127,7 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) Has(fd protoreflect.FieldD
 func (x *fastReflection_QueryQuoteGasPaymentResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse.gas_payment":
-		x.GasPayment = uint64(0)
+		x.GasPayment = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse"))
@@ -10146,7 +10146,7 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) Get(descriptor protoreflec
 	switch descriptor.FullName() {
 	case "hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse.gas_payment":
 		value := x.GasPayment
-		return protoreflect.ValueOfUint64(value)
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse"))
@@ -10168,7 +10168,7 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) Get(descriptor protoreflec
 func (x *fastReflection_QueryQuoteGasPaymentResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse.gas_payment":
-		x.GasPayment = value.Uint()
+		x.GasPayment = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse"))
@@ -10205,7 +10205,7 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) Mutable(fd protoreflect.Fi
 func (x *fastReflection_QueryQuoteGasPaymentResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse.gas_payment":
-		return protoreflect.ValueOfUint64(uint64(0))
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.QueryQuoteGasPaymentResponse"))
@@ -10275,8 +10275,9 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) ProtoMethods() *protoiface
 		var n int
 		var l int
 		_ = l
-		if x.GasPayment != 0 {
-			n += 1 + runtime.Sov(uint64(x.GasPayment))
+		l = len(x.GasPayment)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -10307,10 +10308,12 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) ProtoMethods() *protoiface
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.GasPayment != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.GasPayment))
+		if len(x.GasPayment) > 0 {
+			i -= len(x.GasPayment)
+			copy(dAtA[i:], x.GasPayment)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.GasPayment)))
 			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -10362,10 +10365,10 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) ProtoMethods() *protoiface
 			}
 			switch fieldNum {
 			case 1:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GasPayment", wireType)
 				}
-				x.GasPayment = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -10375,11 +10378,24 @@ func (x *fastReflection_QueryQuoteGasPaymentResponse) ProtoMethods() *protoiface
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.GasPayment |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.GasPayment = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -12027,7 +12043,7 @@ type QueryQuoteGasPaymentResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GasPayment uint64 `protobuf:"varint,1,opt,name=gas_payment,json=gasPayment,proto3" json:"gas_payment,omitempty"`
+	GasPayment string `protobuf:"bytes,1,opt,name=gas_payment,json=gasPayment,proto3" json:"gas_payment,omitempty"`
 }
 
 func (x *QueryQuoteGasPaymentResponse) Reset() {
@@ -12050,11 +12066,11 @@ func (*QueryQuoteGasPaymentResponse) Descriptor() ([]byte, []int) {
 	return file_hyperlane_mailbox_v1_query_proto_rawDescGZIP(), []int{23}
 }
 
-func (x *QueryQuoteGasPaymentResponse) GetGasPayment() uint64 {
+func (x *QueryQuoteGasPaymentResponse) GetGasPayment() string {
 	if x != nil {
 		return x.GasPayment
 	}
-	return 0
+	return ""
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -12235,7 +12251,7 @@ var file_hyperlane_mailbox_v1_query_proto_rawDesc = []byte{
 	0x69, 0x6d, 0x69, 0x74, 0x22, 0x3f, 0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x51, 0x75, 0x6f,
 	0x74, 0x65, 0x47, 0x61, 0x73, 0x50, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70,
 	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x67, 0x61, 0x73, 0x5f, 0x70, 0x61, 0x79, 0x6d,
-	0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x67, 0x61, 0x73, 0x50, 0x61,
+	0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x67, 0x61, 0x73, 0x50, 0x61,
 	0x79, 0x6d, 0x65, 0x6e, 0x74, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61,
 	0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x56, 0x0a, 0x13, 0x51,
 	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,

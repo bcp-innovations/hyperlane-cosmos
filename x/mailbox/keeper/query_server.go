@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
 	"errors"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -191,9 +192,9 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 		return nil, err
 	}
 
-	gasLimit, err := strconv.ParseUint(req.GasLimit, 10, 32)
-	if err != nil {
-		return nil, err
+	gasLimit, ok := math.NewIntFromString(req.GasLimit)
+	if !ok {
+		return nil, fmt.Errorf("failed to convert gasLimit to math.Int")
 	}
 
 	payment, err := qs.k.QuoteGasPayment(ctx, igpId, uint32(destinationDomain), gasLimit)
@@ -201,7 +202,7 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 		return nil, err
 	}
 
-	return &types.QueryQuoteGasPaymentResponse{GasPayment: payment}, nil
+	return &types.QueryQuoteGasPaymentResponse{GasPayment: payment.String()}, nil
 }
 
 func (qs queryServer) Igps(ctx context.Context, _ *types.QueryIgpsRequest) (*types.QueryIgpsResponse, error) {

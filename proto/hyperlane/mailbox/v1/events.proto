@@ -33,7 +33,7 @@ message InsertedIntoTree {
 message GasPayment {
   string message_id = 1;
   uint32 destination = 2;
-  uint64 gas_amount = 3;
-  uint64 payment = 4;
+  string gas_amount = 3;
+  string payment = 4;
   string igp_id = 5;
 }

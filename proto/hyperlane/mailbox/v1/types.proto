@@ -50,7 +50,7 @@ message Igp {
   string id = 1;
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string denom = 3;
-  uint64 claimable_fees = 4;
+  string claimable_fees = 4 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];;
 }
 
 message DestinationGasConfig {
@@ -58,12 +58,12 @@ message DestinationGasConfig {
   GasOracle gas_oracle = 2;
 
   // TODO: Check if uint96 needs to be used
-  uint64 gas_overhead = 3;
+  string gas_overhead = 3 [(gogoproto.customtype) = "cosmossdk.io/math.Int"];;
 }
 
 message GasOracle {
-  uint64 token_exchange_rate = 1;
-  uint64 gas_price = 2;
+  string token_exchange_rate = 1 [(gogoproto.customtype) = "cosmossdk.io/math.Int"];;
+  string gas_price = 2 [(gogoproto.customtype) = "cosmossdk.io/math.Int"];;
 }
 
 // GenesisState is the state that must be provided at genesis.

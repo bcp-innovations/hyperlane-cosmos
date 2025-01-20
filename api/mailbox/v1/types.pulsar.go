@@ -2803,8 +2803,8 @@ func (x *fastReflection_Igp) Range(f func(protoreflect.FieldDescriptor, protoref
 			return
 		}
 	}
-	if x.ClaimableFees != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.ClaimableFees)
+	if x.ClaimableFees != "" {
+		value := protoreflect.ValueOfString(x.ClaimableFees)
 		if !f(fd_Igp_claimable_fees, value) {
 			return
 		}
@@ -2831,7 +2831,7 @@ func (x *fastReflection_Igp) Has(fd protoreflect.FieldDescriptor) bool {
 	case "hyperlane.mailbox.v1.Igp.denom":
 		return x.Denom != ""
 	case "hyperlane.mailbox.v1.Igp.claimable_fees":
-		return x.ClaimableFees != uint64(0)
+		return x.ClaimableFees != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Igp"))
@@ -2855,7 +2855,7 @@ func (x *fastReflection_Igp) Clear(fd protoreflect.FieldDescriptor) {
 	case "hyperlane.mailbox.v1.Igp.denom":
 		x.Denom = ""
 	case "hyperlane.mailbox.v1.Igp.claimable_fees":
-		x.ClaimableFees = uint64(0)
+		x.ClaimableFees = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Igp"))
@@ -2883,7 +2883,7 @@ func (x *fastReflection_Igp) Get(descriptor protoreflect.FieldDescriptor) protor
 		return protoreflect.ValueOfString(value)
 	case "hyperlane.mailbox.v1.Igp.claimable_fees":
 		value := x.ClaimableFees
-		return protoreflect.ValueOfUint64(value)
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Igp"))
@@ -2911,7 +2911,7 @@ func (x *fastReflection_Igp) Set(fd protoreflect.FieldDescriptor, value protoref
 	case "hyperlane.mailbox.v1.Igp.denom":
 		x.Denom = value.Interface().(string)
 	case "hyperlane.mailbox.v1.Igp.claimable_fees":
-		x.ClaimableFees = value.Uint()
+		x.ClaimableFees = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Igp"))
@@ -2960,7 +2960,7 @@ func (x *fastReflection_Igp) NewField(fd protoreflect.FieldDescriptor) protorefl
 	case "hyperlane.mailbox.v1.Igp.denom":
 		return protoreflect.ValueOfString("")
 	case "hyperlane.mailbox.v1.Igp.claimable_fees":
-		return protoreflect.ValueOfUint64(uint64(0))
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.Igp"))
@@ -3042,8 +3042,9 @@ func (x *fastReflection_Igp) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.ClaimableFees != 0 {
-			n += 1 + runtime.Sov(uint64(x.ClaimableFees))
+		l = len(x.ClaimableFees)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -3074,10 +3075,12 @@ func (x *fastReflection_Igp) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.ClaimableFees != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.ClaimableFees))
+		if len(x.ClaimableFees) > 0 {
+			i -= len(x.ClaimableFees)
+			copy(dAtA[i:], x.ClaimableFees)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ClaimableFees)))
 			i--
-			dAtA[i] = 0x20
+			dAtA[i] = 0x22
 		}
 		if len(x.Denom) > 0 {
 			i -= len(x.Denom)
@@ -3246,10 +3249,10 @@ func (x *fastReflection_Igp) ProtoMethods() *protoiface.Methods {
 				x.Denom = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 4:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ClaimableFees", wireType)
 				}
-				x.ClaimableFees = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -3259,11 +3262,24 @@ func (x *fastReflection_Igp) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.ClaimableFees |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ClaimableFees = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -3391,8 +3407,8 @@ func (x *fastReflection_DestinationGasConfig) Range(f func(protoreflect.FieldDes
 			return
 		}
 	}
-	if x.GasOverhead != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.GasOverhead)
+	if x.GasOverhead != "" {
+		value := protoreflect.ValueOfString(x.GasOverhead)
 		if !f(fd_DestinationGasConfig_gas_overhead, value) {
 			return
 		}
@@ -3417,7 +3433,7 @@ func (x *fastReflection_DestinationGasConfig) Has(fd protoreflect.FieldDescripto
 	case "hyperlane.mailbox.v1.DestinationGasConfig.gas_oracle":
 		return x.GasOracle != nil
 	case "hyperlane.mailbox.v1.DestinationGasConfig.gas_overhead":
-		return x.GasOverhead != uint64(0)
+		return x.GasOverhead != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.DestinationGasConfig"))
@@ -3439,7 +3455,7 @@ func (x *fastReflection_DestinationGasConfig) Clear(fd protoreflect.FieldDescrip
 	case "hyperlane.mailbox.v1.DestinationGasConfig.gas_oracle":
 		x.GasOracle = nil
 	case "hyperlane.mailbox.v1.DestinationGasConfig.gas_overhead":
-		x.GasOverhead = uint64(0)
+		x.GasOverhead = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.DestinationGasConfig"))
@@ -3464,7 +3480,7 @@ func (x *fastReflection_DestinationGasConfig) Get(descriptor protoreflect.FieldD
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	case "hyperlane.mailbox.v1.DestinationGasConfig.gas_overhead":
 		value := x.GasOverhead
-		return protoreflect.ValueOfUint64(value)
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.DestinationGasConfig"))
@@ -3490,7 +3506,7 @@ func (x *fastReflection_DestinationGasConfig) Set(fd protoreflect.FieldDescripto
 	case "hyperlane.mailbox.v1.DestinationGasConfig.gas_oracle":
 		x.GasOracle = value.Message().Interface().(*GasOracle)
 	case "hyperlane.mailbox.v1.DestinationGasConfig.gas_overhead":
-		x.GasOverhead = value.Uint()
+		x.GasOverhead = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.DestinationGasConfig"))
@@ -3539,7 +3555,7 @@ func (x *fastReflection_DestinationGasConfig) NewField(fd protoreflect.FieldDesc
 		m := new(GasOracle)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	case "hyperlane.mailbox.v1.DestinationGasConfig.gas_overhead":
-		return protoreflect.ValueOfUint64(uint64(0))
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.DestinationGasConfig"))
@@ -3616,8 +3632,9 @@ func (x *fastReflection_DestinationGasConfig) ProtoMethods() *protoiface.Methods
 			l = options.Size(x.GasOracle)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.GasOverhead != 0 {
-			n += 1 + runtime.Sov(uint64(x.GasOverhead))
+		l = len(x.GasOverhead)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -3648,10 +3665,12 @@ func (x *fastReflection_DestinationGasConfig) ProtoMethods() *protoiface.Methods
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.GasOverhead != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.GasOverhead))
+		if len(x.GasOverhead) > 0 {
+			i -= len(x.GasOverhead)
+			copy(dAtA[i:], x.GasOverhead)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.GasOverhead)))
 			i--
-			dAtA[i] = 0x18
+			dAtA[i] = 0x1a
 		}
 		if x.GasOracle != nil {
 			encoded, err := options.Marshal(x.GasOracle)
@@ -3777,10 +3796,10 @@ func (x *fastReflection_DestinationGasConfig) ProtoMethods() *protoiface.Methods
 				}
 				iNdEx = postIndex
 			case 3:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GasOverhead", wireType)
 				}
-				x.GasOverhead = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -3790,11 +3809,24 @@ func (x *fastReflection_DestinationGasConfig) ProtoMethods() *protoiface.Methods
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.GasOverhead |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.GasOverhead = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -3908,14 +3940,14 @@ func (x *fastReflection_GasOracle) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_GasOracle) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.TokenExchangeRate != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.TokenExchangeRate)
+	if x.TokenExchangeRate != "" {
+		value := protoreflect.ValueOfString(x.TokenExchangeRate)
 		if !f(fd_GasOracle_token_exchange_rate, value) {
 			return
 		}
 	}
-	if x.GasPrice != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.GasPrice)
+	if x.GasPrice != "" {
+		value := protoreflect.ValueOfString(x.GasPrice)
 		if !f(fd_GasOracle_gas_price, value) {
 			return
 		}
@@ -3936,9 +3968,9 @@ func (x *fastReflection_GasOracle) Range(f func(protoreflect.FieldDescriptor, pr
 func (x *fastReflection_GasOracle) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.GasOracle.token_exchange_rate":
-		return x.TokenExchangeRate != uint64(0)
+		return x.TokenExchangeRate != ""
 	case "hyperlane.mailbox.v1.GasOracle.gas_price":
-		return x.GasPrice != uint64(0)
+		return x.GasPrice != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.GasOracle"))
@@ -3956,9 +3988,9 @@ func (x *fastReflection_GasOracle) Has(fd protoreflect.FieldDescriptor) bool {
 func (x *fastReflection_GasOracle) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.GasOracle.token_exchange_rate":
-		x.TokenExchangeRate = uint64(0)
+		x.TokenExchangeRate = ""
 	case "hyperlane.mailbox.v1.GasOracle.gas_price":
-		x.GasPrice = uint64(0)
+		x.GasPrice = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.GasOracle"))
@@ -3977,10 +4009,10 @@ func (x *fastReflection_GasOracle) Get(descriptor protoreflect.FieldDescriptor) 
 	switch descriptor.FullName() {
 	case "hyperlane.mailbox.v1.GasOracle.token_exchange_rate":
 		value := x.TokenExchangeRate
-		return protoreflect.ValueOfUint64(value)
+		return protoreflect.ValueOfString(value)
 	case "hyperlane.mailbox.v1.GasOracle.gas_price":
 		value := x.GasPrice
-		return protoreflect.ValueOfUint64(value)
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.GasOracle"))
@@ -4002,9 +4034,9 @@ func (x *fastReflection_GasOracle) Get(descriptor protoreflect.FieldDescriptor) 
 func (x *fastReflection_GasOracle) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.GasOracle.token_exchange_rate":
-		x.TokenExchangeRate = value.Uint()
+		x.TokenExchangeRate = value.Interface().(string)
 	case "hyperlane.mailbox.v1.GasOracle.gas_price":
-		x.GasPrice = value.Uint()
+		x.GasPrice = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.GasOracle"))
@@ -4043,9 +4075,9 @@ func (x *fastReflection_GasOracle) Mutable(fd protoreflect.FieldDescriptor) prot
 func (x *fastReflection_GasOracle) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	case "hyperlane.mailbox.v1.GasOracle.token_exchange_rate":
-		return protoreflect.ValueOfUint64(uint64(0))
+		return protoreflect.ValueOfString("")
 	case "hyperlane.mailbox.v1.GasOracle.gas_price":
-		return protoreflect.ValueOfUint64(uint64(0))
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.mailbox.v1.GasOracle"))
@@ -4115,11 +4147,13 @@ func (x *fastReflection_GasOracle) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if x.TokenExchangeRate != 0 {
-			n += 1 + runtime.Sov(uint64(x.TokenExchangeRate))
+		l = len(x.TokenExchangeRate)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.GasPrice != 0 {
-			n += 1 + runtime.Sov(uint64(x.GasPrice))
+		l = len(x.GasPrice)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -4150,15 +4184,19 @@ func (x *fastReflection_GasOracle) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.GasPrice != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.GasPrice))
+		if len(x.GasPrice) > 0 {
+			i -= len(x.GasPrice)
+			copy(dAtA[i:], x.GasPrice)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.GasPrice)))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x12
 		}
-		if x.TokenExchangeRate != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.TokenExchangeRate))
+		if len(x.TokenExchangeRate) > 0 {
+			i -= len(x.TokenExchangeRate)
+			copy(dAtA[i:], x.TokenExchangeRate)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TokenExchangeRate)))
 			i--
-			dAtA[i] = 0x8
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -4210,10 +4248,10 @@ func (x *fastReflection_GasOracle) ProtoMethods() *protoiface.Methods {
 			}
 			switch fieldNum {
 			case 1:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TokenExchangeRate", wireType)
 				}
-				x.TokenExchangeRate = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -4223,16 +4261,29 @@ func (x *fastReflection_GasOracle) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.TokenExchangeRate |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TokenExchangeRate = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 2:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field GasPrice", wireType)
 				}
-				x.GasPrice = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -4242,11 +4293,24 @@ func (x *fastReflection_GasOracle) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.GasPrice |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.GasPrice = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -4981,7 +5045,7 @@ type Igp struct {
 	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Owner         string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
 	Denom         string `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
-	ClaimableFees uint64 `protobuf:"varint,4,opt,name=claimable_fees,json=claimableFees,proto3" json:"claimable_fees,omitempty"`
+	ClaimableFees string `protobuf:"bytes,4,opt,name=claimable_fees,json=claimableFees,proto3" json:"claimable_fees,omitempty"`
 }
 
 func (x *Igp) Reset() {
@@ -5025,11 +5089,11 @@ func (x *Igp) GetDenom() string {
 	return ""
 }
 
-func (x *Igp) GetClaimableFees() uint64 {
+func (x *Igp) GetClaimableFees() string {
 	if x != nil {
 		return x.ClaimableFees
 	}
-	return 0
+	return ""
 }
 
 type DestinationGasConfig struct {
@@ -5040,7 +5104,7 @@ type DestinationGasConfig struct {
 	RemoteDomain uint32     `protobuf:"varint,1,opt,name=remote_domain,json=remoteDomain,proto3" json:"remote_domain,omitempty"`
 	GasOracle    *GasOracle `protobuf:"bytes,2,opt,name=gas_oracle,json=gasOracle,proto3" json:"gas_oracle,omitempty"`
 	// TODO: Check if uint96 needs to be used
-	GasOverhead uint64 `protobuf:"varint,3,opt,name=gas_overhead,json=gasOverhead,proto3" json:"gas_overhead,omitempty"`
+	GasOverhead string `protobuf:"bytes,3,opt,name=gas_overhead,json=gasOverhead,proto3" json:"gas_overhead,omitempty"`
 }
 
 func (x *DestinationGasConfig) Reset() {
@@ -5077,11 +5141,11 @@ func (x *DestinationGasConfig) GetGasOracle() *GasOracle {
 	return nil
 }
 
-func (x *DestinationGasConfig) GetGasOverhead() uint64 {
+func (x *DestinationGasConfig) GetGasOverhead() string {
 	if x != nil {
 		return x.GasOverhead
 	}
-	return 0
+	return ""
 }
 
 type GasOracle struct {
@@ -5089,8 +5153,8 @@ type GasOracle struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TokenExchangeRate uint64 `protobuf:"varint,1,opt,name=token_exchange_rate,json=tokenExchangeRate,proto3" json:"token_exchange_rate,omitempty"`
-	GasPrice          uint64 `protobuf:"varint,2,opt,name=gas_price,json=gasPrice,proto3" json:"gas_price,omitempty"`
+	TokenExchangeRate string `protobuf:"bytes,1,opt,name=token_exchange_rate,json=tokenExchangeRate,proto3" json:"token_exchange_rate,omitempty"`
+	GasPrice          string `protobuf:"bytes,2,opt,name=gas_price,json=gasPrice,proto3" json:"gas_price,omitempty"`
 }
 
 func (x *GasOracle) Reset() {
@@ -5113,18 +5177,18 @@ func (*GasOracle) Descriptor() ([]byte, []int) {
 	return file_hyperlane_mailbox_v1_types_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *GasOracle) GetTokenExchangeRate() uint64 {
+func (x *GasOracle) GetTokenExchangeRate() string {
 	if x != nil {
 		return x.TokenExchangeRate
 	}
-	return 0
+	return ""
 }
 
-func (x *GasOracle) GetGasPrice() uint64 {
+func (x *GasOracle) GetGasPrice() string {
 	if x != nil {
 		return x.GasPrice
 	}
-	return 0
+	return ""
 }
 
 // GenesisState is the state that must be provided at genesis.
@@ -5209,51 +5273,58 @@ var file_hyperlane_mailbox_v1_types_proto_rawDesc = []byte{
 	0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69,
 	0x6e, 0x3a, 0x1d, 0x8a, 0xe7, 0xb0, 0x2a, 0x18, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e,
 	0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x22, 0x82, 0x01, 0x0a, 0x03, 0x49, 0x67, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x22, 0xa1, 0x01, 0x0a, 0x03, 0x49, 0x67, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x2e, 0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65,
 	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73,
 	0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e,
 	0x67, 0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x25,
+	0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x44,
 	0x0a, 0x0e, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x73,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x61, 0x62, 0x6c,
-	0x65, 0x46, 0x65, 0x65, 0x73, 0x22, 0x9e, 0x01, 0x0a, 0x14, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x47, 0x61, 0x73, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x23,
-	0x0a, 0x0d, 0x72, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0c, 0x72, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x44, 0x6f, 0x6d,
-	0x61, 0x69, 0x6e, 0x12, 0x3e, 0x0a, 0x0a, 0x67, 0x61, 0x73, 0x5f, 0x6f, 0x72, 0x61, 0x63, 0x6c,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x47,
-	0x61, 0x73, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x52, 0x09, 0x67, 0x61, 0x73, 0x4f, 0x72, 0x61,
-	0x63, 0x6c, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x67, 0x61, 0x73, 0x5f, 0x6f, 0x76, 0x65, 0x72, 0x68,
-	0x65, 0x61, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x67, 0x61, 0x73, 0x4f, 0x76,
-	0x65, 0x72, 0x68, 0x65, 0x61, 0x64, 0x22, 0x58, 0x0a, 0x09, 0x47, 0x61, 0x73, 0x4f, 0x72, 0x61,
-	0x63, 0x6c, 0x65, 0x12, 0x2e, 0x0a, 0x13, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x65, 0x78, 0x63,
-	0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04,
-	0x52, 0x11, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x45, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52,
-	0x61, 0x74, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x67, 0x61, 0x73, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x67, 0x61, 0x73, 0x50, 0x72, 0x69, 0x63, 0x65,
-	0x22, 0x4f, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65,
-	0x12, 0x3f, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x1c, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69,
-	0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09,
-	0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x42, 0xe8, 0x01, 0x0a, 0x18, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x42, 0x0a,
-	0x54, 0x79, 0x70, 0x65, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4e, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x63, 0x70, 0x2d, 0x69, 0x6e, 0x6e,
-	0x6f, 0x76, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,
-	0x6e, 0x65, 0x2d, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68, 0x79,
-	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f,
-	0x76, 0x31, 0x3b, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x48,
-	0x4d, 0x58, 0xaa, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x4d,
-	0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65,
-	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31,
-	0xe2, 0x02, 0x20, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69,
-	0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64,
-	0x61, 0x74, 0x61, 0xea, 0x02, 0x16, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x3a,
-	0x3a, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0d, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x61, 0x62, 0x6c, 0x65,
+	0x46, 0x65, 0x65, 0x73, 0x22, 0xb9, 0x01, 0x0a, 0x14, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x47, 0x61, 0x73, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x23, 0x0a,
+	0x0d, 0x72, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0d, 0x52, 0x0c, 0x72, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x44, 0x6f, 0x6d, 0x61,
+	0x69, 0x6e, 0x12, 0x3e, 0x0a, 0x0a, 0x67, 0x61, 0x73, 0x5f, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61,
+	0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x61,
+	0x73, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x52, 0x09, 0x67, 0x61, 0x73, 0x4f, 0x72, 0x61, 0x63,
+	0x6c, 0x65, 0x12, 0x3c, 0x0a, 0x0c, 0x67, 0x61, 0x73, 0x5f, 0x6f, 0x76, 0x65, 0x72, 0x68, 0x65,
+	0x61, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x19, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x49, 0x6e, 0x74, 0x52, 0x0b, 0x67, 0x61, 0x73, 0x4f, 0x76, 0x65, 0x72, 0x68, 0x65, 0x61, 0x64,
+	0x22, 0x8e, 0x01, 0x0a, 0x09, 0x47, 0x61, 0x73, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x49,
+	0x0a, 0x13, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x65, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65,
+	0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x19, 0xda, 0xde, 0x1f,
+	0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
+	0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x11, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x45, 0x78, 0x63,
+	0x68, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x61, 0x74, 0x65, 0x12, 0x36, 0x0a, 0x09, 0x67, 0x61, 0x73,
+	0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x19, 0xda, 0xde,
+	0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
+	0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x08, 0x67, 0x61, 0x73, 0x50, 0x72, 0x69, 0x63,
+	0x65, 0x22, 0x4f, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74,
+	0x65, 0x12, 0x3f, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x1c, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61,
+	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42,
+	0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x42, 0xe8, 0x01, 0x0a, 0x18, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72,
+	0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x76, 0x31, 0x42,
+	0x0a, 0x54, 0x79, 0x70, 0x65, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4e, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x63, 0x70, 0x2d, 0x69, 0x6e,
+	0x6e, 0x6f, 0x76, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c,
+	0x61, 0x6e, 0x65, 0x2d, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68,
+	0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78,
+	0x2f, 0x76, 0x31, 0x3b, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x76, 0x31, 0xa2, 0x02, 0x03,
+	0x48, 0x4d, 0x58, 0xaa, 0x02, 0x14, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e,
+	0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x14, 0x48, 0x79, 0x70,
+	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56,
+	0x31, 0xe2, 0x02, 0x20, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x4d, 0x61,
+	0x69, 0x6c, 0x62, 0x6f, 0x78, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x16, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
+	0x3a, 0x3a, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

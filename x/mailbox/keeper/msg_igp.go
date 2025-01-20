@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
@@ -26,9 +27,10 @@ func (ms msgServer) CreateIGP(ctx context.Context, req *types.MsgCreateIgp) (*ty
 	prefixedId := util.CreateHexAddress(types.ModuleName, int64(igpCount))
 
 	newIgp := types.Igp{
-		Id:    prefixedId.String(),
-		Owner: req.Owner,
-		Denom: req.Denom,
+		Id:            prefixedId.String(),
+		Owner:         req.Owner,
+		Denom:         req.Denom,
+		ClaimableFees: math.NewInt(0),
 	}
 
 	if err = ms.k.Igp.Set(ctx, prefixedId.Bytes(), newIgp); err != nil {
@@ -44,7 +46,7 @@ func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*ty
 		return nil, err
 	}
 
-	return &types.MsgPayForGasResponse{}, ms.k.PayForGas(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, req.GasLimit, req.MaxFee)
+	return &types.MsgPayForGasResponse{}, ms.k.PayForGas(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, *req.GasLimit, *req.MaxFee)
 }
 
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {

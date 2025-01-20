@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	gasLimit    uint64
+	gasLimit    string
 	igpId       string
 	igpRequired bool
-	maxFee      uint64
+	maxFee      string
 )
 
 func GetTxCmd() *cobra.Command {

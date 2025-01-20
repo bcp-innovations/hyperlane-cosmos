@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
@@ -24,14 +25,14 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 		return err
 	}
 
-	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, int64(igp.ClaimableFees)))
+	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, igp.ClaimableFees.Int64()))
 
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, ownerAcc, coins)
 	if err != nil {
 		return err
 	}
 
-	igp.ClaimableFees = 0
+	igp.ClaimableFees = math.NewInt(0)
 
 	err = k.Igp.Set(ctx, igpId.Bytes(), igp)
 	if err != nil {
@@ -41,7 +42,7 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 	return nil
 }
 
-func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddress, messageId string, destinationDomain uint32, gasLimit uint64, maxFee uint64) error {
+func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddress, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee math.Int) error {
 	igp, err := k.Igp.Get(ctx, igpId.Bytes())
 	if err != nil {
 		return err
@@ -52,7 +53,7 @@ func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddr
 		return err
 	}
 
-	if requiredPayment > maxFee {
+	if requiredPayment.GT(maxFee) {
 		return fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
 	}
 
@@ -61,14 +62,14 @@ func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddr
 		return err
 	}
 
-	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, int64(requiredPayment)))
+	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, requiredPayment.Int64()))
 
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, types.ModuleName, coins)
 	if err != nil {
 		return err
 	}
 
-	igp.ClaimableFees += requiredPayment
+	igp.ClaimableFees = igp.ClaimableFees.Add(requiredPayment)
 
 	err = k.Igp.Set(ctx, igpId.Bytes(), igp)
 	if err != nil {
@@ -80,21 +81,21 @@ func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddr
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.GasPayment{
 		MessageId:   messageId,
 		Destination: destinationDomain,
-		GasAmount:   gasLimit,
-		Payment:     requiredPayment,
+		GasAmount:   gasLimit.String(),
+		Payment:     requiredPayment.String(),
 		IgpId:       igpId.String(),
 	})
 
 	return nil
 }
 
-func (k Keeper) QuoteGasPayment(ctx context.Context, igpId util.HexAddress, destinationDomain uint32, gasLimit uint64) (uint64, error) {
+func (k Keeper) QuoteGasPayment(ctx context.Context, igpId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (math.Int, error) {
 	destinationGasConfig, err := k.IgpDestinationGasConfigMap.Get(ctx, collections.Join(igpId.Bytes(), destinationDomain))
 	if err != nil {
-		return 0, fmt.Errorf("remote domain %v is not supported: %e", destinationDomain, err)
+		return math.Int{}, fmt.Errorf("remote domain %v is not supported: %e", destinationDomain, err)
 	}
 
-	destinationCost := gasLimit * destinationGasConfig.GasOracle.GasPrice
+	destinationCost := gasLimit.Mul(*destinationGasConfig.GasOracle.GasPrice)
 
-	return (destinationCost * destinationGasConfig.GasOracle.TokenExchangeRate) / types.TokenExchangeRateScale, nil
+	return (destinationCost.Mul(*destinationGasConfig.GasOracle.TokenExchangeRate)).Quo(types.TokenExchangeRateScale), nil
 }

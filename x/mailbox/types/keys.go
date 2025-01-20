@@ -1,6 +1,9 @@
 package types
 
-import "cosmossdk.io/collections"
+import (
+	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
+)
 
 const ModuleName = "mailbox"
 
@@ -17,6 +20,6 @@ var (
 	IgpSequenceKey                = collections.NewPrefix(9)
 )
 
-const (
-	TokenExchangeRateScale uint64 = 1
+var (
+	TokenExchangeRateScale = math.NewInt(1)
 )

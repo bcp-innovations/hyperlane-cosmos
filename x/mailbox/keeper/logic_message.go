@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -88,8 +89,8 @@ func (k Keeper) DispatchMessage(
 	// Custom IGP settings
 	cosmosSender string,
 	customIgpId string,
-	gasLimit uint64,
-	maxFee uint64,
+	gasLimit math.Int,
+	maxFee math.Int,
 ) (messageId util.HexAddress, error error) {
 	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())
 	if err != nil {
