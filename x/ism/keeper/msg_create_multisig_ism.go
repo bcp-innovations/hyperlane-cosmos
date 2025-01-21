@@ -26,7 +26,7 @@ func (ms msgServer) CreateMultisigIsm(ctx context.Context, req *types.MsgCreateM
 		Ism:     &types.Ism_MultiSig{MultiSig: &ism},
 	}
 
-	if err = ms.k.Isms.Set(ctx, prefixedId.String(), newIsm); err != nil {
+	if err = ms.k.Isms.Set(ctx, prefixedId.Bytes(), newIsm); err != nil {
 		return nil, err
 	}
 

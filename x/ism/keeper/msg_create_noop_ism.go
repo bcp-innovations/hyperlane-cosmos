@@ -21,7 +21,7 @@ func (ms msgServer) CreateNoopIsm(ctx context.Context, req *types.MsgCreateNoopI
 		Ism:     &types.Ism_Noop{Noop: &types.NoopIsm{}},
 	}
 
-	if err = ms.k.Isms.Set(ctx, prefixedId.String(), newIsm); err != nil {
+	if err = ms.k.Isms.Set(ctx, prefixedId.Bytes(), newIsm); err != nil {
 		return nil, err
 	}
 
