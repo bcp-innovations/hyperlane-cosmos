@@ -152,7 +152,7 @@ func (k Keeper) DispatchMessage(
 		}
 	}
 
-	err = k.PayForGas(ctx, cosmosSender, igpId, messageId.String(), destinationDomain, gasLimit, maxFee)
+	err = k.PayForGas(ctx, cosmosSender, igpId, hypMsg.Id().String(), destinationDomain, gasLimit, maxFee)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
