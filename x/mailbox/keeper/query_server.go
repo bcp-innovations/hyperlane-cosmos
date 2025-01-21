@@ -156,7 +156,10 @@ func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLate
 		return nil, err
 	}
 
-	root, count := tree.GetLatestCheckpoint()
+	root, count, err := tree.GetLatestCheckpoint()
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.QueryLatestCheckpointResponse{
 		Root:  root[:],

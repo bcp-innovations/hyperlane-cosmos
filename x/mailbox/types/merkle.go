@@ -113,8 +113,11 @@ func (tree *MerkleTree) GetRoot() [32]byte {
 	return tree.root()
 }
 
-func (tree *MerkleTree) GetLatestCheckpoint() ([32]byte, uint32) {
-	return tree.root(), tree.count - 1
+func (tree *MerkleTree) GetLatestCheckpoint() ([32]byte, uint32, error) {
+	if tree.count == 0 {
+		return [32]byte{}, 0, fmt.Errorf("no leaf inserted yet")
+	}
+	return tree.root(), tree.count - 1, nil
 }
 
 // Insert inserts node into merkle tree
