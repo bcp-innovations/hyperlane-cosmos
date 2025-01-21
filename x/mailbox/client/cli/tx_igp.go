@@ -77,8 +77,8 @@ func CmdCreateIgp() *cobra.Command {
 
 func CmdPayForGas() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pay-for-gas [igp-id] [message-id] [destination-domain] [gas-limit] [max-fee]",
-		Short: "Hyperlane Interchain Gas Payment",
+		Use:   "pay-for-gas [igp-id] [message-id] [destination-domain] [gas-limit] [amount]",
+		Short: "Hyperlane Interchain Gas Payment without using QuoteGasPayment",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
@@ -92,12 +92,12 @@ func CmdPayForGas() *cobra.Command {
 				return err
 			}
 
-			gasLimit, ok := math.NewIntFromString(args[3])
+			gasLimitInt, ok := math.NewIntFromString(args[3])
 			if !ok {
 				return errors.New("failed to convert `gasLimit` into math.Int")
 			}
 
-			maxFee, ok := math.NewIntFromString(args[4])
+			amount, ok := math.NewIntFromString(args[4])
 			if !ok {
 				return errors.New("failed to convert `maxFee` into math.Int")
 			}
@@ -107,8 +107,8 @@ func CmdPayForGas() *cobra.Command {
 				IgpId:             args[0],
 				MessageId:         args[1],
 				DestinationDomain: uint32(destinationDomain),
-				GasLimit:          &gasLimit,
-				MaxFee:            &maxFee,
+				GasLimit:          gasLimitInt,
+				Amount:            amount,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Sender)

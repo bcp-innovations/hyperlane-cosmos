@@ -118,8 +118,8 @@ func CmdDispatchMessage() *cobra.Command {
 				Recipient:   recipient,
 				Body:        messageBody,
 				IgpId:       igpId,
-				GasLimit:    &gasLimitInt,
-				MaxFee:      &maxFeeInt,
+				GasLimit:    gasLimitInt,
+				MaxFee:      maxFeeInt,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

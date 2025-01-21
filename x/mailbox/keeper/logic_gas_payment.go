@@ -89,6 +89,47 @@ func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddr
 	return nil
 }
 
+// PayForGasWithoutQuote executes an InterchainGasPayment without using `QuoteGasPayment`.
+// This is used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
+// amount for e.g. re-funding a certain message-id as the first payment wasn't enough.
+func (k Keeper) PayForGasWithoutQuote(ctx context.Context, sender string, igpId util.HexAddress, messageId string, destinationDomain uint32, gasLimit math.Int, amount math.Int) error {
+	igp, err := k.Igp.Get(ctx, igpId.Bytes())
+	if err != nil {
+		return err
+	}
+
+	senderAcc, err := sdk.AccAddressFromBech32(sender)
+	if err != nil {
+		return err
+	}
+
+	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, amount.Int64()))
+
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, types.ModuleName, coins)
+	if err != nil {
+		return err
+	}
+
+	igp.ClaimableFees = igp.ClaimableFees.Add(amount)
+
+	err = k.Igp.Set(ctx, igpId.Bytes(), igp)
+	if err != nil {
+		return err
+	}
+
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	_ = sdkCtx.EventManager().EmitTypedEvent(&types.GasPayment{
+		MessageId:   messageId,
+		Destination: destinationDomain,
+		GasAmount:   gasLimit.String(),
+		Payment:     amount.String(),
+		IgpId:       igpId.String(),
+	})
+
+	return nil
+}
+
 func (k Keeper) QuoteGasPayment(ctx context.Context, igpId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (math.Int, error) {
 	destinationGasConfig, err := k.IgpDestinationGasConfigMap.Get(ctx, collections.Join(igpId.Bytes(), destinationDomain))
 	if err != nil {

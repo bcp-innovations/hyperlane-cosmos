@@ -40,13 +40,14 @@ func (ms msgServer) CreateIGP(ctx context.Context, req *types.MsgCreateIgp) (*ty
 	return &types.MsgCreateIgpResponse{}, nil
 }
 
+// PayForGas executes an InterchainGasPayment without for the specified payment amount.
 func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*types.MsgPayForGasResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.MsgPayForGasResponse{}, ms.k.PayForGas(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, *req.GasLimit, *req.MaxFee)
+	return &types.MsgPayForGasResponse{}, ms.k.PayForGasWithoutQuote(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, req.GasLimit, req.Amount)
 }
 
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {

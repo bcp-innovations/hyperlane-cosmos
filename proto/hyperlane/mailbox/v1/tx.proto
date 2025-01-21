@@ -59,8 +59,8 @@ message MsgDispatchMessage {
 
   // IGP
   string igp_id = 6;
-  string gas_limit = 7 [(gogoproto.customtype) = "cosmossdk.io/math.Int"];
-  string max_fee = 8 [(gogoproto.customtype) = "cosmossdk.io/math.Int"];
+  string gas_limit = 7 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string max_fee = 8 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
 }
 
 message MsgDispatchMessageResponse {
@@ -123,8 +123,8 @@ message MsgPayForGas {
   string igp_id = 2;
   string message_id = 3;
   uint32 destination_domain = 4;
-  string gas_limit = 5 [(gogoproto.customtype) = "cosmossdk.io/math.Int"];
-  string max_fee = 6 [(gogoproto.customtype) = "cosmossdk.io/math.Int"];
+  string gas_limit = 5 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 6 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
 }
 
 message MsgPayForGasResponse {}
