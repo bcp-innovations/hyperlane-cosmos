@@ -14,9 +14,9 @@ import (
 
 func CmdCreateCollateralToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-collateral-token [origin-mailbox] [origin-denom] [receiver-domain] [receiver-contract] [ism-id]",
+		Use:   "create-collateral-token [origin-mailbox] [origin-denom] [receiver-domain] [receiver-contract]",
 		Short: "Create a Hyperlane Collateral Token",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -35,7 +35,7 @@ func CmdCreateCollateralToken() *cobra.Command {
 				OriginDenom:      args[1],
 				ReceiverDomain:   uint32(domain),
 				ReceiverContract: args[3],
-				IsmId:            args[4],
+				IsmId:            ismId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Creator)
@@ -48,6 +48,8 @@ func CmdCreateCollateralToken() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().StringVar(&ismId, "ism-id", "", "ISM ID; if not specified, DefaultISM is used")
 
 	return cmd
 }

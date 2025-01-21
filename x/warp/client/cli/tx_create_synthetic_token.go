@@ -14,9 +14,9 @@ import (
 
 func CmdCreateSyntheticToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-synthetic-token [origin-mailbox] [receiver-domain] [receiver-contract] [ism-id]",
+		Use:   "create-synthetic-token [origin-mailbox] [receiver-domain] [receiver-contract]",
 		Short: "Create a Hyperlane Synthetic Token",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -34,7 +34,7 @@ func CmdCreateSyntheticToken() *cobra.Command {
 				OriginMailbox:    args[0],
 				ReceiverDomain:   uint32(domain),
 				ReceiverContract: args[2],
-				IsmId:            args[3],
+				IsmId:            ismId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Creator)
@@ -47,6 +47,8 @@ func CmdCreateSyntheticToken() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().StringVar(&ismId, "ism-id", "", "ISM ID; if not specified, DefaultISM is used")
 
 	return cmd
 }

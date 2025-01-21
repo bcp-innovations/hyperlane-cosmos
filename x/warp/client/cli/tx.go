@@ -11,6 +11,7 @@ import (
 var (
 	gasLimit string
 	igpId    string
+	ismId    string
 	maxFee   string
 )
 
