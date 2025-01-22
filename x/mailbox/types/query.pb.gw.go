@@ -1344,31 +1344,31 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"hyperlane", "mailbox", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Mailboxes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"hyperlane", "mailbox", "v1", "mailboxes"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Mailboxes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1", "mailboxes"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Mailbox_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "mailbox", "v1", "mailboxes", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Mailbox_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"hyperlane", "v1", "mailboxes", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Count_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"hyperlane", "mailbox", "v1", "tree", "count", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Count_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "v1", "tree", "count", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Root_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"hyperlane", "mailbox", "v1", "tree", "root", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Root_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "v1", "tree", "root", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Delivered_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "mailbox", "v1", "delivered", "message_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Delivered_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"hyperlane", "v1", "delivered", "message_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_LatestCheckpoint_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"hyperlane", "mailbox", "v1", "tree", "latest_checkpoint", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LatestCheckpoint_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "v1", "tree", "latest_checkpoint", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_RecipientIsm_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "mailbox", "v1", "recipient_ism", "recipient"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_RecipientIsm_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"hyperlane", "v1", "recipient_ism", "recipient"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Validators_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"hyperlane", "mailbox", "v1", "validators"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Validators_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1", "validators"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_AnnouncedStorageLocations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "mailbox", "v1", "announced_storage_locations", "validator_address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AnnouncedStorageLocations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"hyperlane", "v1", "announced_storage_locations", "validator_address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Igps_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"hyperlane", "igp", "v1", "igps"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Igps_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1", "igps"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Igp_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "igp", "v1", "igps", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Igp_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"hyperlane", "v1", "igps", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DestinationGasConfigs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"hyperlane", "igp", "v1", "igps", "id", "destination_gas_configs"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_DestinationGasConfigs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"hyperlane", "v1", "igps", "id", "destination_gas_configs"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_QuoteGasPayment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"hyperlane", "igp", "v1", "quote_gas_payment", "igp_id", "destination_domain", "gas_limit"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_QuoteGasPayment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"hyperlane", "v1", "quote_gas_payment", "igp_id", "destination_domain", "gas_limit"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

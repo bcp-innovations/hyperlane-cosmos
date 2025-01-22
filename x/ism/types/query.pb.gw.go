@@ -347,11 +347,11 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Isms_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"hyperlane", "ism", "v1", "isms"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Isms_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1", "isms"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"hyperlane", "ism", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_VerifyDryRun_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"hyperlane", "ism", "v1", "verify_dry_run", "ism_id", "message", "metadata"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_VerifyDryRun_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"hyperlane", "v1", "verify_dry_run", "ism_id", "message", "metadata"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
