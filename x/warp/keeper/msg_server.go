@@ -39,26 +39,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
 
-	var ismId util.HexAddress
-	if msg.IsmId == "" {
-		// Use DefaultISM if no ISM is specified
-		mailbox, err := ms.k.mailboxKeeper.Mailboxes.Get(ctx, mailboxId.Bytes())
-		if err != nil {
-			return nil, err
-		}
-
-		ismId, err = util.DecodeHexAddress(mailbox.DefaultIsm)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		ismId, err = util.DecodeHexAddress(msg.IsmId)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, ismId)
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
 	if err != nil {
 		return nil, err
 	}
@@ -106,26 +87,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
 
-	var ismId util.HexAddress
-	if msg.IsmId == "" {
-		// Use DefaultISM if no ISM is specified
-		mailbox, err := ms.k.mailboxKeeper.Mailboxes.Get(ctx, mailboxId.Bytes())
-		if err != nil {
-			return nil, err
-		}
-
-		ismId, err = util.DecodeHexAddress(mailbox.DefaultIsm)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		ismId, err = util.DecodeHexAddress(msg.IsmId)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, ismId)
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
 	if err != nil {
 		return nil, err
 	}
