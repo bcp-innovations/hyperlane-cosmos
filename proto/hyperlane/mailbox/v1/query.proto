@@ -19,56 +19,56 @@ service Query {
   }
 
   rpc Mailboxes(QueryMailboxesRequest) returns (QueryMailboxesResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/mailboxes";
+    option (google.api.http).get = "/hyperlane/v1/mailboxes";
   }
 
   rpc Mailbox(QueryMailboxRequest) returns (QueryMailboxResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/mailboxes/{id}";
+    option (google.api.http).get = "/hyperlane/v1/mailboxes/{id}";
   }
 
   rpc Count(QueryCountRequest) returns (QueryCountResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/tree/count/{id}";
+    option (google.api.http).get = "/hyperlane/v1/tree/count/{id}";
   }
 
   rpc Root(QueryRootRequest) returns (QueryRootResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/tree/root/{id}";
+    option (google.api.http).get = "/hyperlane/v1/tree/root/{id}";
   }
 
   rpc Delivered(QueryDeliveredRequest) returns (QueryDeliveredResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/delivered/{message_id}";
+    option (google.api.http).get = "/hyperlane/v1/delivered/{message_id}";
   }
 
   rpc LatestCheckpoint(QueryLatestCheckpointRequest) returns (QueryLatestCheckpointResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/tree/latest_checkpoint/{id}";
+    option (google.api.http).get = "/hyperlane/v1/tree/latest_checkpoint/{id}";
   }
 
   rpc RecipientIsm(RecipientIsmRequest) returns (RecipientIsmResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/recipient_ism/{recipient}";
+    option (google.api.http).get = "/hyperlane/v1/recipient_ism/{recipient}";
   }
 
   rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/validators";
+    option (google.api.http).get = "/hyperlane/v1/validators";
   }
 
   rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest) returns (QueryAnnouncedStorageLocationsResponse) {
-    option (google.api.http).get = "/hyperlane/mailbox/v1/announced_storage_locations/{validator_address}";
+    option (google.api.http).get = "/hyperlane/v1/announced_storage_locations/{validator_address}";
   }
 
   // IGP
   rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
-    option (google.api.http).get = "/hyperlane/igp/v1/igps";
+    option (google.api.http).get = "/hyperlane/v1/igps";
   }
 
   rpc Igp(QueryIgpRequest) returns (QueryIgpResponse) {
-    option (google.api.http).get = "/hyperlane/igp/v1/igps/{id}";
+    option (google.api.http).get = "/hyperlane/v1/igps/{id}";
   }
 
   rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest) returns (QueryDestinationGasConfigsResponse) {
-    option (google.api.http).get = "/hyperlane/igp/v1/igps/{id}/destination_gas_configs";
+    option (google.api.http).get = "/hyperlane/v1/igps/{id}/destination_gas_configs";
   }
 
   rpc QuoteGasPayment(QueryQuoteGasPaymentRequest) returns (QueryQuoteGasPaymentResponse) {
-    option (google.api.http).get = "/hyperlane/igp/v1/quote_gas_payment/{igp_id}/{destination_domain}/{gas_limit}";
+    option (google.api.http).get = "/hyperlane/v1/quote_gas_payment/{igp_id}/{destination_domain}/{gas_limit}";
   }
 }
 

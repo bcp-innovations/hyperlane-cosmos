@@ -81,7 +81,7 @@ message MsgProcessMessageResponse {}
 
 message MsgAnnounceValidator {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/announce/MsgAnnounceValidator";
+  option (amino.name) = "hyperlane/mailbox/MsgAnnounceValidator";
 
   string validator = 1;
   string storageLocation = 2;
@@ -95,7 +95,7 @@ message MsgAnnounceValidatorResponse {}
 // IGP
 message MsgCreateIgp {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/igp/MsgCreateIGP";
+  option (amino.name) = "hyperlane/mailbox/MsgCreateIGP";
 
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string denom = 2;
@@ -105,7 +105,7 @@ message MsgCreateIgpResponse {}
 
 message MsgSetDestinationGasConfig {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/igp/MsgSetDestinationGasConfig";
+  option (amino.name) = "hyperlane/mailbox/MsgSetDestinationGasConfig";
 
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string igp_id = 2;
@@ -117,7 +117,7 @@ message MsgSetDestinationGasConfigResponse {}
 
 message MsgPayForGas {
   option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "hyperlane/igp/MsgPayForGas";
+  option (amino.name) = "hyperlane/mailbox/MsgPayForGas";
 
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string igp_id = 2;
@@ -131,7 +131,7 @@ message MsgPayForGasResponse {}
 
 message MsgClaim {
   option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "hyperlane/igp/MsgClaim";
+  option (amino.name) = "hyperlane/mailbox/MsgClaim";
 
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string igp_id = 2;
