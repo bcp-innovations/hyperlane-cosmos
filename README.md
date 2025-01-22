@@ -8,7 +8,6 @@ This project is an implementation of Hyperlane for the Cosmos SDK, designed for 
 ## Modules
 
 ### [x/mailbox](./x/mailbox)
-### [x/ism](./x/ism)
 ### [x/warp](./x/warp)
 
 ## Usage
@@ -19,25 +18,33 @@ _All modules can be imported into an Cosmos SDK chain using [dependency injectio
 ```
 chaind tx ism create-multisig-ism <validator-pubkeys> <threshold>
 ```
-If the transaction was successfully, you can see the created ISM here: _<api-url>/hyperlane/ism/v1/isms_
+If the transaction was successfully, you can see the created ISM here: _<api-url>/hyperlane/v1/isms_
+
+#### Create IGP
+```
+chaind tx mailbox create-igp <denom>
+```
+If the transaction was successfully, you can see the created IGP here: _<api-url>/hyperlane/v1/igps_
 
 #### Create Mailbox
 ```
-chaind tx mailbox create-mailbox
+chaind tx mailbox create-mailbox <default-ism-id> <igp-id>
 ```
-If the transaction was successfully, you can see the created Mailbox here: _<api-url>/hyperlane/mailbox/v1/mailboxes_
+If the transaction was successfully, you can see the created Mailbox here: _<api-url>/hyperlane/v1/mailboxes_
 
 #### Create Warp Collateral Token
 ```
-chaind tx warp create-collateral-token <origin-mailbox> <origin-denom> <receiver-domain> <receiver-contract> <ism-id> 
+chaind tx warp create-collateral-token <origin-mailbox> <origin-denom> <receiver-domain> <receiver-contract> 
 ```
 If the transaction was successfully, you can see the created token here: _<api-url>/hyperlane/warp/v1/tokens_
 
 _For local testing, the same mailbox can be used for sending messages._
 
+_A custom ISM can be specified with the `--ism-id` flag._
+
 #### Transfer tokens using Warp
 ```
-chaind tx warp transfer <token-id> <recipient> <amount>
+chaind tx warp transfer <token-id> <recipient> <amount> --max-hyperlane-fee <amount>
 ```
 After transferring the token, the `Dispatch` event can be obtained through the block results including the `message_body`.
 
