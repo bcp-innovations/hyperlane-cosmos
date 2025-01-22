@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Query_Isms_FullMethodName         = "/hyperlane.ism.v1.Query/Isms"
+	Query_Ism_FullMethodName          = "/hyperlane.ism.v1.Query/Ism"
 	Query_Params_FullMethodName       = "/hyperlane.ism.v1.Query/Params"
 	Query_VerifyDryRun_FullMethodName = "/hyperlane.ism.v1.Query/VerifyDryRun"
 )
@@ -29,6 +30,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
 	Isms(ctx context.Context, in *QueryIsmsRequest, opts ...grpc.CallOption) (*QueryIsmsResponse, error)
+	Ism(ctx context.Context, in *QueryIsmRequest, opts ...grpc.CallOption) (*QueryIsmResponse, error)
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	VerifyDryRun(ctx context.Context, in *QueryVerifyDryRunRequest, opts ...grpc.CallOption) (*QueryVerifyDryRunResponse, error)
@@ -45,6 +47,15 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 func (c *queryClient) Isms(ctx context.Context, in *QueryIsmsRequest, opts ...grpc.CallOption) (*QueryIsmsResponse, error) {
 	out := new(QueryIsmsResponse)
 	err := c.cc.Invoke(ctx, Query_Isms_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Ism(ctx context.Context, in *QueryIsmRequest, opts ...grpc.CallOption) (*QueryIsmResponse, error) {
+	out := new(QueryIsmResponse)
+	err := c.cc.Invoke(ctx, Query_Ism_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -74,6 +85,7 @@ func (c *queryClient) VerifyDryRun(ctx context.Context, in *QueryVerifyDryRunReq
 // for forward compatibility
 type QueryServer interface {
 	Isms(context.Context, *QueryIsmsRequest) (*QueryIsmsResponse, error)
+	Ism(context.Context, *QueryIsmRequest) (*QueryIsmResponse, error)
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	VerifyDryRun(context.Context, *QueryVerifyDryRunRequest) (*QueryVerifyDryRunResponse, error)
@@ -86,6 +98,9 @@ type UnimplementedQueryServer struct {
 
 func (UnimplementedQueryServer) Isms(context.Context, *QueryIsmsRequest) (*QueryIsmsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Isms not implemented")
+}
+func (UnimplementedQueryServer) Ism(context.Context, *QueryIsmRequest) (*QueryIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ism not implemented")
 }
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
@@ -120,6 +135,24 @@ func _Query_Isms_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Isms(ctx, req.(*QueryIsmsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Ism_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIsmRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Ism(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Ism_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Ism(ctx, req.(*QueryIsmRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -170,6 +203,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Isms",
 			Handler:    _Query_Isms_Handler,
+		},
+		{
+			MethodName: "Ism",
+			Handler:    _Query_Ism_Handler,
 		},
 		{
 			MethodName: "Params",

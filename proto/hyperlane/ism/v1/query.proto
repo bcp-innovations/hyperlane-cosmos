@@ -15,6 +15,10 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/isms";
   }
 
+  rpc Ism(QueryIsmRequest) returns (QueryIsmResponse) {
+    option (google.api.http).get = "/hyperlane/v1/isms/{id}";
+  }
+
 // Params returns the module parameters.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/hyperlane/v1/params";
@@ -29,6 +33,15 @@ message QueryIsmsRequest {}
 
 message QueryIsmsResponse {
   repeated Ism isms = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryIsmRequest {
+  string id = 1;
+}
+
+message QueryIsmResponse {
+  Ism ism = 1
   [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 

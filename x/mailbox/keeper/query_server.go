@@ -88,20 +88,15 @@ func (qs queryServer) Mailboxes(ctx context.Context, _ *types.QueryMailboxesRequ
 }
 
 func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxRequest) (*types.QueryMailboxResponse, error) {
-	id, err := util.DecodeHexAddress(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	mailboxExists, err := qs.k.Mailboxes.Has(ctx, id.Bytes())
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
 	}
-	if !mailboxExists {
-		return nil, fmt.Errorf("mailbox with id %s doesn't exist", id.String())
-	}
-
-	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
 
 	return &types.QueryMailboxResponse{
 		Mailbox: mailbox,
@@ -232,7 +227,7 @@ func (qs queryServer) Igp(ctx context.Context, req *types.QueryIgpRequest) (*typ
 
 	igp, err := qs.k.Igp.Get(ctx, igpId.Bytes())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find IGP with Id: %v", igpId.String())
 	}
 
 	return &types.QueryIgpResponse{
