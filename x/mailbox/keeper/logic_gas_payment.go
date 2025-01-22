@@ -43,11 +43,6 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 }
 
 func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddress, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee math.Int) error {
-	igp, err := k.Igp.Get(ctx, igpId.Bytes())
-	if err != nil {
-		return err
-	}
-
 	requiredPayment, err := k.QuoteGasPayment(ctx, igpId, destinationDomain, gasLimit)
 	if err != nil {
 		return err
@@ -57,36 +52,7 @@ func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddr
 		return fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
 	}
 
-	senderAcc, err := sdk.AccAddressFromBech32(sender)
-	if err != nil {
-		return err
-	}
-
-	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, requiredPayment.Int64()))
-
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, types.ModuleName, coins)
-	if err != nil {
-		return err
-	}
-
-	igp.ClaimableFees = igp.ClaimableFees.Add(requiredPayment)
-
-	err = k.Igp.Set(ctx, igpId.Bytes(), igp)
-	if err != nil {
-		return err
-	}
-
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
-	_ = sdkCtx.EventManager().EmitTypedEvent(&types.GasPayment{
-		MessageId:   messageId,
-		Destination: destinationDomain,
-		GasAmount:   gasLimit.String(),
-		Payment:     requiredPayment.String(),
-		IgpId:       igpId.String(),
-	})
-
-	return nil
+	return k.PayForGasWithoutQuote(ctx, sender, igpId, messageId, destinationDomain, gasLimit, requiredPayment)
 }
 
 // PayForGasWithoutQuote executes an InterchainGasPayment without using `QuoteGasPayment`.
