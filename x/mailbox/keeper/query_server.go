@@ -104,11 +104,12 @@ func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxReques
 }
 
 func (qs queryServer) Count(ctx context.Context, req *types.QueryCountRequest) (*types.QueryCountResponse, error) {
-	id, err := util.DecodeHexAddress(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -121,11 +122,12 @@ func (qs queryServer) Count(ctx context.Context, req *types.QueryCountRequest) (
 }
 
 func (qs queryServer) Root(ctx context.Context, req *types.QueryRootRequest) (*types.QueryRootResponse, error) {
-	id, err := util.DecodeHexAddress(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -140,11 +142,12 @@ func (qs queryServer) Root(ctx context.Context, req *types.QueryRootRequest) (*t
 }
 
 func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLatestCheckpointRequest) (*types.QueryLatestCheckpointResponse, error) {
-	id, err := util.DecodeHexAddress(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -179,6 +182,7 @@ func (qs queryServer) Validators(ctx context.Context, _ *types.QueryValidatorsRe
 }
 
 // IGP
+
 func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {

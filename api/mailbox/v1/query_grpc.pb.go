@@ -24,8 +24,8 @@ const (
 	Query_Mailbox_FullMethodName                   = "/hyperlane.mailbox.v1.Query/Mailbox"
 	Query_Count_FullMethodName                     = "/hyperlane.mailbox.v1.Query/Count"
 	Query_Root_FullMethodName                      = "/hyperlane.mailbox.v1.Query/Root"
-	Query_Delivered_FullMethodName                 = "/hyperlane.mailbox.v1.Query/Delivered"
 	Query_LatestCheckpoint_FullMethodName          = "/hyperlane.mailbox.v1.Query/LatestCheckpoint"
+	Query_Delivered_FullMethodName                 = "/hyperlane.mailbox.v1.Query/Delivered"
 	Query_RecipientIsm_FullMethodName              = "/hyperlane.mailbox.v1.Query/RecipientIsm"
 	Query_Validators_FullMethodName                = "/hyperlane.mailbox.v1.Query/Validators"
 	Query_AnnouncedStorageLocations_FullMethodName = "/hyperlane.mailbox.v1.Query/AnnouncedStorageLocations"
@@ -45,8 +45,8 @@ type QueryClient interface {
 	Mailbox(ctx context.Context, in *QueryMailboxRequest, opts ...grpc.CallOption) (*QueryMailboxResponse, error)
 	Count(ctx context.Context, in *QueryCountRequest, opts ...grpc.CallOption) (*QueryCountResponse, error)
 	Root(ctx context.Context, in *QueryRootRequest, opts ...grpc.CallOption) (*QueryRootResponse, error)
-	Delivered(ctx context.Context, in *QueryDeliveredRequest, opts ...grpc.CallOption) (*QueryDeliveredResponse, error)
 	LatestCheckpoint(ctx context.Context, in *QueryLatestCheckpointRequest, opts ...grpc.CallOption) (*QueryLatestCheckpointResponse, error)
+	Delivered(ctx context.Context, in *QueryDeliveredRequest, opts ...grpc.CallOption) (*QueryDeliveredResponse, error)
 	RecipientIsm(ctx context.Context, in *RecipientIsmRequest, opts ...grpc.CallOption) (*RecipientIsmResponse, error)
 	Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error)
 	AnnouncedStorageLocations(ctx context.Context, in *QueryAnnouncedStorageLocationsRequest, opts ...grpc.CallOption) (*QueryAnnouncedStorageLocationsResponse, error)
@@ -110,18 +110,18 @@ func (c *queryClient) Root(ctx context.Context, in *QueryRootRequest, opts ...gr
 	return out, nil
 }
 
-func (c *queryClient) Delivered(ctx context.Context, in *QueryDeliveredRequest, opts ...grpc.CallOption) (*QueryDeliveredResponse, error) {
-	out := new(QueryDeliveredResponse)
-	err := c.cc.Invoke(ctx, Query_Delivered_FullMethodName, in, out, opts...)
+func (c *queryClient) LatestCheckpoint(ctx context.Context, in *QueryLatestCheckpointRequest, opts ...grpc.CallOption) (*QueryLatestCheckpointResponse, error) {
+	out := new(QueryLatestCheckpointResponse)
+	err := c.cc.Invoke(ctx, Query_LatestCheckpoint_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) LatestCheckpoint(ctx context.Context, in *QueryLatestCheckpointRequest, opts ...grpc.CallOption) (*QueryLatestCheckpointResponse, error) {
-	out := new(QueryLatestCheckpointResponse)
-	err := c.cc.Invoke(ctx, Query_LatestCheckpoint_FullMethodName, in, out, opts...)
+func (c *queryClient) Delivered(ctx context.Context, in *QueryDeliveredRequest, opts ...grpc.CallOption) (*QueryDeliveredResponse, error) {
+	out := new(QueryDeliveredResponse)
+	err := c.cc.Invoke(ctx, Query_Delivered_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -201,8 +201,8 @@ type QueryServer interface {
 	Mailbox(context.Context, *QueryMailboxRequest) (*QueryMailboxResponse, error)
 	Count(context.Context, *QueryCountRequest) (*QueryCountResponse, error)
 	Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error)
-	Delivered(context.Context, *QueryDeliveredRequest) (*QueryDeliveredResponse, error)
 	LatestCheckpoint(context.Context, *QueryLatestCheckpointRequest) (*QueryLatestCheckpointResponse, error)
+	Delivered(context.Context, *QueryDeliveredRequest) (*QueryDeliveredResponse, error)
 	RecipientIsm(context.Context, *RecipientIsmRequest) (*RecipientIsmResponse, error)
 	Validators(context.Context, *QueryValidatorsRequest) (*QueryValidatorsResponse, error)
 	AnnouncedStorageLocations(context.Context, *QueryAnnouncedStorageLocationsRequest) (*QueryAnnouncedStorageLocationsResponse, error)
@@ -233,11 +233,11 @@ func (UnimplementedQueryServer) Count(context.Context, *QueryCountRequest) (*Que
 func (UnimplementedQueryServer) Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Root not implemented")
 }
-func (UnimplementedQueryServer) Delivered(context.Context, *QueryDeliveredRequest) (*QueryDeliveredResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delivered not implemented")
-}
 func (UnimplementedQueryServer) LatestCheckpoint(context.Context, *QueryLatestCheckpointRequest) (*QueryLatestCheckpointResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LatestCheckpoint not implemented")
+}
+func (UnimplementedQueryServer) Delivered(context.Context, *QueryDeliveredRequest) (*QueryDeliveredResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delivered not implemented")
 }
 func (UnimplementedQueryServer) RecipientIsm(context.Context, *RecipientIsmRequest) (*RecipientIsmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RecipientIsm not implemented")
@@ -363,24 +363,6 @@ func _Query_Root_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Delivered_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryDeliveredRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Delivered(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Delivered_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Delivered(ctx, req.(*QueryDeliveredRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_LatestCheckpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryLatestCheckpointRequest)
 	if err := dec(in); err != nil {
@@ -395,6 +377,24 @@ func _Query_LatestCheckpoint_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).LatestCheckpoint(ctx, req.(*QueryLatestCheckpointRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Delivered_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDeliveredRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Delivered(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Delivered_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Delivered(ctx, req.(*QueryDeliveredRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -553,12 +553,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Root_Handler,
 		},
 		{
-			MethodName: "Delivered",
-			Handler:    _Query_Delivered_Handler,
-		},
-		{
 			MethodName: "LatestCheckpoint",
 			Handler:    _Query_LatestCheckpoint_Handler,
+		},
+		{
+			MethodName: "Delivered",
+			Handler:    _Query_Delivered_Handler,
 		},
 		{
 			MethodName: "RecipientIsm",
