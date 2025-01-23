@@ -99,7 +99,7 @@ func (k Keeper) PayForGasWithoutQuote(ctx context.Context, sender string, igpId 
 func (k Keeper) QuoteGasPayment(ctx context.Context, igpId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (math.Int, error) {
 	destinationGasConfig, err := k.IgpDestinationGasConfigMap.Get(ctx, collections.Join(igpId.Bytes(), destinationDomain))
 	if err != nil {
-		return math.Int{}, fmt.Errorf("remote domain %v is not supported: %e", destinationDomain, err)
+		return math.Int{}, fmt.Errorf("remote domain %v is not supported", destinationDomain)
 	}
 
 	gasLimit = gasLimit.Add(destinationGasConfig.GasOverhead)

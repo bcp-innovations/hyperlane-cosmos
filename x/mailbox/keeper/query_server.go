@@ -110,6 +110,9 @@ func (qs queryServer) Count(ctx context.Context, req *types.QueryCountRequest) (
 	}
 
 	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -128,6 +131,9 @@ func (qs queryServer) Root(ctx context.Context, req *types.QueryRootRequest) (*t
 	}
 
 	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -148,6 +154,9 @@ func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLate
 	}
 
 	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
