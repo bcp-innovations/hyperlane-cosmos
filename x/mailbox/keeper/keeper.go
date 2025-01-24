@@ -20,8 +20,7 @@ type Keeper struct {
 	// typically, this should be the x/gov module account.
 	authority string
 
-	hooks     types.MailboxHooks
-	ismKeeper types.IsmKeeper
+	hooks types.MailboxHooks
 	// state management
 	Mailboxes collections.Map[[]byte, types.Mailbox]
 	Messages  collections.KeySet[[]byte]
@@ -34,6 +33,9 @@ type Keeper struct {
 	Igp                        collections.Map[[]byte, types.Igp]
 	IgpDestinationGasConfigMap collections.Map[collections.Pair[[]byte, uint32], types.DestinationGasConfig]
 	IgpSequence                collections.Sequence
+	// ISM
+	Isms         collections.Map[[]byte, types.Ism]
+	IsmsSequence collections.Sequence
 
 	Params collections.Item[types.Params]
 	Schema collections.Schema
@@ -42,7 +44,7 @@ type Keeper struct {
 }
 
 // NewKeeper creates a new Keeper instance
-func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string, ismKeeper types.IsmKeeper, bankKeeper bankkeeper.Keeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string, bankKeeper bankkeeper.Keeper) Keeper {
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic(fmt.Errorf("invalid authority address: %w", err))
 	}
@@ -62,7 +64,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		Igp:                        collections.NewMap(sb, types.IgpKey, "igp", collections.BytesKey, codec.CollValue[types.Igp](cdc)),
 		IgpDestinationGasConfigMap: collections.NewMap(sb, types.IgpDestinationGasConfigMapKey, "igp_destination_gas_config_map", collections.PairKeyCodec(collections.BytesKey, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
 		IgpSequence:                collections.NewSequence(sb, types.IgpSequenceKey, "igp_sequence"),
-		ismKeeper:                  ismKeeper,
+		Isms:                       collections.NewMap(sb, types.IsmsKey, "isms", collections.BytesKey, codec.CollValue[types.Ism](cdc)),
+		IsmsSequence:               collections.NewSequence(sb, types.IsmsSequencesKey, "isms_sequence"),
 		ReceiverIsmMapping:         collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
 		bankKeeper:                 bankKeeper,
 	}
@@ -92,7 +95,7 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 		}
 	}
 
-	exists, err := k.ismKeeper.IsmIdExists(ctx, prefixedIsmId)
+	exists, err := k.IsmIdExists(ctx, prefixedIsmId)
 	if err != nil || !exists {
 		return err
 	}

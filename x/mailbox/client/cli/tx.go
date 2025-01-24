@@ -35,6 +35,10 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateIgp(),
 		CmdPayForGas(),
 		CmdSetDestinationGasConfig(),
+
+		// ISM
+		CmdCreateMultiSigIsm(),
+		CmdCreateNoopIsm(),
 	)
 
 	return txCmd

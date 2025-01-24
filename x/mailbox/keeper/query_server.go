@@ -268,6 +268,55 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 	}, nil
 }
 
+// ISM
+
+func (qs queryServer) Isms(ctx context.Context, _ *types.QueryIsmsRequest) (*types.QueryIsmsResponse, error) {
+	it, err := qs.k.Isms.Iterate(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	isms, err := it.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryIsmsResponse{
+		Isms: isms,
+	}, nil
+}
+
+func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDryRunRequest) (*types.QueryVerifyDryRunResponse, error) {
+	rawMessage, err := util.DecodeEthHex(req.Message)
+	if err != nil {
+		return nil, err
+	}
+
+	message, err := types.ParseHyperlaneMessage(rawMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	metadata, err := util.DecodeEthHex(req.Metadata)
+	if err != nil {
+		return nil, err
+	}
+
+	ismId, err := util.DecodeHexAddress(req.IsmId)
+	if err != nil {
+		return nil, err
+	}
+
+	verified, err := qs.k.Verify(ctx, ismId, metadata, message)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryVerifyDryRunResponse{
+		Verified: verified,
+	}, nil
+}
+
 // Params defines the handler for the Query/Params RPC method.
 func (qs queryServer) Params(ctx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	params, err := qs.k.Params.Get(ctx)

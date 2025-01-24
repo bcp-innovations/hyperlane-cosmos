@@ -27,6 +27,8 @@ const (
 	Msg_SetDestinationGasConfig_FullMethodName = "/hyperlane.mailbox.v1.Msg/SetDestinationGasConfig"
 	Msg_PayForGas_FullMethodName               = "/hyperlane.mailbox.v1.Msg/PayForGas"
 	Msg_Claim_FullMethodName                   = "/hyperlane.mailbox.v1.Msg/Claim"
+	Msg_CreateMultisigIsm_FullMethodName       = "/hyperlane.mailbox.v1.Msg/CreateMultisigIsm"
+	Msg_CreateNoopIsm_FullMethodName           = "/hyperlane.mailbox.v1.Msg/CreateNoopIsm"
 	Msg_UpdateParams_FullMethodName            = "/hyperlane.mailbox.v1.Msg/UpdateParams"
 )
 
@@ -43,6 +45,9 @@ type MsgClient interface {
 	SetDestinationGasConfig(ctx context.Context, in *MsgSetDestinationGasConfig, opts ...grpc.CallOption) (*MsgSetDestinationGasConfigResponse, error)
 	PayForGas(ctx context.Context, in *MsgPayForGas, opts ...grpc.CallOption) (*MsgPayForGasResponse, error)
 	Claim(ctx context.Context, in *MsgClaim, opts ...grpc.CallOption) (*MsgClaimResponse, error)
+	// ISM
+	CreateMultisigIsm(ctx context.Context, in *MsgCreateMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMultisigIsmResponse, error)
+	CreateNoopIsm(ctx context.Context, in *MsgCreateNoopIsm, opts ...grpc.CallOption) (*MsgCreateNoopIsmResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -127,6 +132,24 @@ func (c *msgClient) Claim(ctx context.Context, in *MsgClaim, opts ...grpc.CallOp
 	return out, nil
 }
 
+func (c *msgClient) CreateMultisigIsm(ctx context.Context, in *MsgCreateMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMultisigIsmResponse, error) {
+	out := new(MsgCreateMultisigIsmResponse)
+	err := c.cc.Invoke(ctx, Msg_CreateMultisigIsm_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CreateNoopIsm(ctx context.Context, in *MsgCreateNoopIsm, opts ...grpc.CallOption) (*MsgCreateNoopIsmResponse, error) {
+	out := new(MsgCreateNoopIsmResponse)
+	err := c.cc.Invoke(ctx, Msg_CreateNoopIsm_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_UpdateParams_FullMethodName, in, out, opts...)
@@ -149,6 +172,9 @@ type MsgServer interface {
 	SetDestinationGasConfig(context.Context, *MsgSetDestinationGasConfig) (*MsgSetDestinationGasConfigResponse, error)
 	PayForGas(context.Context, *MsgPayForGas) (*MsgPayForGasResponse, error)
 	Claim(context.Context, *MsgClaim) (*MsgClaimResponse, error)
+	// ISM
+	CreateMultisigIsm(context.Context, *MsgCreateMultisigIsm) (*MsgCreateMultisigIsmResponse, error)
+	CreateNoopIsm(context.Context, *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -181,6 +207,12 @@ func (UnimplementedMsgServer) PayForGas(context.Context, *MsgPayForGas) (*MsgPay
 }
 func (UnimplementedMsgServer) Claim(context.Context, *MsgClaim) (*MsgClaimResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Claim not implemented")
+}
+func (UnimplementedMsgServer) CreateMultisigIsm(context.Context, *MsgCreateMultisigIsm) (*MsgCreateMultisigIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMultisigIsm not implemented")
+}
+func (UnimplementedMsgServer) CreateNoopIsm(context.Context, *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNoopIsm not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -342,6 +374,42 @@ func _Msg_Claim_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateMultisigIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateMultisigIsm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateMultisigIsm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CreateMultisigIsm_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateMultisigIsm(ctx, req.(*MsgCreateMultisigIsm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CreateNoopIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateNoopIsm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateNoopIsm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CreateNoopIsm_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateNoopIsm(ctx, req.(*MsgCreateNoopIsm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -398,6 +466,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Claim",
 			Handler:    _Msg_Claim_Handler,
+		},
+		{
+			MethodName: "CreateMultisigIsm",
+			Handler:    _Msg_CreateMultisigIsm_Handler,
+		},
+		{
+			MethodName: "CreateNoopIsm",
+			Handler:    _Msg_CreateNoopIsm_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

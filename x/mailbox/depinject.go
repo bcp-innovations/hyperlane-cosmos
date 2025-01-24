@@ -16,7 +16,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/mailbox/module"
-	mailboxTypes "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 )
 
 var _ appmodule.AppModule = AppModule{}
@@ -45,8 +44,6 @@ type ModuleInputs struct {
 	Config *modulev1.Module
 
 	BankKeeper bankkeeper.Keeper
-
-	IsmKeeper mailboxTypes.IsmKeeper
 }
 
 type ModuleOutputs struct {
@@ -63,8 +60,8 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
 
-	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.IsmKeeper, in.BankKeeper)
-	m := NewAppModule(in.Cdc, &k, in.IsmKeeper)
+	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.BankKeeper)
+	m := NewAppModule(in.Cdc, &k)
 
 	return ModuleOutputs{Module: m, Keeper: &k}
 }

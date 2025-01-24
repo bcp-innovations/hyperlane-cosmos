@@ -30,6 +30,11 @@ service Msg {
 
   rpc Claim(MsgClaim) returns (MsgClaimResponse);
 
+  // ISM
+  rpc CreateMultisigIsm(MsgCreateMultisigIsm) returns (MsgCreateMultisigIsmResponse);
+
+  rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
+
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
@@ -138,6 +143,28 @@ message MsgClaim {
 }
 
 message MsgClaimResponse {}
+
+// ISM
+message MsgCreateMultisigIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/ism/MsgCreateMultiSigIsm";
+
+  // sender is the message sender.
+  string creator = 1;
+  MultiSigIsm multi_sig = 2;
+}
+
+message MsgCreateMultisigIsmResponse {}
+
+message MsgCreateNoopIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/ism/MsgCreateNoopIsm";
+
+  // sender is the message sender.
+  string creator = 1;
+}
+
+message MsgCreateNoopIsmResponse {}
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {

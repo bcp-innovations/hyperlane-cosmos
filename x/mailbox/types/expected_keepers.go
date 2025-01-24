@@ -17,8 +17,3 @@ type MailboxHooksWrapper struct{ MailboxHooks }
 
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
 func (MailboxHooksWrapper) IsOnePerModuleType() {}
-
-type IsmKeeper interface {
-	IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error)
-	Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message HyperlaneMessage) (valid bool, err error)
-}

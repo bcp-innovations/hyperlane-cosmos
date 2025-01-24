@@ -32,7 +32,7 @@ type Metadata struct {
 	raw []byte
 }
 
-// validates and creates a new metadata object
+// NewMetadata validates and creates a new metadata object
 func NewMetadata(metadata []byte) (Metadata, error) {
 	if len(metadata) < SIGNATURES_OFFSET {
 		return Metadata{}, fmt.Errorf("invalid metadata length: got %v, expected at least %v bytes", len(metadata), SIGNATURES_OFFSET)

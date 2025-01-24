@@ -52,7 +52,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 
 	ismId := util.HexAddress(rawIsmAddress)
 
-	verified, err := k.ismKeeper.Verify(ctx, ismId, metadata, message)
+	verified, err := k.Verify(ctx, ismId, metadata, message)
 	if err != nil {
 		return err
 	}

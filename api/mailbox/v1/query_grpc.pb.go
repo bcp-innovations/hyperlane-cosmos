@@ -33,6 +33,8 @@ const (
 	Query_Igp_FullMethodName                       = "/hyperlane.mailbox.v1.Query/Igp"
 	Query_DestinationGasConfigs_FullMethodName     = "/hyperlane.mailbox.v1.Query/DestinationGasConfigs"
 	Query_QuoteGasPayment_FullMethodName           = "/hyperlane.mailbox.v1.Query/QuoteGasPayment"
+	Query_Isms_FullMethodName                      = "/hyperlane.mailbox.v1.Query/Isms"
+	Query_VerifyDryRun_FullMethodName              = "/hyperlane.mailbox.v1.Query/VerifyDryRun"
 )
 
 // QueryClient is the client API for Query service.
@@ -55,6 +57,9 @@ type QueryClient interface {
 	Igp(ctx context.Context, in *QueryIgpRequest, opts ...grpc.CallOption) (*QueryIgpResponse, error)
 	DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error)
 	QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error)
+	// ISM
+	Isms(ctx context.Context, in *QueryIsmsRequest, opts ...grpc.CallOption) (*QueryIsmsResponse, error)
+	VerifyDryRun(ctx context.Context, in *QueryVerifyDryRunRequest, opts ...grpc.CallOption) (*QueryVerifyDryRunResponse, error)
 }
 
 type queryClient struct {
@@ -191,6 +196,24 @@ func (c *queryClient) QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaym
 	return out, nil
 }
 
+func (c *queryClient) Isms(ctx context.Context, in *QueryIsmsRequest, opts ...grpc.CallOption) (*QueryIsmsResponse, error) {
+	out := new(QueryIsmsResponse)
+	err := c.cc.Invoke(ctx, Query_Isms_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) VerifyDryRun(ctx context.Context, in *QueryVerifyDryRunRequest, opts ...grpc.CallOption) (*QueryVerifyDryRunResponse, error) {
+	out := new(QueryVerifyDryRunResponse)
+	err := c.cc.Invoke(ctx, Query_VerifyDryRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -211,6 +234,9 @@ type QueryServer interface {
 	Igp(context.Context, *QueryIgpRequest) (*QueryIgpResponse, error)
 	DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error)
 	QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error)
+	// ISM
+	Isms(context.Context, *QueryIsmsRequest) (*QueryIsmsResponse, error)
+	VerifyDryRun(context.Context, *QueryVerifyDryRunRequest) (*QueryVerifyDryRunResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -259,6 +285,12 @@ func (UnimplementedQueryServer) DestinationGasConfigs(context.Context, *QueryDes
 }
 func (UnimplementedQueryServer) QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuoteGasPayment not implemented")
+}
+func (UnimplementedQueryServer) Isms(context.Context, *QueryIsmsRequest) (*QueryIsmsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Isms not implemented")
+}
+func (UnimplementedQueryServer) VerifyDryRun(context.Context, *QueryVerifyDryRunRequest) (*QueryVerifyDryRunResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyDryRun not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -525,6 +557,42 @@ func _Query_QuoteGasPayment_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Isms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIsmsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Isms(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Isms_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Isms(ctx, req.(*QueryIsmsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_VerifyDryRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVerifyDryRunRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).VerifyDryRun(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_VerifyDryRun_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).VerifyDryRun(ctx, req.(*QueryVerifyDryRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -587,6 +655,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QuoteGasPayment",
 			Handler:    _Query_QuoteGasPayment_Handler,
+		},
+		{
+			MethodName: "Isms",
+			Handler:    _Query_Isms_Handler,
+		},
+		{
+			MethodName: "VerifyDryRun",
+			Handler:    _Query_VerifyDryRun_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

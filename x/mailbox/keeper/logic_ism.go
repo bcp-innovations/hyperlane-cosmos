@@ -4,17 +4,15 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"strings"
-
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	"github.com/bcp-innovations/hyperlane-cosmos/x/ism/types"
-	mailboxTypes "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/ethereum/go-ethereum/crypto"
+	"strings"
 )
 
-func multiSigDigest(metadata *types.Metadata, message *mailboxTypes.HyperlaneMessage) [32]byte {
+func multiSigDigest(metadata *types.Metadata, message *types.HyperlaneMessage) [32]byte {
 	messageId := message.Id()
-	signedRoot := mailboxTypes.BranchRoot(messageId, metadata.Proof(), metadata.MessageIndex())
+	signedRoot := types.BranchRoot(messageId, metadata.Proof(), metadata.MessageIndex())
 
 	return types.CheckpointDigest(
 		message.Origin,
@@ -25,7 +23,7 @@ func multiSigDigest(metadata *types.Metadata, message *mailboxTypes.HyperlaneMes
 	)
 }
 
-func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata []byte, message mailboxTypes.HyperlaneMessage) (verified bool, err error) {
+func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata []byte, message types.HyperlaneMessage) (verified bool, err error) {
 	// Retrieve ISM
 	ism, err := k.Isms.Get(ctx, ismId.Bytes())
 	if err != nil {
