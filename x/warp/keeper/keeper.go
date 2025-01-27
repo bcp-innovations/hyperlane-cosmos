@@ -7,8 +7,8 @@ import (
 	storetypes "cosmossdk.io/core/store"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	mailboxkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/keeper"
-	mailboxTypes "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
+	mailboxkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
+	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -69,7 +69,7 @@ func NewKeeper(
 	return k
 }
 
-func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message mailboxTypes.HyperlaneMessage) error {
+func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message coreTypes.HyperlaneMessage) error {
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
 	token, err := k.HypTokens.Get(ctx, message.Recipient.Bytes())

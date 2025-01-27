@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	mailboxTypes "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
+	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	warpTypes "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"math/big"
@@ -18,7 +18,7 @@ func Decode(messageStr string) error {
 		return err
 	}
 
-	message, err := mailboxTypes.ParseHyperlaneMessage(messageBytes)
+	message, err := coreTypes.ParseHyperlaneMessage(messageBytes)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func GenerateWarpTransfer(senderContract string, recipientContract string, recip
 		panic(err)
 	}
 
-	msg := mailboxTypes.HyperlaneMessage{
+	msg := coreTypes.HyperlaneMessage{
 		Version:     1,
 		Nonce:       3,
 		Origin:      1,

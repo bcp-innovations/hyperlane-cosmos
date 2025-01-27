@@ -1,0 +1,186 @@
+syntax = "proto3";
+package hyperlane.core.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
+
+import "cosmos/msg/v1/msg.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+import "hyperlane/core/v1/types.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the module Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  rpc CreateMailbox(MsgCreateMailbox) returns (MsgCreateMailboxResponse);
+
+  rpc DispatchMessage(MsgDispatchMessage) returns (MsgDispatchMessageResponse);
+
+  rpc ProcessMessage(MsgProcessMessage) returns (MsgProcessMessageResponse);
+
+  rpc AnnounceValidator(MsgAnnounceValidator) returns (MsgAnnounceValidatorResponse);
+
+  // IGP
+  rpc CreateIGP(MsgCreateIgp) returns (MsgCreateIgpResponse);
+
+  rpc SetDestinationGasConfig(MsgSetDestinationGasConfig) returns (MsgSetDestinationGasConfigResponse);
+
+  rpc PayForGas(MsgPayForGas) returns (MsgPayForGasResponse);
+
+  rpc Claim(MsgClaim) returns (MsgClaimResponse);
+
+  // ISM
+  rpc CreateMultisigIsm(MsgCreateMultisigIsm) returns (MsgCreateMultisigIsmResponse);
+
+  rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
+
+  // UpdateParams updates the module parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+message MsgCreateMailbox {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/mailbox/MsgCreateMailbox";
+
+  // sender is the message sender.
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string default_ism = 2;
+
+  InterchainGasPaymaster igp = 3;
+}
+
+message MsgCreateMailboxResponse {}
+
+message MsgDispatchMessage {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/mailbox/MsgDispatchMessage";
+
+  string mailbox_id = 1;
+  string sender = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint32 destination = 3;
+  string recipient = 4;
+  string body = 5;
+
+  // IGP
+  string igp_id = 6;
+  string gas_limit = 7 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string max_fee = 8 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+}
+
+message MsgDispatchMessageResponse {
+  string message_id = 1;
+}
+
+message MsgProcessMessage {
+  option (cosmos.msg.v1.signer) = "relayer";
+  option (amino.name) = "hyperlane/mailbox/MsgProcessMessage";
+
+  string mailbox_id = 1;
+  string relayer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string metadata = 3;
+  string message = 4;
+}
+
+message MsgProcessMessageResponse {}
+
+message MsgAnnounceValidator {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/announce/MsgAnnounceValidator";
+
+  string validator = 1;
+  string storageLocation = 2;
+  string signature = 3;
+  string mailbox_id = 4;
+  string creator = 5;
+}
+
+message MsgAnnounceValidatorResponse {}
+
+// IGP
+message MsgCreateIgp {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/igp/MsgCreateIGP";
+
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string denom = 2;
+}
+
+message MsgCreateIgpResponse {}
+
+message MsgSetDestinationGasConfig {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/igp/MsgSetDestinationGasConfig";
+
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string igp_id = 2;
+
+  DestinationGasConfig destination_gas_config = 3;
+}
+
+message MsgSetDestinationGasConfigResponse {}
+
+message MsgPayForGas {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/igp/MsgPayForGas";
+
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string igp_id = 2;
+  string message_id = 3;
+  uint32 destination_domain = 4;
+  string gas_limit = 5 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 6 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+}
+
+message MsgPayForGasResponse {}
+
+message MsgClaim {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/igp/MsgClaim";
+
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string igp_id = 2;
+}
+
+message MsgClaimResponse {}
+
+// ISM
+message MsgCreateMultisigIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/ism/MsgCreateMultiSigIsm";
+
+  // sender is the message sender.
+  string creator = 1;
+  MultiSigIsm multi_sig = 2;
+}
+
+message MsgCreateMultisigIsmResponse {}
+
+message MsgCreateNoopIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/ism/MsgCreateNoopIsm";
+
+  // sender is the message sender.
+  string creator = 1;
+}
+
+message MsgCreateNoopIsmResponse {}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "hyperlane/mailbox/MsgUpdateParams";
+
+  // authority is the address that controls the module
+  // NOTE: Defaults to the governance module unless overwritten.
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the module parameters to update.
+  // NOTE: All parameters must be supplied.
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}

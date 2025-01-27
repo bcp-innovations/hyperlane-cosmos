@@ -5,8 +5,8 @@ import (
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-	mailboxkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/keeper"
-	mailboxTypes "github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
+	coreKeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
+	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -40,7 +40,7 @@ type ModuleInputs struct {
 	Config *modulev1.Module
 
 	BankKeeper    bankkeeper.Keeper
-	MailboxKeeper *mailboxkeeper.Keeper
+	MailboxKeeper *coreKeeper.Keeper
 }
 
 type ModuleOutputs struct {
@@ -48,7 +48,7 @@ type ModuleOutputs struct {
 
 	Module appmodule.AppModule
 	Keeper keeper.Keeper
-	Hooks  mailboxTypes.MailboxHooksWrapper
+	Hooks  coreTypes.MailboxHooksWrapper
 }
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
@@ -60,5 +60,5 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 
 	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.BankKeeper, in.MailboxKeeper)
 	m := NewAppModule(in.Cdc, k)
-	return ModuleOutputs{Module: m, Keeper: k, Hooks: mailboxTypes.MailboxHooksWrapper{MailboxHooks: &k}}
+	return ModuleOutputs{Module: m, Keeper: k, Hooks: coreTypes.MailboxHooksWrapper{MailboxHooks: &k}}
 }

@@ -1,0 +1,216 @@
+syntax = "proto3";
+package hyperlane.core.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "hyperlane/core/v1/types.proto";
+import "google/api/annotations.proto";
+import "cosmos/query/v1/query.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the module Msg service.
+service Query {
+// Params returns the module parameters.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/params";
+  }
+
+  rpc Mailboxes(QueryMailboxesRequest) returns (QueryMailboxesResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/mailboxes";
+  }
+
+  rpc Mailbox(QueryMailboxRequest) returns (QueryMailboxResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/mailboxes/{id}";
+  }
+
+  rpc Count(QueryCountRequest) returns (QueryCountResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/tree/count/{id}";
+  }
+
+  rpc Root(QueryRootRequest) returns (QueryRootResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/tree/root/{id}";
+  }
+
+  rpc Delivered(QueryDeliveredRequest) returns (QueryDeliveredResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/delivered/{message_id}";
+  }
+
+  rpc LatestCheckpoint(QueryLatestCheckpointRequest) returns (QueryLatestCheckpointResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/tree/latest_checkpoint/{id}";
+  }
+
+  rpc RecipientIsm(RecipientIsmRequest) returns (RecipientIsmResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/recipient_ism/{recipient}";
+  }
+
+  rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/validators";
+  }
+
+  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest) returns (QueryAnnouncedStorageLocationsResponse) {
+    option (google.api.http).get = "/hyperlane/mailbox/v1/announced_storage_locations/{validator_address}";
+  }
+
+  // IGP
+  rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
+    option (google.api.http).get = "/hyperlane/igp/v1/igps";
+  }
+
+  rpc Igp(QueryIgpRequest) returns (QueryIgpResponse) {
+    option (google.api.http).get = "/hyperlane/igp/v1/igps/{id}";
+  }
+
+  rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest) returns (QueryDestinationGasConfigsResponse) {
+    option (google.api.http).get = "/hyperlane/igp/v1/igps/{id}/destination_gas_configs";
+  }
+
+  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest) returns (QueryQuoteGasPaymentResponse) {
+    option (google.api.http).get = "/hyperlane/igp/v1/quote_gas_payment/{igp_id}/{destination_domain}/{gas_limit}";
+  }
+
+  // ISM
+  rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
+    option (google.api.http).get = "/hyperlane/ism/v1/isms";
+  }
+
+  rpc VerifyDryRun(QueryVerifyDryRunRequest) returns (QueryVerifyDryRunResponse) {
+    option (google.api.http).get = "/hyperlane/ism/v1/verify_dry_run/{ism_id}/{message}/{metadata}";
+  }
+}
+
+message QueryMailboxesRequest {}
+
+message QueryMailboxesResponse {
+  repeated Mailbox mailboxes = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryMailboxRequest {
+  string id = 1;
+}
+
+message QueryMailboxResponse {
+   Mailbox mailbox = 1
+    [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryCountRequest {
+  string id = 1;
+}
+
+message QueryCountResponse {
+  uint32 count = 1;
+}
+
+message QueryRootRequest {
+  string id = 1;
+}
+
+message QueryRootResponse {
+  bytes root = 1;
+}
+
+message QueryDeliveredRequest {
+  string message_id = 1;
+}
+
+message QueryDeliveredResponse {
+  bool delivered = 1;
+}
+
+message QueryLatestCheckpointRequest {
+  string id = 1;
+}
+
+message QueryLatestCheckpointResponse {
+  bytes root = 1;
+  uint32 count = 2;
+}
+
+message RecipientIsmRequest {
+  string recipient = 1;
+}
+
+message RecipientIsmResponse {
+  string ism_id = 1;
+}
+
+message QueryValidatorsRequest {}
+
+message QueryValidatorsResponse {
+  repeated Validator validators = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryAnnouncedStorageLocationsRequest {
+  string validator_address = 1;
+}
+
+message QueryAnnouncedStorageLocationsResponse {
+  repeated string storage_locations = 1;
+}
+
+// IGP
+message QueryIgpsRequest {}
+
+message QueryIgpsResponse {
+  repeated Igp igps = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryIgpRequest {
+  string id = 1;
+}
+
+message QueryIgpResponse {
+  Igp igp = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryDestinationGasConfigsRequest {
+  string id = 1;
+}
+
+message QueryDestinationGasConfigsResponse {
+  repeated DestinationGasConfig destination_gas_configs = 1;
+}
+
+message QueryQuoteGasPaymentRequest {
+  string igp_id = 1;
+  string destination_domain = 2;
+  string gas_limit = 3;
+}
+
+message QueryQuoteGasPaymentResponse {
+  string gas_payment = 1;
+}
+
+// IGP
+message QueryIsmsRequest {}
+
+message QueryIsmsResponse {
+  repeated Ism isms = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryVerifyDryRunRequest {
+  string ism_id = 1;
+  string message = 2;
+  string metadata = 3;
+}
+
+message QueryVerifyDryRunResponse {
+  bool verified = 1;
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
