@@ -21,7 +21,7 @@ service Query {
 
 // Params returns the module parameters.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/params";
+    option (google.api.http).get = "/hyperlane/ism/v1/params";
   }
 
   rpc VerifyDryRun(QueryVerifyDryRunRequest) returns (QueryVerifyDryRunResponse) {
