@@ -11,7 +11,7 @@ import (
 var (
 	gasLimit    string
 	igpId       string
-	igpRequired bool
+	igpOptional bool
 	maxFee      string
 )
 

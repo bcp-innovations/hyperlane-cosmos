@@ -19,11 +19,11 @@ service Query {
   }
 
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
-    option (google.api.http).get = "/hyperlane/warp/v1/tokens";
+    option (google.api.http).get = "/hyperlane/v1/tokens";
   }
 
   rpc Token(QueryMailboxRequest) returns (QueryTokenResponse) {
-    option (google.api.http).get = "/hyperlane/warp/v1/tokens/{id}";
+    option (google.api.http).get = "/hyperlane/v1/tokens/{id}";
   }
 }
 

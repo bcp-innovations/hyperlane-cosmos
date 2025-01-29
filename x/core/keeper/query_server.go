@@ -88,20 +88,15 @@ func (qs queryServer) Mailboxes(ctx context.Context, _ *types.QueryMailboxesRequ
 }
 
 func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxRequest) (*types.QueryMailboxResponse, error) {
-	id, err := util.DecodeHexAddress(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	mailboxExists, err := qs.k.Mailboxes.Has(ctx, id.Bytes())
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
 	}
-	if !mailboxExists {
-		return nil, fmt.Errorf("mailbox with id %s doesn't exist", id.String())
-	}
-
-	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
 
 	return &types.QueryMailboxResponse{
 		Mailbox: mailbox,
@@ -109,11 +104,15 @@ func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxReques
 }
 
 func (qs queryServer) Count(ctx context.Context, req *types.QueryCountRequest) (*types.QueryCountResponse, error) {
-	id, err := util.DecodeHexAddress(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -126,11 +125,15 @@ func (qs queryServer) Count(ctx context.Context, req *types.QueryCountRequest) (
 }
 
 func (qs queryServer) Root(ctx context.Context, req *types.QueryRootRequest) (*types.QueryRootResponse, error) {
-	id, err := util.DecodeHexAddress(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -145,11 +148,15 @@ func (qs queryServer) Root(ctx context.Context, req *types.QueryRootRequest) (*t
 }
 
 func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLatestCheckpointRequest) (*types.QueryLatestCheckpointResponse, error) {
-	id, err := util.DecodeHexAddress(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
-	mailbox, err := qs.k.Mailboxes.Get(ctx, id.Bytes())
+
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
 	if err != nil {
@@ -184,6 +191,7 @@ func (qs queryServer) Validators(ctx context.Context, _ *types.QueryValidatorsRe
 }
 
 // IGP
+
 func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
@@ -232,7 +240,7 @@ func (qs queryServer) Igp(ctx context.Context, req *types.QueryIgpRequest) (*typ
 
 	igp, err := qs.k.Igp.Get(ctx, igpId.Bytes())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find IGP with Id: %v", igpId.String())
 	}
 
 	return &types.QueryIgpResponse{

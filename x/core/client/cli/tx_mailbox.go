@@ -46,7 +46,7 @@ func CmdCreateMailbox() *cobra.Command {
 				DefaultIsm: args[0],
 				Igp: &types.InterchainGasPaymaster{
 					Id:       args[1],
-					Required: igpRequired,
+					Required: !igpOptional,
 				},
 			}
 
@@ -59,7 +59,7 @@ func CmdCreateMailbox() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolVar(&igpRequired, "igp-required", true, " determine whether InterchainGasPaymaster is required")
+	cmd.Flags().BoolVar(&igpOptional, "igp-optional", false, "set InterchainGasPaymaster as not required")
 
 	flags.AddTxFlagsToCmd(cmd)
 
