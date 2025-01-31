@@ -1544,7 +1544,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"hyperlane", "mailbox", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_Mailboxes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1", "mailboxes"}, "", runtime.AssumeColonVerbOpt(false)))
 
