@@ -5,14 +5,15 @@ import (
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
+	"cosmossdk.io/depinject/appconfig"
+	"github.com/cosmos/cosmos-sdk/codec"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module"
 	coreKeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
-	"github.com/cosmos/cosmos-sdk/codec"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-
-	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
 var _ appmodule.AppModule = AppModule{}
@@ -24,9 +25,9 @@ func (am AppModule) IsOnePerModuleType() {}
 func (am AppModule) IsAppModule() {}
 
 func init() {
-	appmodule.Register(
+	appconfig.Register(
 		&modulev1.Module{},
-		appmodule.Provide(ProvideModule),
+		appconfig.Provide(ProvideModule),
 	)
 }
 
@@ -39,7 +40,7 @@ type ModuleInputs struct {
 
 	Config *modulev1.Module
 
-	BankKeeper    bankkeeper.Keeper
+	BankKeeper    types.BankKeeper
 	MailboxKeeper *coreKeeper.Keeper
 }
 

@@ -4,19 +4,18 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"cosmossdk.io/core/appmodule"
+	"cosmossdk.io/core/codec"
+	"cosmossdk.io/core/registry"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/spf13/cobra"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/client/cli"
 	keeper2 "github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
-	"github.com/spf13/cobra"
-
-	"cosmossdk.io/core/appmodule"
-	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
-
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
 var (
@@ -41,16 +40,12 @@ func NewAppModule(cdc codec.Codec, keeper keeper2.Keeper) AppModule {
 	}
 }
 
-func NewAppModuleBasic(m AppModule) module.AppModuleBasic {
-	return module.CoreAppModuleBasicAdaptor(m.Name(), m)
-}
-
 // Name returns the warp module's name.
 func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the warp module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
-func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModule) RegisterLegacyAminoCodec(cdc registry.AminoRegistrar) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the warp module.
 func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwruntime.ServeMux) {
@@ -60,7 +55,7 @@ func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwrunt
 }
 
 // RegisterInterfaces registers interfaces and implementations of the warp module.
-func (AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+func (AppModule) RegisterInterfaces(registry registry.InterfaceRegistrar) {
 	types.RegisterInterfaces(registry)
 }
 
@@ -80,14 +75,19 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 }
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
-func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
-	return cdc.MustMarshalJSON(types.NewGenesisState())
+func (am AppModule) DefaultGenesis() json.RawMessage {
+	bz, err := am.cdc.MarshalJSON(types.NewGenesisState())
+	if err != nil {
+		panic(fmt.Sprintf("failed to marshal %s genesis state: %v", types.ModuleName, err))
+	}
+
+	return bz
 }
 
 // ValidateGenesis performs genesis state validation for the circuit module.
-func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
+func (am AppModule) ValidateGenesis(bz json.RawMessage) error {
 	var data types.GenesisState
-	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
+	if err := am.cdc.UnmarshalJSON(bz, &data); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 
@@ -96,24 +96,28 @@ func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig,
 
 // InitGenesis performs genesis initialization for the warp module.
 // It returns no validator updates.
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {
+func (am AppModule) InitGenesis(ctx context.Context, data json.RawMessage) error {
 	var genesisState types.GenesisState
-	cdc.MustUnmarshalJSON(data, &genesisState)
+	if err := am.cdc.UnmarshalJSON(data, &genesisState); err != nil {
+		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
+	}
 
 	if err := am.keeper.InitGenesis(ctx, &genesisState); err != nil {
-		panic(fmt.Sprintf("failed to initialize %s genesis state: %v", types.ModuleName, err))
+		return fmt.Errorf("failed to initialize %s genesis state: %w", types.ModuleName, err)
 	}
+
+	return nil
 }
 
-// ExportGenesis returns the exported genesis state as raw bytes for the circuit
+// ExportGenesis returns the exported genesis state as raw bytes for the warp
 // module.
-func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
+func (am AppModule) ExportGenesis(ctx context.Context) (json.RawMessage, error) {
 	gs, err := am.keeper.ExportGenesis(ctx)
 	if err != nil {
 		panic(fmt.Sprintf("failed to export %s genesis state: %v", types.ModuleName, err))
 	}
 
-	return cdc.MustMarshalJSON(gs)
+	return am.cdc.MarshalJSON(gs)
 }
 
 // GetTxCmd implements AppModuleBasic interface

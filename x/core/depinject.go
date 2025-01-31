@@ -1,16 +1,17 @@
 package core
 
 import (
+	"fmt"
+	"sort"
+
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-	"fmt"
+	"cosmossdk.io/depinject/appconfig"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"golang.org/x/exp/maps"
-	"sort"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -27,10 +28,10 @@ func (am AppModule) IsOnePerModuleType() {}
 func (am AppModule) IsAppModule() {}
 
 func init() {
-	appmodule.Register(
+	appconfig.RegisterModule(
 		&modulev1.Module{},
-		appmodule.Provide(ProvideModule),
-		appmodule.Invoke(InvokeSetMailboxHooks),
+		appconfig.Provide(ProvideModule),
+		appconfig.Invoke(InvokeSetMailboxHooks),
 	)
 }
 
@@ -43,7 +44,7 @@ type ModuleInputs struct {
 
 	Config *modulev1.Module
 
-	BankKeeper bankkeeper.Keeper
+	BankKeeper types.BankKeeper
 }
 
 type ModuleOutputs struct {

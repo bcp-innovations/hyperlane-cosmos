@@ -2,14 +2,15 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
-	"fmt"
+	"github.com/cosmos/cosmos-sdk/codec"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
-	"github.com/cosmos/cosmos-sdk/codec"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 
 type Keeper struct {
@@ -40,11 +41,11 @@ type Keeper struct {
 	Params collections.Item[types.Params]
 	Schema collections.Schema
 
-	bankKeeper bankkeeper.Keeper
+	bankKeeper types.BankKeeper
 }
 
 // NewKeeper creates a new Keeper instance
-func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string, bankKeeper bankkeeper.Keeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string, bankKeeper types.BankKeeper) Keeper {
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic(fmt.Errorf("invalid authority address: %w", err))
 	}
