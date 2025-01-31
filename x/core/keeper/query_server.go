@@ -294,6 +294,22 @@ func (qs queryServer) Isms(ctx context.Context, _ *types.QueryIsmsRequest) (*typ
 	}, nil
 }
 
+func (qs queryServer) Ism(ctx context.Context, req *types.QueryIsmRequest) (*types.QueryIsmResponse, error) {
+	ismId, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	ism, err := qs.k.Isms.Get(ctx, ismId.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find ISM with Id: %v", ismId.String())
+	}
+
+	return &types.QueryIsmResponse{
+		Ism: ism,
+	}, nil
+}
+
 func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDryRunRequest) (*types.QueryVerifyDryRunResponse, error) {
 	rawMessage, err := util.DecodeEthHex(req.Message)
 	if err != nil {

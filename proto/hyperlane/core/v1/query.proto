@@ -68,16 +68,20 @@ service Query {
   }
 
   rpc QuoteGasPayment(QueryQuoteGasPaymentRequest) returns (QueryQuoteGasPaymentResponse) {
-    option (google.api.http).get = "/hyperlane/v1/quote_gas_payment/{igp_id}/{destination_domain}/{gas_limit}";
+    option (google.api.http).get = "/hyperlane/v1/quote_gas_payment";
   }
 
   // ISM
   rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
-    option (google.api.http).get = "/hyperlane/ism/v1/isms";
+    option (google.api.http).get = "/hyperlane/v1/isms";
+  }
+
+  rpc Ism(QueryIsmRequest) returns (QueryIsmResponse) {
+    option (google.api.http).get = "/hyperlane/v1/isms/{id}";
   }
 
   rpc VerifyDryRun(QueryVerifyDryRunRequest) returns (QueryVerifyDryRunResponse) {
-    option (google.api.http).get = "/hyperlane/ism/v1/verify_dry_run/{ism_id}/{message}/{metadata}";
+    option (google.api.http).get = "/hyperlane/v1/verify_dry_run";
   }
 }
 
@@ -187,12 +191,20 @@ message QueryQuoteGasPaymentResponse {
   string gas_payment = 1;
 }
 
-// IGP
+// ISM
 message QueryIsmsRequest {}
 
 message QueryIsmsResponse {
   repeated Ism isms = 1
   [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryIsmRequest {
+  string id = 1;
+}
+
+message QueryIsmResponse {
+  Ism ism = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 message QueryVerifyDryRunRequest {
