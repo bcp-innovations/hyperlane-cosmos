@@ -2,8 +2,6 @@ module hypertools
 
 go 1.23
 
-toolchain go1.23.0
-
 require (
 	github.com/bcp-innovations/hyperlane-cosmos v0.0.0-00010101000000-000000000000
 	github.com/spf13/cobra v1.8.1
