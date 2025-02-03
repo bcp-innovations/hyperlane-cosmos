@@ -2,7 +2,10 @@ package simapp
 
 import (
 	_ "embed"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"io"
+	"os"
+	"path/filepath"
 
 	dbm "github.com/cosmos/cosmos-db"
 
@@ -11,6 +14,8 @@ import (
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 
+	hyperlanekeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
+	warpkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -25,17 +30,20 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	consensuskeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	genutilTypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
-	_ "cosmossdk.io/api/cosmos/tx/config/v1"          // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/auth"           // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config" // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/bank"           // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/consensus"      // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/distribution"   // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/genutil"        // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/mint"           // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/staking"        // import for side-effects
+	_ "cosmossdk.io/api/cosmos/tx/config/v1"               // import for side-effects
+	_ "github.com/bcp-innovations/hyperlane-cosmos/x/core" // import for side-effects
+	_ "github.com/bcp-innovations/hyperlane-cosmos/x/warp" // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/auth"                // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config"      // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/bank"                // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/consensus"           // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/distribution"        // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/genutil"             // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/mint"                // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/staking"             // import for side-effects
 )
 
 // DefaultNodeHome default home directories for the application daemon
@@ -45,26 +53,38 @@ var DefaultNodeHome string
 var AppConfigYAML []byte
 
 var (
-	_ runtime.AppI            = (*MiniApp)(nil)
-	_ servertypes.Application = (*MiniApp)(nil)
+	_ runtime.AppI            = (*App)(nil)
+	_ servertypes.Application = (*App)(nil)
 )
 
-// MiniApp extends an ABCI application, but with most of its parameters exported.
+func init() {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+	DefaultNodeHome = filepath.Join(dirname, ".hyp")
+}
+
+// App extends an ABCI application, but with most of its parameters exported.
 // They are exported for convenience in creating helper functions, as object
 // capabilities aren't needed for testing.
-type MiniApp struct {
+type App struct {
 	*runtime.App
 	legacyAmino       *codec.LegacyAmino
 	appCodec          codec.Codec
 	txConfig          client.TxConfig
 	interfaceRegistry codectypes.InterfaceRegistry
 
-	// keepers
+	// Default Cosmos
 	AccountKeeper         authkeeper.AccountKeeper
 	BankKeeper            bankkeeper.Keeper
 	StakingKeeper         *stakingkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
+
+	// Hyperlane
+	HyperlaneKeeper *hyperlanekeeper.Keeper
+	WarpKeeper      warpkeeper.Keeper
 
 	// simulation manager
 	sm *module.SimulationManager
@@ -74,10 +94,16 @@ type MiniApp struct {
 func AppConfig() depinject.Config {
 	return depinject.Configs(
 		appconfig.LoadYAML(AppConfigYAML),
+		depinject.Supply(
+			// needed for genutil commands
+			map[string]module.AppModuleBasic{
+				genutilTypes.ModuleName: genutil.NewAppModuleBasic(genutilTypes.DefaultMessageValidator),
+			},
+		),
 	)
 }
 
-// NewMiniApp returns a reference to an initialized MiniApp.
+// NewMiniApp returns a reference to an initialized App.
 func NewMiniApp(
 	logger log.Logger,
 	db dbm.DB,
@@ -85,9 +111,9 @@ func NewMiniApp(
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
-) (*MiniApp, error) {
+) (*App, error) {
 	var (
-		app        = &MiniApp{}
+		app        = &App{}
 		appBuilder *runtime.AppBuilder
 	)
 
@@ -109,6 +135,9 @@ func NewMiniApp(
 		&app.StakingKeeper,
 		&app.DistrKeeper,
 		&app.ConsensusParamsKeeper,
+
+		&app.HyperlaneKeeper,
+		&app.WarpKeeper,
 	); err != nil {
 		return nil, err
 	}
@@ -134,22 +163,12 @@ func NewMiniApp(
 	return app, nil
 }
 
-// LegacyAmino returns MiniApp's amino codec.
-func (app *MiniApp) LegacyAmino() *codec.LegacyAmino {
+// LegacyAmino returns App's amino codec.
+func (app *App) LegacyAmino() *codec.LegacyAmino {
 	return app.legacyAmino
 }
 
-// GetKey returns the KVStoreKey for the provided store key.
-func (app *MiniApp) GetKey(storeKey string) *storetypes.KVStoreKey {
-	sk := app.UnsafeFindStoreKey(storeKey)
-	kvStoreKey, ok := sk.(*storetypes.KVStoreKey)
-	if !ok {
-		return nil
-	}
-	return kvStoreKey
-}
-
-func (app *MiniApp) kvStoreKeys() map[string]*storetypes.KVStoreKey {
+func (app *App) kvStoreKeys() map[string]*storetypes.KVStoreKey {
 	keys := make(map[string]*storetypes.KVStoreKey)
 	for _, k := range app.GetStoreKeys() {
 		if kv, ok := k.(*storetypes.KVStoreKey); ok {
@@ -161,13 +180,13 @@ func (app *MiniApp) kvStoreKeys() map[string]*storetypes.KVStoreKey {
 }
 
 // SimulationManager implements the SimulationApp interface
-func (app *MiniApp) SimulationManager() *module.SimulationManager {
+func (app *App) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
 // RegisterAPIRoutes registers all application module routes with the provided
 // API server.
-func (app *MiniApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
+func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	app.App.RegisterAPIRoutes(apiSvr, apiConfig)
 	// register swagger API in app.go so that other applications can override easily
 	if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
@@ -175,6 +194,6 @@ func (app *MiniApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APICo
 	}
 }
 
-func (app *MiniApp) AppCodec() codec.Codec {
+func (app *App) AppCodec() codec.Codec {
 	return app.appCodec
 }

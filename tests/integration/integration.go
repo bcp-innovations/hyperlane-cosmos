@@ -25,7 +25,7 @@ func NewCleanChainAtTime(startTime int64) *KeeperTestSuite {
 	return &s
 }
 
-func (suite *KeeperTestSuite) App() *simapp.MiniApp {
+func (suite *KeeperTestSuite) App() *simapp.App {
 	return suite.app
 }
 

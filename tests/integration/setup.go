@@ -27,7 +27,7 @@ import (
 type KeeperTestSuite struct {
 	ctx sdk.Context
 
-	app                 *simapp.MiniApp
+	app                 *simapp.App
 	denom               string
 	privateValidatorKey *ed25519.PrivKey
 	VoteInfos           []abci.VoteInfo
@@ -108,7 +108,7 @@ func (suite *KeeperTestSuite) setupApp(startTime int64) {
 	})
 }
 
-func DefaultGenesisWithValSet(app *simapp.MiniApp, validatorPrivateKey *ed25519.PrivKey) map[string]json.RawMessage {
+func DefaultGenesisWithValSet(app *simapp.App, validatorPrivateKey *ed25519.PrivKey) map[string]json.RawMessage {
 	bondingDenom := simapp.DefaultBondDenom
 
 	// Generate a new validator.

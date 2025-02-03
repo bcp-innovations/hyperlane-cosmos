@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
+	"github.com/cosmos/cosmos-sdk/client/keys"
 	"io"
 
 	dbm "github.com/cosmos/cosmos-db"
@@ -28,11 +29,16 @@ func initRootCmd(rootCmd *cobra.Command, txConfig client.TxConfig, basicManager 
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(basicManager, simapp.DefaultNodeHome),
-		genutilcli.Commands(txConfig, basicManager, simapp.DefaultNodeHome),
 		debug.Cmd(),
+		InitSampleChain(),
 	)
 
 	server.AddCommands(rootCmd, simapp.DefaultNodeHome, newApp, appExport, func(startCmd *cobra.Command) {})
+
+	rootCmd.AddCommand(
+		genutilcli.Commands(txConfig, basicManager, simapp.DefaultNodeHome),
+		keys.Commands(),
+	)
 }
 
 // newApp is an appCreator
@@ -58,7 +64,7 @@ func appExport(
 	modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
 	var (
-		miniApp *simapp.MiniApp
+		miniApp *simapp.App
 		err     error
 	)
 

@@ -26,3 +26,4 @@ debug_container.dot
 
 .idea
 /scripts/hypertools/build/
+/build/

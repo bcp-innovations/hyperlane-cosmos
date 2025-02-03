@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cosmossdk.io/client/v2/autocli"
 	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 	"os"
 	"time"
@@ -27,6 +28,7 @@ import (
 // main function.
 func NewRootCmd() *cobra.Command {
 	var (
+		autoCliOpts        autocli.AppOptions
 		moduleBasicManager module.BasicManager
 		clientCtx          client.Context
 	)
@@ -40,6 +42,7 @@ func NewRootCmd() *cobra.Command {
 				ProvideClientContext,
 			),
 		),
+		&autoCliOpts,
 		&moduleBasicManager,
 		&clientCtx,
 	); err != nil {
@@ -48,7 +51,7 @@ func NewRootCmd() *cobra.Command {
 
 	rootCmd := &cobra.Command{
 		Use:   "hypd",
-		Short: "hyperd - minimal testing app",
+		Short: "hypd - minimal testing app",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
@@ -83,6 +86,10 @@ func NewRootCmd() *cobra.Command {
 	}
 
 	initRootCmd(rootCmd, clientCtx.TxConfig, moduleBasicManager)
+
+	if err := autoCliOpts.EnhanceRootCommand(rootCmd); err != nil {
+		panic(err)
+	}
 
 	return rootCmd
 }

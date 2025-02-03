@@ -8,7 +8,7 @@ DOCKER := $(shell which docker)
 
 build-simapp:
 	@echo "--> Building simapp..."
-	@go build $(BUILD_FLAGS) -o "$(PWD)/build/" ./tests/cmd/minid
+	@go build $(BUILD_FLAGS) -o "$(PWD)/build/" ./tests/cmd/hypd
 	@echo "--> Completed build!"
 
 test:

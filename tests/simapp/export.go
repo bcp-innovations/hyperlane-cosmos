@@ -9,19 +9,17 @@ import (
 )
 
 // ExportAppStateAndValidators exports the state of the application for a genesis file.
-func (app *MiniApp) ExportAppStateAndValidators(
+func (app *App) ExportAppStateAndValidators(
 	forZeroHeight bool,
-	jailAllowedAddrs []string,
-	modulesToExport []string,
+	_ []string,
+	_ []string,
 ) (servertypes.ExportedApp, error) {
 	// as if they could withdraw from the start of the next block
 	ctx := app.NewContextLegacy(true, tmproto.Header{Height: app.LastBlockHeight()})
 
-	// We export at last height + 1, because that's the height at which
-	// CometBFT will start InitChain.
 	height := app.LastBlockHeight() + 1
 	if forZeroHeight {
-		height = 0
+		panic("For zero height not supported")
 	}
 
 	genState, err := app.ModuleManager.ExportGenesis(ctx, app.appCodec)
