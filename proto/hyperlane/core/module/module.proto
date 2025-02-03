@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package bcp_innovations.hyperlane.core.module;
+package hyperlane.core.module;
 
 import "cosmos/app/v1alpha1/module.proto";
 

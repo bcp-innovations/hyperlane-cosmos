@@ -2602,16 +2602,22 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Dispatch ...
 type Dispatch struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// origin_mailbox_id ...
 	OriginMailboxId string `protobuf:"bytes,1,opt,name=origin_mailbox_id,json=originMailboxId,proto3" json:"origin_mailbox_id,omitempty"`
-	Sender          string `protobuf:"bytes,2,opt,name=sender,proto3" json:"sender,omitempty"`
-	Destination     uint32 `protobuf:"varint,3,opt,name=destination,proto3" json:"destination,omitempty"`
-	Recipient       string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
-	Message         string `protobuf:"bytes,5,opt,name=message,proto3" json:"message,omitempty"`
+	// sender ...
+	Sender string `protobuf:"bytes,2,opt,name=sender,proto3" json:"sender,omitempty"`
+	// destination ...
+	Destination uint32 `protobuf:"varint,3,opt,name=destination,proto3" json:"destination,omitempty"`
+	// recipient ...
+	Recipient string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
+	// message ...
+	Message string `protobuf:"bytes,5,opt,name=message,proto3" json:"message,omitempty"`
 }
 
 func (x *Dispatch) Reset() {
@@ -2669,17 +2675,24 @@ func (x *Dispatch) GetMessage() string {
 	return ""
 }
 
+// Process ...
 type Process struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// origin_mailbox_id ...
 	OriginMailboxId string `protobuf:"bytes,1,opt,name=origin_mailbox_id,json=originMailboxId,proto3" json:"origin_mailbox_id,omitempty"`
-	Origin          uint32 `protobuf:"varint,2,opt,name=origin,proto3" json:"origin,omitempty"`
-	Sender          string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
-	Recipient       string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
-	MessageId       string `protobuf:"bytes,5,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
-	Message         string `protobuf:"bytes,6,opt,name=message,proto3" json:"message,omitempty"`
+	// origin ...
+	Origin uint32 `protobuf:"varint,2,opt,name=origin,proto3" json:"origin,omitempty"`
+	// sender ...
+	Sender string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
+	// recipient ...
+	Recipient string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
+	// message_id ...
+	MessageId string `protobuf:"bytes,5,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	// message ...
+	Message string `protobuf:"bytes,6,opt,name=message,proto3" json:"message,omitempty"`
 }
 
 func (x *Process) Reset() {
@@ -2744,13 +2757,17 @@ func (x *Process) GetMessage() string {
 	return ""
 }
 
+// InsertedIntoTree ...
 type InsertedIntoTree struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// message_id ...
 	MessageId string `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
-	Index     uint32 `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty"`
+	// index ...
+	Index uint32 `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty"`
+	// mailbox_id ...
 	MailboxId string `protobuf:"bytes,3,opt,name=mailbox_id,json=mailboxId,proto3" json:"mailbox_id,omitempty"`
 }
 
@@ -2795,17 +2812,22 @@ func (x *InsertedIntoTree) GetMailboxId() string {
 	return ""
 }
 
-// IGP
+// GasPayment ...
 type GasPayment struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	MessageId   string `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	// message_id ...
+	MessageId string `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	// destination ...
 	Destination uint32 `protobuf:"varint,2,opt,name=destination,proto3" json:"destination,omitempty"`
-	GasAmount   string `protobuf:"bytes,3,opt,name=gas_amount,json=gasAmount,proto3" json:"gas_amount,omitempty"`
-	Payment     string `protobuf:"bytes,4,opt,name=payment,proto3" json:"payment,omitempty"`
-	IgpId       string `protobuf:"bytes,5,opt,name=igp_id,json=igpId,proto3" json:"igp_id,omitempty"`
+	// gas_amount ...
+	GasAmount string `protobuf:"bytes,3,opt,name=gas_amount,json=gasAmount,proto3" json:"gas_amount,omitempty"`
+	// payment ...
+	Payment string `protobuf:"bytes,4,opt,name=payment,proto3" json:"payment,omitempty"`
+	// igp_id ...
+	IgpId string `protobuf:"bytes,5,opt,name=igp_id,json=igpId,proto3" json:"igp_id,omitempty"`
 }
 
 func (x *GasPayment) Reset() {

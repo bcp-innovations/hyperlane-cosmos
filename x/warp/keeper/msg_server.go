@@ -48,7 +48,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 	newToken := types.HypToken{
 		Id:               tokenId.Bytes(),
 		Creator:          msg.Creator,
-		TokenType:        types.HYP_TOKEN_SYNTHETIC,
+		TokenType:        types.HYP_TOKEN_TYPE_SYNTHETIC,
 		OriginMailbox:    mailboxId.Bytes(),
 		OriginDenom:      fmt.Sprintf("hyperlane/%s", tokenId.String()),
 		ReceiverDomain:   msg.ReceiverDomain,
@@ -95,7 +95,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	newToken := types.HypToken{
 		Id:               tokenId.Bytes(),
 		Creator:          msg.Creator,
-		TokenType:        types.HYP_TOKEN_COLLATERAL,
+		TokenType:        types.HYP_TOKEN_TYPE_COLLATERAL,
 		OriginMailbox:    mailboxId.Bytes(),
 		OriginDenom:      msg.OriginDenom,
 		ReceiverDomain:   msg.ReceiverDomain,
@@ -122,13 +122,13 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 	}
 
 	var messageResultId string
-	if token.TokenType == types.HYP_TOKEN_COLLATERAL {
+	if token.TokenType == types.HYP_TOKEN_TYPE_COLLATERAL {
 		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
 		if err != nil {
 			return nil, err
 		}
 		messageResultId = result.String()
-	} else if token.TokenType == types.HYP_TOKEN_SYNTHETIC {
+	} else if token.TokenType == types.HYP_TOKEN_TYPE_SYNTHETIC {
 		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
 		if err != nil {
 			return nil, err

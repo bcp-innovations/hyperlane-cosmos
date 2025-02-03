@@ -20,7 +20,7 @@ func (ms msgServer) Claim(ctx context.Context, req *types.MsgClaim) (*types.MsgC
 	return &types.MsgClaimResponse{}, ms.k.Claim(ctx, req.Sender, igpId)
 }
 
-func (ms msgServer) CreateIGP(ctx context.Context, req *types.MsgCreateIgp) (*types.MsgCreateIgpResponse, error) {
+func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*types.MsgCreateIgpResponse, error) {
 	igpCount, err := ms.k.IgpSequence.Next(ctx)
 	if err != nil {
 		return nil, err

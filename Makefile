@@ -38,8 +38,7 @@ proto-format:
 	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
 proto-lint:
-	# TODO temporarily disabled proto-lint
-	# @$(protoImage) buf lint proto/ --error-format=json
+	@$(protoImage) buf lint proto/ --error-format=json
 
 .PHONY: proto-all proto-gen proto-format proto-lint
 
@@ -56,7 +55,6 @@ format:
 
 lint:
 	@echo "--> Running linter..."
-	# TODO temporarily disabled govet
-	@go run $(golangci_lint_cmd) run --exclude-dirs scripts --timeout=10m -D govet
+	@go run $(golangci_lint_cmd) run --exclude-dirs scripts --timeout=10m
 
 .PHONY: format lint

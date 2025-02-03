@@ -98,9 +98,9 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin u
 
 	// Check token type
 	err = nil
-	if token.TokenType == types.HYP_TOKEN_COLLATERAL {
+	if token.TokenType == types.HYP_TOKEN_TYPE_COLLATERAL {
 		err = k.RemoteReceiveCollateral(goCtx, token, payload)
-	} else if token.TokenType == types.HYP_TOKEN_SYNTHETIC {
+	} else if token.TokenType == types.HYP_TOKEN_TYPE_SYNTHETIC {
 		err = k.RemoteReceiveSynthetic(goCtx, token, payload)
 	} else {
 		panic("inconsistent store")

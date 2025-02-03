@@ -58,7 +58,7 @@ func (qs queryServer) Tokens(ctx context.Context, request *types.QueryTokensRequ
 	}, nil
 }
 
-func (qs queryServer) Token(ctx context.Context, request *types.QueryMailboxRequest) (*types.QueryTokenResponse, error) {
+func (qs queryServer) Token(ctx context.Context, request *types.QueryTokenRequest) (*types.QueryTokenResponse, error) {
 	tokenId, err := util.DecodeHexAddress(request.Id)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())

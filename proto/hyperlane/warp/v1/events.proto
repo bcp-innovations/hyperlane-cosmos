@@ -3,6 +3,7 @@ package hyperlane.warp.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
 
+// RemoteTransfer ...
 message RemoteTransfer {
   uint32 destination_domain = 1;
   string recipient_address = 2;
