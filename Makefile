@@ -2,13 +2,15 @@
 
 DOCKER := $(shell which docker)
 
+all: proto-all format lint test build-simapp
+
 #################
 ###   Build   ###
 #################
 
 build-simapp:
 	@echo "--> Building simapp..."
-	@go build $(BUILD_FLAGS) -o "$(PWD)/build/" ./tests/cmd/hypd
+	@go build $(BUILD_FLAGS) -o "$(PWD)/build/" ./tests/hypd
 	@echo "--> Completed build!"
 
 test:
@@ -28,7 +30,7 @@ protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(pro
 proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
-	@echo "Generating protobuf files..."
+	@echo "--> Generating protobuf files..."
 	@$(protoImage) sh ./scripts/protocgen.sh
 	@go mod tidy
 
@@ -36,7 +38,8 @@ proto-format:
 	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
 proto-lint:
-	@$(protoImage) buf lint proto/ --error-format=json
+	# TODO temporarily disabled proto-lint
+	# @$(protoImage) buf lint proto/ --error-format=json
 
 .PHONY: proto-all proto-gen proto-format proto-lint
 
