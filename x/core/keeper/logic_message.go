@@ -1,8 +1,10 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
+	"context"
 	"fmt"
+
+	"cosmossdk.io/math"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
@@ -100,7 +102,7 @@ func (k Keeper) DispatchMessage(
 	hypMsg := types.HyperlaneMessage{
 		Version:     3,
 		Nonce:       mailbox.MessageSent,
-		Origin:      k.LocalDomain(),
+		Origin:      k.LocalDomain(ctx),
 		Sender:      sender,
 		Destination: destinationDomain,
 		Recipient:   recipient,
@@ -168,7 +170,11 @@ func (k Keeper) DispatchMessage(
 	return hypMsg.Id(), nil
 }
 
-func (k Keeper) LocalDomain() uint32 {
-	// TODO use global param
-	return 75898669
+func (k Keeper) LocalDomain(ctx context.Context) uint32 {
+	params, err := k.Params.Get(ctx)
+	if err != nil {
+		// fallback to default if params can't be read
+		return 75898669
+	}
+	return params.Domain
 }

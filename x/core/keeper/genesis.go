@@ -8,6 +8,12 @@ import (
 
 // InitGenesis initializes the module state from a genesis state.
 func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) error {
+	if err := k.Params.Set(ctx, types.Params{
+		Domain: data.Params.Domain,
+	}); err != nil {
+		return err
+	}
+
 	if err := k.Params.Set(ctx, data.Params); err != nil {
 		return err
 	}
