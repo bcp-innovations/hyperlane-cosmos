@@ -127,3 +127,16 @@ func GenerateTestValidatorAddress(moniker string) TestValidatorAddress {
 
 	return a
 }
+
+func (suite *KeeperTestSuite) RunTx(msg sdk.Msg) (*sdk.Result, error) {
+	ctx, commit := suite.ctx.CacheContext()
+	handler := suite.App().MsgServiceRouter().Handler(msg)
+
+	res, err := handler(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	commit()
+	return res, nil
+}
