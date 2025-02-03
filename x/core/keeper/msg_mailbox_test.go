@@ -35,6 +35,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// nothing to do
 
 		// Act
+		// TODO improve test, does not actually test whats claimed in the message
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
 			DefaultIsm: "",
@@ -53,6 +54,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
 			DefaultIsm: "",
+			// TODO improve test, does not actually test whats claimed in the message
 			Igp: &types.InterchainGasPaymaster{
 				Id:       "0x1234",
 				Required: false,
