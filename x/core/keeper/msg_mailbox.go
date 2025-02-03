@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
@@ -16,8 +17,8 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 	}
 
 	exists, err := ms.k.IsmIdExists(ctx, ismId)
-	if err != nil {
-		return nil, err
+	if !exists || err != nil {
+		return nil, errors.New("IsmId does not exist")
 	}
 
 	igpId, err := util.DecodeHexAddress(req.Igp.Id)
