@@ -20,7 +20,6 @@ TEST CASES - msg_server_create_funder.go
 */
 
 var _ = Describe("msg_mailbox.go", Ordered, func() {
-
 	var s *i.KeeperTestSuite
 	var creator i.TestValidatorAddress
 
@@ -32,7 +31,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	})
 
 	It("Create New (invalid) Mailbox without default ISM and without IGP", func() {
-
 		// Arrange
 		// nothing to do
 
@@ -48,7 +46,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	})
 
 	It("Create New (invalid) Mailbox without default ISM and non-existent IGP", func() {
-
 		// Arrange
 		// nothing to do
 
@@ -67,7 +64,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	})
 
 	It("Create New (valid) Mailbox", func() {
-
 		// Arrange
 		_, err := s.RunTx(&types.MsgCreateIgp{
 			Owner: creator.Address,
@@ -102,5 +98,4 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(mailboxes.Mailboxes).To(HaveLen(1))
 		Expect(mailboxes.Mailboxes[0].Creator).To(Equal(creator.Address))
 	})
-
 })

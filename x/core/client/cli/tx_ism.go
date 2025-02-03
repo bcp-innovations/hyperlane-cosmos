@@ -1,13 +1,14 @@
 package cli
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
-	"strconv"
-	"strings"
 )
 
 func NewIsmCmd() *cobra.Command {
@@ -30,7 +31,6 @@ func CmdCreateMultiSigIsm() *cobra.Command {
 		Short: "Create a Hyperlane MultiSig ISM",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			validators := strings.Split(args[0], ",")
 			threshold, err := strconv.ParseUint(args[1], 10, 32)
 			if err != nil {

@@ -2,8 +2,10 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
 	"errors"
+
+	"cosmossdk.io/collections"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

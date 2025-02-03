@@ -2,9 +2,10 @@ package main
 
 import (
 	"errors"
+	"io"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 	"github.com/cosmos/cosmos-sdk/client/keys"
-	"io"
 
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/spf13/cobra"

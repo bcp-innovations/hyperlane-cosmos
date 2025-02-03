@@ -3,9 +3,10 @@ package types
 import (
 	"bytes"
 	"errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"math/big"
 	"slices"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type WarpPayload struct {
@@ -57,7 +58,6 @@ func (p WarpPayload) Amount() *big.Int {
 }
 
 func (p WarpPayload) Bytes() []byte {
-
 	intBytes := p.amount.Bytes()
 	amountBytes := make([]byte, 32)
 	copy(amountBytes[32-len(intBytes):], intBytes)

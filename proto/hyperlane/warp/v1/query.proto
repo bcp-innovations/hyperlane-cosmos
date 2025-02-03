@@ -13,7 +13,7 @@ import "cosmos_proto/cosmos.proto";
 
 // Msg defines the module Msg service.
 service Query {
-// Params returns the module parameters.
+  // Params returns the module parameters.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/hyperlane/warp/v1/params";
   }
@@ -33,12 +33,10 @@ message QueryTokensRequest {}
 message QueryTokensResponse {
   // params defines the parameters of the module.
   repeated QueryTokenResponse tokens = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryMailboxRequest {
-  string id = 1;
-}
+message QueryMailboxRequest { string id = 1; }
 
 message QueryTokenResponse {
   string id = 1;
@@ -59,5 +57,5 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }

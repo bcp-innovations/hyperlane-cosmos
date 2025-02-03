@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -65,7 +66,6 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 }
 
 func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchMessage) (*types.MsgDispatchMessageResponse, error) {
-
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
 	bodyBytes, err := hexutil.Decode(req.Body)
@@ -99,7 +99,6 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 }
 
 func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMessage) (*types.MsgProcessMessageResponse, error) {
-
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
 	// Decode and parse message

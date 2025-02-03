@@ -1,15 +1,17 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
+	"strconv"
+
+	"cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
-	"strconv"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
@@ -35,7 +37,6 @@ func CmdCreateMailbox() *cobra.Command {
 		Short: "Create a Hyperlane Mailbox",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err

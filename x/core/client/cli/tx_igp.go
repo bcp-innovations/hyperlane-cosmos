@@ -1,16 +1,18 @@
 package cli
 
 import (
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
+	"strconv"
+
+	"cosmossdk.io/math"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
-	"strconv"
 )
 
 func NewIgpCmd() *cobra.Command {
@@ -35,7 +37,6 @@ func CmdClaim() *cobra.Command {
 		Short: "Claim Hyperlane Interchain Gas Paymaster fees",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -66,7 +67,6 @@ func CmdCreateIgp() *cobra.Command {
 		Short: "Create a Hyperlane Interchain Gas Paymaster",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -97,7 +97,6 @@ func CmdPayForGas() *cobra.Command {
 		Short: "Hyperlane Interchain Gas Payment without using QuoteGasPayment",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -147,7 +146,6 @@ func CmdSetDestinationGasConfig() *cobra.Command {
 		Short: "Set Destination Gas Config for Interchain Gas Paymaster",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err

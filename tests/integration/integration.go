@@ -1,12 +1,13 @@
 package integration
 
 import (
+	"time"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankTypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"time"
 )
 
 var (

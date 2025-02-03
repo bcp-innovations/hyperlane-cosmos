@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 	"os"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )

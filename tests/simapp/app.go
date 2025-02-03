@@ -2,10 +2,11 @@ package simapp
 
 import (
 	_ "embed"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/cosmos/cosmos-sdk/x/genutil"
 
 	dbm "github.com/cosmos/cosmos-db"
 

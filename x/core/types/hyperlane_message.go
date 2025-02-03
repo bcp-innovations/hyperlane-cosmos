@@ -4,9 +4,10 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"slices"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/ethereum/go-ethereum/crypto"
-	"slices"
 )
 
 const (
@@ -52,7 +53,6 @@ func (msg HyperlaneMessage) Id() util.HexAddress {
 }
 
 func (msg HyperlaneMessage) Bytes() []byte {
-
 	nonce := make([]byte, 4)
 	binary.BigEndian.PutUint32(nonce, msg.Nonce)
 

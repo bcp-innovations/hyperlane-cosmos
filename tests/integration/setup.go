@@ -1,9 +1,12 @@
 package integration
 
 import (
+	"encoding/json"
+	"time"
+
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
-	"encoding/json"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/tmhash"
@@ -20,8 +23,6 @@ import (
 	authTypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankTypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingTypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	"time"
 )
 
 type KeeperTestSuite struct {

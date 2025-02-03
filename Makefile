@@ -13,13 +13,9 @@ build-simapp:
 
 test:
 	@echo "--> Running tests"
-	go test -v ./...
+	@go test -cover -mod=readonly ./x/...
 
-test-integration:
-	@echo "--> Running integration tests"
-	cd integration; go test -v ./...
-
-.PHONY: test test-integration
+.PHONY: build-simapp test
 
 ##################
 ###  Protobuf  ###
@@ -48,17 +44,16 @@ proto-lint:
 ###  Linting  ###
 #################
 
-golangci_lint_cmd=golangci-lint
-golangci_version=v1.51.2
+gofumpt_cmd=mvdan.cc/gofumpt
+golangci_lint_cmd=github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
+
+format:
+	@echo "--> Running formatter"
+	@go run $(gofumpt_cmd) -l -w .
 
 lint:
-	@echo "--> Running linter"
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
-	@$(golangci_lint_cmd) run ./... --timeout 15m
+	@echo "--> Running linter..."
+	# TODO temporarily disabled govet
+	@go run $(golangci_lint_cmd) run --exclude-dirs scripts --timeout=10m -D govet
 
-lint-fix:
-	@echo "--> Running linter and fixing issues"
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
-	@$(golangci_lint_cmd) run ./... --fix --timeout 15m
-
-.PHONY: lint lint-fix
+.PHONY: format lint

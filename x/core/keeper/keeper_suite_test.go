@@ -2,8 +2,9 @@ package keeper_test
 
 import (
 	"fmt"
-	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"testing"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

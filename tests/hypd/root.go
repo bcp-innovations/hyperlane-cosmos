@@ -1,10 +1,11 @@
 package main
 
 import (
-	"cosmossdk.io/client/v2/autocli"
-	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 	"os"
 	"time"
+
+	"cosmossdk.io/client/v2/autocli"
+	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 
 	cmtcfg "github.com/cometbft/cometbft/config"
 	"github.com/spf13/cobra"

@@ -19,19 +19,22 @@ service Msg {
 
   rpc ProcessMessage(MsgProcessMessage) returns (MsgProcessMessageResponse);
 
-  rpc AnnounceValidator(MsgAnnounceValidator) returns (MsgAnnounceValidatorResponse);
+  rpc AnnounceValidator(MsgAnnounceValidator)
+      returns (MsgAnnounceValidatorResponse);
 
   // IGP
   rpc CreateIGP(MsgCreateIgp) returns (MsgCreateIgpResponse);
 
-  rpc SetDestinationGasConfig(MsgSetDestinationGasConfig) returns (MsgSetDestinationGasConfigResponse);
+  rpc SetDestinationGasConfig(MsgSetDestinationGasConfig)
+      returns (MsgSetDestinationGasConfigResponse);
 
   rpc PayForGas(MsgPayForGas) returns (MsgPayForGasResponse);
 
   rpc Claim(MsgClaim) returns (MsgClaimResponse);
 
   // ISM
-  rpc CreateMultisigIsm(MsgCreateMultisigIsm) returns (MsgCreateMultisigIsmResponse);
+  rpc CreateMultisigIsm(MsgCreateMultisigIsm)
+      returns (MsgCreateMultisigIsmResponse);
 
   rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
 
@@ -64,13 +67,17 @@ message MsgDispatchMessage {
 
   // IGP
   string igp_id = 6;
-  string gas_limit = 7 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
-  string max_fee = 8 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string gas_limit = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string max_fee = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message MsgDispatchMessageResponse {
-  string message_id = 1;
-}
+message MsgDispatchMessageResponse { string message_id = 1; }
 
 message MsgProcessMessage {
   option (cosmos.msg.v1.signer) = "relayer";
@@ -128,8 +135,14 @@ message MsgPayForGas {
   string igp_id = 2;
   string message_id = 3;
   uint32 destination_domain = 4;
-  string gas_limit = 5 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
-  string amount = 6 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string gas_limit = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string amount = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgPayForGasResponse {}

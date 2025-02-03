@@ -3,12 +3,13 @@ package main
 import (
 	"embed"
 	"fmt"
-	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 //go:embed sample_config/*
@@ -19,7 +20,6 @@ func InitSampleChain() *cobra.Command {
 		Use:   "init-sample-chain",
 		Short: "Initializes a dummy chain which can be directly started",
 		Run: func(cmd *cobra.Command, args []string) {
-
 			destPath := viper.GetString("home")
 			if destPath == "" {
 				destPath = simapp.DefaultNodeHome

@@ -3,16 +3,16 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
+	"math/big"
+	"strings"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	warpTypes "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"math/big"
-	"strings"
 )
 
 func Decode(messageStr string) error {
-
 	messageBytes, err := util.DecodeEthHex(messageStr)
 	if err != nil {
 		return err
@@ -36,7 +36,6 @@ func Decode(messageStr string) error {
 }
 
 func GenerateWarpTransfer(senderContract string, recipientContract string, recipientUser string, amount uint64) error {
-
 	var bz []byte
 	if strings.HasPrefix(recipientUser, "kyve") {
 		dbz, err := sdk.GetFromBech32(recipientUser, "kyve")

@@ -13,7 +13,7 @@ import "cosmos_proto/cosmos.proto";
 
 // Msg defines the module Msg service.
 service Query {
-// Params returns the module parameters.
+  // Params returns the module parameters.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/hyperlane/v1/params";
   }
@@ -34,8 +34,10 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/mailboxes/{id}/tree/root";
   }
 
-  rpc LatestCheckpoint(QueryLatestCheckpointRequest) returns (QueryLatestCheckpointResponse) {
-    option (google.api.http).get = "/hyperlane/v1/mailboxes/{id}/tree/latest_checkpoint";
+  rpc LatestCheckpoint(QueryLatestCheckpointRequest)
+      returns (QueryLatestCheckpointResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/mailboxes/{id}/tree/latest_checkpoint";
   }
 
   rpc Delivered(QueryDeliveredRequest) returns (QueryDeliveredResponse) {
@@ -50,8 +52,10 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/validators";
   }
 
-  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest) returns (QueryAnnouncedStorageLocationsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/announced_storage_locations/{validator_address}";
+  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
+      returns (QueryAnnouncedStorageLocationsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/announced_storage_locations/{validator_address}";
   }
 
   // IGP
@@ -63,11 +67,14 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/igps/{id}";
   }
 
-  rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest) returns (QueryDestinationGasConfigsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/igps/{id}/destination_gas_configs";
+  rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest)
+      returns (QueryDestinationGasConfigsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/igps/{id}/destination_gas_configs";
   }
 
-  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest) returns (QueryQuoteGasPaymentResponse) {
+  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest)
+      returns (QueryQuoteGasPaymentResponse) {
     option (google.api.http).get = "/hyperlane/v1/quote_gas_payment";
   }
 
@@ -80,7 +87,8 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/isms/{id}";
   }
 
-  rpc VerifyDryRun(QueryVerifyDryRunRequest) returns (QueryVerifyDryRunResponse) {
+  rpc VerifyDryRun(QueryVerifyDryRunRequest)
+      returns (QueryVerifyDryRunResponse) {
     option (google.api.http).get = "/hyperlane/v1/verify_dry_run";
   }
 }
@@ -89,69 +97,47 @@ message QueryMailboxesRequest {}
 
 message QueryMailboxesResponse {
   repeated Mailbox mailboxes = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryMailboxRequest {
-  string id = 1;
-}
+message QueryMailboxRequest { string id = 1; }
 
 message QueryMailboxResponse {
-   Mailbox mailbox = 1
-    [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  Mailbox mailbox = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryCountRequest {
-  string id = 1;
-}
+message QueryCountRequest { string id = 1; }
 
-message QueryCountResponse {
-  uint32 count = 1;
-}
+message QueryCountResponse { uint32 count = 1; }
 
-message QueryRootRequest {
-  string id = 1;
-}
+message QueryRootRequest { string id = 1; }
 
-message QueryRootResponse {
-  bytes root = 1;
-}
+message QueryRootResponse { bytes root = 1; }
 
-message QueryDeliveredRequest {
-  string message_id = 1;
-}
+message QueryDeliveredRequest { string message_id = 1; }
 
-message QueryDeliveredResponse {
-  bool delivered = 1;
-}
+message QueryDeliveredResponse { bool delivered = 1; }
 
-message QueryLatestCheckpointRequest {
-  string id = 1;
-}
+message QueryLatestCheckpointRequest { string id = 1; }
 
 message QueryLatestCheckpointResponse {
   bytes root = 1;
   uint32 count = 2;
 }
 
-message RecipientIsmRequest {
-  string recipient = 1;
-}
+message RecipientIsmRequest { string recipient = 1; }
 
-message RecipientIsmResponse {
-  string ism_id = 1;
-}
+message RecipientIsmResponse { string ism_id = 1; }
 
 message QueryValidatorsRequest {}
 
 message QueryValidatorsResponse {
   repeated Validator validators = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryAnnouncedStorageLocationsRequest {
-  string validator_address = 1;
-}
+message QueryAnnouncedStorageLocationsRequest { string validator_address = 1; }
 
 message QueryAnnouncedStorageLocationsResponse {
   repeated string storage_locations = 1;
@@ -162,20 +148,16 @@ message QueryIgpsRequest {}
 
 message QueryIgpsResponse {
   repeated Igp igps = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryIgpRequest {
-  string id = 1;
-}
+message QueryIgpRequest { string id = 1; }
 
 message QueryIgpResponse {
   Igp igp = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryDestinationGasConfigsRequest {
-  string id = 1;
-}
+message QueryDestinationGasConfigsRequest { string id = 1; }
 
 message QueryDestinationGasConfigsResponse {
   repeated DestinationGasConfig destination_gas_configs = 1;
@@ -187,21 +169,17 @@ message QueryQuoteGasPaymentRequest {
   string gas_limit = 3;
 }
 
-message QueryQuoteGasPaymentResponse {
-  string gas_payment = 1;
-}
+message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
 
 // ISM
 message QueryIsmsRequest {}
 
 message QueryIsmsResponse {
   repeated Ism isms = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryIsmRequest {
-  string id = 1;
-}
+message QueryIsmRequest { string id = 1; }
 
 message QueryIsmResponse {
   Ism ism = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
@@ -213,9 +191,7 @@ message QueryVerifyDryRunRequest {
   string metadata = 3;
 }
 
-message QueryVerifyDryRunResponse {
-  bool verified = 1;
-}
+message QueryVerifyDryRunResponse { bool verified = 1; }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}

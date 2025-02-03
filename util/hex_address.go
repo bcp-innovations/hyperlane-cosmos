@@ -61,7 +61,6 @@ func CreateHexAddress(identifier string, id int64) HexAddress {
 }
 
 func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
-
 	bech32, err := sdk.AccAddressFromBech32(cosmosAcc)
 	if err != nil {
 		return [32]byte{}, err
