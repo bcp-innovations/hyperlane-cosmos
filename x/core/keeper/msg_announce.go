@@ -56,7 +56,12 @@ func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounc
 		return nil, err
 	}
 
-	announcementDigest := types.GetAnnouncementDigest(req.StorageLocation, ms.k.LocalDomain(), mailboxId.Bytes())
+	localDomain, err := ms.k.LocalDomain(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	announcementDigest := types.GetAnnouncementDigest(req.StorageLocation, localDomain, mailboxId.Bytes())
 	ethSigningHash := util.GetEthSigningHash(announcementDigest[:])
 
 	recoveredPubKey, err := util.RecoverEthSignature(ethSigningHash[:], sig)
@@ -65,8 +70,9 @@ func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounc
 	}
 
 	recoveredAddress := crypto.PubkeyToAddress(*recoveredPubKey)
+
 	if !bytes.Equal(recoveredAddress[:], validatorKey) {
-		return nil, fmt.Errorf("validator %s doesn't match signature", util.EncodeEthHex(validatorKey))
+		return nil, fmt.Errorf("validator %s doesn't match signature. recovered address: %s", util.EncodeEthHex(validatorKey), util.EncodeEthHex(recoveredAddress[:]))
 	}
 
 	if err = ms.k.Validators.Set(ctx, prefixedId.Bytes(), validator); err != nil {

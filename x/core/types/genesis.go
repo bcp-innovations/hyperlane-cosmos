@@ -1,5 +1,7 @@
 package types
 
+import fmt "fmt"
+
 // NewGenesisState creates a new genesis state with default values.
 func NewGenesisState() *GenesisState {
 	return &GenesisState{
@@ -11,6 +13,10 @@ func NewGenesisState() *GenesisState {
 func (gs *GenesisState) Validate() error {
 	if err := gs.Params.Validate(); err != nil {
 		return err
+	}
+
+	if gs.Params.Domain == 0 {
+		return fmt.Errorf("local domain cannot be 0")
 	}
 
 	return nil
