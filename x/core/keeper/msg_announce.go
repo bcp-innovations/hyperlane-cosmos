@@ -56,7 +56,12 @@ func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounc
 		return nil, err
 	}
 
-	announcementDigest := types.GetAnnouncementDigest(req.StorageLocation, ms.k.LocalDomain(ctx), mailboxId.Bytes())
+	localDomain, err := ms.k.LocalDomain(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	announcementDigest := types.GetAnnouncementDigest(req.StorageLocation, localDomain, mailboxId.Bytes())
 	ethSigningHash := util.GetEthSigningHash(announcementDigest[:])
 
 	recoveredPubKey, err := util.RecoverEthSignature(ethSigningHash[:], sig)
