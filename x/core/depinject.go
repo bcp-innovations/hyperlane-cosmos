@@ -11,7 +11,6 @@ import (
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"golang.org/x/exp/maps"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -45,7 +44,7 @@ type ModuleInputs struct {
 
 	Config *modulev1.Module
 
-	BankKeeper bankkeeper.Keeper
+	BankKeeper types.BankKeeper
 }
 
 type ModuleOutputs struct {

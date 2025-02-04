@@ -14,8 +14,6 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 
 type Keeper struct {
@@ -33,7 +31,7 @@ type Keeper struct {
 	HypTokens      collections.Map[[]byte, types.HypToken]
 	HypTokensCount collections.Sequence
 
-	bankKeeper    bankkeeper.Keeper
+	bankKeeper    types.BankKeeper
 	mailboxKeeper *mailboxkeeper.Keeper
 }
 
@@ -43,7 +41,7 @@ func NewKeeper(
 	addressCodec address.Codec,
 	storeService storetypes.KVStoreService,
 	authority string,
-	bankKeeper bankkeeper.Keeper,
+	bankKeeper types.BankKeeper,
 	mailboxKeeper *mailboxkeeper.Keeper,
 ) Keeper {
 	if _, err := addressCodec.StringToBytes(authority); err != nil {

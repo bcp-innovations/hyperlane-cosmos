@@ -5,14 +5,13 @@ import (
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module"
 	coreKeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-
-	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module"
 )
 
 var _ appmodule.AppModule = AppModule{}
@@ -39,7 +38,7 @@ type ModuleInputs struct {
 
 	Config *modulev1.Module
 
-	BankKeeper    bankkeeper.Keeper
+	BankKeeper    types.BankKeeper
 	MailboxKeeper *coreKeeper.Keeper
 }
 
