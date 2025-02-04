@@ -22,7 +22,7 @@ var (
 	IsmsSequencesKey              = collections.NewPrefix(11)
 )
 
-var TokenExchangeRateScale = math.NewInt(1)
+var TokenExchangeRateScale = math.NewInt(1e10)
 
 const (
 	UNUSED uint32 = iota
