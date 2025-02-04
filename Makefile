@@ -2,6 +2,19 @@
 
 DOCKER := $(shell which docker)
 
+COMMIT := $(shell git log -1 --format='%H')
+VERSION := nightly
+
+ldflags := $(LDFLAGS)
+ldflags += -X github.com/cosmos/cosmos-sdk/version.Name=hyperlane \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=hypd \
+		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
+		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+
+ldflags := $(strip $(ldflags))
+
+BUILD_FLAGS := -ldflags '$(ldflags)' -tags 'ledger' -trimpath -buildvcs=false
+
 all: proto-all format lint test build-simapp
 
 #################
@@ -13,11 +26,20 @@ build-simapp:
 	@go build $(BUILD_FLAGS) -o "$(PWD)/build/" ./tests/hypd
 	@echo "--> Completed build!"
 
+release-simapp:
+	@echo "--> Release simapp..."
+	@for b in darwin:amd64 darwin:arm64 linux:amd64 linux:arm64; do \
+    		os=$$(echo $$b | cut -d':' -f1); \
+    		arch=$$(echo $$b | cut -d':' -f2); \
+    		echo "--> Building "$$os" "$$arch""; \
+    		CGO_ENABLED=0 GOOS=$$os GOARCH=$$arch go build $(BUILD_FLAGS) -o release/hypd_"$$os"_"$$arch" ./tests/hypd; \
+    done
+
 test:
 	@echo "--> Running tests"
 	@go test -cover -mod=readonly ./x/...
 
-.PHONY: build-simapp test
+.PHONY: build-simapp release-simapp test
 
 ##################
 ###  Protobuf  ###
