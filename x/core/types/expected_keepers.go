@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 

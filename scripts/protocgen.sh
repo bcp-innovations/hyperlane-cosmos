@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Generating gogo proto code"
+echo "--> Generating gogo proto code"
 cd proto
 proto_dirs=$(find . -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 for dir in $proto_dirs; do
@@ -16,7 +16,7 @@ for dir in $proto_dirs; do
   done
 done
 
-echo "Generating pulsar proto code"
+echo "--> Generating pulsar proto code"
 buf generate --template buf.gen.pulsar.yaml
 
 cd ..

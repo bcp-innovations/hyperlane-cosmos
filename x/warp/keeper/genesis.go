@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 

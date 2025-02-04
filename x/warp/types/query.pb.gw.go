@@ -70,7 +70,7 @@ func local_request_Query_Tokens_0(ctx context.Context, marshaler runtime.Marshal
 }
 
 func request_Query_Token_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryMailboxRequest
+	var protoReq QueryTokenRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -97,7 +97,7 @@ func request_Query_Token_0(ctx context.Context, marshaler runtime.Marshaler, cli
 }
 
 func local_request_Query_Token_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryMailboxRequest
+	var protoReq QueryTokenRequest
 	var metadata runtime.ServerMetadata
 
 	var (

@@ -3,219 +3,249 @@ package hyperlane.core.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
 
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "hyperlane/core/v1/types.proto";
 import "google/api/annotations.proto";
-import "cosmos/query/v1/query.proto";
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
-import "cosmos_proto/cosmos.proto";
 
 // Msg defines the module Msg service.
 service Query {
-// Params returns the module parameters.
+  // Params returns the module parameters.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/hyperlane/v1/params";
   }
 
+  // Mailboxes ...
   rpc Mailboxes(QueryMailboxesRequest) returns (QueryMailboxesResponse) {
     option (google.api.http).get = "/hyperlane/v1/mailboxes";
   }
 
+  // Mailbox ...
   rpc Mailbox(QueryMailboxRequest) returns (QueryMailboxResponse) {
     option (google.api.http).get = "/hyperlane/v1/mailboxes/{id}";
   }
 
+  // Count ...
   rpc Count(QueryCountRequest) returns (QueryCountResponse) {
     option (google.api.http).get = "/hyperlane/v1/mailboxes/{id}/tree/count";
   }
 
+  // Root ...
   rpc Root(QueryRootRequest) returns (QueryRootResponse) {
     option (google.api.http).get = "/hyperlane/v1/mailboxes/{id}/tree/root";
   }
 
-  rpc LatestCheckpoint(QueryLatestCheckpointRequest) returns (QueryLatestCheckpointResponse) {
-    option (google.api.http).get = "/hyperlane/v1/mailboxes/{id}/tree/latest_checkpoint";
+  // LatestCheckpoint ...
+  rpc LatestCheckpoint(QueryLatestCheckpointRequest)
+      returns (QueryLatestCheckpointResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/mailboxes/{id}/tree/latest_checkpoint";
   }
 
+  // Delivered ...
   rpc Delivered(QueryDeliveredRequest) returns (QueryDeliveredResponse) {
     option (google.api.http).get = "/hyperlane/v1/delivered/{message_id}";
   }
 
+  // RecipientIsm ...
   rpc RecipientIsm(RecipientIsmRequest) returns (RecipientIsmResponse) {
     option (google.api.http).get = "/hyperlane/v1/recipient_ism/{recipient}";
   }
 
+  // Validators ...
   rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
     option (google.api.http).get = "/hyperlane/v1/validators";
   }
 
-  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest) returns (QueryAnnouncedStorageLocationsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/announced_storage_locations/{validator_address}";
+  // AnnouncedStorageLocations ...
+  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
+      returns (QueryAnnouncedStorageLocationsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/announced_storage_locations/{validator_address}";
   }
 
-  // IGP
+  // Igps ...
   rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
     option (google.api.http).get = "/hyperlane/v1/igps";
   }
 
+  // Igp ...
   rpc Igp(QueryIgpRequest) returns (QueryIgpResponse) {
     option (google.api.http).get = "/hyperlane/v1/igps/{id}";
   }
 
-  rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest) returns (QueryDestinationGasConfigsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/igps/{id}/destination_gas_configs";
+  // DestinationGasConfigs ...
+  rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest)
+      returns (QueryDestinationGasConfigsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/igps/{id}/destination_gas_configs";
   }
 
-  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest) returns (QueryQuoteGasPaymentResponse) {
+  // QuoteGasPayment ...
+  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest)
+      returns (QueryQuoteGasPaymentResponse) {
     option (google.api.http).get = "/hyperlane/v1/quote_gas_payment";
   }
 
-  // ISM
+  // Isms ...
   rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
     option (google.api.http).get = "/hyperlane/v1/isms";
   }
 
+  // Ism ...
   rpc Ism(QueryIsmRequest) returns (QueryIsmResponse) {
     option (google.api.http).get = "/hyperlane/v1/isms/{id}";
   }
 
-  rpc VerifyDryRun(QueryVerifyDryRunRequest) returns (QueryVerifyDryRunResponse) {
+  // VerifyDryRun ...
+  rpc VerifyDryRun(QueryVerifyDryRunRequest)
+      returns (QueryVerifyDryRunResponse) {
     option (google.api.http).get = "/hyperlane/v1/verify_dry_run";
   }
 }
 
-message QueryMailboxesRequest {}
+// QueryMailboxesRequest ...
+message QueryMailboxesRequest {
+  // TODO support pagination
+}
 
+// QueryMailboxesResponse ...
 message QueryMailboxesResponse {
+  // TODO support pagination
   repeated Mailbox mailboxes = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryMailboxRequest {
-  string id = 1;
-}
+// QueryMailboxRequest ...
+message QueryMailboxRequest { string id = 1; }
 
+// QueryMailboxResponse ...
 message QueryMailboxResponse {
-   Mailbox mailbox = 1
-    [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  Mailbox mailbox = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryCountRequest {
-  string id = 1;
-}
+// QueryCountRequest ...
+message QueryCountRequest { string id = 1; }
 
-message QueryCountResponse {
-  uint32 count = 1;
-}
+// QueryCountResponse ...
+message QueryCountResponse { uint32 count = 1; }
 
-message QueryRootRequest {
-  string id = 1;
-}
+// QueryRootRequest ...
+message QueryRootRequest { string id = 1; }
 
-message QueryRootResponse {
-  bytes root = 1;
-}
+// QueryRootResponse ...
+message QueryRootResponse { bytes root = 1; }
 
-message QueryDeliveredRequest {
-  string message_id = 1;
-}
+// QueryDeliveredRequest ...
+message QueryDeliveredRequest { string message_id = 1; }
 
-message QueryDeliveredResponse {
-  bool delivered = 1;
-}
+// QueryDeliveredResponse ...
+message QueryDeliveredResponse { bool delivered = 1; }
 
-message QueryLatestCheckpointRequest {
-  string id = 1;
-}
+// QueryLatestCheckpointRequest ...
+message QueryLatestCheckpointRequest { string id = 1; }
 
+// QueryLatestCheckpointResponse ...
 message QueryLatestCheckpointResponse {
   bytes root = 1;
   uint32 count = 2;
 }
 
-message RecipientIsmRequest {
-  string recipient = 1;
+// RecipientIsmRequest ...
+message RecipientIsmRequest { string recipient = 1; }
+
+// RecipientIsmResponse ...
+message RecipientIsmResponse { string ism_id = 1; }
+
+// QueryValidatorsRequest ...
+message QueryValidatorsRequest {
+  // TODO support pagination
 }
 
-message RecipientIsmResponse {
-  string ism_id = 1;
-}
-
-message QueryValidatorsRequest {}
-
+// QueryValidatorsResponse ...
 message QueryValidatorsResponse {
+  // TODO support pagination
   repeated Validator validators = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryAnnouncedStorageLocationsRequest {
-  string validator_address = 1;
-}
+// QueryAnnouncedStorageLocationsRequest ...
+message QueryAnnouncedStorageLocationsRequest { string validator_address = 1; }
 
+// QueryAnnouncedStorageLocationsResponse ...
 message QueryAnnouncedStorageLocationsResponse {
   repeated string storage_locations = 1;
 }
 
-// IGP
-message QueryIgpsRequest {}
+// QueryIgpsRequest ...
+message QueryIgpsRequest {
+  // TODO support pagination
+}
 
+// QueryIgpsResponse ...
 message QueryIgpsResponse {
+  // TODO support pagination
   repeated Igp igps = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryIgpRequest {
-  string id = 1;
-}
+// QueryIgpRequest ...
+message QueryIgpRequest { string id = 1; }
 
+// QueryIgpResponse ...
 message QueryIgpResponse {
   Igp igp = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryDestinationGasConfigsRequest {
-  string id = 1;
-}
+// QueryDestinationGasConfigsRequest ...
+message QueryDestinationGasConfigsRequest { string id = 1; }
 
+// QueryDestinationGasConfigsResponse ...
 message QueryDestinationGasConfigsResponse {
+  // TODO support pagination
   repeated DestinationGasConfig destination_gas_configs = 1;
 }
 
+// QueryQuoteGasPaymentRequest ...
 message QueryQuoteGasPaymentRequest {
   string igp_id = 1;
   string destination_domain = 2;
   string gas_limit = 3;
 }
 
-message QueryQuoteGasPaymentResponse {
-  string gas_payment = 1;
+// QueryQuoteGasPaymentResponse ...
+message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
+
+// QueryIsmsRequest ...
+message QueryIsmsRequest {
+  // TODO support pagination
 }
 
-// ISM
-message QueryIsmsRequest {}
-
+// QueryIsmsResponse ...
 message QueryIsmsResponse {
+  // TODO support pagination
   repeated Ism isms = 1
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryIsmRequest {
-  string id = 1;
-}
+// QueryIsmRequest ...
+message QueryIsmRequest { string id = 1; }
 
+// QueryIsmResponse ...
 message QueryIsmResponse {
   Ism ism = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
+// QueryVerifyDryRunRequest ...
 message QueryVerifyDryRunRequest {
   string ism_id = 1;
   string message = 2;
   string metadata = 3;
 }
 
-message QueryVerifyDryRunResponse {
-  bool verified = 1;
-}
+// QueryVerifyDryRunResponse ...
+message QueryVerifyDryRunResponse { bool verified = 1; }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}

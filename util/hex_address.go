@@ -22,9 +22,7 @@ func (h HexAddress) Bytes() []byte {
 }
 
 func DecodeHexAddress(s string) (HexAddress, error) {
-	if strings.HasPrefix(s, "0x") {
-		s = s[2:]
-	}
+	s = strings.TrimPrefix(s, "0x")
 
 	if len(s) != 64 {
 		return HexAddress{}, errors.New("invalid hex address length")
@@ -38,9 +36,7 @@ func DecodeHexAddress(s string) (HexAddress, error) {
 }
 
 func DecodeEthHex(s string) ([]byte, error) {
-	if strings.HasPrefix(s, "0x") {
-		s = s[2:]
-	}
+	s = strings.TrimPrefix(s, "0x")
 
 	b, err := hex.DecodeString(s)
 	if err != nil {
@@ -61,7 +57,6 @@ func CreateHexAddress(identifier string, id int64) HexAddress {
 }
 
 func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
-
 	bech32, err := sdk.AccAddressFromBech32(cosmosAcc)
 	if err != nil {
 		return [32]byte{}, err

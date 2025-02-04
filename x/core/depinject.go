@@ -1,16 +1,18 @@
 package core
 
 import (
+	"fmt"
+	"sort"
+
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-	"fmt"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"golang.org/x/exp/maps"
-	"sort"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"

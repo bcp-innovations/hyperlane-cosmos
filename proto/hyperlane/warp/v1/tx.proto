@@ -6,20 +6,25 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
 import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
-import "hyperlane/warp/v1/types.proto";
 import "cosmos_proto/cosmos.proto";
 
 // Msg defines the module Msg service.
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  rpc CreateCollateralToken(MsgCreateCollateralToken) returns (MsgCreateCollateralTokenResponse);
+  // CreateCollateralToken ...
+  rpc CreateCollateralToken(MsgCreateCollateralToken)
+      returns (MsgCreateCollateralTokenResponse);
 
-  rpc CreateSyntheticToken(MsgCreateSyntheticToken) returns (MsgCreateSyntheticTokenResponse);
+  // CreateSyntheticToken ...
+  rpc CreateSyntheticToken(MsgCreateSyntheticToken)
+      returns (MsgCreateSyntheticTokenResponse);
 
+  // RemoteTransfer ...
   rpc RemoteTransfer(MsgRemoteTransfer) returns (MsgRemoteTransferResponse);
 }
 
+// MsgCreateCollateralToken ...
 message MsgCreateCollateralToken {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "hyperlane/warp/MsgCreateCollateralToken";
@@ -36,8 +41,10 @@ message MsgCreateCollateralToken {
   string ism_id = 6;
 }
 
+// MsgCreateCollateralTokenResponse ...
 message MsgCreateCollateralTokenResponse {}
 
+// MsgCreateSyntheticToken ...
 message MsgCreateSyntheticToken {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "hyperlane/warp/MsgCreateSyntheticToken";
@@ -53,8 +60,10 @@ message MsgCreateSyntheticToken {
   string ism_id = 5;
 }
 
+// MsgCreateSyntheticTokenResponse ...
 message MsgCreateSyntheticTokenResponse {}
 
+// MsgRemoteTransfer ...
 message MsgRemoteTransfer {
   option (cosmos.msg.v1.signer) = "sender";
   option (amino.name) = "hyperlane/warp/MsgRemoteTransfer";
@@ -63,18 +72,23 @@ message MsgRemoteTransfer {
   string token_id = 2;
   string recipient = 3;
   string amount = 4 [
-    (cosmos_proto.scalar)  = "cosmos.Int",
+    (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable)   = false,
+    (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
 
   // IGP
   string igp_id = 5;
-  string gas_limit = 6 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
-  string max_fee = 7 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string gas_limit = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string max_fee = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message MsgRemoteTransferResponse {
-  string message_id = 1;
-}
+// MsgRemoteTransferResponse ...
+message MsgRemoteTransferResponse { string message_id = 1; }

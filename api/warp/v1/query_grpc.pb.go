@@ -30,8 +30,10 @@ const (
 type QueryClient interface {
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Tokens ...
 	Tokens(ctx context.Context, in *QueryTokensRequest, opts ...grpc.CallOption) (*QueryTokensResponse, error)
-	Token(ctx context.Context, in *QueryMailboxRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
+	// Token ...
+	Token(ctx context.Context, in *QueryTokenRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
 }
 
 type queryClient struct {
@@ -60,7 +62,7 @@ func (c *queryClient) Tokens(ctx context.Context, in *QueryTokensRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Token(ctx context.Context, in *QueryMailboxRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error) {
+func (c *queryClient) Token(ctx context.Context, in *QueryTokenRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error) {
 	out := new(QueryTokenResponse)
 	err := c.cc.Invoke(ctx, Query_Token_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -75,8 +77,10 @@ func (c *queryClient) Token(ctx context.Context, in *QueryMailboxRequest, opts .
 type QueryServer interface {
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Tokens ...
 	Tokens(context.Context, *QueryTokensRequest) (*QueryTokensResponse, error)
-	Token(context.Context, *QueryMailboxRequest) (*QueryTokenResponse, error)
+	// Token ...
+	Token(context.Context, *QueryTokenRequest) (*QueryTokenResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -90,7 +94,7 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 func (UnimplementedQueryServer) Tokens(context.Context, *QueryTokensRequest) (*QueryTokensResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Tokens not implemented")
 }
-func (UnimplementedQueryServer) Token(context.Context, *QueryMailboxRequest) (*QueryTokenResponse, error) {
+func (UnimplementedQueryServer) Token(context.Context, *QueryTokenRequest) (*QueryTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Token not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
@@ -143,7 +147,7 @@ func _Query_Tokens_Handler(srv interface{}, ctx context.Context, dec func(interf
 }
 
 func _Query_Token_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryMailboxRequest)
+	in := new(QueryTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -155,7 +159,7 @@ func _Query_Token_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: Query_Token_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Token(ctx, req.(*QueryMailboxRequest))
+		return srv.(QueryServer).Token(ctx, req.(*QueryTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

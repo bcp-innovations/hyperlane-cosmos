@@ -6,8 +6,6 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
-import "google/protobuf/any.proto";
-
 
 // Params defines the parameters of the module.
 message Params { option (amino.name) = "hyperlane/warp/Params"; }
@@ -19,11 +17,12 @@ message GenesisState {
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
   repeated HypToken tokens = 2
-  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
   int64 token_count = 3;
 }
 
+// HypToken ...
 message HypToken {
   bytes id = 1;
   string creator = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -41,12 +40,16 @@ message HypToken {
   ];
 }
 
+// HypTokenType ...
 enum HypTokenType {
   option (gogoproto.goproto_enum_prefix) = false;
 
-  // HYP_TOKEN_COLLATERAL ...
-  HYP_TOKEN_COLLATERAL = 0;
+  // HYP_TOKEN_TYPE_UNSPECIFIED ...
+  HYP_TOKEN_TYPE_UNSPECIFIED = 0;
 
-  // HYP_TOKEN ...
-  HYP_TOKEN_SYNTHETIC = 1;
+  // HYP_TOKEN_TYPE_COLLATERAL ...
+  HYP_TOKEN_TYPE_COLLATERAL = 1;
+
+  // HYP_TOKEN_TYPE_SYNTHETIC ...
+  HYP_TOKEN_TYPE_SYNTHETIC = 2;
 }

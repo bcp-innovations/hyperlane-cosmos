@@ -5,35 +5,75 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
 
 import "cosmos_proto/cosmos.proto";
 
+// Dispatch ...
 message Dispatch {
+
+  // origin_mailbox_id ...
   string origin_mailbox_id = 1;
+
+  // sender ...
   string sender = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // destination ...
   uint32 destination = 3;
+
+  // recipient ...
   string recipient = 4;
+
+  // message ...
   string message = 5;
 }
 
+// Process ...
 message Process {
+
+  // origin_mailbox_id ...
   string origin_mailbox_id = 1;
+
+  // origin ...
   uint32 origin = 2;
+
+  // sender ...
   string sender = 3;
+
+  // recipient ...
   string recipient = 4;
 
+  // message_id ...
   string message_id = 5;
+
+  // message ...
   string message = 6;
 }
 
+// InsertedIntoTree ...
 message InsertedIntoTree {
+
+  // message_id ...
   string message_id = 1;
+
+  // index ...
   uint32 index = 2;
+
+  // mailbox_id ...
   string mailbox_id = 3;
 }
 
-// IGP
+// GasPayment ...
 message GasPayment {
+
+  // message_id ...
   string message_id = 1;
+
+  // destination ...
   uint32 destination = 2;
+
+  // gas_amount ...
   string gas_amount = 3;
+
+  // payment ...
   string payment = 4;
+
+  // igp_id ...
   string igp_id = 5;
 }

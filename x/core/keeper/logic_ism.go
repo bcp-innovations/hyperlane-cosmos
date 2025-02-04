@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
+	"strings"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"strings"
 )
 
 func multiSigDigest(metadata *types.Metadata, message *types.HyperlaneMessage) [32]byte {

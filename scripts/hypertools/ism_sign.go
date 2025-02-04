@@ -4,11 +4,12 @@ import (
 	"crypto/ecdsa"
 	"errors"
 	"fmt"
+	"log"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 var PRIVATE_KEYS = []string{
@@ -43,7 +44,6 @@ var signCmd = &cobra.Command{
 }
 
 func signMessage(message string) (string, error) {
-
 	messageBytes, err := util.DecodeEthHex(message)
 	if err != nil {
 		return "", err

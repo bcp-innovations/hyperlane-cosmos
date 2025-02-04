@@ -2,14 +2,16 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/collections"
-	"cosmossdk.io/math"
 	"errors"
 	"fmt"
+	"strconv"
+
+	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"strconv"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )

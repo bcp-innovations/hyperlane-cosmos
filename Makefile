@@ -2,19 +2,22 @@
 
 DOCKER := $(shell which docker)
 
+all: proto-all format lint test build-simapp
+
 #################
 ###   Build   ###
 #################
 
+build-simapp:
+	@echo "--> Building simapp..."
+	@go build $(BUILD_FLAGS) -o "$(PWD)/build/" ./tests/hypd
+	@echo "--> Completed build!"
+
 test:
 	@echo "--> Running tests"
-	go test -v ./...
+	@go test -cover -mod=readonly ./x/...
 
-test-integration:
-	@echo "--> Running integration tests"
-	cd integration; go test -v ./...
-
-.PHONY: test test-integration
+.PHONY: build-simapp test
 
 ##################
 ###  Protobuf  ###
@@ -27,7 +30,7 @@ protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(pro
 proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
-	@echo "Generating protobuf files..."
+	@echo "--> Generating protobuf files..."
 	@$(protoImage) sh ./scripts/protocgen.sh
 	@go mod tidy
 
@@ -43,17 +46,15 @@ proto-lint:
 ###  Linting  ###
 #################
 
-golangci_lint_cmd=golangci-lint
-golangci_version=v1.51.2
+gofumpt_cmd=mvdan.cc/gofumpt
+golangci_lint_cmd=github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
+
+format:
+	@echo "--> Running formatter"
+	@go run $(gofumpt_cmd) -l -w .
 
 lint:
-	@echo "--> Running linter"
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
-	@$(golangci_lint_cmd) run ./... --timeout 15m
+	@echo "--> Running linter..."
+	@go run $(golangci_lint_cmd) run --exclude-dirs scripts --timeout=10m
 
-lint-fix:
-	@echo "--> Running linter and fixing issues"
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
-	@$(golangci_lint_cmd) run ./... --fix --timeout 15m
-
-.PHONY: lint lint-fix
+.PHONY: format lint
