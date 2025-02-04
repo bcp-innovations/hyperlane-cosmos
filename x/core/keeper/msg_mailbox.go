@@ -13,7 +13,7 @@ import (
 func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailbox) (*types.MsgCreateMailboxResponse, error) {
 	ismId, err := util.DecodeHexAddress(req.DefaultIsm)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(fmt.Sprintf("ism id %s is invalid: %s", req.DefaultIsm, err.Error()))
 	}
 
 	exists, err := ms.k.IsmIdExists(ctx, ismId)
@@ -22,12 +22,12 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 	}
 
 	if !exists {
-		return nil, fmt.Errorf("InterchainSecurityModule with id %s does not exist", ismId.String())
+		return nil, fmt.Errorf("ism with id %s does not exist", ismId.String())
 	}
 
 	igpId, err := util.DecodeHexAddress(req.Igp.Id)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(fmt.Sprintf("igp id %s is invalid: %s", req.Igp.Id, err.Error()))
 	}
 
 	exists, err = ms.k.IgpIdExists(ctx, igpId)
@@ -36,7 +36,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 	}
 
 	if !exists {
-		return nil, fmt.Errorf("InterchainGasPaymaster with id %s does not exist", igpId.String())
+		return nil, fmt.Errorf("igp with id %s does not exist", igpId.String())
 	}
 
 	mailboxCount, err := ms.k.MailboxesSequence.Next(ctx)
@@ -65,7 +65,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, err
 	}
 
-	return &types.MsgCreateMailboxResponse{}, nil
+	return &types.MsgCreateMailboxResponse{Id: prefixedId.String()}, nil
 }
 
 func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchMessage) (*types.MsgDispatchMessageResponse, error) {

@@ -39,7 +39,7 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 		return nil, err
 	}
 
-	return &types.MsgCreateIgpResponse{}, nil
+	return &types.MsgCreateIgpResponse{Id: prefixedId.String()}, nil
 }
 
 // PayForGas executes an InterchainGasPayment without for the specified payment amount.

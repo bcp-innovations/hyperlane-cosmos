@@ -42,7 +42,7 @@ message MsgCreateCollateralToken {
 }
 
 // MsgCreateCollateralTokenResponse ...
-message MsgCreateCollateralTokenResponse {}
+message MsgCreateCollateralTokenResponse { string id = 1; }
 
 // MsgCreateSyntheticToken ...
 message MsgCreateSyntheticToken {
@@ -61,7 +61,7 @@ message MsgCreateSyntheticToken {
 }
 
 // MsgCreateSyntheticTokenResponse ...
-message MsgCreateSyntheticTokenResponse {}
+message MsgCreateSyntheticTokenResponse { string id = 1; }
 
 // MsgRemoteTransfer ...
 message MsgRemoteTransfer {

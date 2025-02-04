@@ -31,7 +31,7 @@ func (ms msgServer) CreateMultisigIsm(ctx context.Context, req *types.MsgCreateM
 		return nil, err
 	}
 
-	return &types.MsgCreateMultisigIsmResponse{}, nil
+	return &types.MsgCreateMultisigIsmResponse{Id: prefixedId.String()}, nil
 }
 
 func (ms msgServer) CreateNoopIsm(ctx context.Context, req *types.MsgCreateNoopIsm) (*types.MsgCreateNoopIsmResponse, error) {
@@ -53,5 +53,5 @@ func (ms msgServer) CreateNoopIsm(ctx context.Context, req *types.MsgCreateNoopI
 		return nil, err
 	}
 
-	return &types.MsgCreateNoopIsmResponse{}, nil
+	return &types.MsgCreateNoopIsmResponse{Id: prefixedId.String()}, nil
 }

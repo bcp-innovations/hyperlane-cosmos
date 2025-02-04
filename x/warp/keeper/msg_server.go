@@ -58,7 +58,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), newToken); err != nil {
 		return nil, err
 	}
-	return &types.MsgCreateSyntheticTokenResponse{}, nil
+	return &types.MsgCreateSyntheticTokenResponse{Id: tokenId.String()}, nil
 }
 
 func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (*types.MsgCreateCollateralTokenResponse, error) {
@@ -105,7 +105,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), newToken); err != nil {
 		return nil, err
 	}
-	return &types.MsgCreateCollateralTokenResponse{}, nil
+	return &types.MsgCreateCollateralTokenResponse{Id: tokenId.String()}, nil
 }
 
 func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTransfer) (*types.MsgRemoteTransferResponse, error) {

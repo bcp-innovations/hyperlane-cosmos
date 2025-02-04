@@ -66,7 +66,7 @@ message MsgCreateMailbox {
 }
 
 // MsgCreateMailboxResponse ...
-message MsgCreateMailboxResponse {}
+message MsgCreateMailboxResponse { string id = 1; }
 
 // MsgDispatchMessage ...
 message MsgDispatchMessage {
@@ -165,7 +165,7 @@ message MsgCreateIgp {
 }
 
 // MsgCreateIgpResponse ...
-message MsgCreateIgpResponse {}
+message MsgCreateIgpResponse { string id = 1; }
 
 // MsgSetDestinationGasConfig ...
 message MsgSetDestinationGasConfig {
@@ -246,7 +246,7 @@ message MsgCreateMultisigIsm {
 }
 
 // MsgCreateMultisigIsmResponse ...
-message MsgCreateMultisigIsmResponse {}
+message MsgCreateMultisigIsmResponse { string id = 1; }
 
 // MsgCreateNoopIsm ...
 message MsgCreateNoopIsm {
@@ -258,7 +258,7 @@ message MsgCreateNoopIsm {
 }
 
 // MsgCreateNoopIsmResponse ...
-message MsgCreateNoopIsmResponse {}
+message MsgCreateNoopIsmResponse { string id = 1; }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
