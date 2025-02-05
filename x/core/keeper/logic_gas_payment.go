@@ -22,6 +22,10 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 		return fmt.Errorf("failed to claim: %s is not permitted to claim", sender)
 	}
 
+	if igp.ClaimableFees.Equal(math.ZeroInt()) {
+		return fmt.Errorf("no claimable fees left")
+	}
+
 	ownerAcc, err := sdk.AccAddressFromBech32(igp.Owner)
 	if err != nil {
 		return err
@@ -63,7 +67,15 @@ func (k Keeper) PayForGas(ctx context.Context, sender string, igpId util.HexAddr
 func (k Keeper) PayForGasWithoutQuote(ctx context.Context, sender string, igpId util.HexAddress, messageId string, destinationDomain uint32, gasLimit math.Int, amount math.Int) error {
 	igp, err := k.Igp.Get(ctx, igpId.Bytes())
 	if err != nil {
-		return err
+		return fmt.Errorf("igp does not exist: %s", igpId.String())
+	}
+
+	if amount.Equal(math.ZeroInt()) {
+		return fmt.Errorf("amount must be greater than zero")
+	}
+
+	if messageId == "" {
+		return fmt.Errorf("message id cannot be empty")
 	}
 
 	senderAcc, err := sdk.AccAddressFromBech32(sender)

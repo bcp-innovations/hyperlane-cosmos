@@ -8,7 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
-// Hash a message according to EIP-191.
+// GetEthSigningHash hashes a message according to EIP-191.
 //
 // The data is a UTF-8 encoded string and will enveloped as follows:
 // `"\x19Ethereum Signed Message:\n" + message.length + message` and hashed
@@ -23,7 +23,7 @@ func GetEthSigningHash(msg []byte) [32]byte {
 	return crypto.Keccak256Hash(bytes)
 }
 
-// Recovers the public key from a given signature
+// RecoverEthSignature recovers the public key from a given signature
 //
 // Signatures follows EIP-155 with a recovery id of 27 or 28
 func RecoverEthSignature(hash []byte, sig []byte) (*ecdsa.PublicKey, error) {

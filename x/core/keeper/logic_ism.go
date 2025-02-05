@@ -57,7 +57,7 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 		}
 
 		signatures, validSignatures := metadata.SignatureCount(), uint32(0)
-		threshold := uint32(multiSigIsm.Threshold)
+		threshold := multiSigIsm.Threshold
 
 		// Early return if we can't possibly meet the threshold
 		if signatures < multiSigIsm.Threshold {

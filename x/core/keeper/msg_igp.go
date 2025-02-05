@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
+	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
@@ -14,13 +14,18 @@ import (
 func (ms msgServer) Claim(ctx context.Context, req *types.MsgClaim) (*types.MsgClaimResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ism id %s is invalid: %s", req.IgpId, err.Error())
 	}
 
 	return &types.MsgClaimResponse{}, ms.k.Claim(ctx, req.Sender, igpId)
 }
 
 func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*types.MsgCreateIgpResponse, error) {
+	err := sdk.ValidateDenom(req.Denom)
+	if err != nil {
+		return nil, fmt.Errorf("denom %s is invalid", req.Denom)
+	}
+
 	igpCount, err := ms.k.IgpSequence.Next(ctx)
 	if err != nil {
 		return nil, err
@@ -46,7 +51,7 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*types.MsgPayForGasResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ism id %s is invalid: %s", req.IgpId, err.Error())
 	}
 
 	return &types.MsgPayForGasResponse{}, ms.k.PayForGasWithoutQuote(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, req.GasLimit, req.Amount)
@@ -55,16 +60,20 @@ func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*ty
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ism id %s is invalid: %s", req.IgpId, err.Error())
 	}
 
 	igp, err := ms.k.Igp.Get(ctx, igpId.Bytes())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("igp does not exist: %s", igpId.String())
 	}
 
 	if igp.Owner != req.Owner {
-		return nil, fmt.Errorf("failed to set DestinationGasConfigs: %s is not the owner of IGP with id %s", req.Owner, igpId.String())
+		return nil, fmt.Errorf("failed to set DestinationGasConfigs: %s is not the owner of igp with id %s", req.Owner, igpId.String())
+	}
+
+	if req.DestinationGasConfig.GasOracle == nil {
+		return nil, fmt.Errorf("failed to set DestinationGasConfigs: gas Oracle is required")
 	}
 
 	updatedDestinationGasConfig := types.DestinationGasConfig{

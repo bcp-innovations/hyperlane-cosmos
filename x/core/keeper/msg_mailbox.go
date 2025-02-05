@@ -13,7 +13,7 @@ import (
 func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailbox) (*types.MsgCreateMailboxResponse, error) {
 	ismId, err := util.DecodeHexAddress(req.DefaultIsm)
 	if err != nil {
-		return nil, fmt.Errorf(fmt.Sprintf("ism id %s is invalid: %s", req.DefaultIsm, err.Error()))
+		return nil, fmt.Errorf("ism id %s is invalid: %s", req.DefaultIsm, err.Error())
 	}
 
 	exists, err := ms.k.IsmIdExists(ctx, ismId)
@@ -27,7 +27,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 
 	igpId, err := util.DecodeHexAddress(req.Igp.Id)
 	if err != nil {
-		return nil, fmt.Errorf(fmt.Sprintf("igp id %s is invalid: %s", req.Igp.Id, err.Error()))
+		return nil, fmt.Errorf("igp id %s is invalid: %s", req.Igp.Id, err.Error())
 	}
 
 	exists, err = ms.k.IgpIdExists(ctx, igpId)
