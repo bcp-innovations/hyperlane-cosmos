@@ -1,4 +1,4 @@
-broadcast-mode = "sync"
+broadcast-mode = "block"
 chain-id = "hyperlane-local"
 keyring-backend = "test"
 node = "tcp://localhost:26657"

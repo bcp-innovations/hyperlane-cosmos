@@ -22,6 +22,7 @@ modules:
           permissions: [burner, staking]
         - account: bank
           permissions: [minter]
+        - account: hyperlane
         - account: warp
           permissions: [ minter, burner ]
   - name: bank

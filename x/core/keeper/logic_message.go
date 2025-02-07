@@ -98,10 +98,15 @@ func (k Keeper) DispatchMessage(
 		return util.HexAddress{}, err
 	}
 
+	localDomain, err := k.LocalDomain(ctx)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
 	hypMsg := types.HyperlaneMessage{
 		Version:     3,
 		Nonce:       mailbox.MessageSent,
-		Origin:      k.LocalDomain(),
+		Origin:      localDomain,
 		Sender:      sender,
 		Destination: destinationDomain,
 		Recipient:   recipient,
@@ -167,9 +172,4 @@ func (k Keeper) DispatchMessage(
 	})
 
 	return hypMsg.Id(), nil
-}
-
-func (k Keeper) LocalDomain() uint32 {
-	// TODO use global param
-	return 75898669
 }

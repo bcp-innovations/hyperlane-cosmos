@@ -7,7 +7,6 @@ import (
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
-
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -135,4 +134,9 @@ func (k Keeper) IgpIdExists(ctx context.Context, igpId util.HexAddress) (bool, e
 		return false, err
 	}
 	return igp, nil
+}
+
+func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {
+	params, err := k.Params.Get(ctx)
+	return params.Domain, err
 }

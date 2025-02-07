@@ -1,0 +1,64 @@
+version: 1
+build:
+  main: tests/cmd/hypd
+  proto:
+    path: proto
+    third_party_paths:
+      - third_party/proto
+      - proto_vendor
+accounts:
+  - name: alice # hyp1jq304cthpx0lwhpqzrdjrcza559ukyy3sc4dw5
+    coins:
+      - 1000000000000uhyp # 1M hyp -> 6 decimals
+    mnemonic: worry grief loyal smoke pencil arrow trap focus high pioneer tomato hedgehog 
+      essence purchase dove pond knee custom phone gentle sunset addict mother fabric
+  - name: bob # hyp1hvg7zsnrj6h29q9ss577mhrxa04rn94hv2cm2e
+    coins:
+      - 1000000000000uhyp # 1M hyp -> 6 decimals
+    mnemonic: crash sick toilet stumble join cash erode glory door weird diagram away
+      lizard solid segment apple urge joy annual able tank define candy demise
+  - name: charlie # hyp1ay22rr3kz659fupu0tcswlagq4ql6rwm8mktdf
+    coins:
+      - 1000000000000uhyp # 1M hyp -> 6 decimals
+    mnemonic: shoot inject fragile width trend satisfy army enact volcano crowd message
+      strike true divorce search rich office shoulder sport relax rhythm symbol gadget
+      size
+client:
+  openapi:
+    path: docs/swagger/swagger.yml
+genesis:
+  app_state:
+    delegation:
+      params:
+        unbonding_delegation_time: 10
+    gov:
+      params:
+        voting_period: 120s
+        max_deposit_period: 300s
+        min_deposit:
+          - amount: "50_000"
+            denom: uhyp
+        expedited_voting_period: 60s
+        expedited_min_deposit:
+          - amount: "100_000"
+            denom: uhyp
+    mint:
+      params:
+        mint_denom: "uhyp"
+    slashing:
+      params:
+        signed_blocks_window: 10
+        min_signed_per_window: "0.5"
+    staking:
+      params:
+        bond_denom: uhyp
+  chain_id: hyperlane-local
+validators:
+  - name: alice
+    bonded: 10000000000uhyp
+    app:
+      minimum-gas-prices: "0.2uhyp"
+    config:
+      consensus:
+        timeout_commit: "2s"
+        timeout_propose: "2s"
