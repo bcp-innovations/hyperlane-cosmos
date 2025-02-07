@@ -73,25 +73,25 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 
 	bodyBytes, err := hexutil.Decode(req.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid body: %s", err)
 	}
 
 	mailBoxId, err := util.DecodeHexAddress(req.MailboxId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid mailbox id: %s", err)
 	}
 
 	sender, err := util.ParseFromCosmosAcc(req.Sender)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid sender: %s", err)
 	}
 
 	recipient, err := util.DecodeHexAddress(req.Recipient)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid recipient: %s", err)
 	}
 
-	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, req.Destination, recipient, sender, bodyBytes, sender.String(), req.IgpId, req.GasLimit, req.MaxFee)
+	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, req.Destination, recipient, sender, bodyBytes, req.Sender, req.IgpId, req.GasLimit, req.MaxFee)
 	if err != nil {
 		return nil, err
 	}
@@ -104,19 +104,28 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMessage) (*types.MsgProcessMessageResponse, error) {
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
+	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
+	if err != nil {
+		return nil, fmt.Errorf("invalid mailbox id: %s", err)
+	}
+
 	// Decode and parse message
 	messageBytes, err := util.DecodeEthHex(req.Message)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to decode message")
+	}
+
+	if len(messageBytes) == 0 {
+		return nil, fmt.Errorf("invalid message")
 	}
 
 	// Decode and parse metadata
 	metadataBytes, err := util.DecodeEthHex(req.Metadata)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to decode metadata")
 	}
 
-	if err = ms.k.ProcessMessage(goCtx, req.MailboxId, messageBytes, metadataBytes); err != nil {
+	if err = ms.k.ProcessMessage(goCtx, mailboxId, messageBytes, metadataBytes); err != nil {
 		return nil, err
 	}
 

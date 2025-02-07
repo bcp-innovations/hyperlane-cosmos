@@ -10,13 +10,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessage []byte, metadata []byte) error {
+func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMessage []byte, metadata []byte) error {
 	message, err := types.ParseHyperlaneMessage(rawMessage)
-	if err != nil {
-		return err
-	}
-
-	mailboxId, err := util.DecodeHexAddress(mailboxIdString)
 	if err != nil {
 		return err
 	}
@@ -24,7 +19,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 	// Check if mailbox exists and increment counter
 	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 	mailbox.MessageReceived++
 
@@ -48,7 +43,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 
 	rawIsmAddress, err := k.ReceiverIsmMapping.Get(ctx, message.Recipient.Bytes())
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get receiver ism address for recipient: %s", message.Recipient.String())
 	}
 
 	ismId := util.HexAddress(rawIsmAddress)
@@ -67,7 +62,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.Process{
-		OriginMailboxId: mailboxIdString,
+		OriginMailboxId: mailboxId.String(),
 		Origin:          message.Origin,
 		Sender:          message.Sender.String(),
 		Recipient:       message.Recipient.String(),
@@ -95,7 +90,7 @@ func (k Keeper) DispatchMessage(
 ) (messageId util.HexAddress, error error) {
 	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())
 	if err != nil {
-		return util.HexAddress{}, err
+		return util.HexAddress{}, fmt.Errorf("failed to find mailbox with id: %v", originMailboxId.String())
 	}
 
 	localDomain, err := k.LocalDomain(ctx)

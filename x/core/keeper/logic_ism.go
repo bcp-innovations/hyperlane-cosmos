@@ -33,7 +33,6 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 
 	switch v := ism.Ism.(type) {
 	case *types.Ism_MultiSig:
-
 		metadata, err := types.NewMetadata(rawMetadata)
 		if err != nil {
 			return false, err

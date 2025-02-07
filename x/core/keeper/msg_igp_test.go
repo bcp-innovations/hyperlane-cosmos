@@ -1,9 +1,11 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
-	"fmt"
+
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
@@ -542,6 +544,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		Expect(igp.ClaimableFees).To(Equal(gasAmount))
 	})
 
+	// Claim
 	It("Claim (invalid) from non-owner address", func() {
 		// Arrange
 		gasAmount := math.NewInt(10)

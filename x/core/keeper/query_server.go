@@ -97,7 +97,7 @@ func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxReques
 
 	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
-		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+		return nil, fmt.Errorf("failed to find mailbox with id: %v", mailboxId.String())
 	}
 
 	return &types.QueryMailboxResponse{
@@ -113,7 +113,7 @@ func (qs queryServer) Count(ctx context.Context, req *types.QueryCountRequest) (
 
 	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
-		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+		return nil, fmt.Errorf("failed to find mailbox with id: %v", mailboxId.String())
 	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
@@ -134,7 +134,7 @@ func (qs queryServer) Root(ctx context.Context, req *types.QueryRootRequest) (*t
 
 	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
-		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+		return nil, fmt.Errorf("failed to find mailbox with id: %v", mailboxId.String())
 	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
@@ -157,7 +157,7 @@ func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLate
 
 	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
-		return nil, fmt.Errorf("failed to find Mailbox with Id: %v", mailboxId.String())
+		return nil, fmt.Errorf("failed to find mailbox with id: %v", mailboxId.String())
 	}
 
 	tree, err := types.TreeFromProto(mailbox.Tree)
@@ -242,7 +242,7 @@ func (qs queryServer) Igp(ctx context.Context, req *types.QueryIgpRequest) (*typ
 
 	igp, err := qs.k.Igp.Get(ctx, igpId.Bytes())
 	if err != nil {
-		return nil, fmt.Errorf("failed to find IGP with Id: %v", igpId.String())
+		return nil, fmt.Errorf("failed to find igp with id: %v", igpId.String())
 	}
 
 	return &types.QueryIgpResponse{
@@ -304,7 +304,7 @@ func (qs queryServer) Ism(ctx context.Context, req *types.QueryIsmRequest) (*typ
 
 	ism, err := qs.k.Isms.Get(ctx, ismId.Bytes())
 	if err != nil {
-		return nil, fmt.Errorf("failed to find ISM with Id: %v", ismId.String())
+		return nil, fmt.Errorf("failed to find ism with id: %v", ismId.String())
 	}
 
 	return &types.QueryIsmResponse{
