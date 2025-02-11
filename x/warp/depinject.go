@@ -12,7 +12,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module"
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module/v1"
 )
 
 var _ appmodule.AppModule = AppModule{}

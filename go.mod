@@ -1,6 +1,6 @@
 module github.com/bcp-innovations/hyperlane-cosmos
 
-go 1.23
+go 1.22.11
 
 require (
 	cosmossdk.io/api v0.7.6
