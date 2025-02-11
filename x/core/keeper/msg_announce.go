@@ -11,49 +11,31 @@ import (
 )
 
 func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounceValidator) (*types.MsgAnnounceValidatorResponse, error) {
-	validatorKey, err := util.DecodeEthHex(req.Validator)
-	if err != nil {
-		return nil, err
+	if req.Validator == "" {
+		return nil, fmt.Errorf("validator cannot be empty")
 	}
 
-	// Ensure that validator hasn't already announced storage location.
-	prefixedId := util.CreateValidatorStorageKey(validatorKey)
-
-	exists, err := ms.k.Validators.Has(ctx, prefixedId.Bytes())
-	if err != nil {
-		return nil, err
+	if req.StorageLocation == "" {
+		return nil, fmt.Errorf("storage location cannot be empty")
 	}
 
-	var validator types.Validator
-
-	if exists {
-		validator, err = ms.k.Validators.Get(ctx, prefixedId.Bytes())
-		if err != nil {
-			return nil, err
-		}
-
-		for _, location := range validator.StorageLocations {
-			if location == req.StorageLocation {
-				return nil, fmt.Errorf("validator %s already announced storage location %s", req.Validator, req.StorageLocation)
-			}
-		}
-
-		validator.StorageLocations = append(validator.StorageLocations, req.StorageLocation)
-	} else {
-		validator = types.Validator{
-			Address:          util.EncodeEthHex(validatorKey),
-			StorageLocations: []string{req.StorageLocation},
-		}
+	if req.Signature == "" {
+		return nil, fmt.Errorf("signature cannot be empty")
 	}
 
 	sig, err := util.DecodeEthHex(req.Signature)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid signature")
 	}
 
 	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid mailbox id")
+	}
+
+	found, err := ms.k.Mailboxes.Has(ctx, mailboxId.Bytes())
+	if err != nil || !found {
+		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 
 	localDomain, err := ms.k.LocalDomain(ctx)
@@ -69,13 +51,44 @@ func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounc
 		return nil, err
 	}
 
-	recoveredAddress := crypto.PubkeyToAddress(*recoveredPubKey)
-
-	if !bytes.Equal(recoveredAddress[:], validatorKey) {
-		return nil, fmt.Errorf("validator %s doesn't match signature. recovered address: %s", util.EncodeEthHex(validatorKey), util.EncodeEthHex(recoveredAddress[:]))
+	validatorAddress, err := util.DecodeEthHex(req.Validator)
+	if err != nil {
+		return nil, fmt.Errorf("invalid validator address")
 	}
 
-	if err = ms.k.Validators.Set(ctx, prefixedId.Bytes(), validator); err != nil {
+	recoveredAddress := crypto.PubkeyToAddress(*recoveredPubKey)
+
+	if !bytes.Equal(recoveredAddress[:], validatorAddress) {
+		return nil, fmt.Errorf("validator %s doesn't match signature. recovered address: %s", util.EncodeEthHex(validatorAddress), util.EncodeEthHex(recoveredAddress[:]))
+	}
+
+	var validator types.Validator
+
+	exists, err := ms.k.Validators.Has(ctx, validatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	if exists {
+		validator, err = ms.k.Validators.Get(ctx, validatorAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, location := range validator.StorageLocations {
+			if location == req.StorageLocation {
+				return nil, fmt.Errorf("validator %s already announced storage location %s", req.Validator, req.StorageLocation)
+			}
+		}
+		validator.StorageLocations = append(validator.StorageLocations, req.StorageLocation)
+	} else {
+		validator = types.Validator{
+			Address:          util.EncodeEthHex(validatorAddress),
+			StorageLocations: []string{req.StorageLocation},
+		}
+	}
+
+	if err = ms.k.Validators.Set(ctx, validatorAddress, validator); err != nil {
 		return nil, err
 	}
 

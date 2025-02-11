@@ -28,14 +28,12 @@ type queryServer struct {
 }
 
 func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.QueryAnnouncedStorageLocationsRequest) (*types.QueryAnnouncedStorageLocationsResponse, error) {
-	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
+	validatorAddress, err := util.DecodeHexAddress(req.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	prefixedId := util.CreateValidatorStorageKey(validatorAddress)
-
-	validator, err := qs.k.Validators.Get(ctx, prefixedId.Bytes())
+	validator, err := qs.k.Validators.Get(ctx, validatorAddress.Bytes())
 	if err != nil {
 		return nil, err
 	}

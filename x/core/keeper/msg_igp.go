@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -65,31 +64,5 @@ func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgS
 		return nil, fmt.Errorf("ism id %s is invalid: %s", req.IgpId, err.Error())
 	}
 
-	igp, err := ms.k.Igp.Get(ctx, igpId.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("igp does not exist: %s", igpId.String())
-	}
-
-	if igp.Owner != req.Owner {
-		return nil, fmt.Errorf("failed to set DestinationGasConfigs: %s is not the owner of igp with id %s", req.Owner, igpId.String())
-	}
-
-	if req.DestinationGasConfig.GasOracle == nil {
-		return nil, fmt.Errorf("failed to set DestinationGasConfigs: gas Oracle is required")
-	}
-
-	updatedDestinationGasConfig := types.DestinationGasConfig{
-		RemoteDomain: req.DestinationGasConfig.RemoteDomain,
-		GasOracle:    req.DestinationGasConfig.GasOracle,
-		GasOverhead:  req.DestinationGasConfig.GasOverhead,
-	}
-
-	key := collections.Join(igpId.Bytes(), req.DestinationGasConfig.RemoteDomain)
-
-	err = ms.k.IgpDestinationGasConfigMap.Set(ctx, key, updatedDestinationGasConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.MsgSetDestinationGasConfigResponse{}, nil
+	return &types.MsgSetDestinationGasConfigResponse{}, ms.k.SetDestinationGasConfig(ctx, igpId, req.Owner, req.DestinationGasConfig)
 }

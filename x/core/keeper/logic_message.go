@@ -34,7 +34,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return err
 	}
 	if received {
-		return fmt.Errorf("already received messsage")
+		return fmt.Errorf("already received messsage with id %s", message.Id().String())
 	}
 	err = k.Messages.Set(ctx, message.Id().Bytes())
 	if err != nil {
@@ -53,7 +53,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return err
 	}
 	if !verified {
-		return fmt.Errorf("threshold not reached")
+		return fmt.Errorf("ism verification failed")
 	}
 
 	err = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)

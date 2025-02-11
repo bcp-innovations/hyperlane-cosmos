@@ -30,6 +30,20 @@ TEST CASES - msg_mailbox.go
 * CreateMailbox (valid) with MultisigISM and required IGP
 * CreateMailbox (valid) with NoopISM and optional IGP
 * CreateMailbox (valid) with MultisigISM and optional IGP
+* DispatchMessage (invalid) with empty body
+* DispatchMessage (invalid) with invalid body
+* DispatchMessage (invalid) with invalid Mailbox ID
+* DispatchMessage (invalid) with empty sender
+* DispatchMessage (invalid) with invalid sender
+* DispatchMessage (invalid) with empty recipient
+* DispatchMessage (invalid) with invalid recipient
+* DispatchMessage (valid) with optional IGP
+* DispatchMessage (valid) with optional and no specified IGP
+* DispatchMessage (valid) with required IGP
+* ProcessMessage (invalid) with invalid Mailbox ID
+* ProcessMessage (invalid) with empty message
+* ProcessMessage (invalid) with invalid non-hex message
+* ProcessMessage (invalid) with invalid metadata
 
 */
 
@@ -61,6 +75,8 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("ism id %s is invalid: invalid hex address length", defaultIsm)))
+
+		verifyInvalidMailboxCreation(s)
 	})
 
 	It("CreateMailbox (invalid) with invalid default ISM and without IGP", func() {
@@ -76,6 +92,8 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("ism id %s is invalid: invalid hex address length", defaultIsm)))
+
+		verifyInvalidMailboxCreation(s)
 	})
 
 	It("CreateMailbox (invalid) with non-existing default ISM and without IGP", func() {
@@ -91,6 +109,8 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("ism with id %s does not exist", defaultIsm)))
+
+		verifyInvalidMailboxCreation(s)
 	})
 
 	// invalid IGP
@@ -111,6 +131,8 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("igp id %s is invalid: invalid hex address length", igpId)))
+
+		verifyInvalidMailboxCreation(s)
 	})
 
 	It("CreateMailbox (invalid) with valid default ISM (Multisig) and invalid IGP", func() {
@@ -130,6 +152,8 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("igp id %s is invalid: invalid hex address length", igpId)))
+
+		verifyInvalidMailboxCreation(s)
 	})
 
 	It("CreateMailbox (invalid) with valid default ISM (Noop) and non-existent IGP", func() {
@@ -149,6 +173,8 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("igp with id %s does not exist", igpId)))
+
+		verifyInvalidMailboxCreation(s)
 	})
 
 	It("CreateMailbox (invalid) with valid default ISM (Multisig) and non-existent IGP", func() {
@@ -168,6 +194,8 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("igp with id %s does not exist", igpId)))
+
+		verifyInvalidMailboxCreation(s)
 	})
 
 	// Mailbox valid cases
@@ -278,7 +306,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal("invalid body: empty hex string"))
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 0)
 	})
 
 	It("DispatchMessage (invalid) with invalid body", func() {
@@ -303,7 +331,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal("invalid body: hex string without 0x prefix"))
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 0)
 	})
 
 	It("DispatchMessage (invalid) with invalid Mailbox ID", func() {
@@ -328,21 +356,20 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal("invalid mailbox id: invalid hex address length"))
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 0)
 	})
 
-	It("DispatchMessage (invalid) with non-existing Mailbox ID", func() {
+	It("DispatchMessage (invalid) with empty sender", func() {
 		// Arrange
-		nonExistingMailboxId := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
-		createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
 		// Act
 		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   nonExistingMailboxId,
-			Sender:      sender.Address,
+			MailboxId:   mailboxId.String(),
+			Sender:      "",
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
@@ -352,12 +379,11 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId)))
+		Expect(err.Error()).To(Equal("invalid sender: empty address string is not allowed"))
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 0)
 	})
 
-	// TODO: Shall empty sender be checked?
 	It("DispatchMessage (invalid) with invalid sender", func() {
 		// Arrange
 		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
@@ -380,10 +406,34 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal("invalid sender: decoding bech32 failed: invalid checksum (expected ca6a9q got 567889)"))
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 0)
 	})
 
-	// TODO: Shall empty recipient be checked?
+	It("DispatchMessage (invalid) with empty recipient", func() {
+		// Arrange
+		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+
+		err := s.MintBaseCoins(sender.Address, 1_000_000)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgDispatchMessage{
+			MailboxId:   mailboxId.String(),
+			Sender:      sender.Address,
+			Destination: 1,
+			Recipient:   "",
+			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+			IgpId:       "",
+			GasLimit:    math.NewInt(50000),
+			MaxFee:      math.NewInt(1000000),
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("invalid recipient: invalid hex address length"))
+
+		verifyDispatch(s, mailboxId, 0)
+	})
+
 	It("DispatchMessage (invalid) with invalid recipient", func() {
 		// Arrange
 		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
@@ -406,10 +456,10 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal("invalid recipient: encoding/hex: invalid byte: U+0067 'g'"))
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 0)
 	})
 
-	It("DispatchMessage (valid) with optional and custom IGP", func() {
+	It("DispatchMessage (valid) with optional IGP", func() {
 		// Arrange
 		mailboxId, igpId := createValidMailbox(s, creator.Address, "noop", false, 1)
 
@@ -431,7 +481,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 1)
 	})
 
 	It("DispatchMessage (valid) with optional and no specified IGP", func() {
@@ -456,7 +506,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 1)
 	})
 
 	It("DispatchMessage (valid) with required IGP", func() {
@@ -481,20 +531,22 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		// TODO: Test state changes (e.g. claimable fees, messages sent)
+		verifyDispatch(s, mailboxId, 1)
 	})
 
-	// ProcessMessage() tests
+	// ProcessMessage() tests (only with Noop ISM)
 	It("ProcessMessage (invalid) with invalid Mailbox ID", func() {
 		// Arrange
 		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+
+		invalidMailboxId := mailboxId.String() + "test"
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
 		// Act
 		_, err = s.RunTx(&types.MsgProcessMessage{
-			MailboxId: mailboxId.String() + "test",
+			MailboxId: invalidMailboxId,
 			Relayer:   sender.Address,
 			Metadata:  "",
 			Message:   "",
@@ -502,42 +554,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid mailbox id: invalid hex address length"))
-	})
-
-	It("ProcessMessage (invalid) with non-existing Mailbox ID", func() {
-		// Arrange
-		nonExistingMailboxId := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
-		createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		senderHex := util.CreateHexAddress("test", 0)
-		recipientHex := util.CreateHexAddress("test", 0)
-
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
-		Expect(err).To(BeNil())
-
-		hypMsg := types.HyperlaneMessage{
-			Version:     3,
-			Nonce:       0,
-			Origin:      localDomain,
-			Sender:      senderHex,
-			Destination: 1,
-			Recipient:   recipientHex,
-			Body:        []byte("test123"),
-		}
-
-		// Act
-		_, err = s.RunTx(&types.MsgProcessMessage{
-			MailboxId: nonExistingMailboxId,
-			Relayer:   sender.Address,
-			Metadata:  "",
-			Message:   hypMsg.String(),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId)))
 	})
 
 	It("ProcessMessage (invalid) with empty message", func() {
@@ -597,40 +613,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("failed to decode metadata"))
 	})
 
-	It("ProcessMessage (invalid) with invalid hex message: non-registered recipient", func() {
-		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		senderHex := util.CreateHexAddress("test", 0)
-		recipientHex := util.CreateHexAddress("test", 0)
-
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
-		Expect(err).To(BeNil())
-
-		hypMsg := types.HyperlaneMessage{
-			Version:     3,
-			Nonce:       0,
-			Origin:      localDomain,
-			Sender:      senderHex,
-			Destination: 1,
-			Recipient:   recipientHex,
-			Body:        []byte("test123"),
-		}
-
-		// Act
-		_, err = s.RunTx(&types.MsgProcessMessage{
-			MailboxId: mailboxId.String(),
-			Relayer:   sender.Address,
-			Metadata:  "",
-			Message:   hypMsg.String(),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to get receiver ism address for recipient: %s", recipientHex)))
-	})
+	// TODO: Valid ProcessMessage
 })
 
 // Utils
@@ -736,7 +719,8 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailboxId, err := util.DecodeHexAddress(response.Id)
 	Expect(err).To(BeNil())
 
-	mailbox, _ := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
+	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
+	Expect(err).To(BeNil())
 	Expect(mailbox.Creator).To(Equal(creator))
 	Expect(mailbox.Igp.Id).To(Equal(igpId))
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
@@ -755,4 +739,29 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	Expect(mailboxes.Mailboxes[0].Creator).To(Equal(creator))
 
 	return mailboxId
+}
+
+func verifyInvalidMailboxCreation(s *i.KeeperTestSuite) {
+	mailboxes, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &types.QueryMailboxesRequest{})
+	Expect(err).To(BeNil())
+	Expect(mailboxes.Mailboxes).To(HaveLen(0))
+}
+
+func verifyDispatch(s *i.KeeperTestSuite, mailboxId util.HexAddress, messageSent uint32) {
+	mailbox, _ := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
+	Expect(mailbox.MessageSent).To(Equal(messageSent))
+	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
+	Expect(mailbox.Tree.Count).To(Equal(messageSent))
+
+	if messageSent == 0 {
+		_, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).LatestCheckpoint(s.Ctx(), &types.QueryLatestCheckpointRequest{Id: mailboxId.String()})
+		Expect(err.Error()).To(Equal("no leaf inserted yet"))
+	} else {
+		latestCheckpoint, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).LatestCheckpoint(s.Ctx(), &types.QueryLatestCheckpointRequest{Id: mailboxId.String()})
+		Expect(err).To(BeNil())
+
+		Expect(latestCheckpoint.Count).To(Equal(messageSent - 1))
+	}
+
+	// TODO: Check claimable fees of IGP
 }

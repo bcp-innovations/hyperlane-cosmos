@@ -35,6 +35,7 @@ func DecodeHexAddress(s string) (HexAddress, error) {
 	return HexAddress(b), nil
 }
 
+// TODO: Potentially return error for empty string
 func DecodeEthHex(s string) ([]byte, error) {
 	s = strings.TrimPrefix(s, "0x")
 
@@ -70,8 +71,4 @@ func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
 	copy(hexAddressBytes[32-len(bech32):], bech32)
 
 	return HexAddress(hexAddressBytes), nil
-}
-
-func CreateValidatorStorageKey(validator []byte) HexAddress {
-	return sha256.Sum256(validator)
 }

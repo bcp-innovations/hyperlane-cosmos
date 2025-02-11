@@ -15,7 +15,7 @@ import (
 func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress) error {
 	igp, err := k.Igp.Get(ctx, igpId.Bytes())
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to find ism with id: %s", igpId.String())
 	}
 
 	if sender != igp.Owner {
@@ -121,4 +121,33 @@ func (k Keeper) QuoteGasPayment(ctx context.Context, igpId util.HexAddress, dest
 	destinationCost := gasLimit.Mul(destinationGasConfig.GasOracle.GasPrice)
 
 	return (destinationCost.Mul(destinationGasConfig.GasOracle.TokenExchangeRate)).Quo(types.TokenExchangeRateScale), nil
+}
+
+func (k Keeper) SetDestinationGasConfig(ctx context.Context, igpId util.HexAddress, owner string, destinationGasConfig *types.DestinationGasConfig) error {
+	igp, err := k.Igp.Get(ctx, igpId.Bytes())
+	if err != nil {
+		return fmt.Errorf("igp does not exist: %s", igpId.String())
+	}
+
+	if igp.Owner != owner {
+		return fmt.Errorf("failed to set DestinationGasConfigs: %s is not the owner of igp with id %s", owner, igpId.String())
+	}
+
+	if destinationGasConfig.GasOracle == nil {
+		return fmt.Errorf("failed to set DestinationGasConfigs: gas Oracle is required")
+	}
+
+	updatedDestinationGasConfig := types.DestinationGasConfig{
+		RemoteDomain: destinationGasConfig.RemoteDomain,
+		GasOracle:    destinationGasConfig.GasOracle,
+		GasOverhead:  destinationGasConfig.GasOverhead,
+	}
+
+	key := collections.Join(igpId.Bytes(), destinationGasConfig.RemoteDomain)
+
+	err = k.IgpDestinationGasConfigMap.Set(ctx, key, updatedDestinationGasConfig)
+	if err != nil {
+		return err
+	}
+	return nil
 }
