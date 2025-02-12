@@ -28,12 +28,12 @@ type queryServer struct {
 }
 
 func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.QueryAnnouncedStorageLocationsRequest) (*types.QueryAnnouncedStorageLocationsResponse, error) {
-	validatorAddress, err := util.DecodeHexAddress(req.ValidatorAddress)
+	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	validator, err := qs.k.Validators.Get(ctx, validatorAddress.Bytes())
+	validator, err := qs.k.Validators.Get(ctx, validatorAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -193,14 +193,27 @@ func (qs queryServer) Validators(ctx context.Context, _ *types.QueryValidatorsRe
 // IGP
 
 func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
+
+	if len(req.IgpId) == 0 {
+		return nil, errors.New("parameter 'igp_id' is required")
+	}
+
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
 		return nil, err
 	}
 
+	if len(req.DestinationDomain) == 0 {
+		return nil, errors.New("parameter 'destination_domain' is required")
+	}
+
 	destinationDomain, err := strconv.ParseUint(req.DestinationDomain, 10, 32)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(req.GasLimit) == 0 {
+		return nil, errors.New("parameter 'gas_limit' is required")
 	}
 
 	gasLimit, ok := math.NewIntFromString(req.GasLimit)

@@ -16,9 +16,10 @@ import (
 TEST CASES - msg_ism.go
 
 * Create (valid) Noop ISM
-* Create (invalid) Multisig ISM with less pubkeys
+* Create (invalid) Multisig ISM with less addresses
 * Create (invalid) Multisig ISM with invalid threshold
-* Create (invalid) Multisig ISM with invalid validator pubkeys
+* Create (invalid) Multisig ISM with duplicate validator addresses
+* Create (invalid) Multisig ISM with invalid validator addresses
 * Create (valid) Multisig ISM
 
 */
@@ -57,20 +58,20 @@ var _ = Describe("msg_ism.go", Ordered, func() {
 		Expect(ism.Ism).To(BeAssignableToTypeOf(&types.Ism_Noop{}))
 	})
 
-	It("Create (invalid) Multisig ISM with less pubkeys", func() {
+	It("Create (invalid) Multisig ISM with less address", func() {
 		// Arrange
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMultisigIsm{
 			Creator: creator.Address,
 			MultiSig: &types.MultiSigIsm{
-				ValidatorPubKeys: []string{},
-				Threshold:        2,
+				Validators: []string{},
+				Threshold:  2,
 			},
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("validator pubkeys less than threshold"))
+		Expect(err.Error()).To(Equal("validator address less than threshold"))
 	})
 
 	It("Create (invalid) Multisig ISM with invalid threshold", func() {
@@ -80,8 +81,8 @@ var _ = Describe("msg_ism.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateMultisigIsm{
 			Creator: creator.Address,
 			MultiSig: &types.MultiSigIsm{
-				ValidatorPubKeys: []string{},
-				Threshold:        0,
+				Validators: []string{},
+				Threshold:  0,
 			},
 		})
 
@@ -89,27 +90,45 @@ var _ = Describe("msg_ism.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("threshold must be greater than zero"))
 	})
 
-	It("Create (invalid) Multisig ISM with invalid validator pubkeys", func() {
+	It("Create (invalid) Multisig ISM with duplicate validator addresses", func() {
 		// Arrange
-		validValidatorPubKey := "0x049a7df67f79246283fdc93af76d4f8cdd62c4886e8cd870944e817dd0b97934fdd7719d0810951e03418205868a5c1b40b192451367f28e0088dd75e15de40c05"
-		invalidKeys := []string{
-			// one character less
-			"0x049a7df67f79246283fdc93af76d4f8cdd62c4886e8cd870944e817dd0b97934fdd7719d0810951e03418205868a5c1b40b192451367f28e0088dd75e15de40c0",
-			// one character more
-			"0x049a7df67f79246283fdc93af76d4f8cdd62c4886e8cd870944e817dd0b97934fdd7719d0810951e03418205868a5c1b40b192451367f28e0088dd75e15de40c051",
-			// invalid character included (`test`)
-			"0x049a7df67f79246283fdc93af76d4f8cdd62c4886e8cd870944e817dd0b9793test7719d0810951e03418205868a5c1b40b192451367f28e0088dd75e15de40c05",
-			// valid hex, but invalid pubkey
-			"0x049a7df67f79246283fdc93af78cdd62c4886e8cd870944e817dd0b97934fdd7719d0810951e03418205868a5c1b40b192451367f28e0088dd75e15de40c05",
+		invalidAddress := []string{
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
 		}
 
-		for _, invalidKey := range invalidKeys {
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMultisigIsm{
+			Creator: creator.Address,
+			MultiSig: &types.MultiSigIsm{
+				Validators: invalidAddress,
+				Threshold:  2,
+			},
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v", invalidAddress[0])))
+	})
+
+	It("Create (invalid) Multisig ISM with invalid validator address", func() {
+		// Arrange
+		validValidatorAddress := "0xb05b6a0aa112b61a7aa16c19cac27d970692995e"
+		invalidAddress := []string{
+			// one character less
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995",
+			// one character more
+			"0xa05b6a0aa112b61a7aa16c19cac27d970692995ef",
+			// invalid character included (`t`)
+			"0xd05b6a0aa112b61a7aa16c19cac27d970692995t",
+		}
+
+		for _, invalidKey := range invalidAddress {
 			// Act
 			_, err := s.RunTx(&types.MsgCreateMultisigIsm{
 				Creator: creator.Address,
 				MultiSig: &types.MultiSigIsm{
-					ValidatorPubKeys: []string{
-						validValidatorPubKey,
+					Validators: []string{
+						validValidatorAddress,
 						invalidKey,
 					},
 					Threshold: 2,
@@ -117,7 +136,7 @@ var _ = Describe("msg_ism.go", Ordered, func() {
 			})
 
 			// Assert
-			Expect(err.Error()).To(Equal(fmt.Sprintf("invalid validator pub key: %s", invalidKey)))
+			Expect(err.Error()).To(Equal(fmt.Sprintf("invalid validator address: %s", invalidKey)))
 		}
 	})
 
@@ -128,10 +147,10 @@ var _ = Describe("msg_ism.go", Ordered, func() {
 		res, err := s.RunTx(&types.MsgCreateMultisigIsm{
 			Creator: creator.Address,
 			MultiSig: &types.MultiSigIsm{
-				ValidatorPubKeys: []string{
-					"0x049a7df67f79246283fdc93af76d4f8cdd62c4886e8cd870944e817dd0b97934fdd7719d0810951e03418205868a5c1b40b192451367f28e0088dd75e15de40c05",
-					"0x0417f57017d748288ccf6341993e47618ce3d4d60614ae09f5149acec191fad3fbca5a8ce4144077948c843ea8e863e3997b6da7a1a6d6c9708f658371430ce06b",
-					"0x04ce7edc292d7b747fab2f23584bbafaffde5c8ff17cf689969614441e0527b90015ea9fee96aed6d9c0fc2fbe0bd1883dee223b3200246ff1e21976bdbc9a0fc8",
+				Validators: []string{
+					"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+					"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+					"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
 				},
 				Threshold: 2,
 			},

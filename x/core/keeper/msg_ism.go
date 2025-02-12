@@ -6,7 +6,6 @@ import (
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
 )
 
 func (ms msgServer) CreateMultisigIsm(ctx context.Context, req *types.MsgCreateMultisigIsm) (*types.MsgCreateMultisigIsmResponse, error) {
@@ -18,8 +17,8 @@ func (ms msgServer) CreateMultisigIsm(ctx context.Context, req *types.MsgCreateM
 	prefixedId := util.CreateHexAddress(types.ModuleName+"/ism", int64(ismCount))
 
 	ism := types.MultiSigIsm{
-		ValidatorPubKeys: req.MultiSig.ValidatorPubKeys,
-		Threshold:        req.MultiSig.Threshold,
+		Validators: req.MultiSig.Validators,
+		Threshold:  req.MultiSig.Threshold,
 	}
 
 	if err = validateMultisigIsm(ism); err != nil {
@@ -67,19 +66,28 @@ func validateMultisigIsm(ism types.MultiSigIsm) error {
 		return fmt.Errorf("threshold must be greater than zero")
 	}
 
-	if len(ism.ValidatorPubKeys) < int(ism.Threshold) {
-		return fmt.Errorf("validator pubkeys less than threshold")
+	if len(ism.Validators) < int(ism.Threshold) {
+		return fmt.Errorf("validator address less than threshold")
 	}
 
-	for _, validatorPubKey := range ism.ValidatorPubKeys {
-		pubKey, err := util.DecodeEthHex(validatorPubKey)
+	for _, validatorAddress := range ism.Validators {
+		bytes, err := util.DecodeEthHex(validatorAddress)
 		if err != nil {
-			return fmt.Errorf("invalid validator pub key: %s", validatorPubKey)
+			return fmt.Errorf("invalid validator address: %s", validatorAddress)
 		}
 
-		_, err = crypto.UnmarshalPubkey(pubKey)
-		if err != nil {
-			return fmt.Errorf("invalid validator pub key: %s", validatorPubKey)
+		// ensure that the address is an eth address with 20 bytes
+		if len(bytes) != 20 {
+			return fmt.Errorf("invalid validator address: must be ethereum address (20 byts)")
+		}
+	}
+
+	// check for duplications
+	count := map[string]int{}
+	for _, address := range ism.Validators {
+		count[address]++
+		if count[address] > 1 {
+			return fmt.Errorf("duplicate validator address: %v", address)
 		}
 	}
 	return nil
