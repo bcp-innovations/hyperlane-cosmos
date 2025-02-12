@@ -35,7 +35,6 @@ func DecodeHexAddress(s string) (HexAddress, error) {
 	return HexAddress(b), nil
 }
 
-// TODO: Potentially return error for empty string
 func DecodeEthHex(s string) ([]byte, error) {
 	s = strings.TrimPrefix(s, "0x")
 
