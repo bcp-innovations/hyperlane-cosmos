@@ -44,7 +44,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) with empty validator", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
@@ -70,7 +70,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) with invalid validator", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		invalidValidatorAddress := "0x0b1caf89d1edb9ee161093test94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -97,7 +97,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) with empty storage location", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -124,7 +124,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) with empty signature", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		storageLocation := "aws://key.pub"
@@ -145,7 +145,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) with invalid signature", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		storageLocation := "aws://key.pub"
@@ -166,7 +166,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) with invalid signature recovery id", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -193,7 +193,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) same storage location for validator (replay protection)", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -257,7 +257,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) for invalid Mailbox ID", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -284,7 +284,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (invalid) for non-matching signature validator pair", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		correctValidatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		wrongValidatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db392"
@@ -312,7 +312,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (valid)", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -339,7 +339,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 	It("AnnounceValidator (valid) add another storage location", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"

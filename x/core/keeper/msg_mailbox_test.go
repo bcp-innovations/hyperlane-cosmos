@@ -122,7 +122,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
-			DefaultIsm: ismId,
+			DefaultIsm: ismId.String(),
 			Igp: &types.InterchainGasPaymaster{
 				Id:       igpId,
 				Required: false,
@@ -143,7 +143,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
-			DefaultIsm: ismId,
+			DefaultIsm: ismId.String(),
 			Igp: &types.InterchainGasPaymaster{
 				Id:       igpId,
 				Required: false,
@@ -164,7 +164,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
-			DefaultIsm: ismId,
+			DefaultIsm: ismId.String(),
 			Igp: &types.InterchainGasPaymaster{
 				Id:       igpId,
 				Required: false,
@@ -185,7 +185,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
-			DefaultIsm: ismId,
+			DefaultIsm: ismId.String(),
 			Igp: &types.InterchainGasPaymaster{
 				Id:       igpId,
 				Required: false,
@@ -207,7 +207,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
-			DefaultIsm: ismId,
+			DefaultIsm: ismId.String(),
 			Igp: &types.InterchainGasPaymaster{
 				Id:       igpId.String(),
 				Required: true,
@@ -217,7 +217,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId, true)
+		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId.String(), true)
 	})
 
 	It("CreateMailbox (valid) with MultisigISM and required IGP", func() {
@@ -228,7 +228,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
-			DefaultIsm: ismId,
+			DefaultIsm: ismId.String(),
 			Igp: &types.InterchainGasPaymaster{
 				Id:       igpId.String(),
 				Required: true,
@@ -238,7 +238,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId, true)
+		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId.String(), true)
 	})
 
 	It("CreateMailbox (valid) with NoopISM and optional IGP", func() {
@@ -249,7 +249,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
-			DefaultIsm: ismId,
+			DefaultIsm: ismId.String(),
 			Igp: &types.InterchainGasPaymaster{
 				Id:       igpId.String(),
 				Required: false,
@@ -259,7 +259,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId, false)
+		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId.String(), false)
 	})
 
 	It("CreateMailbox (valid) with MultisigISM and optional IGP", func() {
@@ -270,7 +270,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
-			DefaultIsm: ismId,
+			DefaultIsm: ismId.String(),
 			Igp: &types.InterchainGasPaymaster{
 				Id:       igpId.String(),
 				Required: false,
@@ -280,13 +280,13 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId, false)
+		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId.String(), false)
 	})
 
 	// DispatchMessage
 	It("DispatchMessage (invalid) with empty body", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -311,7 +311,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (invalid) with invalid body", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -336,7 +336,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (invalid) with invalid Mailbox ID", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -361,7 +361,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (invalid) with empty sender", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -386,7 +386,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (invalid) with invalid sender", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -411,7 +411,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (invalid) with empty recipient", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -436,7 +436,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (invalid) with invalid recipient", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -461,7 +461,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (valid) with optional IGP", func() {
 		// Arrange
-		mailboxId, igpId := createValidMailbox(s, creator.Address, "noop", false, 1)
+		mailboxId, igpId, _ := createValidMailbox(s, creator.Address, "noop", false, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -486,7 +486,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (valid) with optional and no specified IGP", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", false, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -511,7 +511,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("DispatchMessage (valid) with required IGP", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -537,7 +537,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	// ProcessMessage() tests (only with Noop ISM)
 	It("ProcessMessage (invalid) with invalid Mailbox ID", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		invalidMailboxId := mailboxId.String() + "test"
 
@@ -558,7 +558,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("ProcessMessage (invalid) with empty message", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -577,7 +577,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("ProcessMessage (invalid) with invalid non-hex message", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -594,9 +594,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("failed to decode message"))
 	})
 
-	It("ProcessMessage (invalid) with invalid metadata", func() {
+	It("ProcessMessage (invalid) with invalid metadata (Noop ISM)", func() {
 		// Arrange
-		mailboxId, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -613,7 +613,41 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("failed to decode metadata"))
 	})
 
-	// TODO: Valid ProcessMessage
+	It("ProcessMessage (valid) (Noop ISM)", func() {
+		// Arrange
+		mailboxId, _, ismId := createValidMailbox(s, creator.Address, "noop", true, 1)
+
+		err := s.MintBaseCoins(sender.Address, 1_000_000)
+		Expect(err).To(BeNil())
+
+		recipient := util.CreateHexAddress("recipient", 0)
+
+		message := types.HyperlaneMessage{
+			Version:     1,
+			Nonce:       1,
+			Origin:      0,
+			Sender:      util.CreateHexAddress("sender", 0),
+			Destination: 1,
+			Recipient:   recipient,
+			Body:        nil,
+		}
+
+		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), recipient, mailboxId, ismId.String())
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgProcessMessage{
+			MailboxId: mailboxId.String(),
+			Relayer:   sender.Address,
+			Metadata:  "",
+			Message:   message.String(),
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+	})
+
+	// TODO: ProcessMessage (valid) (Multisig ISM)
 })
 
 // Utils
@@ -634,8 +668,8 @@ func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return igpId
 }
 
-func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress) {
-	var ismId string
+func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
+	var ismId util.HexAddress
 	switch ism {
 	case "noop":
 		ismId = createNoopIsm(s, creator)
@@ -650,7 +684,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 
 	res, err := s.RunTx(&types.MsgCreateMailbox{
 		Creator:    creator,
-		DefaultIsm: ismId,
+		DefaultIsm: ismId.String(),
 		Igp: &types.InterchainGasPaymaster{
 			Id:       igpId.String(),
 			Required: igpRequired,
@@ -658,10 +692,10 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 	})
 	Expect(err).To(BeNil())
 
-	return verifyNewMailbox(s, res, creator, igpId.String(), ismId, igpRequired), igpId
+	return verifyNewMailbox(s, res, creator, igpId.String(), ismId.String(), igpRequired), igpId, ismId
 }
 
-func createMultisigIsm(s *i.KeeperTestSuite, creator string) string {
+func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	res, err := s.RunTx(&types.MsgCreateMultisigIsm{
 		Creator: creator,
 		MultiSig: &types.MultiSigIsm{
@@ -679,10 +713,13 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) string {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	return response.Id
+	ismId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	return ismId
 }
 
-func createNoopIsm(s *i.KeeperTestSuite, creator string) string {
+func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	res, err := s.RunTx(&types.MsgCreateNoopIsm{
 		Creator: creator,
 	})
@@ -692,7 +729,10 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) string {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	return response.Id
+	ismId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	return ismId
 }
 
 func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {

@@ -33,7 +33,7 @@ TEST CASES - logic_gas_payment.go
 
 */
 
-var _ = Describe("msg_igp.go", Ordered, func() {
+var _ = Describe("logic_gas_payment.go", Ordered, func() {
 	var s *i.KeeperTestSuite
 	var creator i.TestValidatorAddress
 	var gasPayer i.TestValidatorAddress

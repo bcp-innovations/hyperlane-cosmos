@@ -72,7 +72,6 @@ func NewKeeper(
 func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message coreTypes.HyperlaneMessage) error {
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
-	// TODO: Create a global ModuleRecipient mapping to manage which hook is responsible to execute Handle()
 	// Return nil when the module is not the recipient of the Handle call
 	token, err := k.HypTokens.Get(ctx, message.Recipient.Bytes())
 	if err != nil {
