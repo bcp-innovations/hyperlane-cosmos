@@ -71,19 +71,15 @@ func (qs queryServer) RecipientIsm(ctx context.Context, req *types.RecipientIsmR
 	return &types.RecipientIsmResponse{IsmId: util.HexAddress(get).String()}, nil
 }
 
-func (qs queryServer) Mailboxes(ctx context.Context, _ *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {
-	it, err := qs.k.Mailboxes.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	mailboxes, err := it.Values()
+func (qs queryServer) Mailboxes(ctx context.Context, req *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {
+	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Mailboxes, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QueryMailboxesResponse{
-		Mailboxes: mailboxes,
+		Mailboxes:  values,
+		Pagination: pagination,
 	}, nil
 }
 
@@ -174,24 +170,19 @@ func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLate
 	}, nil
 }
 
-func (qs queryServer) Validators(ctx context.Context, _ *types.QueryValidatorsRequest) (*types.QueryValidatorsResponse, error) {
-	it, err := qs.k.Validators.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	validators, err := it.Values()
+func (qs queryServer) Validators(ctx context.Context, req *types.QueryValidatorsRequest) (*types.QueryValidatorsResponse, error) {
+	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Validators, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QueryValidatorsResponse{
-		Validators: validators,
+		Validators: values,
+		Pagination: pagination,
 	}, nil
 }
 
 // IGP
-
 func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
 
 	if len(req.IgpId) == 0 {
@@ -229,19 +220,15 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 	return &types.QueryQuoteGasPaymentResponse{GasPayment: payment.String()}, nil
 }
 
-func (qs queryServer) Igps(ctx context.Context, _ *types.QueryIgpsRequest) (*types.QueryIgpsResponse, error) {
-	it, err := qs.k.Igp.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	igps, err := it.Values()
+func (qs queryServer) Igps(ctx context.Context, req *types.QueryIgpsRequest) (*types.QueryIgpsResponse, error) {
+	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Igp, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QueryIgpsResponse{
-		Igps: igps,
+		Igps:       values,
+		Pagination: pagination,
 	}, nil
 }
 
@@ -290,20 +277,15 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 }
 
 // ISM
-
-func (qs queryServer) Isms(ctx context.Context, _ *types.QueryIsmsRequest) (*types.QueryIsmsResponse, error) {
-	it, err := qs.k.Isms.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	isms, err := it.Values()
+func (qs queryServer) Isms(ctx context.Context, req *types.QueryIsmsRequest) (*types.QueryIsmsResponse, error) {
+	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Isms, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QueryIsmsResponse{
-		Isms: isms,
+		Isms:       values,
+		Pagination: pagination,
 	}, nil
 }
 

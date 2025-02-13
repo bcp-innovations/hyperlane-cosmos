@@ -67,7 +67,7 @@ func validateMultisigIsm(ism types.MultiSigIsm) error {
 	}
 
 	if len(ism.Validators) < int(ism.Threshold) {
-		return fmt.Errorf("validator address less than threshold")
+		return fmt.Errorf("validator addresses less than threshold")
 	}
 
 	for _, validatorAddress := range ism.Validators {
