@@ -13,49 +13,49 @@ pruning-keep-recent = "0"
 query-gas-limit = "0"
 
 [api]
-address = "tcp://0.0.0.0:1317"
-enable = true
-enabled-unsafe-cors = true
-max-open-connections = 1000
-rpc-max-body-bytes = 1000000
-rpc-read-timeout = 10
-rpc-write-timeout = 0
-swagger = true
+  address = "tcp://0.0.0.0:1317"
+  enable = true
+  enabled-unsafe-cors = true
+  max-open-connections = 1000
+  rpc-max-body-bytes = 1000000
+  rpc-read-timeout = 10
+  rpc-write-timeout = 0
+  swagger = false
 
 [grpc]
-address = "localhost:9090"
-enable = false
-max-recv-msg-size = "10485760"
-max-send-msg-size = "2147483647"
+  address = "localhost:9090"
+  enable = false
+  max-recv-msg-size = "10485760"
+  max-send-msg-size = "2147483647"
 
 [grpc-web]
-enable = false
+  enable = false
 
 [mempool]
-max-txs = -1
+  max-txs = -1
 
 [rpc]
-cors_allowed_origins = ["*"]
+  cors_allowed_origins = ["*"]
 
 [state-sync]
-snapshot-interval = 0
-snapshot-keep-recent = 2
+  snapshot-interval = 0
+  snapshot-keep-recent = 2
 
 [streaming]
 
-[streaming.abci]
-keys = []
-plugin = ""
-stop-node-on-err = true
+  [streaming.abci]
+    keys = []
+    plugin = ""
+    stop-node-on-err = true
 
 [telemetry]
-datadog-hostname = ""
-enable-hostname = false
-enable-hostname-label = false
-enable-service-label = false
-enabled = false
-global-labels = []
-metrics-sink = ""
-prometheus-retention-time = 0
-service-name = ""
-statsd-addr = ""
+  datadog-hostname = ""
+  enable-hostname = false
+  enable-hostname-label = false
+  enable-service-label = false
+  enabled = false
+  global-labels = []
+  metrics-sink = ""
+  prometheus-retention-time = 0
+  service-name = ""
+  statsd-addr = ""
