@@ -175,7 +175,7 @@ message QueryAnnouncedStorageLocationsRequest { string validator_address = 1; }
 
 // QueryAnnouncedStorageLocationsResponse ...
 message QueryAnnouncedStorageLocationsResponse {
-  repeated string storage_locations = 1;
+  repeated StorageLocation storage_locations = 1;
 }
 
 // QueryIgpsRequest ...

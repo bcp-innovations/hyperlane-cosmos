@@ -33,13 +33,25 @@ func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.
 		return nil, err
 	}
 
-	validator, err := qs.k.Validators.Get(ctx, validatorAddress.Bytes())
+	rng := collections.NewPrefixedPairRange[[]byte, uint64](validatorAddress.Bytes())
+
+	iter, err := qs.k.StorageLocations.Iterate(ctx, rng)
 	if err != nil {
 		return nil, err
 	}
 
+	storageLocations, err := iter.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	locations := make([]*types.StorageLocation, len(storageLocations))
+	for i := range storageLocations {
+		locations[i] = &storageLocations[i]
+	}
+
 	return &types.QueryAnnouncedStorageLocationsResponse{
-		StorageLocations: validator.StorageLocations,
+		StorageLocations: locations,
 	}, nil
 }
 

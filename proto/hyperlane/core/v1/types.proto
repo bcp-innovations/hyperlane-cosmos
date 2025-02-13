@@ -59,9 +59,17 @@ message Validator {
 
   // address ...
   string address = 1;
+}
 
-  // storage_locations ...
-  repeated string storage_locations = 2;
+// StorageLocation ...
+message StorageLocation {
+  option (gogoproto.goproto_getters) = false;
+
+  // address ...
+  string location = 1;
+
+  // id ...
+  uint64 id = 2;
 }
 
 // Params defines the parameters of the module.

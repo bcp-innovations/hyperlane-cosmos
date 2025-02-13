@@ -5,6 +5,8 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/collections"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -62,33 +64,51 @@ func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounc
 		return nil, fmt.Errorf("validator %s doesn't match signature. recovered address: %s", util.EncodeEthHex(validatorAddress), util.EncodeEthHex(recoveredAddress[:]))
 	}
 
-	var validator types.Validator
-
 	exists, err := ms.k.Validators.Has(ctx, validatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
+	var newStorageLocation types.StorageLocation
 	if exists {
-		validator, err = ms.k.Validators.Get(ctx, validatorAddress)
+		rng := collections.NewPrefixedPairRange[[]byte, uint64](validatorAddress)
+
+		iter, err := ms.k.StorageLocations.Iterate(ctx, rng)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, location := range validator.StorageLocations {
-			if location == req.StorageLocation {
+		storageLocations, err := iter.Values()
+		if err != nil {
+			return nil, err
+		}
+
+		for _, location := range storageLocations {
+			if location.Location == req.StorageLocation {
 				return nil, fmt.Errorf("validator %s already announced storage location %s", req.Validator, req.StorageLocation)
 			}
 		}
-		validator.StorageLocations = append(validator.StorageLocations, req.StorageLocation)
+
+		newStorageLocation = types.StorageLocation{
+			Location: req.StorageLocation,
+			Id:       uint64(len(storageLocations)),
+		}
 	} else {
-		validator = types.Validator{
-			Address:          util.EncodeEthHex(validatorAddress),
-			StorageLocations: []string{req.StorageLocation},
+		validator := types.Validator{
+			Address: util.EncodeEthHex(validatorAddress),
+		}
+
+		if err = ms.k.Validators.Set(ctx, validatorAddress, validator); err != nil {
+			return nil, err
+		}
+
+		newStorageLocation = types.StorageLocation{
+			Location: req.StorageLocation,
+			Id:       0,
 		}
 	}
 
-	if err = ms.k.Validators.Set(ctx, validatorAddress, validator); err != nil {
+	if err = ms.k.StorageLocations.Set(ctx, collections.Join(validatorAddress, newStorageLocation.Id), newStorageLocation); err != nil {
 		return nil, err
 	}
 
