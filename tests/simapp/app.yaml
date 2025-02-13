@@ -51,4 +51,7 @@ modules:
   - name: warp
     config:
       "@type": hyperlane.warp.module.Module
+      enabled_tokens:
+        - 1
+        - 2
 

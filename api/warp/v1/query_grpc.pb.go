@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName = "/hyperlane.warp.v1.Query/Params"
-	Query_Tokens_FullMethodName = "/hyperlane.warp.v1.Query/Tokens"
-	Query_Token_FullMethodName  = "/hyperlane.warp.v1.Query/Token"
+	Query_Params_FullMethodName        = "/hyperlane.warp.v1.Query/Params"
+	Query_Tokens_FullMethodName        = "/hyperlane.warp.v1.Query/Tokens"
+	Query_Token_FullMethodName         = "/hyperlane.warp.v1.Query/Token"
+	Query_RemoteRouters_FullMethodName = "/hyperlane.warp.v1.Query/RemoteRouters"
 )
 
 // QueryClient is the client API for Query service.
@@ -34,6 +35,8 @@ type QueryClient interface {
 	Tokens(ctx context.Context, in *QueryTokensRequest, opts ...grpc.CallOption) (*QueryTokensResponse, error)
 	// Token ...
 	Token(ctx context.Context, in *QueryTokenRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
+	// RemoteRouters ...
+	RemoteRouters(ctx context.Context, in *QueryRemoteRoutersRequest, opts ...grpc.CallOption) (*QueryRemoteRoutersResponse, error)
 }
 
 type queryClient struct {
@@ -71,6 +74,15 @@ func (c *queryClient) Token(ctx context.Context, in *QueryTokenRequest, opts ...
 	return out, nil
 }
 
+func (c *queryClient) RemoteRouters(ctx context.Context, in *QueryRemoteRoutersRequest, opts ...grpc.CallOption) (*QueryRemoteRoutersResponse, error) {
+	out := new(QueryRemoteRoutersResponse)
+	err := c.cc.Invoke(ctx, Query_RemoteRouters_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -81,6 +93,8 @@ type QueryServer interface {
 	Tokens(context.Context, *QueryTokensRequest) (*QueryTokensResponse, error)
 	// Token ...
 	Token(context.Context, *QueryTokenRequest) (*QueryTokenResponse, error)
+	// RemoteRouters ...
+	RemoteRouters(context.Context, *QueryRemoteRoutersRequest) (*QueryRemoteRoutersResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -96,6 +110,9 @@ func (UnimplementedQueryServer) Tokens(context.Context, *QueryTokensRequest) (*Q
 }
 func (UnimplementedQueryServer) Token(context.Context, *QueryTokenRequest) (*QueryTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Token not implemented")
+}
+func (UnimplementedQueryServer) RemoteRouters(context.Context, *QueryRemoteRoutersRequest) (*QueryRemoteRoutersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoteRouters not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -164,6 +181,24 @@ func _Query_Token_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_RemoteRouters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRemoteRoutersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RemoteRouters(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_RemoteRouters_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RemoteRouters(ctx, req.(*QueryRemoteRoutersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -182,6 +217,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Token",
 			Handler:    _Query_Token_Handler,
+		},
+		{
+			MethodName: "RemoteRouters",
+			Handler:    _Query_RemoteRouters_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

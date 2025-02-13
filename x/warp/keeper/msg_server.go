@@ -48,7 +48,6 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
-		RemoteRouters: []*types.RemoteRouter{},
 	}
 
 	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), newToken); err != nil {
@@ -96,7 +95,6 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		TokenType:     types.HYP_TOKEN_TYPE_COLLATERAL,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   msg.OriginDenom,
-		RemoteRouters: []*types.RemoteRouter{},
 	}
 
 	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), newToken); err != nil {

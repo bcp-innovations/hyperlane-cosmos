@@ -31,9 +31,7 @@ message HypToken {
   bytes origin_mailbox = 4;
   string origin_denom = 5;
 
-  repeated RemoteRouter remote_routers = 6;
-
-  string collateral_balance = 7 [
+  string collateral_balance = 6 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

@@ -25,6 +25,12 @@ service Query {
   rpc Token(QueryTokenRequest) returns (QueryTokenResponse) {
     option (google.api.http).get = "/hyperlane/v1/tokens/{id}";
   }
+
+  // RemoteRouters ...
+  rpc RemoteRouters(QueryRemoteRoutersRequest)
+      returns (QueryRemoteRoutersResponse) {
+    option (google.api.http).get = "/hyperlane/v1/tokens/{id}/remote_routers";
+  }
 }
 
 // QueryTokensRequest ...
@@ -51,6 +57,12 @@ message QueryTokenResponse {
 
   repeated RemoteRouter remote_routers = 6;
 }
+
+// QueryRemoteRoutersRequest ...
+message QueryRemoteRoutersRequest { string id = 1; }
+
+// QueryRemoteRoutersResponse ...
+message QueryRemoteRoutersResponse { repeated RemoteRouter remote_routers = 6; }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}

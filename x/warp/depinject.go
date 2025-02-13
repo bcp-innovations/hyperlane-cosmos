@@ -57,7 +57,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
 
-	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.BankKeeper, in.MailboxKeeper)
+	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String(), in.BankKeeper, in.MailboxKeeper, in.Config.EnabledTokens)
 	m := NewAppModule(in.Cdc, k)
 	return ModuleOutputs{Module: m, Keeper: k, Hooks: coreTypes.MailboxHooksWrapper{MailboxHooks: &k}}
 }
