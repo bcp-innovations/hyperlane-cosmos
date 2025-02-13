@@ -31,13 +31,18 @@ message HypToken {
   bytes origin_mailbox = 4;
   string origin_denom = 5;
 
-  uint32 receiver_domain = 6;
-  bytes receiver_contract = 7;
+  repeated RemoteRouter remote_routers = 6;
 
-  string collateral_balance = 8 [
+  string collateral_balance = 7 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+}
+
+// RemoteRouter ...
+message RemoteRouter {
+  uint32 receiver_domain = 1;
+  string receiver_contract = 2;
 }
 
 // HypTokenType ...

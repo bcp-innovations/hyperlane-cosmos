@@ -632,7 +632,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Body:        nil,
 		}
 
-		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), recipient, mailboxId, ismId.String())
+		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), recipient, &mailboxId, ismId.String())
 		Expect(err).To(BeNil())
 
 		// Act

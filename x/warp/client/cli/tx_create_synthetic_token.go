@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -15,26 +14,19 @@ import (
 
 func CmdCreateSyntheticToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-synthetic-token [origin-mailbox] [receiver-domain] [receiver-contract]",
+		Use:   "create-synthetic-token [origin-mailbox]",
 		Short: "Create a Hyperlane Synthetic Token",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			domain, err := strconv.ParseUint(args[1], 10, 32)
-			if err != nil {
-				return err
-			}
-
 			msg := types.MsgCreateSyntheticToken{
-				Creator:          clientCtx.GetFromAddress().String(),
-				OriginMailbox:    args[0],
-				ReceiverDomain:   uint32(domain),
-				ReceiverContract: args[2],
-				IsmId:            ismId,
+				Creator:       clientCtx.GetFromAddress().String(),
+				OriginMailbox: args[0],
+				IsmId:         ismId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Creator)

@@ -1,13 +1,17 @@
 package keeper
 
 import (
+	"fmt"
+
+	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee math.Int) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee math.Int) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -29,6 +33,16 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		return util.HexAddress{}, err
 	}
 
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(token.Id, destinationDomain))
+	if err != nil {
+		return util.HexAddress{}, fmt.Errorf("no enrolled router found for destination domain %d", destinationDomain)
+	}
+
+	receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
+	if err != nil {
+		return util.HexAddress{}, fmt.Errorf("failed to decode receiver contract address %s", remoteRouter.ReceiverContract)
+	}
+
 	warpPayload, err := types.NewWarpPayload(recipient, *amount.BigInt())
 	if err != nil {
 		return util.HexAddress{}, err
@@ -38,8 +52,8 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 	dispatchMsg, err := k.mailboxKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
-		token.ReceiverDomain,
-		util.HexAddress(token.ReceiverContract),
+		remoteRouter.ReceiverDomain,
+		receiverContract,
 		util.HexAddress(token.Id),
 		warpPayload.Bytes(),
 		cosmosSender,

@@ -7,6 +7,7 @@ import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
+import "hyperlane/warp/v1/types.proto";
 
 // Msg defines the module Msg service.
 service Msg {
@@ -20,6 +21,17 @@ service Msg {
   rpc CreateSyntheticToken(MsgCreateSyntheticToken)
       returns (MsgCreateSyntheticTokenResponse);
 
+  // EnrollRemoteRouter ...
+  rpc EnrollRemoteRouter(MsgEnrollRemoteRouter)
+      returns (MsgEnrollRemoteRouterResponse);
+
+  // UnrollRemoteRouter ...
+  rpc UnrollRemoteRouter(MsgUnrollRemoteRouter)
+      returns (MsgUnrollRemoteRouterResponse);
+
+  // SetIsm ...
+  rpc SetIsm(MsgSetIsm) returns (MsgSetIsmResponse);
+
   // RemoteTransfer ...
   rpc RemoteTransfer(MsgRemoteTransfer) returns (MsgRemoteTransferResponse);
 }
@@ -29,16 +41,13 @@ message MsgCreateCollateralToken {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "hyperlane/warp/MsgCreateCollateralToken";
 
-  // sender is the message sender.
+  // creator is the message sender.
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   string origin_mailbox = 2;
   string origin_denom = 3;
 
-  uint32 receiver_domain = 4;
-  string receiver_contract = 5;
-
-  string ism_id = 6;
+  string ism_id = 4;
 }
 
 // MsgCreateCollateralTokenResponse ...
@@ -49,19 +58,59 @@ message MsgCreateSyntheticToken {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "hyperlane/warp/MsgCreateSyntheticToken";
 
-  // sender is the message sender.
+  // creator is the message sender.
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   string origin_mailbox = 2;
 
-  uint32 receiver_domain = 3;
-  string receiver_contract = 4;
-
-  string ism_id = 5;
+  string ism_id = 3;
 }
 
 // MsgCreateSyntheticTokenResponse ...
 message MsgCreateSyntheticTokenResponse { string id = 1; }
+
+// MsgEnrollRemoteRouter ...
+message MsgEnrollRemoteRouter {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/MsgEnrollRemoteRouter";
+
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string token_id = 2;
+
+  RemoteRouter remote_router = 3;
+}
+
+// MsgEnrollRemoteRouterResponse ...
+message MsgEnrollRemoteRouterResponse {}
+
+// MsgUnrollRemoteRouter ...
+message MsgUnrollRemoteRouter {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/MsgUnrollRemoteRouter";
+
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string token_id = 2;
+  uint32 receiver_domain = 3;
+}
+
+// MsgUnrollRemoteRouterResponse ...
+message MsgUnrollRemoteRouterResponse {}
+
+// MsgSetIsm ...
+message MsgSetIsm {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/MsgSetIsm";
+
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string token_id = 2;
+  string ism_id = 3;
+}
+
+// MsgSetIsmResponse ...
+message MsgSetIsmResponse {}
 
 // MsgRemoteTransfer ...
 message MsgRemoteTransfer {
@@ -70,8 +119,9 @@ message MsgRemoteTransfer {
 
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string token_id = 2;
-  string recipient = 3;
-  string amount = 4 [
+  uint32 destination_domain = 3;
+  string recipient = 4;
+  string amount = 5 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false,
@@ -79,12 +129,12 @@ message MsgRemoteTransfer {
   ];
 
   // IGP
-  string igp_id = 5;
-  string gas_limit = 6 [
+  string igp_id = 6;
+  string gas_limit = 7 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string max_fee = 7 [
+  string max_fee = 8 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];

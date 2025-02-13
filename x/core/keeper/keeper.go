@@ -80,9 +80,9 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 	return k
 }
 
-func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddress, mailboxId util.HexAddress, ismId string) error {
+func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddress, mailboxId *util.HexAddress, ismId string) error {
 	prefixedIsmId, err := util.DecodeHexAddress(ismId)
-	if err != nil || ismId == "" {
+	if (err != nil || ismId == "") && mailboxId != nil {
 		// Use DefaultISM if no ISM is specified
 		mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
 		if err != nil {
@@ -97,12 +97,7 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 
 	exists, err := k.IsmIdExists(ctx, prefixedIsmId)
 	if err != nil || !exists {
-		return err
-	}
-
-	has, err := k.ReceiverIsmMapping.Has(ctx, receiver.Bytes())
-	if err != nil || has {
-		return err
+		return fmt.Errorf("ism with id %s does not exist", prefixedIsmId)
 	}
 
 	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), prefixedIsmId.Bytes())
