@@ -3,6 +3,7 @@ package hyperlane.core.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "hyperlane/core/v1/types.proto";
 import "google/api/annotations.proto";
 import "amino/amino.proto";
@@ -113,14 +114,16 @@ service Query {
 
 // QueryMailboxesRequest ...
 message QueryMailboxesRequest {
-  // TODO support pagination
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryMailboxesResponse ...
 message QueryMailboxesResponse {
-  // TODO support pagination
   repeated Mailbox mailboxes = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryMailboxRequest ...
@@ -167,14 +170,17 @@ message RecipientIsmResponse { string ism_id = 1; }
 
 // QueryValidatorsRequest ...
 message QueryValidatorsRequest {
-  // TODO support pagination
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryValidatorsResponse ...
 message QueryValidatorsResponse {
-  // TODO support pagination
   repeated Validator validators = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryAnnouncedStorageLocationsRequest ...
@@ -197,14 +203,16 @@ message QueryLatestAnnouncedStorageLocationResponse {
 
 // QueryIgpsRequest ...
 message QueryIgpsRequest {
-  // TODO support pagination
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryIgpsResponse ...
 message QueryIgpsResponse {
-  // TODO support pagination
   repeated Igp igps = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryIgpRequest ...
@@ -236,14 +244,16 @@ message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
 
 // QueryIsmsRequest ...
 message QueryIsmsRequest {
-  // TODO support pagination
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryIsmsResponse ...
 message QueryIsmsResponse {
-  // TODO support pagination
   repeated Ism isms = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryIsmRequest ...

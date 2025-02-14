@@ -156,8 +156,9 @@ message Ism {
 // MultiSigIsm ...
 message MultiSigIsm {
 
-  // validator_pub_keys ...
-  repeated string validator_pub_keys = 1;
+  // validators
+  // these are 20 byte long ethereum style addresses
+  repeated string validators = 1;
 
   // threshold ...
   uint32 threshold = 2;

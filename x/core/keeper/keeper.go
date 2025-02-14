@@ -10,6 +10,7 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/types/query"
 )
 
 type Keeper struct {
@@ -141,4 +142,65 @@ func (k Keeper) IgpIdExists(ctx context.Context, igpId util.HexAddress) (bool, e
 func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {
 	params, err := k.Params.Get(ctx)
 	return params.Domain, err
+}
+
+func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collections.Map[K, T], pagination *query.PageRequest) ([]T, *query.PageResponse, error) {
+	// Parse basic pagination
+	if pagination == nil {
+		pagination = &query.PageRequest{CountTotal: true}
+	}
+
+	offset := pagination.Offset
+	key := pagination.Key
+	limit := pagination.Limit
+	reverse := pagination.Reverse
+
+	if limit == 0 {
+		limit = query.DefaultLimit
+	}
+
+	pageResponse := query.PageResponse{}
+
+	// user has to use either offset or key, not both
+	if offset > 0 && key != nil {
+		return nil, nil, fmt.Errorf("invalid request, either offset or key is expected, got both")
+	}
+
+	ordering := collections.OrderDescending
+	if reverse {
+		ordering = collections.OrderAscending
+	}
+
+	// TODO: subject to change -> use it as key so we can jump to the offset directly
+	it, err := collection.IterateRaw(ctx, key, nil, ordering)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	defer it.Close()
+
+	data := make([]T, 0, limit)
+	keyValues, err := it.KeyValues()
+	if err != nil {
+		return nil, nil, err
+	}
+	length := uint64(len(keyValues))
+
+	i := uint64(offset)
+	for ; i < limit+offset && i < length; i++ {
+		data = append(data, keyValues[i].Value)
+	}
+
+	if i < length {
+		encodedKey := keyValues[i].Key
+		codec := collection.KeyCodec()
+		buffer := make([]byte, codec.Size(encodedKey))
+		_, err := codec.Encode(buffer, encodedKey)
+		if err != nil {
+			return nil, nil, err
+		}
+		pageResponse.NextKey = buffer
+	}
+
+	return data, &pageResponse, nil
 }

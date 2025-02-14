@@ -38,8 +38,8 @@ func CmdCreateMultiSigIsm() *cobra.Command {
 			}
 
 			multisigIsm := types.MultiSigIsm{
-				ValidatorPubKeys: validators,
-				Threshold:        uint32(threshold),
+				Validators: validators,
+				Threshold:  uint32(threshold),
 			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
