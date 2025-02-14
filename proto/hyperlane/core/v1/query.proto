@@ -64,6 +64,13 @@ service Query {
         "/hyperlane/v1/announced_storage_locations/{validator_address}";
   }
 
+  // LatestAnnouncedStorageLocation ...
+  rpc LatestAnnouncedStorageLocation(QueryLatestAnnouncedStorageLocationRequest)
+      returns (QueryLatestAnnouncedStorageLocationResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/announced_storage_locations/{validator_address}/latest";
+  }
+
   // Igps ...
   rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
     option (google.api.http).get = "/hyperlane/v1/igps";
@@ -176,6 +183,16 @@ message QueryAnnouncedStorageLocationsRequest { string validator_address = 1; }
 // QueryAnnouncedStorageLocationsResponse ...
 message QueryAnnouncedStorageLocationsResponse {
   repeated StorageLocation storage_locations = 1;
+}
+
+// QueryAnnouncedStorageLocationsRequest ...
+message QueryLatestAnnouncedStorageLocationRequest {
+  string validator_address = 1;
+}
+
+// QueryAnnouncedStorageLocationsResponse ...
+message QueryLatestAnnouncedStorageLocationResponse {
+  string storage_location = 1;
 }
 
 // QueryIgpsRequest ...

@@ -19,23 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                    = "/hyperlane.core.v1.Query/Params"
-	Query_Mailboxes_FullMethodName                 = "/hyperlane.core.v1.Query/Mailboxes"
-	Query_Mailbox_FullMethodName                   = "/hyperlane.core.v1.Query/Mailbox"
-	Query_Count_FullMethodName                     = "/hyperlane.core.v1.Query/Count"
-	Query_Root_FullMethodName                      = "/hyperlane.core.v1.Query/Root"
-	Query_LatestCheckpoint_FullMethodName          = "/hyperlane.core.v1.Query/LatestCheckpoint"
-	Query_Delivered_FullMethodName                 = "/hyperlane.core.v1.Query/Delivered"
-	Query_RecipientIsm_FullMethodName              = "/hyperlane.core.v1.Query/RecipientIsm"
-	Query_Validators_FullMethodName                = "/hyperlane.core.v1.Query/Validators"
-	Query_AnnouncedStorageLocations_FullMethodName = "/hyperlane.core.v1.Query/AnnouncedStorageLocations"
-	Query_Igps_FullMethodName                      = "/hyperlane.core.v1.Query/Igps"
-	Query_Igp_FullMethodName                       = "/hyperlane.core.v1.Query/Igp"
-	Query_DestinationGasConfigs_FullMethodName     = "/hyperlane.core.v1.Query/DestinationGasConfigs"
-	Query_QuoteGasPayment_FullMethodName           = "/hyperlane.core.v1.Query/QuoteGasPayment"
-	Query_Isms_FullMethodName                      = "/hyperlane.core.v1.Query/Isms"
-	Query_Ism_FullMethodName                       = "/hyperlane.core.v1.Query/Ism"
-	Query_VerifyDryRun_FullMethodName              = "/hyperlane.core.v1.Query/VerifyDryRun"
+	Query_Params_FullMethodName                         = "/hyperlane.core.v1.Query/Params"
+	Query_Mailboxes_FullMethodName                      = "/hyperlane.core.v1.Query/Mailboxes"
+	Query_Mailbox_FullMethodName                        = "/hyperlane.core.v1.Query/Mailbox"
+	Query_Count_FullMethodName                          = "/hyperlane.core.v1.Query/Count"
+	Query_Root_FullMethodName                           = "/hyperlane.core.v1.Query/Root"
+	Query_LatestCheckpoint_FullMethodName               = "/hyperlane.core.v1.Query/LatestCheckpoint"
+	Query_Delivered_FullMethodName                      = "/hyperlane.core.v1.Query/Delivered"
+	Query_RecipientIsm_FullMethodName                   = "/hyperlane.core.v1.Query/RecipientIsm"
+	Query_Validators_FullMethodName                     = "/hyperlane.core.v1.Query/Validators"
+	Query_AnnouncedStorageLocations_FullMethodName      = "/hyperlane.core.v1.Query/AnnouncedStorageLocations"
+	Query_LatestAnnouncedStorageLocation_FullMethodName = "/hyperlane.core.v1.Query/LatestAnnouncedStorageLocation"
+	Query_Igps_FullMethodName                           = "/hyperlane.core.v1.Query/Igps"
+	Query_Igp_FullMethodName                            = "/hyperlane.core.v1.Query/Igp"
+	Query_DestinationGasConfigs_FullMethodName          = "/hyperlane.core.v1.Query/DestinationGasConfigs"
+	Query_QuoteGasPayment_FullMethodName                = "/hyperlane.core.v1.Query/QuoteGasPayment"
+	Query_Isms_FullMethodName                           = "/hyperlane.core.v1.Query/Isms"
+	Query_Ism_FullMethodName                            = "/hyperlane.core.v1.Query/Ism"
+	Query_VerifyDryRun_FullMethodName                   = "/hyperlane.core.v1.Query/VerifyDryRun"
 )
 
 // QueryClient is the client API for Query service.
@@ -62,6 +63,8 @@ type QueryClient interface {
 	Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error)
 	// AnnouncedStorageLocations ...
 	AnnouncedStorageLocations(ctx context.Context, in *QueryAnnouncedStorageLocationsRequest, opts ...grpc.CallOption) (*QueryAnnouncedStorageLocationsResponse, error)
+	// LatestAnnouncedStorageLocation ...
+	LatestAnnouncedStorageLocation(ctx context.Context, in *QueryLatestAnnouncedStorageLocationRequest, opts ...grpc.CallOption) (*QueryLatestAnnouncedStorageLocationResponse, error)
 	// Igps ...
 	Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error)
 	// Igp ...
@@ -176,6 +179,15 @@ func (c *queryClient) AnnouncedStorageLocations(ctx context.Context, in *QueryAn
 	return out, nil
 }
 
+func (c *queryClient) LatestAnnouncedStorageLocation(ctx context.Context, in *QueryLatestAnnouncedStorageLocationRequest, opts ...grpc.CallOption) (*QueryLatestAnnouncedStorageLocationResponse, error) {
+	out := new(QueryLatestAnnouncedStorageLocationResponse)
+	err := c.cc.Invoke(ctx, Query_LatestAnnouncedStorageLocation_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error) {
 	out := new(QueryIgpsResponse)
 	err := c.cc.Invoke(ctx, Query_Igps_FullMethodName, in, out, opts...)
@@ -263,6 +275,8 @@ type QueryServer interface {
 	Validators(context.Context, *QueryValidatorsRequest) (*QueryValidatorsResponse, error)
 	// AnnouncedStorageLocations ...
 	AnnouncedStorageLocations(context.Context, *QueryAnnouncedStorageLocationsRequest) (*QueryAnnouncedStorageLocationsResponse, error)
+	// LatestAnnouncedStorageLocation ...
+	LatestAnnouncedStorageLocation(context.Context, *QueryLatestAnnouncedStorageLocationRequest) (*QueryLatestAnnouncedStorageLocationResponse, error)
 	// Igps ...
 	Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error)
 	// Igp ...
@@ -313,6 +327,9 @@ func (UnimplementedQueryServer) Validators(context.Context, *QueryValidatorsRequ
 }
 func (UnimplementedQueryServer) AnnouncedStorageLocations(context.Context, *QueryAnnouncedStorageLocationsRequest) (*QueryAnnouncedStorageLocationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnnouncedStorageLocations not implemented")
+}
+func (UnimplementedQueryServer) LatestAnnouncedStorageLocation(context.Context, *QueryLatestAnnouncedStorageLocationRequest) (*QueryLatestAnnouncedStorageLocationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LatestAnnouncedStorageLocation not implemented")
 }
 func (UnimplementedQueryServer) Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Igps not implemented")
@@ -528,6 +545,24 @@ func _Query_AnnouncedStorageLocations_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_LatestAnnouncedStorageLocation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLatestAnnouncedStorageLocationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).LatestAnnouncedStorageLocation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_LatestAnnouncedStorageLocation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).LatestAnnouncedStorageLocation(ctx, req.(*QueryLatestAnnouncedStorageLocationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_Igps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryIgpsRequest)
 	if err := dec(in); err != nil {
@@ -700,6 +735,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AnnouncedStorageLocations",
 			Handler:    _Query_AnnouncedStorageLocations_Handler,
+		},
+		{
+			MethodName: "LatestAnnouncedStorageLocation",
+			Handler:    _Query_LatestAnnouncedStorageLocation_Handler,
 		},
 		{
 			MethodName: "Igps",

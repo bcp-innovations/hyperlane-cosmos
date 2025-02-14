@@ -4,6 +4,8 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
+
 	"cosmossdk.io/collections"
 
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
@@ -437,7 +439,10 @@ func validateAnnouncement(s *i.KeeperTestSuite, validatorAddress string, storage
 
 		announcedStorageLocations, err := iter.Values()
 		Expect(err).To(BeNil())
-
 		Expect(storageLocations).To(Equal(announcedStorageLocations))
+
+		latestAnnouncedStorageLocation, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).LatestAnnouncedStorageLocation(s.Ctx(), &types.QueryLatestAnnouncedStorageLocationRequest{ValidatorAddress: validatorAddress})
+		Expect(err).To(BeNil())
+		Expect(latestAnnouncedStorageLocation.StorageLocation).To(Equal(storageLocations[len(storageLocations)-1].Location))
 	}
 }
