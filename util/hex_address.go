@@ -42,6 +42,7 @@ func DecodeEthHex(s string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return b, nil
 }
 

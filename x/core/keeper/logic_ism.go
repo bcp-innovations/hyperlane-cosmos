@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -49,18 +48,18 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 			return false, fmt.Errorf("invalid ism. no threshold present")
 		}
 
-		// Get MultiSig ISM validator public keys
-		validatorPubKeys := make(map[string]bool, len(multiSigIsm.ValidatorPubKeys))
-		for _, pubKeyStr := range multiSigIsm.ValidatorPubKeys {
-			validatorPubKeys[strings.ToLower(pubKeyStr)] = true
-		}
-
 		signatures, validSignatures := metadata.SignatureCount(), uint32(0)
 		threshold := multiSigIsm.Threshold
 
 		// Early return if we can't possibly meet the threshold
 		if signatures < multiSigIsm.Threshold {
 			return false, nil
+		}
+
+		// Get MultiSig ISM validator public keys
+		validatorAddresses := make(map[string]bool, len(multiSigIsm.Validators))
+		for _, address := range multiSigIsm.Validators {
+			validatorAddresses[strings.ToLower(address)] = true
 		}
 
 		for i := uint32(0); i < signatures && validSignatures < threshold; i++ {
@@ -74,9 +73,9 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 				continue // Skip invalid signatures
 			}
 
-			address := crypto.PubkeyToAddress(*recoveredPubkey)
-			pubKeyHex := hex.EncodeToString(address[:])
-			if validatorPubKeys["0x"+pubKeyHex] { // TODO: custom protbuf type that ensures hex address
+			addressBytes := crypto.PubkeyToAddress(*recoveredPubkey)
+			address := util.EncodeEthHex(addressBytes[:])
+			if validatorAddresses[address] {
 				validSignatures++
 			}
 		}

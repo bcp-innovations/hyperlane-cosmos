@@ -699,10 +699,10 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	res, err := s.RunTx(&types.MsgCreateMultisigIsm{
 		Creator: creator,
 		MultiSig: &types.MultiSigIsm{
-			ValidatorPubKeys: []string{
-				"0x049a7df67f79246283fdc93af76d4f8cdd62c4886e8cd870944e817dd0b97934fdd7719d0810951e03418205868a5c1b40b192451367f28e0088dd75e15de40c05",
-				"0x0417f57017d748288ccf6341993e47618ce3d4d60614ae09f5149acec191fad3fbca5a8ce4144077948c843ea8e863e3997b6da7a1a6d6c9708f658371430ce06b",
-				"0x04ce7edc292d7b747fab2f23584bbafaffde5c8ff17cf689969614441e0527b90015ea9fee96aed6d9c0fc2fbe0bd1883dee223b3200246ff1e21976bdbc9a0fc8",
+			Validators: []string{
+				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
 			},
 			Threshold: 2,
 		},
