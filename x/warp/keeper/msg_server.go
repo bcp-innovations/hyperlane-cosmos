@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 
 	"cosmossdk.io/collections"
 
@@ -17,6 +18,10 @@ type msgServer struct {
 }
 
 func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCreateSyntheticToken) (*types.MsgCreateSyntheticTokenResponse, error) {
+	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
+		return nil, fmt.Errorf("module disabled synthetic tokens")
+	}
+
 	next, err := ms.k.HypTokensCount.Next(ctx)
 	if err != nil {
 		return nil, err
@@ -37,14 +42,14 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
 
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, &mailboxId, msg.IsmId)
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
 	if err != nil {
 		return nil, err
 	}
 
 	newToken := types.HypToken{
 		Id:            tokenId.Bytes(),
-		Creator:       msg.Creator,
+		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
@@ -59,6 +64,10 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 // CreateCollateralToken ...
 // TODO: setGasRouter tx
 func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (*types.MsgCreateCollateralTokenResponse, error) {
+	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
+		return nil, fmt.Errorf("module disabled collateral tokens")
+	}
+
 	next, err := ms.k.HypTokensCount.Next(ctx)
 	if err != nil {
 		return nil, err
@@ -84,14 +93,14 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
 
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, &mailboxId, msg.IsmId)
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
 	if err != nil {
 		return nil, err
 	}
 
 	newToken := types.HypToken{
 		Id:            tokenId.Bytes(),
-		Creator:       msg.Creator,
+		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_COLLATERAL,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   msg.OriginDenom,
@@ -114,7 +123,7 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
 	}
 
-	if token.Creator != msg.Owner {
+	if token.Owner != msg.Owner {
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
@@ -144,7 +153,7 @@ func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnroll
 		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
 	}
 
-	if token.Creator != msg.Owner {
+	if token.Owner != msg.Owner {
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
@@ -195,7 +204,11 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 	}, nil
 }
 
-func (ms msgServer) SetIsm(ctx context.Context, msg *types.MsgSetIsm) (*types.MsgSetIsmResponse, error) {
+func (ms msgServer) SetInterchainSecurityModule(ctx context.Context, msg *types.MsgSetInterchainSecurityModule) (*types.MsgSetInterchainSecurityModuleResponse, error) {
+	if msg.IsmId == "" {
+		return nil, fmt.Errorf("ism id cannot be empty")
+	}
+
 	tokenId, err := util.DecodeHexAddress(msg.TokenId)
 	if err != nil {
 		return nil, err
@@ -206,16 +219,16 @@ func (ms msgServer) SetIsm(ctx context.Context, msg *types.MsgSetIsm) (*types.Ms
 		return nil, err
 	}
 
-	if token.Creator != msg.Owner {
+	if token.Owner != msg.Owner {
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, nil, msg.IsmId)
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, util.HexAddress(token.OriginMailbox), msg.IsmId)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.MsgSetIsmResponse{}, nil
+	return &types.MsgSetInterchainSecurityModuleResponse{}, nil
 }
 
 var _ types.MsgServer = msgServer{}

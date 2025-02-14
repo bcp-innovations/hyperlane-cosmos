@@ -24,15 +24,15 @@ func CmdCreateCollateralToken() *cobra.Command {
 			}
 
 			msg := types.MsgCreateCollateralToken{
-				Creator:       clientCtx.GetFromAddress().String(),
+				Owner:         clientCtx.GetFromAddress().String(),
 				OriginMailbox: args[0],
 				OriginDenom:   args[1],
 				IsmId:         ismId,
 			}
 
-			_, err = sdk.AccAddressFromBech32(msg.Creator)
+			_, err = sdk.AccAddressFromBech32(msg.Owner)
 			if err != nil {
-				panic(fmt.Errorf("invalid creator address (%s)", msg.Creator))
+				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

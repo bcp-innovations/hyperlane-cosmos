@@ -29,14 +29,14 @@ var denom = "acoin"
 
 var _ = Describe("msg_server.go", Ordered, func() {
 	var s *i.KeeperTestSuite
-	var creator i.TestValidatorAddress
+	var owner i.TestValidatorAddress
 	var sender i.TestValidatorAddress
 
 	BeforeEach(func() {
 		s = i.NewCleanChain()
-		creator = i.GenerateTestValidatorAddress("Creator")
+		owner = i.GenerateTestValidatorAddress("Owner")
 		sender = i.GenerateTestValidatorAddress("Sender")
-		err := s.MintBaseCoins(creator.Address, 1_000_000)
+		err := s.MintBaseCoins(owner.Address, 1_000_000)
 		Expect(err).To(BeNil())
 	})
 
@@ -52,10 +52,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		amount := math.NewInt(100)
 		maxFee := math.NewInt(250000)
 
-		mailboxId, igpId, ismId := createValidMailbox(s, creator.Address, "noop", false, 1)
+		mailboxId, igpId, ismId := createValidMailbox(s, owner.Address, "noop", false, 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
-			Creator:       creator.Address,
+			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
 			OriginDenom:   denom,
 			IsmId:         ismId.String(),
@@ -72,19 +72,19 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
-			Owner:        creator.Address,
+			Owner:        owner.Address,
 			TokenId:      tokenId.String(),
 			RemoteRouter: &remoteRouter,
 		})
 		Expect(err).To(BeNil())
 
-		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), tokenId, &mailboxId, ismId.String())
+		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), tokenId, mailboxId, ismId.String())
 		Expect(err).To(BeNil())
 
 		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
 		Expect(err).To(BeNil())
 		Expect(tokens.Tokens).To(HaveLen(1))
-		Expect(tokens.Tokens[0].Creator).To(Equal(creator.Address))
+		Expect(tokens.Tokens[0].Owner).To(Equal(owner.Address))
 		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
 		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
 
@@ -115,10 +115,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		amount := math.NewInt(100)
 		maxFee := math.NewInt(250000)
 
-		mailboxId, igpId, ismId := createValidMailbox(s, creator.Address, "noop", false, 1)
+		mailboxId, igpId, ismId := createValidMailbox(s, owner.Address, "noop", false, 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
-			Creator:       creator.Address,
+			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
 			OriginDenom:   denom,
 			IsmId:         ismId.String(),
@@ -135,19 +135,19 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
-			Owner:        creator.Address,
+			Owner:        owner.Address,
 			TokenId:      tokenId.String(),
 			RemoteRouter: &remoteRouter,
 		})
 		Expect(err).To(BeNil())
 
-		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), tokenId, &mailboxId, ismId.String())
+		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), tokenId, mailboxId, ismId.String())
 		Expect(err).To(BeNil())
 
 		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
 		Expect(err).To(BeNil())
 		Expect(tokens.Tokens).To(HaveLen(1))
-		Expect(tokens.Tokens[0].Creator).To(Equal(creator.Address))
+		Expect(tokens.Tokens[0].Owner).To(Equal(owner.Address))
 		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
 		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
 

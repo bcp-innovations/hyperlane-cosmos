@@ -32,6 +32,7 @@ func (qs queryServer) RemoteRouters(ctx context.Context, request *types.QueryRem
 
 	rng := collections.NewPrefixedPairRange[[]byte, uint32](tokenId.Bytes())
 
+	// TODO: Add pagination
 	iter, err := qs.k.EnrolledRouters.Iterate(ctx, rng)
 	if err != nil {
 		return &types.QueryRemoteRoutersResponse{}, err
@@ -128,7 +129,7 @@ func (qs queryServer) parseTokenResponse(ctx context.Context, get types.HypToken
 
 	return types.QueryTokenResponse{
 		Id:        util.HexAddress(get.Id).String(),
-		Creator:   get.Creator,
+		Owner:     get.Owner,
 		TokenType: get.TokenType,
 
 		OriginMailbox: util.HexAddress(get.OriginMailbox).String(),

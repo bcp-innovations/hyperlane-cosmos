@@ -29,8 +29,9 @@ service Msg {
   rpc UnrollRemoteRouter(MsgUnrollRemoteRouter)
       returns (MsgUnrollRemoteRouterResponse);
 
-  // SetIsm ...
-  rpc SetIsm(MsgSetIsm) returns (MsgSetIsmResponse);
+  // SetInterchainSecurityModule ...
+  rpc SetInterchainSecurityModule(MsgSetInterchainSecurityModule)
+      returns (MsgSetInterchainSecurityModuleResponse);
 
   // RemoteTransfer ...
   rpc RemoteTransfer(MsgRemoteTransfer) returns (MsgRemoteTransferResponse);
@@ -38,11 +39,11 @@ service Msg {
 
 // MsgCreateCollateralToken ...
 message MsgCreateCollateralToken {
-  option (cosmos.msg.v1.signer) = "creator";
+  option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/warp/MsgCreateCollateralToken";
 
-  // creator is the message sender.
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   string origin_mailbox = 2;
   string origin_denom = 3;
@@ -55,11 +56,11 @@ message MsgCreateCollateralTokenResponse { string id = 1; }
 
 // MsgCreateSyntheticToken ...
 message MsgCreateSyntheticToken {
-  option (cosmos.msg.v1.signer) = "creator";
+  option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/warp/MsgCreateSyntheticToken";
 
-  // creator is the message sender.
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   string origin_mailbox = 2;
 
@@ -98,10 +99,10 @@ message MsgUnrollRemoteRouter {
 // MsgUnrollRemoteRouterResponse ...
 message MsgUnrollRemoteRouterResponse {}
 
-// MsgSetIsm ...
-message MsgSetIsm {
+// MsgSetInterchainSecurityModule ...
+message MsgSetInterchainSecurityModule {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgSetIsm";
+  option (amino.name) = "hyperlane/warp/MsgSetInterchainSecurityModule";
 
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -109,8 +110,8 @@ message MsgSetIsm {
   string ism_id = 3;
 }
 
-// MsgSetIsmResponse ...
-message MsgSetIsmResponse {}
+// MsgSetInterchainSecurityModuleResponse ...
+message MsgSetInterchainSecurityModuleResponse {}
 
 // MsgRemoteTransfer ...
 message MsgRemoteTransfer {

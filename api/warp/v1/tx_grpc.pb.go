@@ -19,12 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_CreateCollateralToken_FullMethodName = "/hyperlane.warp.v1.Msg/CreateCollateralToken"
-	Msg_CreateSyntheticToken_FullMethodName  = "/hyperlane.warp.v1.Msg/CreateSyntheticToken"
-	Msg_EnrollRemoteRouter_FullMethodName    = "/hyperlane.warp.v1.Msg/EnrollRemoteRouter"
-	Msg_UnrollRemoteRouter_FullMethodName    = "/hyperlane.warp.v1.Msg/UnrollRemoteRouter"
-	Msg_SetIsm_FullMethodName                = "/hyperlane.warp.v1.Msg/SetIsm"
-	Msg_RemoteTransfer_FullMethodName        = "/hyperlane.warp.v1.Msg/RemoteTransfer"
+	Msg_CreateCollateralToken_FullMethodName       = "/hyperlane.warp.v1.Msg/CreateCollateralToken"
+	Msg_CreateSyntheticToken_FullMethodName        = "/hyperlane.warp.v1.Msg/CreateSyntheticToken"
+	Msg_EnrollRemoteRouter_FullMethodName          = "/hyperlane.warp.v1.Msg/EnrollRemoteRouter"
+	Msg_UnrollRemoteRouter_FullMethodName          = "/hyperlane.warp.v1.Msg/UnrollRemoteRouter"
+	Msg_SetInterchainSecurityModule_FullMethodName = "/hyperlane.warp.v1.Msg/SetInterchainSecurityModule"
+	Msg_RemoteTransfer_FullMethodName              = "/hyperlane.warp.v1.Msg/RemoteTransfer"
 )
 
 // MsgClient is the client API for Msg service.
@@ -39,8 +39,8 @@ type MsgClient interface {
 	EnrollRemoteRouter(ctx context.Context, in *MsgEnrollRemoteRouter, opts ...grpc.CallOption) (*MsgEnrollRemoteRouterResponse, error)
 	// UnrollRemoteRouter ...
 	UnrollRemoteRouter(ctx context.Context, in *MsgUnrollRemoteRouter, opts ...grpc.CallOption) (*MsgUnrollRemoteRouterResponse, error)
-	// SetIsm ...
-	SetIsm(ctx context.Context, in *MsgSetIsm, opts ...grpc.CallOption) (*MsgSetIsmResponse, error)
+	// SetInterchainSecurityModule ...
+	SetInterchainSecurityModule(ctx context.Context, in *MsgSetInterchainSecurityModule, opts ...grpc.CallOption) (*MsgSetInterchainSecurityModuleResponse, error)
 	// RemoteTransfer ...
 	RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error)
 }
@@ -89,9 +89,9 @@ func (c *msgClient) UnrollRemoteRouter(ctx context.Context, in *MsgUnrollRemoteR
 	return out, nil
 }
 
-func (c *msgClient) SetIsm(ctx context.Context, in *MsgSetIsm, opts ...grpc.CallOption) (*MsgSetIsmResponse, error) {
-	out := new(MsgSetIsmResponse)
-	err := c.cc.Invoke(ctx, Msg_SetIsm_FullMethodName, in, out, opts...)
+func (c *msgClient) SetInterchainSecurityModule(ctx context.Context, in *MsgSetInterchainSecurityModule, opts ...grpc.CallOption) (*MsgSetInterchainSecurityModuleResponse, error) {
+	out := new(MsgSetInterchainSecurityModuleResponse)
+	err := c.cc.Invoke(ctx, Msg_SetInterchainSecurityModule_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -119,8 +119,8 @@ type MsgServer interface {
 	EnrollRemoteRouter(context.Context, *MsgEnrollRemoteRouter) (*MsgEnrollRemoteRouterResponse, error)
 	// UnrollRemoteRouter ...
 	UnrollRemoteRouter(context.Context, *MsgUnrollRemoteRouter) (*MsgUnrollRemoteRouterResponse, error)
-	// SetIsm ...
-	SetIsm(context.Context, *MsgSetIsm) (*MsgSetIsmResponse, error)
+	// SetInterchainSecurityModule ...
+	SetInterchainSecurityModule(context.Context, *MsgSetInterchainSecurityModule) (*MsgSetInterchainSecurityModuleResponse, error)
 	// RemoteTransfer ...
 	RemoteTransfer(context.Context, *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -142,8 +142,8 @@ func (UnimplementedMsgServer) EnrollRemoteRouter(context.Context, *MsgEnrollRemo
 func (UnimplementedMsgServer) UnrollRemoteRouter(context.Context, *MsgUnrollRemoteRouter) (*MsgUnrollRemoteRouterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnrollRemoteRouter not implemented")
 }
-func (UnimplementedMsgServer) SetIsm(context.Context, *MsgSetIsm) (*MsgSetIsmResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetIsm not implemented")
+func (UnimplementedMsgServer) SetInterchainSecurityModule(context.Context, *MsgSetInterchainSecurityModule) (*MsgSetInterchainSecurityModuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetInterchainSecurityModule not implemented")
 }
 func (UnimplementedMsgServer) RemoteTransfer(context.Context, *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoteTransfer not implemented")
@@ -233,20 +233,20 @@ func _Msg_UnrollRemoteRouter_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_SetIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSetIsm)
+func _Msg_SetInterchainSecurityModule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetInterchainSecurityModule)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).SetIsm(ctx, in)
+		return srv.(MsgServer).SetInterchainSecurityModule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_SetIsm_FullMethodName,
+		FullMethod: Msg_SetInterchainSecurityModule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetIsm(ctx, req.(*MsgSetIsm))
+		return srv.(MsgServer).SetInterchainSecurityModule(ctx, req.(*MsgSetInterchainSecurityModule))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -293,8 +293,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UnrollRemoteRouter_Handler,
 		},
 		{
-			MethodName: "SetIsm",
-			Handler:    _Msg_SetIsm_Handler,
+			MethodName: "SetInterchainSecurityModule",
+			Handler:    _Msg_SetInterchainSecurityModule_Handler,
 		},
 		{
 			MethodName: "RemoteTransfer",

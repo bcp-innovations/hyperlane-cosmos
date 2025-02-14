@@ -147,7 +147,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
 		Expect(err).To(BeNil())
 
-		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), recipientHex, &mailboxId, "")
+		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), recipientHex, mailboxId, "")
 		Expect(err).To(BeNil())
 
 		hypMsg := types.HyperlaneMessage{
