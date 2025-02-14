@@ -1819,63 +1819,15 @@ func (x *fastReflection_InterchainGasPaymaster) ProtoMethods() *protoiface.Metho
 	}
 }
 
-var _ protoreflect.List = (*_Validator_2_list)(nil)
-
-type _Validator_2_list struct {
-	list *[]string
-}
-
-func (x *_Validator_2_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_Validator_2_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfString((*x.list)[i])
-}
-
-func (x *_Validator_2_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.String()
-	concreteValue := valueUnwrapped
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_Validator_2_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.String()
-	concreteValue := valueUnwrapped
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_Validator_2_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Validator at list field StorageLocations as it is not of Message kind"))
-}
-
-func (x *_Validator_2_list) Truncate(n int) {
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_Validator_2_list) NewElement() protoreflect.Value {
-	v := ""
-	return protoreflect.ValueOfString(v)
-}
-
-func (x *_Validator_2_list) IsValid() bool {
-	return x.list != nil
-}
-
 var (
-	md_Validator                   protoreflect.MessageDescriptor
-	fd_Validator_address           protoreflect.FieldDescriptor
-	fd_Validator_storage_locations protoreflect.FieldDescriptor
+	md_Validator         protoreflect.MessageDescriptor
+	fd_Validator_address protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_hyperlane_core_v1_types_proto_init()
 	md_Validator = File_hyperlane_core_v1_types_proto.Messages().ByName("Validator")
 	fd_Validator_address = md_Validator.Fields().ByName("address")
-	fd_Validator_storage_locations = md_Validator.Fields().ByName("storage_locations")
 }
 
 var _ protoreflect.Message = (*fastReflection_Validator)(nil)
@@ -1949,12 +1901,6 @@ func (x *fastReflection_Validator) Range(f func(protoreflect.FieldDescriptor, pr
 			return
 		}
 	}
-	if len(x.StorageLocations) != 0 {
-		value := protoreflect.ValueOfList(&_Validator_2_list{list: &x.StorageLocations})
-		if !f(fd_Validator_storage_locations, value) {
-			return
-		}
-	}
 }
 
 // Has reports whether a field is populated.
@@ -1972,8 +1918,6 @@ func (x *fastReflection_Validator) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "hyperlane.core.v1.Validator.address":
 		return x.Address != ""
-	case "hyperlane.core.v1.Validator.storage_locations":
-		return len(x.StorageLocations) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.Validator"))
@@ -1992,8 +1936,6 @@ func (x *fastReflection_Validator) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "hyperlane.core.v1.Validator.address":
 		x.Address = ""
-	case "hyperlane.core.v1.Validator.storage_locations":
-		x.StorageLocations = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.Validator"))
@@ -2013,12 +1955,6 @@ func (x *fastReflection_Validator) Get(descriptor protoreflect.FieldDescriptor) 
 	case "hyperlane.core.v1.Validator.address":
 		value := x.Address
 		return protoreflect.ValueOfString(value)
-	case "hyperlane.core.v1.Validator.storage_locations":
-		if len(x.StorageLocations) == 0 {
-			return protoreflect.ValueOfList(&_Validator_2_list{})
-		}
-		listValue := &_Validator_2_list{list: &x.StorageLocations}
-		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.Validator"))
@@ -2041,10 +1977,6 @@ func (x *fastReflection_Validator) Set(fd protoreflect.FieldDescriptor, value pr
 	switch fd.FullName() {
 	case "hyperlane.core.v1.Validator.address":
 		x.Address = value.Interface().(string)
-	case "hyperlane.core.v1.Validator.storage_locations":
-		lv := value.List()
-		clv := lv.(*_Validator_2_list)
-		x.StorageLocations = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.Validator"))
@@ -2065,12 +1997,6 @@ func (x *fastReflection_Validator) Set(fd protoreflect.FieldDescriptor, value pr
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Validator) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "hyperlane.core.v1.Validator.storage_locations":
-		if x.StorageLocations == nil {
-			x.StorageLocations = []string{}
-		}
-		value := &_Validator_2_list{list: &x.StorageLocations}
-		return protoreflect.ValueOfList(value)
 	case "hyperlane.core.v1.Validator.address":
 		panic(fmt.Errorf("field address of message hyperlane.core.v1.Validator is not mutable"))
 	default:
@@ -2088,9 +2014,6 @@ func (x *fastReflection_Validator) NewField(fd protoreflect.FieldDescriptor) pro
 	switch fd.FullName() {
 	case "hyperlane.core.v1.Validator.address":
 		return protoreflect.ValueOfString("")
-	case "hyperlane.core.v1.Validator.storage_locations":
-		list := []string{}
-		return protoreflect.ValueOfList(&_Validator_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.Validator"))
@@ -2164,12 +2087,6 @@ func (x *fastReflection_Validator) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if len(x.StorageLocations) > 0 {
-			for _, s := range x.StorageLocations {
-				l = len(s)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
-		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -2198,15 +2115,6 @@ func (x *fastReflection_Validator) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.StorageLocations) > 0 {
-			for iNdEx := len(x.StorageLocations) - 1; iNdEx >= 0; iNdEx-- {
-				i -= len(x.StorageLocations[iNdEx])
-				copy(dAtA[i:], x.StorageLocations[iNdEx])
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.StorageLocations[iNdEx])))
-				i--
-				dAtA[i] = 0x12
-			}
 		}
 		if len(x.Address) > 0 {
 			i -= len(x.Address)
@@ -2296,9 +2204,426 @@ func (x *fastReflection_Validator) ProtoMethods() *protoiface.Methods {
 				}
 				x.Address = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 2:
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_StorageLocation          protoreflect.MessageDescriptor
+	fd_StorageLocation_location protoreflect.FieldDescriptor
+	fd_StorageLocation_id       protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_hyperlane_core_v1_types_proto_init()
+	md_StorageLocation = File_hyperlane_core_v1_types_proto.Messages().ByName("StorageLocation")
+	fd_StorageLocation_location = md_StorageLocation.Fields().ByName("location")
+	fd_StorageLocation_id = md_StorageLocation.Fields().ByName("id")
+}
+
+var _ protoreflect.Message = (*fastReflection_StorageLocation)(nil)
+
+type fastReflection_StorageLocation StorageLocation
+
+func (x *StorageLocation) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_StorageLocation)(x)
+}
+
+func (x *StorageLocation) slowProtoReflect() protoreflect.Message {
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_StorageLocation_messageType fastReflection_StorageLocation_messageType
+var _ protoreflect.MessageType = fastReflection_StorageLocation_messageType{}
+
+type fastReflection_StorageLocation_messageType struct{}
+
+func (x fastReflection_StorageLocation_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_StorageLocation)(nil)
+}
+func (x fastReflection_StorageLocation_messageType) New() protoreflect.Message {
+	return new(fastReflection_StorageLocation)
+}
+func (x fastReflection_StorageLocation_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_StorageLocation
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_StorageLocation) Descriptor() protoreflect.MessageDescriptor {
+	return md_StorageLocation
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_StorageLocation) Type() protoreflect.MessageType {
+	return _fastReflection_StorageLocation_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_StorageLocation) New() protoreflect.Message {
+	return new(fastReflection_StorageLocation)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_StorageLocation) Interface() protoreflect.ProtoMessage {
+	return (*StorageLocation)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_StorageLocation) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Location != "" {
+		value := protoreflect.ValueOfString(x.Location)
+		if !f(fd_StorageLocation_location, value) {
+			return
+		}
+	}
+	if x.Id != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Id)
+		if !f(fd_StorageLocation_id, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_StorageLocation) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "hyperlane.core.v1.StorageLocation.location":
+		return x.Location != ""
+	case "hyperlane.core.v1.StorageLocation.id":
+		return x.Id != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.StorageLocation"))
+		}
+		panic(fmt.Errorf("message hyperlane.core.v1.StorageLocation does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_StorageLocation) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "hyperlane.core.v1.StorageLocation.location":
+		x.Location = ""
+	case "hyperlane.core.v1.StorageLocation.id":
+		x.Id = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.StorageLocation"))
+		}
+		panic(fmt.Errorf("message hyperlane.core.v1.StorageLocation does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_StorageLocation) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "hyperlane.core.v1.StorageLocation.location":
+		value := x.Location
+		return protoreflect.ValueOfString(value)
+	case "hyperlane.core.v1.StorageLocation.id":
+		value := x.Id
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.StorageLocation"))
+		}
+		panic(fmt.Errorf("message hyperlane.core.v1.StorageLocation does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_StorageLocation) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "hyperlane.core.v1.StorageLocation.location":
+		x.Location = value.Interface().(string)
+	case "hyperlane.core.v1.StorageLocation.id":
+		x.Id = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.StorageLocation"))
+		}
+		panic(fmt.Errorf("message hyperlane.core.v1.StorageLocation does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_StorageLocation) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.core.v1.StorageLocation.location":
+		panic(fmt.Errorf("field location of message hyperlane.core.v1.StorageLocation is not mutable"))
+	case "hyperlane.core.v1.StorageLocation.id":
+		panic(fmt.Errorf("field id of message hyperlane.core.v1.StorageLocation is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.StorageLocation"))
+		}
+		panic(fmt.Errorf("message hyperlane.core.v1.StorageLocation does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_StorageLocation) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "hyperlane.core.v1.StorageLocation.location":
+		return protoreflect.ValueOfString("")
+	case "hyperlane.core.v1.StorageLocation.id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: hyperlane.core.v1.StorageLocation"))
+		}
+		panic(fmt.Errorf("message hyperlane.core.v1.StorageLocation does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_StorageLocation) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in hyperlane.core.v1.StorageLocation", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_StorageLocation) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_StorageLocation) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_StorageLocation) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_StorageLocation) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*StorageLocation)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Location)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Id != 0 {
+			n += 1 + runtime.Sov(uint64(x.Id))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*StorageLocation)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Id != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Id))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.Location) > 0 {
+			i -= len(x.Location)
+			copy(dAtA[i:], x.Location)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Location)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*StorageLocation)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: StorageLocation: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: StorageLocation: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field StorageLocations", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Location", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -2326,8 +2651,27 @@ func (x *fastReflection_Validator) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.StorageLocations = append(x.StorageLocations, string(dAtA[iNdEx:postIndex]))
+				x.Location = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				}
+				x.Id = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Id |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -2383,7 +2727,7 @@ func (x *Params) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Params) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_core_v1_types_proto_msgTypes[4]
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2793,7 +3137,7 @@ func (x *Igp) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Igp) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_core_v1_types_proto_msgTypes[5]
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3403,7 +3747,7 @@ func (x *DestinationGasConfig) ProtoReflect() protoreflect.Message {
 }
 
 func (x *DestinationGasConfig) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_core_v1_types_proto_msgTypes[6]
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3948,7 +4292,7 @@ func (x *GasOracle) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GasOracle) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_core_v1_types_proto_msgTypes[7]
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4438,7 +4782,7 @@ func (x *Ism) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Ism) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_core_v1_types_proto_msgTypes[8]
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5232,7 +5576,7 @@ func (x *MultiSigIsm) ProtoReflect() protoreflect.Message {
 }
 
 func (x *MultiSigIsm) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_core_v1_types_proto_msgTypes[9]
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5710,7 +6054,7 @@ func (x *NoopIsm) ProtoReflect() protoreflect.Message {
 }
 
 func (x *NoopIsm) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_core_v1_types_proto_msgTypes[10]
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6068,7 +6412,7 @@ func (x *GenesisState) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GenesisState) slowProtoReflect() protoreflect.Message {
-	mi := &file_hyperlane_core_v1_types_proto_msgTypes[11]
+	mi := &file_hyperlane_core_v1_types_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6688,8 +7032,6 @@ type Validator struct {
 
 	// address ...
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	// storage_locations ...
-	StorageLocations []string `protobuf:"bytes,2,rep,name=storage_locations,json=storageLocations,proto3" json:"storage_locations,omitempty"`
 }
 
 func (x *Validator) Reset() {
@@ -6719,11 +7061,50 @@ func (x *Validator) GetAddress() string {
 	return ""
 }
 
-func (x *Validator) GetStorageLocations() []string {
-	if x != nil {
-		return x.StorageLocations
+// StorageLocation ...
+type StorageLocation struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// address ...
+	Location string `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
+	// id ...
+	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *StorageLocation) Reset() {
+	*x = StorageLocation{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
 	}
-	return nil
+}
+
+func (x *StorageLocation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StorageLocation) ProtoMessage() {}
+
+// Deprecated: Use StorageLocation.ProtoReflect.Descriptor instead.
+func (*StorageLocation) Descriptor() ([]byte, []int) {
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *StorageLocation) GetLocation() string {
+	if x != nil {
+		return x.Location
+	}
+	return ""
+}
+
+func (x *StorageLocation) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
 }
 
 // Params defines the parameters of the module.
@@ -6739,7 +7120,7 @@ type Params struct {
 func (x *Params) Reset() {
 	*x = Params{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_core_v1_types_proto_msgTypes[4]
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6753,7 +7134,7 @@ func (*Params) ProtoMessage() {}
 
 // Deprecated: Use Params.ProtoReflect.Descriptor instead.
 func (*Params) Descriptor() ([]byte, []int) {
-	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{4}
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Params) GetDomain() uint32 {
@@ -6782,7 +7163,7 @@ type Igp struct {
 func (x *Igp) Reset() {
 	*x = Igp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_core_v1_types_proto_msgTypes[5]
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6796,7 +7177,7 @@ func (*Igp) ProtoMessage() {}
 
 // Deprecated: Use Igp.ProtoReflect.Descriptor instead.
 func (*Igp) Descriptor() ([]byte, []int) {
-	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{5}
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Igp) GetId() string {
@@ -6844,7 +7225,7 @@ type DestinationGasConfig struct {
 func (x *DestinationGasConfig) Reset() {
 	*x = DestinationGasConfig{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_core_v1_types_proto_msgTypes[6]
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6858,7 +7239,7 @@ func (*DestinationGasConfig) ProtoMessage() {}
 
 // Deprecated: Use DestinationGasConfig.ProtoReflect.Descriptor instead.
 func (*DestinationGasConfig) Descriptor() ([]byte, []int) {
-	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{6}
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DestinationGasConfig) GetRemoteDomain() uint32 {
@@ -6897,7 +7278,7 @@ type GasOracle struct {
 func (x *GasOracle) Reset() {
 	*x = GasOracle{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_core_v1_types_proto_msgTypes[7]
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6911,7 +7292,7 @@ func (*GasOracle) ProtoMessage() {}
 
 // Deprecated: Use GasOracle.ProtoReflect.Descriptor instead.
 func (*GasOracle) Descriptor() ([]byte, []int) {
-	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{7}
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GasOracle) GetTokenExchangeRate() string {
@@ -6952,7 +7333,7 @@ type Ism struct {
 func (x *Ism) Reset() {
 	*x = Ism{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_core_v1_types_proto_msgTypes[8]
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6966,7 +7347,7 @@ func (*Ism) ProtoMessage() {}
 
 // Deprecated: Use Ism.ProtoReflect.Descriptor instead.
 func (*Ism) Descriptor() ([]byte, []int) {
-	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{8}
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Ism) GetId() string {
@@ -7043,7 +7424,7 @@ type MultiSigIsm struct {
 func (x *MultiSigIsm) Reset() {
 	*x = MultiSigIsm{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_core_v1_types_proto_msgTypes[9]
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7057,7 +7438,7 @@ func (*MultiSigIsm) ProtoMessage() {}
 
 // Deprecated: Use MultiSigIsm.ProtoReflect.Descriptor instead.
 func (*MultiSigIsm) Descriptor() ([]byte, []int) {
-	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{9}
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *MultiSigIsm) GetValidators() []string {
@@ -7084,7 +7465,7 @@ type NoopIsm struct {
 func (x *NoopIsm) Reset() {
 	*x = NoopIsm{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_core_v1_types_proto_msgTypes[10]
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7098,7 +7479,7 @@ func (*NoopIsm) ProtoMessage() {}
 
 // Deprecated: Use NoopIsm.ProtoReflect.Descriptor instead.
 func (*NoopIsm) Descriptor() ([]byte, []int) {
-	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{10}
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{11}
 }
 
 // GenesisState is the state that must be provided at genesis.
@@ -7114,7 +7495,7 @@ type GenesisState struct {
 func (x *GenesisState) Reset() {
 	*x = GenesisState{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_hyperlane_core_v1_types_proto_msgTypes[11]
+		mi := &file_hyperlane_core_v1_types_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7128,7 +7509,7 @@ func (*GenesisState) ProtoMessage() {}
 
 // Deprecated: Use GenesisState.ProtoReflect.Descriptor instead.
 func (*GenesisState) Descriptor() ([]byte, []int) {
-	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{11}
+	return file_hyperlane_core_v1_types_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GenesisState) GetParams() *Params {
@@ -7174,87 +7555,89 @@ var file_hyperlane_core_v1_types_proto_rawDesc = []byte{
 	0x61, 0x69, 0x6e, 0x47, 0x61, 0x73, 0x50, 0x61, 0x79, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x12,
 	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
 	0x1a, 0x0a, 0x08, 0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x08, 0x52, 0x08, 0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x22, 0x58, 0x0a, 0x09, 0x56,
+	0x08, 0x52, 0x08, 0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x22, 0x2b, 0x0a, 0x09, 0x56,
 	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72,
 	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65,
-	0x73, 0x73, 0x12, 0x2b, 0x0a, 0x11, 0x73, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x5f, 0x6c, 0x6f,
-	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x10, 0x73,
-	0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x3a,
-	0x04, 0x88, 0xa0, 0x1f, 0x00, 0x22, 0x3f, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
-	0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52,
-	0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x3a, 0x1d, 0x8a, 0xe7, 0xb0, 0x2a, 0x18, 0x68, 0x79,
-	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0xa1, 0x01, 0x0a, 0x03, 0x49, 0x67, 0x70, 0x12, 0x0e,
-	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x2e,
-	0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
-	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
-	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x14,
-	0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x44, 0x0a, 0x0e, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x61, 0x62, 0x6c,
-	0x65, 0x5f, 0x66, 0x65, 0x65, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x1d, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0d, 0x63, 0x6c, 0x61,
-	0x69, 0x6d, 0x61, 0x62, 0x6c, 0x65, 0x46, 0x65, 0x65, 0x73, 0x22, 0xba, 0x01, 0x0a, 0x14, 0x44,
-	0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x47, 0x61, 0x73, 0x43, 0x6f, 0x6e,
-	0x66, 0x69, 0x67, 0x12, 0x23, 0x0a, 0x0d, 0x72, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x5f, 0x64, 0x6f,
-	0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0c, 0x72, 0x65, 0x6d, 0x6f,
-	0x74, 0x65, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12, 0x3b, 0x0a, 0x0a, 0x67, 0x61, 0x73, 0x5f,
-	0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x68,
+	0x73, 0x73, 0x3a, 0x04, 0x88, 0xa0, 0x1f, 0x00, 0x22, 0x43, 0x0a, 0x0f, 0x53, 0x74, 0x6f, 0x72,
+	0x61, 0x67, 0x65, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x6c,
+	0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6c,
+	0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x3a, 0x04, 0x88, 0xa0, 0x1f, 0x00, 0x22, 0x3f, 0x0a,
+	0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69,
+	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x3a,
+	0x1d, 0x8a, 0xe7, 0xb0, 0x2a, 0x18, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f,
+	0x6d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0xa1,
+	0x01, 0x0a, 0x03, 0x49, 0x67, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x2e, 0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52,
+	0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x44, 0x0a, 0x0e,
+	0x63, 0x6c, 0x61, 0x69, 0x6d, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x73, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x49, 0x6e, 0x74, 0x52, 0x0d, 0x63, 0x6c, 0x61, 0x69, 0x6d, 0x61, 0x62, 0x6c, 0x65, 0x46, 0x65,
+	0x65, 0x73, 0x22, 0xba, 0x01, 0x0a, 0x14, 0x44, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x47, 0x61, 0x73, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x23, 0x0a, 0x0d, 0x72,
+	0x65, 0x6d, 0x6f, 0x74, 0x65, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x0c, 0x72, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e,
+	0x12, 0x3b, 0x0a, 0x0a, 0x67, 0x61, 0x73, 0x5f, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x61, 0x73, 0x4f, 0x72, 0x61, 0x63,
+	0x6c, 0x65, 0x52, 0x09, 0x67, 0x61, 0x73, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x40, 0x0a,
+	0x0c, 0x67, 0x61, 0x73, 0x5f, 0x6f, 0x76, 0x65, 0x72, 0x68, 0x65, 0x61, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49,
+	0x6e, 0x74, 0x52, 0x0b, 0x67, 0x61, 0x73, 0x4f, 0x76, 0x65, 0x72, 0x68, 0x65, 0x61, 0x64, 0x22,
+	0x96, 0x01, 0x0a, 0x09, 0x47, 0x61, 0x73, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x4d, 0x0a,
+	0x13, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x65, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f,
+	0x72, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x11, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x45, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x61, 0x74, 0x65, 0x12, 0x3a, 0x0a, 0x09,
+	0x67, 0x61, 0x73, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42,
+	0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x08,
+	0x67, 0x61, 0x73, 0x50, 0x72, 0x69, 0x63, 0x65, 0x22, 0xe2, 0x01, 0x0a, 0x03, 0x49, 0x73, 0x6d,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
+	0x12, 0x19, 0x0a, 0x08, 0x69, 0x73, 0x6d, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x07, 0x69, 0x73, 0x6d, 0x54, 0x79, 0x70, 0x65, 0x12, 0x32, 0x0a, 0x07, 0x63,
+	0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4,
+	0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12,
+	0x3d, 0x0a, 0x09, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x5f, 0x73, 0x69, 0x67, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x63,
+	0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x53, 0x69, 0x67, 0x49,
+	0x73, 0x6d, 0x48, 0x00, 0x52, 0x08, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x53, 0x69, 0x67, 0x12, 0x30,
+	0x0a, 0x04, 0x6e, 0x6f, 0x6f, 0x70, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x68,
 	0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31,
-	0x2e, 0x47, 0x61, 0x73, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x52, 0x09, 0x67, 0x61, 0x73, 0x4f,
-	0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x40, 0x0a, 0x0c, 0x67, 0x61, 0x73, 0x5f, 0x6f, 0x76, 0x65,
-	0x72, 0x68, 0x65, 0x61, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x1d, 0xc8, 0xde, 0x1f,
-	0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x67, 0x61, 0x73, 0x4f,
-	0x76, 0x65, 0x72, 0x68, 0x65, 0x61, 0x64, 0x22, 0x96, 0x01, 0x0a, 0x09, 0x47, 0x61, 0x73, 0x4f,
-	0x72, 0x61, 0x63, 0x6c, 0x65, 0x12, 0x4d, 0x0a, 0x13, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x65,
-	0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e,
-	0x74, 0x52, 0x11, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x45, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65,
-	0x52, 0x61, 0x74, 0x65, 0x12, 0x3a, 0x0a, 0x09, 0x67, 0x61, 0x73, 0x5f, 0x70, 0x72, 0x69, 0x63,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x08, 0x67, 0x61, 0x73, 0x50, 0x72, 0x69, 0x63, 0x65,
-	0x22, 0xe2, 0x01, 0x0a, 0x03, 0x49, 0x73, 0x6d, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x69, 0x73, 0x6d, 0x5f,
-	0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x07, 0x69, 0x73, 0x6d, 0x54,
-	0x79, 0x70, 0x65, 0x12, 0x32, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07,
-	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x3d, 0x0a, 0x09, 0x6d, 0x75, 0x6c, 0x74, 0x69,
-	0x5f, 0x73, 0x69, 0x67, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x68, 0x79, 0x70,
-	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4d,
-	0x75, 0x6c, 0x74, 0x69, 0x53, 0x69, 0x67, 0x49, 0x73, 0x6d, 0x48, 0x00, 0x52, 0x08, 0x6d, 0x75,
-	0x6c, 0x74, 0x69, 0x53, 0x69, 0x67, 0x12, 0x30, 0x0a, 0x04, 0x6e, 0x6f, 0x6f, 0x70, 0x18, 0x05,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65,
-	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4e, 0x6f, 0x6f, 0x70, 0x49, 0x73, 0x6d,
-	0x48, 0x00, 0x52, 0x04, 0x6e, 0x6f, 0x6f, 0x70, 0x3a, 0x04, 0x88, 0xa0, 0x1f, 0x00, 0x42, 0x05,
-	0x0a, 0x03, 0x69, 0x73, 0x6d, 0x22, 0x4b, 0x0a, 0x0b, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x53, 0x69,
-	0x67, 0x49, 0x73, 0x6d, 0x12, 0x1e, 0x0a, 0x0a, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f,
-	0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61,
-	0x74, 0x6f, 0x72, 0x73, 0x12, 0x1c, 0x0a, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c,
-	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f,
-	0x6c, 0x64, 0x22, 0x09, 0x0a, 0x07, 0x4e, 0x6f, 0x6f, 0x70, 0x49, 0x73, 0x6d, 0x22, 0x4c, 0x0a,
-	0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x3c, 0x0a,
-	0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e,
-	0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76,
-	0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7,
-	0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0xd3, 0x01, 0x0a, 0x15,
-	0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x63, 0x6f,
-	0x72, 0x65, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x54, 0x79, 0x70, 0x65, 0x73, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x48, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x62, 0x63, 0x70, 0x2d, 0x69, 0x6e, 0x6e, 0x6f, 0x76, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f,
-	0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2d, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x63,
-	0x6f, 0x72, 0x65, 0x2f, 0x76, 0x31, 0x3b, 0x63, 0x6f, 0x72, 0x65, 0x76, 0x31, 0xa2, 0x02, 0x03,
-	0x48, 0x43, 0x58, 0xaa, 0x02, 0x11, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e,
-	0x43, 0x6f, 0x72, 0x65, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x11, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c,
-	0x61, 0x6e, 0x65, 0x5c, 0x43, 0x6f, 0x72, 0x65, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1d, 0x48, 0x79,
-	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x43, 0x6f, 0x72, 0x65, 0x5c, 0x56, 0x31, 0x5c,
-	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x13, 0x48, 0x79,
-	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x3a, 0x3a, 0x43, 0x6f, 0x72, 0x65, 0x3a, 0x3a, 0x56,
-	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x2e, 0x4e, 0x6f, 0x6f, 0x70, 0x49, 0x73, 0x6d, 0x48, 0x00, 0x52, 0x04, 0x6e, 0x6f, 0x6f, 0x70,
+	0x3a, 0x04, 0x88, 0xa0, 0x1f, 0x00, 0x42, 0x05, 0x0a, 0x03, 0x69, 0x73, 0x6d, 0x22, 0x4b, 0x0a,
+	0x0b, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x53, 0x69, 0x67, 0x49, 0x73, 0x6d, 0x12, 0x1e, 0x0a, 0x0a,
+	0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09,
+	0x52, 0x0a, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x6f, 0x72, 0x73, 0x12, 0x1c, 0x0a, 0x09,
+	0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52,
+	0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f, 0x6c, 0x64, 0x22, 0x09, 0x0a, 0x07, 0x4e, 0x6f,
+	0x6f, 0x70, 0x49, 0x73, 0x6d, 0x22, 0x4c, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73,
+	0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x3c, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e,
+	0x65, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x42, 0xd3, 0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x68, 0x79, 0x70, 0x65,
+	0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x54,
+	0x79, 0x70, 0x65, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x48, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x63, 0x70, 0x2d, 0x69, 0x6e, 0x6e, 0x6f,
+	0x76, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x68, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e,
+	0x65, 0x2d, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x68, 0x79, 0x70,
+	0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x76, 0x31, 0x3b, 0x63,
+	0x6f, 0x72, 0x65, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x48, 0x43, 0x58, 0xaa, 0x02, 0x11, 0x48, 0x79,
+	0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x2e, 0x43, 0x6f, 0x72, 0x65, 0x2e, 0x56, 0x31, 0xca,
+	0x02, 0x11, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c, 0x43, 0x6f, 0x72, 0x65,
+	0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1d, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x5c,
+	0x43, 0x6f, 0x72, 0x65, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64,
+	0x61, 0x74, 0x61, 0xea, 0x02, 0x13, 0x48, 0x79, 0x70, 0x65, 0x72, 0x6c, 0x61, 0x6e, 0x65, 0x3a,
+	0x3a, 0x43, 0x6f, 0x72, 0x65, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -7269,28 +7652,29 @@ func file_hyperlane_core_v1_types_proto_rawDescGZIP() []byte {
 	return file_hyperlane_core_v1_types_proto_rawDescData
 }
 
-var file_hyperlane_core_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_hyperlane_core_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_hyperlane_core_v1_types_proto_goTypes = []interface{}{
 	(*Mailbox)(nil),                // 0: hyperlane.core.v1.Mailbox
 	(*Tree)(nil),                   // 1: hyperlane.core.v1.Tree
 	(*InterchainGasPaymaster)(nil), // 2: hyperlane.core.v1.InterchainGasPaymaster
 	(*Validator)(nil),              // 3: hyperlane.core.v1.Validator
-	(*Params)(nil),                 // 4: hyperlane.core.v1.Params
-	(*Igp)(nil),                    // 5: hyperlane.core.v1.Igp
-	(*DestinationGasConfig)(nil),   // 6: hyperlane.core.v1.DestinationGasConfig
-	(*GasOracle)(nil),              // 7: hyperlane.core.v1.GasOracle
-	(*Ism)(nil),                    // 8: hyperlane.core.v1.Ism
-	(*MultiSigIsm)(nil),            // 9: hyperlane.core.v1.MultiSigIsm
-	(*NoopIsm)(nil),                // 10: hyperlane.core.v1.NoopIsm
-	(*GenesisState)(nil),           // 11: hyperlane.core.v1.GenesisState
+	(*StorageLocation)(nil),        // 4: hyperlane.core.v1.StorageLocation
+	(*Params)(nil),                 // 5: hyperlane.core.v1.Params
+	(*Igp)(nil),                    // 6: hyperlane.core.v1.Igp
+	(*DestinationGasConfig)(nil),   // 7: hyperlane.core.v1.DestinationGasConfig
+	(*GasOracle)(nil),              // 8: hyperlane.core.v1.GasOracle
+	(*Ism)(nil),                    // 9: hyperlane.core.v1.Ism
+	(*MultiSigIsm)(nil),            // 10: hyperlane.core.v1.MultiSigIsm
+	(*NoopIsm)(nil),                // 11: hyperlane.core.v1.NoopIsm
+	(*GenesisState)(nil),           // 12: hyperlane.core.v1.GenesisState
 }
 var file_hyperlane_core_v1_types_proto_depIdxs = []int32{
 	2,  // 0: hyperlane.core.v1.Mailbox.igp:type_name -> hyperlane.core.v1.InterchainGasPaymaster
 	1,  // 1: hyperlane.core.v1.Mailbox.tree:type_name -> hyperlane.core.v1.Tree
-	7,  // 2: hyperlane.core.v1.DestinationGasConfig.gas_oracle:type_name -> hyperlane.core.v1.GasOracle
-	9,  // 3: hyperlane.core.v1.Ism.multi_sig:type_name -> hyperlane.core.v1.MultiSigIsm
-	10, // 4: hyperlane.core.v1.Ism.noop:type_name -> hyperlane.core.v1.NoopIsm
-	4,  // 5: hyperlane.core.v1.GenesisState.params:type_name -> hyperlane.core.v1.Params
+	8,  // 2: hyperlane.core.v1.DestinationGasConfig.gas_oracle:type_name -> hyperlane.core.v1.GasOracle
+	10, // 3: hyperlane.core.v1.Ism.multi_sig:type_name -> hyperlane.core.v1.MultiSigIsm
+	11, // 4: hyperlane.core.v1.Ism.noop:type_name -> hyperlane.core.v1.NoopIsm
+	5,  // 5: hyperlane.core.v1.GenesisState.params:type_name -> hyperlane.core.v1.Params
 	6,  // [6:6] is the sub-list for method output_type
 	6,  // [6:6] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
@@ -7353,7 +7737,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 		file_hyperlane_core_v1_types_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Params); i {
+			switch v := v.(*StorageLocation); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7365,7 +7749,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 		file_hyperlane_core_v1_types_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Igp); i {
+			switch v := v.(*Params); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7377,7 +7761,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 		file_hyperlane_core_v1_types_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DestinationGasConfig); i {
+			switch v := v.(*Igp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7389,7 +7773,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 		file_hyperlane_core_v1_types_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GasOracle); i {
+			switch v := v.(*DestinationGasConfig); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7401,7 +7785,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 		file_hyperlane_core_v1_types_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Ism); i {
+			switch v := v.(*GasOracle); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7413,7 +7797,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 		file_hyperlane_core_v1_types_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MultiSigIsm); i {
+			switch v := v.(*Ism); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7425,7 +7809,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 		file_hyperlane_core_v1_types_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NoopIsm); i {
+			switch v := v.(*MultiSigIsm); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -7437,6 +7821,18 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 		file_hyperlane_core_v1_types_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NoopIsm); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_hyperlane_core_v1_types_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GenesisState); i {
 			case 0:
 				return &v.state
@@ -7449,7 +7845,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			}
 		}
 	}
-	file_hyperlane_core_v1_types_proto_msgTypes[8].OneofWrappers = []interface{}{
+	file_hyperlane_core_v1_types_proto_msgTypes[9].OneofWrappers = []interface{}{
 		(*Ism_MultiSig)(nil),
 		(*Ism_Noop)(nil),
 	}
@@ -7459,7 +7855,7 @@ func file_hyperlane_core_v1_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_hyperlane_core_v1_types_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
