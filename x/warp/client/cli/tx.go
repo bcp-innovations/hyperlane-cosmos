@@ -24,7 +24,10 @@ func GetTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		CmdCreateCollateralToken(),
 		CmdCreateSyntheticToken(),
+		CmdEnrollRemoteRouter(),
 		CmdRemoteTransfer(),
+		CmdSetIsm(),
+		CmdUnrollRemoteRouter(),
 	)
 
 	return txCmd
