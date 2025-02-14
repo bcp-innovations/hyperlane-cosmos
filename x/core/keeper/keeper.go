@@ -169,6 +169,7 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 		ordering = collections.OrderAscending
 	}
 
+	// TODO: subject to change -> use it as key so we can jump to the offset directly
 	it, err := collection.IterateRaw(ctx, key, nil, ordering)
 	if err != nil {
 		return nil, nil, err
@@ -183,7 +184,6 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 	}
 	length := uint64(len(keyValues))
 
-	// TODO: subject to change -> use it as key so we can jump to the offset directly
 	i := uint64(offset)
 	for ; i < limit+offset && i < length; i++ {
 		data = append(data, keyValues[i].Value)
@@ -193,7 +193,10 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 		encodedKey := keyValues[i].Key
 		codec := collection.KeyCodec()
 		buffer := make([]byte, codec.Size(encodedKey))
-		codec.Encode(buffer, encodedKey)
+		_, err := codec.Encode(buffer, encodedKey)
+		if err != nil {
+			return nil, nil, err
+		}
 		pageResponse.NextKey = buffer
 	}
 

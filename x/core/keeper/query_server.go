@@ -184,7 +184,6 @@ func (qs queryServer) Validators(ctx context.Context, req *types.QueryValidators
 
 // IGP
 func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
-
 	if len(req.IgpId) == 0 {
 		return nil, errors.New("parameter 'igp_id' is required")
 	}

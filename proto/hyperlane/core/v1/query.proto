@@ -113,7 +113,6 @@ message QueryMailboxesRequest {
 
 // QueryMailboxesResponse ...
 message QueryMailboxesResponse {
-  // TODO support pagination
   repeated Mailbox mailboxes = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
   // pagination defines the pagination in the response.
@@ -170,7 +169,6 @@ message QueryValidatorsRequest {
 
 // QueryValidatorsResponse ...
 message QueryValidatorsResponse {
-  // TODO support pagination
   repeated Validator validators = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
@@ -194,7 +192,6 @@ message QueryIgpsRequest {
 
 // QueryIgpsResponse ...
 message QueryIgpsResponse {
-  // TODO support pagination
   repeated Igp igps = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
   // pagination defines the pagination in the response.
@@ -236,7 +233,6 @@ message QueryIsmsRequest {
 
 // QueryIsmsResponse ...
 message QueryIsmsResponse {
-  // TODO support pagination
   repeated Ism isms = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
   // pagination defines the pagination in the response.

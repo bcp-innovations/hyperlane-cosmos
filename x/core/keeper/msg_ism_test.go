@@ -71,7 +71,7 @@ var _ = Describe("msg_ism.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("validator address less than threshold"))
+		Expect(err.Error()).To(Equal("validator addresses less than threshold"))
 	})
 
 	It("Create (invalid) Multisig ISM with invalid threshold", func() {

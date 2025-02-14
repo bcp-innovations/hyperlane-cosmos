@@ -79,7 +79,6 @@ func (m *QueryMailboxesRequest) GetPagination() *query.PageRequest {
 
 // QueryMailboxesResponse ...
 type QueryMailboxesResponse struct {
-	// TODO support pagination
 	Mailboxes []Mailbox `protobuf:"bytes,1,rep,name=mailboxes,proto3" json:"mailboxes"`
 	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -728,7 +727,6 @@ func (m *QueryValidatorsRequest) GetPagination() *query.PageRequest {
 
 // QueryValidatorsResponse ...
 type QueryValidatorsResponse struct {
-	// TODO support pagination
 	Validators []Validator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators"`
 	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -921,7 +919,6 @@ func (m *QueryIgpsRequest) GetPagination() *query.PageRequest {
 
 // QueryIgpsResponse ...
 type QueryIgpsResponse struct {
-	// TODO support pagination
 	Igps []Igp `protobuf:"bytes,1,rep,name=igps,proto3" json:"igps"`
 	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -1309,7 +1306,6 @@ func (m *QueryIsmsRequest) GetPagination() *query.PageRequest {
 
 // QueryIsmsResponse ...
 type QueryIsmsResponse struct {
-	// TODO support pagination
 	Isms []Ism `protobuf:"bytes,1,rep,name=isms,proto3" json:"isms"`
 	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
