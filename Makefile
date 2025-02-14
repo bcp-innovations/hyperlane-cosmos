@@ -72,6 +72,13 @@ proto-lint:
 gofumpt_cmd=mvdan.cc/gofumpt
 golangci_lint_cmd=github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
 
+setup-pre-commit:
+	@cp .git/hooks/pre-commit .git/hooks/pre-commit.bak 2>/dev/null || true
+	@echo "Installing pre-commit hook..."
+	@chmod +x ../../scripts/hooks/pre-commit.sh
+	@ln -sf ../../scripts/hooks/pre-commit.sh .git/hooks/pre-commit
+	@echo "Pre-commit hook was installed at .git/hooks/pre-commit"
+
 format:
 	@echo "--> Running formatter"
 	@go run $(gofumpt_cmd) -l -w .
