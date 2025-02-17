@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"strconv"
 
 	"cosmossdk.io/math"
 
@@ -16,13 +17,20 @@ import (
 
 func CmdRemoteTransfer() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer [token-id] [recipient] [amount]",
+		Use:   "transfer [token-id] [destination-domain] [recipient] [amount]",
 		Short: "Send Hyperlane Token",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			tokenId := args[0]
-			recipient := args[1]
-			argAmount, ok := math.NewIntFromString(args[2])
+
+			destinationDomain, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			recipient := args[2]
+
+			argAmount, ok := math.NewIntFromString(args[3])
 			if !ok {
 				return errors.New("invalid amount")
 			}
@@ -43,13 +51,14 @@ func CmdRemoteTransfer() *cobra.Command {
 			}
 
 			msg := types.MsgRemoteTransfer{
-				TokenId:   tokenId,
-				Sender:    clientCtx.GetFromAddress().String(),
-				Recipient: recipient,
-				Amount:    argAmount,
-				IgpId:     igpId,
-				GasLimit:  gasLimitInt,
-				MaxFee:    maxFeeInt,
+				TokenId:           tokenId,
+				DestinationDomain: uint32(destinationDomain),
+				Sender:            clientCtx.GetFromAddress().String(),
+				Recipient:         recipient,
+				Amount:            argAmount,
+				IgpId:             igpId,
+				GasLimit:          gasLimitInt,
+				MaxFee:            maxFeeInt,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

@@ -135,10 +135,6 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, err
 	}
 
-	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), token); err != nil {
-		return nil, err
-	}
-
 	return &types.MsgEnrollRemoteRouterResponse{}, nil
 }
 
