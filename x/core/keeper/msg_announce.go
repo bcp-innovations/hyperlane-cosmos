@@ -83,6 +83,8 @@ func (ms msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounc
 			return nil, err
 		}
 
+		// It is assumed that a validator announces a reasonable amount of storage locations.
+		// Otherwise, one would need to store the hash in a separate lookup table which adds more complexity.
 		for _, location := range storageLocations {
 			if location.Location == req.StorageLocation {
 				return nil, fmt.Errorf("validator %s already announced storage location %s", req.Validator, req.StorageLocation)
