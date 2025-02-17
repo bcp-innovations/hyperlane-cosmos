@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_CreateCollateralToken_FullMethodName = "/hyperlane.warp.v1.Msg/CreateCollateralToken"
-	Msg_CreateSyntheticToken_FullMethodName  = "/hyperlane.warp.v1.Msg/CreateSyntheticToken"
-	Msg_RemoteTransfer_FullMethodName        = "/hyperlane.warp.v1.Msg/RemoteTransfer"
+	Msg_CreateCollateralToken_FullMethodName       = "/hyperlane.warp.v1.Msg/CreateCollateralToken"
+	Msg_CreateSyntheticToken_FullMethodName        = "/hyperlane.warp.v1.Msg/CreateSyntheticToken"
+	Msg_EnrollRemoteRouter_FullMethodName          = "/hyperlane.warp.v1.Msg/EnrollRemoteRouter"
+	Msg_UnrollRemoteRouter_FullMethodName          = "/hyperlane.warp.v1.Msg/UnrollRemoteRouter"
+	Msg_SetInterchainSecurityModule_FullMethodName = "/hyperlane.warp.v1.Msg/SetInterchainSecurityModule"
+	Msg_RemoteTransfer_FullMethodName              = "/hyperlane.warp.v1.Msg/RemoteTransfer"
 )
 
 // MsgClient is the client API for Msg service.
@@ -32,6 +35,12 @@ type MsgClient interface {
 	CreateCollateralToken(ctx context.Context, in *MsgCreateCollateralToken, opts ...grpc.CallOption) (*MsgCreateCollateralTokenResponse, error)
 	// CreateSyntheticToken ...
 	CreateSyntheticToken(ctx context.Context, in *MsgCreateSyntheticToken, opts ...grpc.CallOption) (*MsgCreateSyntheticTokenResponse, error)
+	// EnrollRemoteRouter ...
+	EnrollRemoteRouter(ctx context.Context, in *MsgEnrollRemoteRouter, opts ...grpc.CallOption) (*MsgEnrollRemoteRouterResponse, error)
+	// UnrollRemoteRouter ...
+	UnrollRemoteRouter(ctx context.Context, in *MsgUnrollRemoteRouter, opts ...grpc.CallOption) (*MsgUnrollRemoteRouterResponse, error)
+	// SetInterchainSecurityModule ...
+	SetInterchainSecurityModule(ctx context.Context, in *MsgSetInterchainSecurityModule, opts ...grpc.CallOption) (*MsgSetInterchainSecurityModuleResponse, error)
 	// RemoteTransfer ...
 	RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error)
 }
@@ -62,6 +71,33 @@ func (c *msgClient) CreateSyntheticToken(ctx context.Context, in *MsgCreateSynth
 	return out, nil
 }
 
+func (c *msgClient) EnrollRemoteRouter(ctx context.Context, in *MsgEnrollRemoteRouter, opts ...grpc.CallOption) (*MsgEnrollRemoteRouterResponse, error) {
+	out := new(MsgEnrollRemoteRouterResponse)
+	err := c.cc.Invoke(ctx, Msg_EnrollRemoteRouter_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UnrollRemoteRouter(ctx context.Context, in *MsgUnrollRemoteRouter, opts ...grpc.CallOption) (*MsgUnrollRemoteRouterResponse, error) {
+	out := new(MsgUnrollRemoteRouterResponse)
+	err := c.cc.Invoke(ctx, Msg_UnrollRemoteRouter_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetInterchainSecurityModule(ctx context.Context, in *MsgSetInterchainSecurityModule, opts ...grpc.CallOption) (*MsgSetInterchainSecurityModuleResponse, error) {
+	out := new(MsgSetInterchainSecurityModuleResponse)
+	err := c.cc.Invoke(ctx, Msg_SetInterchainSecurityModule_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error) {
 	out := new(MsgRemoteTransferResponse)
 	err := c.cc.Invoke(ctx, Msg_RemoteTransfer_FullMethodName, in, out, opts...)
@@ -79,6 +115,12 @@ type MsgServer interface {
 	CreateCollateralToken(context.Context, *MsgCreateCollateralToken) (*MsgCreateCollateralTokenResponse, error)
 	// CreateSyntheticToken ...
 	CreateSyntheticToken(context.Context, *MsgCreateSyntheticToken) (*MsgCreateSyntheticTokenResponse, error)
+	// EnrollRemoteRouter ...
+	EnrollRemoteRouter(context.Context, *MsgEnrollRemoteRouter) (*MsgEnrollRemoteRouterResponse, error)
+	// UnrollRemoteRouter ...
+	UnrollRemoteRouter(context.Context, *MsgUnrollRemoteRouter) (*MsgUnrollRemoteRouterResponse, error)
+	// SetInterchainSecurityModule ...
+	SetInterchainSecurityModule(context.Context, *MsgSetInterchainSecurityModule) (*MsgSetInterchainSecurityModuleResponse, error)
 	// RemoteTransfer ...
 	RemoteTransfer(context.Context, *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -93,6 +135,15 @@ func (UnimplementedMsgServer) CreateCollateralToken(context.Context, *MsgCreateC
 }
 func (UnimplementedMsgServer) CreateSyntheticToken(context.Context, *MsgCreateSyntheticToken) (*MsgCreateSyntheticTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSyntheticToken not implemented")
+}
+func (UnimplementedMsgServer) EnrollRemoteRouter(context.Context, *MsgEnrollRemoteRouter) (*MsgEnrollRemoteRouterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnrollRemoteRouter not implemented")
+}
+func (UnimplementedMsgServer) UnrollRemoteRouter(context.Context, *MsgUnrollRemoteRouter) (*MsgUnrollRemoteRouterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnrollRemoteRouter not implemented")
+}
+func (UnimplementedMsgServer) SetInterchainSecurityModule(context.Context, *MsgSetInterchainSecurityModule) (*MsgSetInterchainSecurityModuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetInterchainSecurityModule not implemented")
 }
 func (UnimplementedMsgServer) RemoteTransfer(context.Context, *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoteTransfer not implemented")
@@ -146,6 +197,60 @@ func _Msg_CreateSyntheticToken_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_EnrollRemoteRouter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEnrollRemoteRouter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).EnrollRemoteRouter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_EnrollRemoteRouter_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).EnrollRemoteRouter(ctx, req.(*MsgEnrollRemoteRouter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UnrollRemoteRouter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnrollRemoteRouter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnrollRemoteRouter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UnrollRemoteRouter_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnrollRemoteRouter(ctx, req.(*MsgUnrollRemoteRouter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetInterchainSecurityModule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetInterchainSecurityModule)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetInterchainSecurityModule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_SetInterchainSecurityModule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetInterchainSecurityModule(ctx, req.(*MsgSetInterchainSecurityModule))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_RemoteTransfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgRemoteTransfer)
 	if err := dec(in); err != nil {
@@ -178,6 +283,18 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateSyntheticToken",
 			Handler:    _Msg_CreateSyntheticToken_Handler,
+		},
+		{
+			MethodName: "EnrollRemoteRouter",
+			Handler:    _Msg_EnrollRemoteRouter_Handler,
+		},
+		{
+			MethodName: "UnrollRemoteRouter",
+			Handler:    _Msg_UnrollRemoteRouter_Handler,
+		},
+		{
+			MethodName: "SetInterchainSecurityModule",
+			Handler:    _Msg_SetInterchainSecurityModule_Handler,
 		},
 		{
 			MethodName: "RemoteTransfer",

@@ -25,19 +25,22 @@ message GenesisState {
 // HypToken ...
 message HypToken {
   bytes id = 1;
-  string creator = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   HypTokenType token_type = 3;
 
   bytes origin_mailbox = 4;
   string origin_denom = 5;
 
-  uint32 receiver_domain = 6;
-  bytes receiver_contract = 7;
-
-  string collateral_balance = 8 [
+  string collateral_balance = 6 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+}
+
+// RemoteRouter ...
+message RemoteRouter {
+  uint32 receiver_domain = 1;
+  string receiver_contract = 2;
 }
 
 // HypTokenType ...

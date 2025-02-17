@@ -100,12 +100,7 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 
 	exists, err := k.IsmIdExists(ctx, prefixedIsmId)
 	if err != nil || !exists {
-		return err
-	}
-
-	has, err := k.ReceiverIsmMapping.Has(ctx, receiver.Bytes())
-	if err != nil || has {
-		return err
+		return fmt.Errorf("ism with id %s does not exist", prefixedIsmId)
 	}
 
 	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), prefixedIsmId.Bytes())

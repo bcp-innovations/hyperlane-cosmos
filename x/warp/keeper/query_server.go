@@ -24,7 +24,36 @@ type queryServer struct {
 	k Keeper
 }
 
-func (qs queryServer) Params(ctx context.Context, request *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+func (qs queryServer) RemoteRouters(ctx context.Context, request *types.QueryRemoteRoutersRequest) (*types.QueryRemoteRoutersResponse, error) {
+	tokenId, err := util.DecodeHexAddress(request.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	rng := collections.NewPrefixedPairRange[[]byte, uint32](tokenId.Bytes())
+
+	// TODO: Add pagination
+	iter, err := qs.k.EnrolledRouters.Iterate(ctx, rng)
+	if err != nil {
+		return &types.QueryRemoteRoutersResponse{}, err
+	}
+
+	routers, err := iter.Values()
+	if err != nil {
+		return &types.QueryRemoteRoutersResponse{}, err
+	}
+
+	remoteRouters := make([]*types.RemoteRouter, len(routers))
+	for i := range routers {
+		remoteRouters[i] = &routers[i]
+	}
+
+	return &types.QueryRemoteRoutersResponse{
+		RemoteRouters: remoteRouters,
+	}, nil
+}
+
+func (qs queryServer) Params(ctx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	params, err := qs.k.Params.Get(ctx)
 	if err != nil {
 		if errors.Is(err, collections.ErrNotFound) {
@@ -37,7 +66,7 @@ func (qs queryServer) Params(ctx context.Context, request *types.QueryParamsRequ
 	return &types.QueryParamsResponse{Params: params}, nil
 }
 
-func (qs queryServer) Tokens(ctx context.Context, request *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {
+func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {
 	it, err := qs.k.HypTokens.Iterate(ctx, nil)
 	if err != nil {
 		return nil, err
@@ -50,7 +79,10 @@ func (qs queryServer) Tokens(ctx context.Context, request *types.QueryTokensRequ
 
 	responseTokens := make([]types.QueryTokenResponse, len(tokens))
 	for i, t := range tokens {
-		responseTokens[i] = parseTokenResponse(t)
+		responseTokens[i], err = qs.parseTokenResponse(ctx, t)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &types.QueryTokensResponse{
@@ -69,19 +101,39 @@ func (qs queryServer) Token(ctx context.Context, request *types.QueryTokenReques
 		return nil, err
 	}
 
-	response := parseTokenResponse(get)
+	response, err := qs.parseTokenResponse(ctx, get)
+	if err != nil {
+		return nil, err
+	}
+
 	return &response, nil
 }
 
-func parseTokenResponse(get types.HypToken) types.QueryTokenResponse {
+func (qs queryServer) parseTokenResponse(ctx context.Context, get types.HypToken) (types.QueryTokenResponse, error) {
+	rng := collections.NewPrefixedPairRange[[]byte, uint32](util.HexAddress(get.Id).Bytes())
+
+	iter, err := qs.k.EnrolledRouters.Iterate(ctx, rng)
+	if err != nil {
+		return types.QueryTokenResponse{}, err
+	}
+
+	routers, err := iter.Values()
+	if err != nil {
+		return types.QueryTokenResponse{}, err
+	}
+
+	remoteRouters := make([]*types.RemoteRouter, len(routers))
+	for i := range routers {
+		remoteRouters[i] = &routers[i]
+	}
+
 	return types.QueryTokenResponse{
 		Id:        util.HexAddress(get.Id).String(),
-		Creator:   get.Creator,
+		Owner:     get.Owner,
 		TokenType: get.TokenType,
 
-		OriginMailbox:    util.HexAddress(get.OriginMailbox).String(),
-		OriginDenom:      get.OriginDenom,
-		ReceiverDomain:   get.ReceiverDomain,
-		ReceiverContract: util.HexAddress(get.ReceiverContract).String(),
-	}
+		OriginMailbox: util.HexAddress(get.OriginMailbox).String(),
+		OriginDenom:   get.OriginDenom,
+		RemoteRouters: remoteRouters,
+	}, nil
 }

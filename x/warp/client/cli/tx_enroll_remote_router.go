@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -12,21 +13,29 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
-func CmdCreateSyntheticToken() *cobra.Command {
+func CmdEnrollRemoteRouter() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-synthetic-token [origin-mailbox]",
-		Short: "Create a Hyperlane Synthetic Token",
-		Args:  cobra.ExactArgs(1),
+		Use:   "enroll-remote-router [token-id] [receiver-domain] [receiver-contract]",
+		Short: "Enroll remote router for a certain token",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.MsgCreateSyntheticToken{
-				Owner:         clientCtx.GetFromAddress().String(),
-				OriginMailbox: args[0],
-				IsmId:         ismId,
+			receiverDomain, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgEnrollRemoteRouter{
+				Owner:   clientCtx.GetFromAddress().String(),
+				TokenId: args[0],
+				RemoteRouter: &types.RemoteRouter{
+					ReceiverDomain:   uint32(receiverDomain),
+					ReceiverContract: args[2],
+				},
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)
@@ -39,8 +48,6 @@ func CmdCreateSyntheticToken() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
-	cmd.Flags().StringVar(&ismId, "ism-id", "", "ISM ID; if not specified, DefaultISM is used")
 
 	return cmd
 }

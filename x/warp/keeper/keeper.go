@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
@@ -24,12 +25,15 @@ type Keeper struct {
 	// typically, this should be the x/gov module account.
 	authority string
 
+	enabledTokens []int32
+
 	// state management
 
-	Params         collections.Item[types.Params]
-	Schema         collections.Schema
-	HypTokens      collections.Map[[]byte, types.HypToken]
-	HypTokensCount collections.Sequence
+	Params          collections.Item[types.Params]
+	Schema          collections.Schema
+	HypTokens       collections.Map[[]byte, types.HypToken]
+	HypTokensCount  collections.Sequence
+	EnrolledRouters collections.Map[collections.Pair[[]byte, uint32], types.RemoteRouter]
 
 	bankKeeper    types.BankKeeper
 	mailboxKeeper *mailboxkeeper.Keeper
@@ -43,20 +47,23 @@ func NewKeeper(
 	authority string,
 	bankKeeper types.BankKeeper,
 	mailboxKeeper *mailboxkeeper.Keeper,
+	enabledTokens []int32,
 ) Keeper {
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic(fmt.Errorf("invalid authority address: %w", err))
 	}
 	sb := collections.NewSchemaBuilder(storeService)
 	k := Keeper{
-		cdc:            cdc,
-		addressCodec:   addressCodec,
-		authority:      authority,
-		HypTokens:      collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.BytesKey, codec.CollValue[types.HypToken](cdc)),
-		Params:         collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		HypTokensCount: collections.NewSequence(sb, types.HypTokensCountKey, "hyptokens_count"),
-		bankKeeper:     bankKeeper,
-		mailboxKeeper:  mailboxKeeper,
+		cdc:             cdc,
+		addressCodec:    addressCodec,
+		authority:       authority,
+		enabledTokens:   enabledTokens,
+		HypTokens:       collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.BytesKey, codec.CollValue[types.HypToken](cdc)),
+		Params:          collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		HypTokensCount:  collections.NewSequence(sb, types.HypTokensCountKey, "hyptokens_count"),
+		EnrolledRouters: collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.BytesKey, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
+		bankKeeper:      bankKeeper,
+		mailboxKeeper:   mailboxKeeper,
 	}
 
 	schema, err := sb.Build()
@@ -87,19 +94,26 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin u
 		return fmt.Errorf("invalid origin mailbox address")
 	}
 
-	if origin != token.ReceiverDomain {
-		return fmt.Errorf("invalid origin denom")
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(message.Recipient.Bytes(), origin))
+	if err != nil {
+		return fmt.Errorf("no enrolled router found for origin %d", origin)
 	}
 
-	if sender != util.HexAddress(token.ReceiverContract) {
+	if sender.String() != remoteRouter.ReceiverContract {
 		return fmt.Errorf("invalid receiver contract")
 	}
 
 	// Check token type
 	err = nil
 	if token.TokenType == types.HYP_TOKEN_TYPE_COLLATERAL {
+		if !slices.Contains(k.enabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
+			return fmt.Errorf("module disabled collateral tokens")
+		}
 		err = k.RemoteReceiveCollateral(goCtx, token, payload)
 	} else if token.TokenType == types.HYP_TOKEN_TYPE_SYNTHETIC {
+		if !slices.Contains(k.enabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
+			return fmt.Errorf("module disabled synthetic tokens")
+		}
 		err = k.RemoteReceiveSynthetic(goCtx, token, payload)
 	} else {
 		panic("inconsistent store")
