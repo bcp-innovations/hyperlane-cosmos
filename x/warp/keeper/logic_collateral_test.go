@@ -315,7 +315,55 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
 	})
 
-	It("MsgRemoteTransfer (valid) (Collateral)", func() {
+	It("MsgRemoteTransfer & MsgRemoteReceiveCollateral (invalid) not enough collateral (Collateral)", func() {
+		// Arrange
+		remoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+		}
+
+		amount := math.NewInt(100)
+
+		tokenId, mailboxId, _, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
+
+		err := s.MintBaseCoins(sender.Address, 1_000_000)
+		Expect(err).To(BeNil())
+
+		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
+
+		// Act
+		receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
+		Expect(err).To(BeNil())
+
+		warpRecipient, err := sdk.GetFromBech32(sender.Address, "hyp")
+		Expect(err).To(BeNil())
+
+		warpPayload, err := types.NewWarpPayload(warpRecipient, *big.NewInt(amount.Int64()))
+		Expect(err).To(BeNil())
+
+		message := coreTypes.HyperlaneMessage{
+			Version:     1,
+			Nonce:       1,
+			Origin:      remoteRouter.ReceiverDomain,
+			Sender:      receiverContract,
+			Destination: 0,
+			Recipient:   tokenId,
+			Body:        warpPayload.Bytes(),
+		}
+
+		_, err = s.RunTx(&coreTypes.MsgProcessMessage{
+			MailboxId: mailboxId.String(),
+			Relayer:   sender.Address,
+			Metadata:  "",
+			Message:   message.String(),
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(types.ErrNotEnoughCollateral.Error()))
+		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
+	})
+
+	It("MsgRemoteTransfer && MsgRemoteReceiveCollateral (valid) (Collateral)", func() {
 		// Arrange
 		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
 		remoteRouter := types.RemoteRouter{

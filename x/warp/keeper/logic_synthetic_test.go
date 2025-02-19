@@ -352,7 +352,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
 	})
 
-	It("MsgRemoteTransfer (valid) (Synthetic)", func() {
+	It("MsgRemoteTransfer && MsgRemoteReceiveSynthetic (valid) (Synthetic)", func() {
 		// Arrange
 		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
 		remoteRouter := types.RemoteRouter{
