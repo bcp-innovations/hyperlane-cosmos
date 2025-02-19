@@ -28,9 +28,13 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		return util.HexAddress{}, err
 	}
 
+	if externalRecipient == "" {
+		return util.HexAddress{}, fmt.Errorf("recipient cannot be empty")
+	}
+
 	recipient, err := util.DecodeEthHex(externalRecipient)
 	if err != nil {
-		return util.HexAddress{}, err
+		return util.HexAddress{}, fmt.Errorf("invalid recipient address")
 	}
 
 	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(token.Id, destinationDomain))

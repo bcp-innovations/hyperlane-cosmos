@@ -170,7 +170,7 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 
 	tokenId, err := util.DecodeHexAddress(msg.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())

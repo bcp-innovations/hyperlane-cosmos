@@ -49,6 +49,7 @@ TEST CASES - msg_server.go
 * MsgSetInterchainSecurityModule (invalid) invalid ISM ID
 * MsgSetInterchainSecurityModule (valid)
 * MsgRemoteTransfer (invalid) non-enrolled router (Synthetic)
+* MsgRemoteTransfer (invalid) invalid Token ID (Synthetic)
 * MsgRemoteTransfer (invalid) empty cosmos sender (Synthetic)
 * MsgRemoteTransfer (invalid) invalid cosmos sender (Synthetic)
 * MsgRemoteTransfer (invalid) empty recipient (Synthetic)
@@ -58,6 +59,7 @@ TEST CASES - msg_server.go
 * MsgRemoteTransfer (invalid) insufficient funds (Synthetic)
 * MsgRemoteTransfer (valid) (Synthetic)
 * MsgRemoteTransfer (invalid) non-enrolled router (Collateral)
+* MsgRemoteTransfer (invalid) invalid Token ID (Collateral)
 * MsgRemoteTransfer (invalid) empty cosmos sender (Collateral)
 * MsgRemoteTransfer (invalid) invalid cosmos sender (Collateral)
 * MsgRemoteTransfer (invalid) empty recipient (Collateral)
@@ -998,6 +1000,46 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom).Amount).To(Equal(senderBalance.Amount))
 	})
 
+	It("MsgRemoteTransfer (invalid) invalid Token ID (Synthetic)", func() {
+		// Arrange
+		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		remoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+		}
+
+		amount := math.NewInt(100)
+		maxFee := math.NewInt(250000)
+
+		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
+
+		syntheticDenom := "hyperlane/" + tokenId.String()
+
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		Expect(err).To(BeNil())
+
+		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
+		Expect(err).To(BeNil())
+
+		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom)
+
+		// Act
+		_, err = s.RunTx(&types.MsgRemoteTransfer{
+			Sender:            sender.Address,
+			TokenId:           tokenId.String() + "test",
+			DestinationDomain: remoteRouter.ReceiverDomain,
+			Recipient:         receiverAddress,
+			Amount:            amount,
+			IgpId:             igpId.String(),
+			GasLimit:          math.NewInt(50000),
+			MaxFee:            maxFee,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("invalid token id %s", tokenId.String()+"test")))
+		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom).Amount).To(Equal(senderBalance.Amount))
+	})
+
 	It("MsgRemoteTransfer (invalid) empty cosmos sender (Synthetic)", func() {
 		// Arrange
 		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
@@ -1369,6 +1411,34 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("no enrolled router found for destination domain 2"))
+		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
+	})
+
+	It("MsgRemoteTransfer (invalid) invalid Token ID (Collateral)", func() {
+		// Arrange
+		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+
+		amount := math.NewInt(100)
+		maxFee := math.NewInt(250000)
+
+		tokenId, _, igpId, _ := createToken(s, nil, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
+
+		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
+
+		// Act
+		_, err := s.RunTx(&types.MsgRemoteTransfer{
+			Sender:            sender.Address,
+			TokenId:           tokenId.String() + "test",
+			DestinationDomain: 1,
+			Recipient:         receiverAddress,
+			Amount:            amount,
+			IgpId:             igpId.String(),
+			GasLimit:          math.NewInt(50000),
+			MaxFee:            maxFee,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("invalid token id %s", tokenId.String()+"test")))
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
 	})
 
