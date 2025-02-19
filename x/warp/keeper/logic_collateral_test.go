@@ -27,7 +27,8 @@ TEST CASES - logic_collateral.go
 * MsgRemoteTransfer (invalid) no enrolled router (Collateral)
 * MsgRemoteTransfer (invalid) receiver contract (Collateral)
 * MsgRemoteTransfer (invalid) insufficient funds (Collateral)
-* MsgRemoteTransfer (valid) (Collateral)
+* MsgRemoteTransfer & MsgRemoteReceiveCollateral (invalid) not enough collateral (Collateral)
+* MsgRemoteTransfer && MsgRemoteReceiveCollateral (valid) (Collateral)
 
 */
 

@@ -28,6 +28,7 @@ TEST CASES - logic_synthetic.go
 * MsgRemoteTransfer (invalid) receiver contract (Synthetic)
 * MsgRemoteTransfer (invalid) insufficient funds (Synthetic)
 * MsgRemoteTransfer (valid) (Synthetic)
+* MsgRemoteTransfer && MsgRemoteReceiveSynthetic (valid) (Synthetic)
 
 */
 
