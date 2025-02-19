@@ -175,7 +175,7 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
 	}
 
 	var messageResultId string
