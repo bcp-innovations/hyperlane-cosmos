@@ -8,7 +8,7 @@ import (
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/keeper"
+	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/query"

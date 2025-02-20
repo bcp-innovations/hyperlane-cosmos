@@ -2,8 +2,10 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

@@ -47,7 +47,7 @@ modules:
       "@type": cosmos.tx.config.v1.Config
   - name: hyperlane
     config:
-      "@type": hyperlane.core.module.Module
+      "@type": hyperlane.core.module.v1.Module
   - name: warp
     config:
       "@type": hyperlane.warp.module.Module

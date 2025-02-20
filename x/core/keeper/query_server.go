@@ -312,35 +312,6 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 	}, nil
 }
 
-// ISM
-func (qs queryServer) Isms(ctx context.Context, req *types.QueryIsmsRequest) (*types.QueryIsmsResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Isms, req.Pagination)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.QueryIsmsResponse{
-		Isms:       values,
-		Pagination: pagination,
-	}, nil
-}
-
-func (qs queryServer) Ism(ctx context.Context, req *types.QueryIsmRequest) (*types.QueryIsmResponse, error) {
-	ismId, err := util.DecodeHexAddress(req.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	ism, err := qs.k.Isms.Get(ctx, ismId.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("failed to find ism with id: %v", ismId.String())
-	}
-
-	return &types.QueryIsmResponse{
-		Ism: ism,
-	}, nil
-}
-
 func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDryRunRequest) (*types.QueryVerifyDryRunResponse, error) {
 	rawMessage, err := util.DecodeEthHex(req.Message)
 	if err != nil {

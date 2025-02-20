@@ -1,7 +1,7 @@
 syntax = "proto3";
-package hyperlane.core._interchain_security_module.v1;
+package hyperlane.core.interchain_security.v1;
 
-option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/types";
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types";
 
 import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";

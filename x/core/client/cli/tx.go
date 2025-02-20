@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 
-	ism "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module"
+	ism "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
 

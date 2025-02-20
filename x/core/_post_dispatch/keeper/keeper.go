@@ -1,9 +1,11 @@
 package keeper
 
 import (
+	"errors"
+
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
-	"errors"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -52,7 +54,7 @@ func (k Keeper) SwitchHook(ctx sdk.Context, hookId util.HexAddress) (types.PostD
 }
 
 func (k Keeper) PostDispatch(ctx sdk.Context, hookId util.HexAddress, message util.HyperlaneMessage, metadata any) error {
-	if !k.hexAddressFactory.IsMember(hookId) {
+	if !k.hexAddressFactory.IsClassMember(hookId) {
 		return nil
 	}
 
@@ -65,7 +67,7 @@ func (k Keeper) PostDispatch(ctx sdk.Context, hookId util.HexAddress, message ut
 }
 
 func (k Keeper) QuoteDispatch(ctx sdk.Context, hookId util.HexAddress, message util.HyperlaneMessage, metadata any) (sdk.Coins, error) {
-	if !k.hexAddressFactory.IsMember(hookId) {
+	if !k.hexAddressFactory.IsClassMember(hookId) {
 		return nil, nil
 	}
 

@@ -1,7 +1,7 @@
 syntax = "proto3";
-package hyperlane.core._interchain_security_module.v1;
+package hyperlane.core.post_dispatch.v1;
 
-option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/types";
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types";
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
@@ -9,6 +9,4 @@ import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
 // Msg defines the module Msg service.
-service Query {
-
-}
+service Query {}

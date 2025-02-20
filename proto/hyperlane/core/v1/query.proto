@@ -95,16 +95,6 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/quote_gas_payment";
   }
 
-  // Isms ...
-  rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/isms";
-  }
-
-  // Ism ...
-  rpc Ism(QueryIsmRequest) returns (QueryIsmResponse) {
-    option (google.api.http).get = "/hyperlane/v1/isms/{id}";
-  }
-
   // VerifyDryRun ...
   rpc VerifyDryRun(QueryVerifyDryRunRequest)
       returns (QueryVerifyDryRunResponse) {
@@ -241,28 +231,6 @@ message QueryQuoteGasPaymentRequest {
 
 // QueryQuoteGasPaymentResponse ...
 message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
-
-// QueryIsmsRequest ...
-message QueryIsmsRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-// QueryIsmsResponse ...
-message QueryIsmsResponse {
-  repeated Ism isms = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryIsmRequest ...
-message QueryIsmRequest { string id = 1; }
-
-// QueryIsmResponse ...
-message QueryIsmResponse {
-  Ism ism = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-}
 
 // QueryVerifyDryRunRequest ...
 message QueryVerifyDryRunRequest {

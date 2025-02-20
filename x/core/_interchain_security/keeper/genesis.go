@@ -3,13 +3,17 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
 )
 
 func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
+	if data == nil || data.Isms == nil {
+		return
+	}
+
 	isms, err := unpackAccounts(data.Isms)
 	if err != nil {
 		panic(err)
@@ -48,6 +52,26 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 	return &types.GenesisState{
 		Isms: ismsAny,
 	}
+}
+
+func fromProtoToAny(item proto.Message) (*codectypes.Any, error) {
+	msg, ok := item.(proto.Message)
+	if !ok {
+		return nil, fmt.Errorf("cannot proto marshal %T", item)
+	}
+	anyProto, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		return nil, err
+	}
+	return anyProto, nil
+}
+
+func fromAnyToProto[T any](anyProto *codectypes.Any) (*T, error) {
+	item, ok := anyProto.GetCachedValue().(T)
+	if !ok {
+		return nil, fmt.Errorf("cannot cast %T", anyProto)
+	}
+	return &item, nil
 }
 
 func packAccounts(isms []types.HyperlaneInterchainSecurityModule) ([]*codectypes.Any, error) {

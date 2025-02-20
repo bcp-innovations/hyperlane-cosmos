@@ -1,5 +1,5 @@
 syntax = "proto3";
-package hyperlane.core._post_dispatch.v1;
+package hyperlane.core.post_dispatch.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types";
 

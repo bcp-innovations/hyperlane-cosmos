@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	ismmodule "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module"
-	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/keeper"
+	ismmodule "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security"
+	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/keeper"
+	ismtypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/client/cli"
 	keeper2 "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
@@ -54,18 +55,30 @@ func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the mailbox module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
-func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	// TODO register
+}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.
 func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwruntime.ServeMux) {
 	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
 		panic(err)
 	}
+
+	if err := ismtypes.RegisterQueryHandlerClient(context.Background(), mux, ismtypes.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
+
+	// TODO register post dispatch
 }
 
 // RegisterInterfaces registers interfaces and implementations of the mailbox module.
 func (AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	types.RegisterInterfaces(registry)
+
+	// Register Submodules
+	ismtypes.RegisterInterfaces(registry)
+	// TODO register other txs
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
@@ -77,13 +90,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQueryServerImpl(am.keeper))
 
 	ismmodule.RegisterMsgServer(cfg.MsgServer(), ismkeeper.NewMsgServerImpl(&am.keeper.IsmKeeper))
-	// TODO register Query module
-
-	// Register in place module state migration migrations
-	// m := keeper.NewMigrator(am.keeper)
-	// if err := cfg.RegisterMigration(mailbox.ModuleName, 1, m.Migrate1to2); err != nil {
-	// 	panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", mailbox.ModuleName, err))
-	// }
+	ismmodule.RegisterQueryService(cfg.QueryServer(), ismkeeper.NewQueryServerImpl(&am.keeper.IsmKeeper))
 }
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.

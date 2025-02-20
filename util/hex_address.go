@@ -6,63 +6,80 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// <class> / <type> / <custom> <uint64-id>
-// 24
-// class: ISM,PostDistpatchHook,Receiver
-// type: multiSigISM, noopISM -- IGP, Posthooks,  --- Collateral, Synthetic
-
-// _post_dispatch_hooks: 0,1,2,3,4,5
-// 3rdparty_post_dispatch_hooks: 0,1,2,3,4,5
-
-// mappingId <>
-// core -> Verify(ismId(0,1,2,3,4,5))
-// core -> Verify(ismHexAddress(type,class))
-
-// verify-modiule
 /*
-func Verify(ismAddress) {
-if ismAddress.getClass != "me" {
-return nil
 
-Register() {
+SPEC: HexAddress
 
-}
+The HexAddress mimics an evm-compatible address for a smart contract.
+Due to the nature of cosmos, addresses must be created differently.
 
-/query/multisig
+Requirements:
+- HexAddresses must be unique across all cosmos modules interacting with Hyperlane
 
-/query/3rdparty-sig
+Structure
+- The HexAddress has 32 bytes and is used for external communication
+- For internal usage and storage an uint64 is totally sufficient
 
-/hyperlane/isms/id
+HexAddress: <module-specifier (20 byte)> <type (4 byte)> <internal-id (8 byte)>
 
+The struct provides functions to encode and decode the information stored within the address.
+
+To ensure global uniqueness, the HexAddressFactory should be used. It is initialized once per Keeper
+and keeps global track of all registered module specifiers.
 
 */
 
-var registeredFactoryClasses = map[string]struct{}{}
+// Hex Address Factory
+
+var registeredFactoryClasses = map[string]int{}
 
 type HexAddressFactory struct {
 	class string
 }
 
-func NewHexAddressFactory(class string) HexAddressFactory {
-	return HexAddressFactory{class: class}
+func NewHexAddressFactory(class string) (HexAddressFactory, error) {
+	// Keeper is called twice, so if the function called more than 2 times
+	// one can assume that the developer misconfigured the module.
+	if count, ok := registeredFactoryClasses[class]; ok && count > 1 {
+		return HexAddressFactory{}, fmt.Errorf("factory class %s already registered", class)
+	}
+	registeredFactoryClasses[class] += 1
+
+	if len(class) > 20 {
+		return HexAddressFactory{}, fmt.Errorf("factory class %s too long", class)
+	}
+
+	return HexAddressFactory{class: class}, nil
 }
 
-func (h HexAddressFactory) IsMember(id HexAddress) bool {
+func (h HexAddressFactory) IsClassMember(id HexAddress) bool {
 	return id.GetClass() == h.class
-}
-
-func (h HexAddressFactory) GenerateId(internalType uint32, internalId uint64) HexAddress {
-	return HexAddress{}
 }
 
 func (h HexAddressFactory) GetClass() string {
 	return h.class
 }
+
+func (h HexAddressFactory) GenerateId(internalType uint32, internalId uint64) HexAddress {
+	address := make([]byte, 20)
+	copy(address, h.class)
+
+	internalTypeBytes := make([]byte, 4)
+	binary.BigEndian.PutUint32(internalTypeBytes, internalType)
+
+	internalIdBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(internalIdBytes, internalId)
+
+	return HexAddress(slices.Concat(address, internalTypeBytes, internalIdBytes))
+}
+
+// Hex Address
 
 type HexAddress [32]byte
 
@@ -75,22 +92,15 @@ func (h HexAddress) Bytes() []byte {
 }
 
 func (h HexAddress) GetInternalId() uint64 {
-	// TODO stub
-	return 0
+	return binary.BigEndian.Uint64(h[24:32])
 }
 
 func (h HexAddress) GetClass() string {
-	// TODO stub
-	return "coreism"
+	return string(h[:20])
 }
 
 func (h HexAddress) GetType() uint32 {
-	// TODO stub
-	return 0
-}
-
-func NewHexAddress(class, _type string, id uint64) HexAddress {
-	return HexAddress{}
+	return binary.BigEndian.Uint32(h[20:24])
 }
 
 func DecodeHexAddress(s string) (HexAddress, error) {

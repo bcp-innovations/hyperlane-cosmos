@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/types"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 )
 
 type msgServer struct {

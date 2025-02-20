@@ -1,11 +1,12 @@
 package cli
 
 import (
-	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/types"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/tx"
 	"strconv"
 	"strings"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
