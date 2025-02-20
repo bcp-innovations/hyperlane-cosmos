@@ -6,15 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 
-	ism "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
-)
-
-var (
-	gasLimit    string
-	igpId       string
-	igpOptional bool
-	maxFee      string
 )
 
 func GetTxCmd() *cobra.Command {
@@ -27,11 +19,7 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		NewAnnounceCmd(),
-		NewIgpCmd(),
 		NewIsmCmd(),
-		NewMailboxCmd(),
-		ism.GetTxCmd(),
 	)
 
 	return txCmd

@@ -168,12 +168,3 @@ message MultiSigIsm {
 message NoopIsm {
   // No fields needed for Noop
 }
-
-// GenesisState is the state that must be provided at genesis.
-message GenesisState {
-  // params defines all the parameters of the module.
-  Params params = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-
-  // TODO add mailbox state
-}

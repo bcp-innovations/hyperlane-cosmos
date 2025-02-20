@@ -622,7 +622,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		recipient := util.CreateHexAddress("recipient", 0)
 
-		message := types.HyperlaneMessage{
+		message := util.HyperlaneMessage{
 			Version:     1,
 			Nonce:       1,
 			Origin:      0,

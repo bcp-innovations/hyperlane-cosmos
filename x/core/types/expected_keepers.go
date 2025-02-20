@@ -13,7 +13,7 @@ import (
 // keeper which must take particular actions
 
 type MailboxHooks interface {
-	Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message HyperlaneMessage) error
+	Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message util.HyperlaneMessage) error
 }
 
 type MailboxHooksWrapper struct{ MailboxHooks }

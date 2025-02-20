@@ -77,7 +77,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
 		Expect(err).To(BeNil())
 
-		hypMsg := types.HyperlaneMessage{
+		hypMsg := util.HyperlaneMessage{
 			Version:     3,
 			Nonce:       0,
 			Origin:      localDomain,
@@ -112,7 +112,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
 		Expect(err).To(BeNil())
 
-		hypMsg := types.HyperlaneMessage{
+		hypMsg := util.HyperlaneMessage{
 			Version:     3,
 			Nonce:       0,
 			Origin:      localDomain,
@@ -127,7 +127,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 			MailboxId: mailboxId.String(),
 			Relayer:   sender.Address,
 			Metadata:  "",
-			Message:   hypMsg.String()[:types.BodyOffset-1],
+			Message:   hypMsg.String()[:util.BodyOffset-1],
 		})
 
 		// Assert
@@ -150,7 +150,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), recipientHex, mailboxId, "")
 		Expect(err).To(BeNil())
 
-		hypMsg := types.HyperlaneMessage{
+		hypMsg := util.HyperlaneMessage{
 			Version:     3,
 			Nonce:       0,
 			Origin:      localDomain,
@@ -193,7 +193,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
 		Expect(err).To(BeNil())
 
-		hypMsg := types.HyperlaneMessage{
+		hypMsg := util.HyperlaneMessage{
 			Version:     3,
 			Nonce:       0,
 			Origin:      localDomain,

@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
+	ismmodule "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module"
+	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/keeper"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/client/cli"
 	keeper2 "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
@@ -73,6 +76,9 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper2.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQueryServerImpl(am.keeper))
 
+	ismmodule.RegisterMsgServer(cfg.MsgServer(), ismkeeper.NewMsgServerImpl(&am.keeper.IsmKeeper))
+	// TODO register Query module
+
 	// Register in place module state migration migrations
 	// m := keeper.NewMigrator(am.keeper)
 	// if err := cfg.RegisterMigration(mailbox.ModuleName, 1, m.Migrate1to2); err != nil {
@@ -104,6 +110,8 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	if err := am.keeper.InitGenesis(ctx, &genesisState); err != nil {
 		panic(fmt.Sprintf("failed to initialize %s genesis state: %v", types.ModuleName, err))
 	}
+
+	ismkeeper.InitGenesis(ctx, am.keeper.IsmKeeper, genesisState.IsmGenesis)
 }
 
 // ExportGenesis returns the exported genesis state as raw bytes for the circuit
@@ -113,6 +121,8 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	if err != nil {
 		panic(fmt.Sprintf("failed to export %s genesis state: %v", types.ModuleName, err))
 	}
+
+	gs.IsmGenesis = ismkeeper.ExportGenesis(ctx, am.keeper.IsmKeeper)
 
 	return cdc.MustMarshalJSON(gs)
 }

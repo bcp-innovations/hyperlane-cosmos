@@ -1,0 +1,50 @@
+syntax = "proto3";
+package hyperlane.core.interchain_security_module.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/types";
+
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+
+// Msg defines the module Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // CreateMerkleRootMultiSigIsm ...
+  rpc CreateMerkleRootMultiSigIsm(MsgCreateMerkleRootMultiSigIsm)
+      returns (MsgCreateMerkleRootMultiSigIsmResponse);
+
+  // CreateNoopIsm ...
+  rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
+}
+
+// MsgCreateMultisigIsm ...
+message MsgCreateMerkleRootMultiSigIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/MsgCreateMultiSigIsm";
+
+  // creator is the message sender.
+  string creator = 1;
+
+  // validators
+  // these are 20 byte long ethereum style addresses
+  repeated string validators = 2;
+
+  // threshold ...
+  uint32 threshold = 3;
+}
+
+// MsgCreateMultisigIsmResponse ...
+message MsgCreateMerkleRootMultiSigIsmResponse { string id = 1; }
+
+// MsgCreateNoopIsm ...
+message MsgCreateNoopIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/MsgCreateNoopIsm";
+
+  // creator is the message sender.
+  string creator = 1;
+}
+
+// MsgCreateNoopIsmResponse ...
+message MsgCreateNoopIsmResponse { string id = 1; }

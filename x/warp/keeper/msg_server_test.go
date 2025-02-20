@@ -176,7 +176,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		warpPayload, err := types.NewWarpPayload(warpRecipient, *big.NewInt(amount.Int64()))
 		Expect(err).To(BeNil())
 
-		message := coreTypes.HyperlaneMessage{
+		message := util.HyperlaneMessage{
 			Version:     1,
 			Nonce:       1,
 			Origin:      remoteRouter.ReceiverDomain,

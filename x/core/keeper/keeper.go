@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security_module/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -43,6 +44,9 @@ type Keeper struct {
 	Schema collections.Schema
 
 	bankKeeper types.BankKeeper
+
+	// REFACTORED
+	IsmKeeper ismkeeper.Keeper
 }
 
 // NewKeeper creates a new Keeper instance
@@ -71,6 +75,9 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		IsmsSequence:               collections.NewSequence(sb, types.IsmsSequencesKey, "isms_sequence"),
 		ReceiverIsmMapping:         collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
 		bankKeeper:                 bankKeeper,
+
+		// REFACTORED
+		IsmKeeper: ismkeeper.NewKeeper(cdc, storeService),
 	}
 
 	schema, err := sb.Build()

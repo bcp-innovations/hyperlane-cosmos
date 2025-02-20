@@ -10,7 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
-func multiSigDigest(metadata *types.Metadata, message *types.HyperlaneMessage) [32]byte {
+func multiSigDigest(metadata *types.Metadata, message *util.HyperlaneMessage) [32]byte {
 	messageId := message.Id()
 	signedRoot := types.BranchRoot(messageId, metadata.Proof(), metadata.MessageIndex())
 
@@ -23,7 +23,7 @@ func multiSigDigest(metadata *types.Metadata, message *types.HyperlaneMessage) [
 	)
 }
 
-func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata []byte, message types.HyperlaneMessage) (verified bool, err error) {
+func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (verified bool, err error) {
 	// Retrieve ISM
 	ism, err := k.Isms.Get(ctx, ismId.Bytes())
 	if err != nil {

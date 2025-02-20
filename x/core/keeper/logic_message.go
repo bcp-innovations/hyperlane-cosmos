@@ -11,7 +11,7 @@ import (
 )
 
 func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMessage []byte, metadata []byte) error {
-	message, err := types.ParseHyperlaneMessage(rawMessage)
+	message, err := util.ParseHyperlaneMessage(rawMessage)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func (k Keeper) DispatchMessage(
 		return util.HexAddress{}, err
 	}
 
-	hypMsg := types.HyperlaneMessage{
+	hypMsg := util.HyperlaneMessage{
 		Version:     3,
 		Nonce:       mailbox.MessageSent,
 		Origin:      localDomain,

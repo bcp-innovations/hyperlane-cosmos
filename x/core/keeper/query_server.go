@@ -347,7 +347,7 @@ func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDr
 		return nil, err
 	}
 
-	message, err := types.ParseHyperlaneMessage(rawMessage)
+	message, err := util.ParseHyperlaneMessage(rawMessage)
 	if err != nil {
 		return nil, err
 	}
