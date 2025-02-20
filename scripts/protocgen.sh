@@ -24,4 +24,4 @@ cd ..
 cp -r github.com/bcp-innovations/hyperlane-cosmos/* ./
 rm -rf api && mkdir api
 mv hyperlane/* ./api
-rm -rf github.com bcp-innovations hyperlane
+rm -rf github.com hyperlane
