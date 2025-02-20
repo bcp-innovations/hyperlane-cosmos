@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
@@ -26,7 +27,11 @@ func (qs queryServer) Isms(ctx context.Context, req *types.QueryIsmsRequest) (*t
 		return nil, err
 	}
 
-	isms, _ := packAccounts(values)
+	msgs := make([]proto.Message, len(values))
+	for i, value := range values {
+		msgs[i] = value
+	}
+	isms, _ := util.PackAnys(msgs)
 
 	return &types.QueryIsmsResponse{
 		Isms:       isms,
@@ -45,7 +50,7 @@ func (qs queryServer) Ism(ctx context.Context, req *types.QueryIsmRequest) (*typ
 		return nil, fmt.Errorf("failed to find ism with id: %v", ismId.String())
 	}
 
-	toAny, err := fromProtoToAny(ism)
+	toAny, err := util.PackAny(ism)
 	if err != nil {
 		return nil, err
 	}

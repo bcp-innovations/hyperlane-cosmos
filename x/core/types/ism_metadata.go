@@ -28,6 +28,7 @@ const (
 	SIGNATURE_LENGTH          = 65
 )
 
+// TODO rename to MerkleRootMultiSigMetaData and move to utils
 type Metadata struct {
 	raw []byte
 }

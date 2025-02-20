@@ -2,9 +2,9 @@ package keeper
 
 import (
 	"fmt"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
 )
@@ -14,7 +14,7 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 		return
 	}
 
-	isms, err := unpackAccounts(data.Isms)
+	isms, err := util.UnpackAnys[types.HyperlaneInterchainSecurityModule](data.Isms)
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +44,11 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 		panic(err)
 	}
 
-	ismsAny, err := packAccounts(isms)
+	msgs := make([]proto.Message, len(isms))
+	for i, ism := range isms {
+		msgs[i] = ism
+	}
+	ismsAny, err := util.PackAnys(msgs)
 	if err != nil {
 		panic(err)
 	}
@@ -52,55 +56,4 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 	return &types.GenesisState{
 		Isms: ismsAny,
 	}
-}
-
-func fromProtoToAny(item proto.Message) (*codectypes.Any, error) {
-	msg, ok := item.(proto.Message)
-	if !ok {
-		return nil, fmt.Errorf("cannot proto marshal %T", item)
-	}
-	anyProto, err := codectypes.NewAnyWithValue(msg)
-	if err != nil {
-		return nil, err
-	}
-	return anyProto, nil
-}
-
-func fromAnyToProto[T any](anyProto *codectypes.Any) (*T, error) {
-	item, ok := anyProto.GetCachedValue().(T)
-	if !ok {
-		return nil, fmt.Errorf("cannot cast %T", anyProto)
-	}
-	return &item, nil
-}
-
-func packAccounts(isms []types.HyperlaneInterchainSecurityModule) ([]*codectypes.Any, error) {
-	ismsAny := make([]*codectypes.Any, len(isms))
-	for i, acc := range isms {
-		msg, ok := acc.(proto.Message)
-		if !ok {
-			return nil, fmt.Errorf("cannot proto marshal %T", acc)
-		}
-		anyProto, err := codectypes.NewAnyWithValue(msg)
-		if err != nil {
-			return nil, err
-		}
-		ismsAny[i] = anyProto
-	}
-
-	return ismsAny, nil
-}
-
-// UnpackAccounts converts Any slice to GenesisAccounts
-func unpackAccounts(ismsAny []*codectypes.Any) ([]types.HyperlaneInterchainSecurityModule, error) {
-	accounts := make([]types.HyperlaneInterchainSecurityModule, len(ismsAny))
-	for i, anyProto := range ismsAny {
-		acc, ok := anyProto.GetCachedValue().(types.HyperlaneInterchainSecurityModule)
-		if !ok {
-			return nil, fmt.Errorf("expected genesis ism")
-		}
-		accounts[i] = acc
-	}
-
-	return accounts, nil
 }

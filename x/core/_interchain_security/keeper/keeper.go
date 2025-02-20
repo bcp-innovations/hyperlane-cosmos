@@ -11,7 +11,6 @@ import (
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
-	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -28,7 +27,6 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 	sb := collections.NewSchemaBuilder(storeService)
 
 	factory, err := util.NewHexAddressFactory(types.HEX_ADDRESS_CLASS_IDENTIFIER)
-	println("FACTORY CREATED: ISM")
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +47,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 	return k
 }
 
-func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, message util.HyperlaneMessage, metadata coreTypes.Metadata) (bool, error) {
+func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, message util.HyperlaneMessage, metadata any) (bool, error) {
 	// Global Conventions
 	// - Address must be unique
 	// - Hook must check if id exists (and correct recipient)

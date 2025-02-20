@@ -2,6 +2,8 @@ package types
 
 import (
 	"context"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	//"fmt"
 	//sdk "github.com/cosmos/cosmos-sdk/types"
 	//"github.com/cosmos/gogoproto/proto"
@@ -27,6 +29,31 @@ func (h MultiMailboxHooks) Handle(ctx context.Context, mailboxId util.HexAddress
 
 	return nil
 }
+
+// combine multiple mailbox hooks, all hook functions are run in array sequence
+var _ InterchainSecurityHooks = MultiInterchainSecurityHooks{}
+
+type MultiInterchainSecurityHooks []InterchainSecurityHooks
+
+func NewMultiInterchainSecurityHooks(hooks ...InterchainSecurityHooks) MultiInterchainSecurityHooks {
+	return hooks
+}
+
+func (h MultiInterchainSecurityHooks) Verify(ctx sdk.Context, ismId util.HexAddress, message util.HyperlaneMessage, metadata any) (bool, error) {
+	for i := range h {
+		verfied, err := h[i].Verify(ctx, ismId, message, metadata)
+		if err != nil {
+			return false, err
+		}
+		if verfied {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+// TODO
 
 //hook.PostDispatch()
 //

@@ -47,6 +47,7 @@ type Keeper struct {
 
 	// REFACTORED
 	IsmKeeper ismkeeper.Keeper
+	ismHooks  types.InterchainSecurityHooks
 }
 
 // NewKeeper creates a new Keeper instance
@@ -123,6 +124,23 @@ func (k *Keeper) Hooks() types.MailboxHooks {
 	return k.hooks
 }
 
+func (k *Keeper) IsmHooks() types.InterchainSecurityHooks {
+	if k.hooks == nil {
+		// return a no-op implementation if no hooks are set
+		return types.MultiInterchainSecurityHooks{}
+	}
+
+	return k.ismHooks
+}
+
+func (k *Keeper) SetIsmHooks(sh types.InterchainSecurityHooks) {
+	if k.ismHooks != nil {
+		panic("cannot set mailbox hooks twice")
+	}
+
+	k.ismHooks = sh
+}
+
 // SetHooks sets the validator hooks.  In contrast to other receivers, this method must take a pointer due to nature
 // of the hooks interface and SDK start up sequence.
 func (k *Keeper) SetHooks(sh types.MailboxHooks) {
@@ -146,6 +164,7 @@ func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {
 	return params.Domain, err
 }
 
+// TODO out-source to utils
 func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collections.Map[K, T], pagination *query.PageRequest) ([]T, *query.PageResponse, error) {
 	// Parse basic pagination
 	if pagination == nil {

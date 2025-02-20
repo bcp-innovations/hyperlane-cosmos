@@ -39,6 +39,13 @@ service Msg {
   // Claim ...
   rpc Claim(MsgClaim) returns (MsgClaimResponse);
 
+  // CreateMultisigIsm ...
+  rpc CreateMultisigIsm(MsgCreateMultisigIsm)
+      returns (MsgCreateMultisigIsmResponse);
+
+  // CreateNoopIsm ...
+  rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
+
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }

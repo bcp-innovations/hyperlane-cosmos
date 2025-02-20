@@ -9,7 +9,7 @@ import (
 func GetQueryCmd() *cobra.Command {
 	queryCmd := &cobra.Command{
 		Use:                        "ism",
-		Short:                      "IBC client query subcommands",
+		Short:                      "ISM client query subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,

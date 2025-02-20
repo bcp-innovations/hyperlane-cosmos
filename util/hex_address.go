@@ -46,10 +46,11 @@ type HexAddressFactory struct {
 func NewHexAddressFactory(class string) (HexAddressFactory, error) {
 	// Keeper is called twice, so if the function called more than 2 times
 	// one can assume that the developer misconfigured the module.
-	if count, ok := registeredFactoryClasses[class]; ok && count > 1 {
-		return HexAddressFactory{}, fmt.Errorf("factory class %s already registered", class)
-	}
-	registeredFactoryClasses[class] += 1
+	// TODO
+	//if count, ok := registeredFactoryClasses[class]; ok && count > 1 {
+	//	return HexAddressFactory{}, fmt.Errorf("factory class %s already registered", class)
+	//}
+	//registeredFactoryClasses[class] += 1
 
 	if len(class) > 20 {
 		return HexAddressFactory{}, fmt.Errorf("factory class %s too long", class)
