@@ -2,16 +2,13 @@ package util
 
 import (
 	"fmt"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/gogoproto/proto"
 )
 
 func PackAny(item proto.Message) (*codectypes.Any, error) {
-	msg, ok := item.(proto.Message)
-	if !ok {
-		return nil, fmt.Errorf("cannot proto marshal %T", item)
-	}
-	anyProto, err := codectypes.NewAnyWithValue(msg)
+	anyProto, err := codectypes.NewAnyWithValue(item)
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"

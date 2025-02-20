@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+
 	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"

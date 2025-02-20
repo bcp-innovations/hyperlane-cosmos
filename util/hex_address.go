@@ -51,6 +51,7 @@ func NewHexAddressFactory(class string) (HexAddressFactory, error) {
 	//	return HexAddressFactory{}, fmt.Errorf("factory class %s already registered", class)
 	//}
 	//registeredFactoryClasses[class] += 1
+	_ = registeredFactoryClasses
 
 	if len(class) > 20 {
 		return HexAddressFactory{}, fmt.Errorf("factory class %s too long", class)

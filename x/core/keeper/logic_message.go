@@ -64,7 +64,8 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 	}
 	if !verified {
 		// TODO enable, once migrated
-		//return fmt.Errorf("ism verification failed")
+		_ = verified
+		// return fmt.Errorf("ism verification failed")
 	}
 
 	err = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)
