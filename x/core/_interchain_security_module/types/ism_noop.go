@@ -12,7 +12,7 @@ func (m *NoopISM) GetId() uint64 {
 }
 
 func (m *NoopISM) ModuleType() uint8 {
-	return INTERCHAIN_SECURITY_MODULE_TPYE_NULL
+	return INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED
 }
 
 func (m *NoopISM) Verify(_ sdk.Context, _ any, _ util.HyperlaneMessage) (bool, error) {

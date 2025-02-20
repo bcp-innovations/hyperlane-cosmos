@@ -1,0 +1,26 @@
+syntax = "proto3";
+package hyperlane.core._post_dispatch.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types";
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+// InterchainGasPaymaster ...
+message InterchainGasPaymaster {
+
+  // id ...
+  uint64 id = 1;
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // denom ...
+  string denom = 3;
+
+  // claimable_fees ...
+  string claimable_fees = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}

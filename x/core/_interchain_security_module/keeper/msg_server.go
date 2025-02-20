@@ -37,7 +37,7 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 		return nil, err
 	}
 
-	hexAddress := m.k.hexAddressFactory.GenerateId(uint32(types.INTERCHAIN_SECURITY_MODULE_TPYE_NULL), ismCount)
+	hexAddress := m.k.hexAddressFactory.GenerateId(uint32(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED), ismCount)
 
 	return &types.MsgCreateNoopIsmResponse{Id: hexAddress.String()}, nil
 }

@@ -46,7 +46,7 @@ test:
 ###  Protobuf  ###
 ##################
 
-protoVer=0.14.0
+protoVer=0.15.3
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
 protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 

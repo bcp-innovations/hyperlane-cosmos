@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/core/module"
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/core/module/v1"
 )
 
 var _ appmodule.AppModule = AppModule{}

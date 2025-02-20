@@ -1,0 +1,12 @@
+syntax = "proto3";
+package hyperlane.core._post_dispatch.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types";
+
+import "google/protobuf/any.proto";
+
+// GenesisState defines the ibc client submodule's genesis state.
+message GenesisState {
+  // accounts are the accounts present at genesis.
+  repeated google.protobuf.Any post_dispatch_hooks = 1;
+}

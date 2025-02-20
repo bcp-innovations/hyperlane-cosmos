@@ -17,11 +17,13 @@ for dir in $proto_dirs; do
 done
 
 echo "--> Generating pulsar proto code"
-buf generate --template buf.gen.pulsar.yaml
+module_list=$(find . -name "*module.proto" -not -path "./hyperlane/core/_*" | tr '\n' ','  | sed 's/,$//')
+echo $module_list
+buf generate --template buf.gen.pulsar.yaml --path $module_list
 
 cd ..
 
 cp -r github.com/bcp-innovations/hyperlane-cosmos/* ./
 rm -rf api && mkdir api
 mv hyperlane/* ./api
-rm -rf github.com hyperlane
+rm -rf github.com bcp-innovations hyperlane

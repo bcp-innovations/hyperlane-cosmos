@@ -84,6 +84,11 @@ func (h HexAddress) GetClass() string {
 	return "coreism"
 }
 
+func (h HexAddress) GetType() uint32 {
+	// TODO stub
+	return 0
+}
+
 func NewHexAddress(class, _type string, id uint64) HexAddress {
 	return HexAddress{}
 }

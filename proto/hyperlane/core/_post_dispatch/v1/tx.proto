@@ -1,0 +1,33 @@
+syntax = "proto3";
+package hyperlane.core._post_dispatch.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types";
+
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+
+// Msg defines the module Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // CreateMerkleRootMultiSigIsm ...
+  rpc CreateInterchainGasPaymaster(MsgCreateInterchainGasPaymaster)
+      returns (MsgCreateInterchainGasPaymasterResponse);
+
+  // TODO add other messages for modifying IGP
+}
+
+// MsgCreateMultisigIsm ...
+message MsgCreateInterchainGasPaymaster {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/MsgCreateInterchainGasPaymaster";
+
+  // creator is the message sender.
+  string creator = 1;
+
+  // denom
+  string denom = 2;
+}
+
+// MsgCreateMultisigIsmResponse ...
+message MsgCreateInterchainGasPaymasterResponse { string id = 1; }
