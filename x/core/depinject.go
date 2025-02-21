@@ -31,7 +31,7 @@ func init() {
 	appmodule.Register(
 		&modulev1.Module{},
 		appmodule.Provide(ProvideModule),
-		appmodule.Invoke(InvokeSetMailboxHooks, InvokeSetIsmHooks),
+		appmodule.Invoke(InvokeSetMailboxHooks, InvokeSetIsmHooks, InvokeSetPostDispatchHooks),
 	)
 }
 
@@ -129,5 +129,36 @@ func InvokeSetIsmHooks(
 	multiHooks = append(multiHooks, keeper.IsmKeeper)
 
 	keeper.SetIsmHooks(multiHooks)
+	return nil
+}
+
+func InvokeSetPostDispatchHooks(
+	keeper *keeper.Keeper,
+	pdHooks map[string]types.PostDispatchHooksWrapper,
+) error {
+	if keeper == nil {
+		return nil
+	}
+
+	modNames := maps.Keys(pdHooks)
+	order := modNames
+	sort.Strings(order)
+
+	if len(order) != len(modNames) {
+		return fmt.Errorf("len(hooks_order: %v) != len(hooks modules: %v)", order, modNames)
+	}
+
+	var multiHooks types.MultiPostDispatchHooks
+	for _, modName := range order {
+		hook, ok := pdHooks[modName]
+		if !ok {
+			return fmt.Errorf("can't find mailbox hooks for module %s", modName)
+		}
+
+		multiHooks = append(multiHooks, hook)
+	}
+	multiHooks = append(multiHooks, keeper.PostDispatchKeeper)
+
+	keeper.SetPostDispatchHooks(multiHooks)
 	return nil
 }

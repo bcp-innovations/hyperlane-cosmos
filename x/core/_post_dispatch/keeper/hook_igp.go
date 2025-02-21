@@ -22,12 +22,7 @@ func (i InterchainGasPaymasterHook) SupportsMetadata(metadata any) bool {
 	panic("implement me")
 }
 
-func (i InterchainGasPaymasterHook) PostDispatch(ctx sdk.Context, metadata any, message util.HyperlaneMessage) error {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (i InterchainGasPaymasterHook) QuotePostDispatch(ctx sdk.Context, metadata any, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHook) PostDispatch(ctx sdk.Context, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	// TODO implement me
 	panic("implement me")
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 
-// combine multiple mailbox hooks, all hook functions are run in array sequence
+// TODO refactor to Mailbox Client
 var _ MailboxHooks = MultiMailboxHooks{}
 
 type MultiMailboxHooks []MailboxHooks
@@ -31,6 +31,8 @@ func (h MultiMailboxHooks) Handle(ctx context.Context, mailboxId util.HexAddress
 	return nil
 }
 
+// Interchain Security Module Multi Wrapper
+
 // combine multiple mailbox hooks, all hook functions are run in array sequence
 var _ InterchainSecurityHooks = MultiInterchainSecurityHooks{}
 
@@ -40,9 +42,9 @@ func NewMultiInterchainSecurityHooks(hooks ...InterchainSecurityHooks) MultiInte
 	return hooks
 }
 
-func (h MultiInterchainSecurityHooks) Verify(ctx sdk.Context, ismId util.HexAddress, message util.HyperlaneMessage, metadata any) (bool, error) {
+func (h MultiInterchainSecurityHooks) Verify(ctx sdk.Context, ismId util.HexAddress, metadata any, message util.HyperlaneMessage) (bool, error) {
 	for i := range h {
-		verfied, err := h[i].Verify(ctx, ismId, message, metadata)
+		verfied, err := h[i].Verify(ctx, ismId, metadata, message)
 		if err != nil {
 			return false, err
 		}
@@ -54,46 +56,26 @@ func (h MultiInterchainSecurityHooks) Verify(ctx sdk.Context, ismId util.HexAddr
 	return false, nil
 }
 
-// TODO
+// Post Dispatch Hook Multi Wrapper
 
-//hook.PostDispatch()
-//
-//keeper.PostDispatch(id) {
-//	hook <- store(id)
-//
-//
-//	keeper.collection.Save(hook)
-//}
-//core()
-//hook.PostDispatch() updatedHook,
+// combine multiple mailbox hooks, all hook functions are run in array sequence
+var _ PostDispatchHooks = MultiPostDispatchHooks{}
 
-//type HyperlanePostDispatchHook interface {
-//	proto.Message
-//
-//	PostDispatch(metadata any, message HyperlaneMessage) error
-//	QuoteDispatch(metadata any, message HyperlaneMessage) (error, sdk.Coins)
-//}
-//
-//func (m *MerkleTreeHook) PostDispatch(options any, message HyperlaneMessage) error {
-//	f, ok := options.(MerkleTreeHookOptions)
-//	if !ok {
-//		return fmt.Errorf("options should be MerkleTreeHookOptions")
-//	}
-//	_ = f.Test
-//
-//	return nil
-//}
-//
-//func (m *MerkleTreeHook) QuoteDispatch(options any, message HyperlaneMessage) (error, sdk.Coins) {
-//	f, ok := options.(MerkleTreeHookOptions)
-//	if !ok {
-//		return fmt.Errorf("options should be MerkleTreeHookOptions"), nil
-//	}
-//	_ = f.Test
-//
-//	return nil, nil
-//}
-//
-//type MerkleTreeHookOptions struct {
-//	Test string
-//}
+type MultiPostDispatchHooks []PostDispatchHooks
+
+func NewMultiPostDispatchHooks(hooks ...PostDispatchHooks) MultiPostDispatchHooks {
+	return hooks
+}
+
+func (m MultiPostDispatchHooks) PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+	for i := range m {
+		coins, err := m[i].PostDispatch(ctx, hookId, metadata, message, maxFee)
+		if err != nil {
+			return nil, err
+		}
+		if coins != nil {
+			return coins, nil
+		}
+	}
+	return nil, nil
+}

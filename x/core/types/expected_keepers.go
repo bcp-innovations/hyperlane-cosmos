@@ -11,13 +11,24 @@ import (
 // Interchain Security Hooks
 
 type InterchainSecurityHooks interface {
-	Verify(ctx sdk.Context, ismId util.HexAddress, message util.HyperlaneMessage, metadata any) (bool, error)
+	Verify(ctx sdk.Context, ismId util.HexAddress, metadata any, message util.HyperlaneMessage) (bool, error)
 }
 
 type InterchainSecurityHooksWrapper struct{ InterchainSecurityHooks }
 
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
 func (InterchainSecurityHooksWrapper) IsOnePerModuleType() {}
+
+// PostDispatchHooks
+
+type PostDispatchHooks interface {
+	PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
+}
+
+type PostDispatchHooksWrapper struct{ PostDispatchHooks }
+
+// IsOnePerModuleType implements the depinject.OnePerModuleType interface.
+func (PostDispatchHooksWrapper) IsOnePerModuleType() {}
 
 // Event Hooks
 // These can be utilized to communicate between a warp keeper and another

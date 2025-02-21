@@ -7,6 +7,7 @@ import "gogoproto/gogo.proto";
 import "amino/amino.proto";
 import "hyperlane/core/v1/types.proto";
 import "hyperlane/core/interchain_security/v1/genesis.proto";
+import "hyperlane/core/post_dispatch/v1/genesis.proto";
 
 // GenesisState is the state that must be provided at genesis.
 message GenesisState {
@@ -16,6 +17,9 @@ message GenesisState {
 
   // ism_genesis
   hyperlane.core.interchain_security.v1.GenesisState ism_genesis = 2;
+
+  // post_dispatch_genesis
+  hyperlane.core.post_dispatch.v1.GenesisState post_dispatch_genesis = 3;
 
   // TODO add mailbox state
 }

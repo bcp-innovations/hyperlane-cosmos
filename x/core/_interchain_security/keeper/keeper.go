@@ -47,7 +47,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 	return k
 }
 
-func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, message util.HyperlaneMessage, metadata any) (bool, error) {
+func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, metadata any, message util.HyperlaneMessage) (bool, error) {
 	// Global Conventions
 	// - Address must be unique
 	// - Hook must check if id exists (and correct recipient)

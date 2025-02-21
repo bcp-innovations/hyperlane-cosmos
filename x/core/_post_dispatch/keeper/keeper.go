@@ -23,10 +23,15 @@ type Keeper struct {
 func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
+	factory, err := util.NewHexAddressFactory(types.HEX_ADDRESS_CLASS_IDENTIFIER)
+	if err != nil {
+		panic(err)
+	}
+
 	k := Keeper{
 		interchainGasPaymasters:         collections.NewMap(sb, types.PostDispatchHooksKey, "interchain_gas_paymasters", collections.Uint64Key, codec.CollValue[types.InterchainGasPaymaster](cdc)),
 		interchainGasPaymastersSequence: collections.NewSequence(sb, types.PostDispatchHooksSequenceKey, "interchain_gas_paymasters_sequence"),
-		hexAddressFactory:               util.NewHexAddressFactory(types.HEX_ADDRESS_CLASS_IDENTIFIER),
+		hexAddressFactory:               factory,
 	}
 
 	schema, err := sb.Build()
@@ -40,8 +45,8 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 }
 
 func (k Keeper) SwitchHook(ctx sdk.Context, hookId util.HexAddress) (types.PostDispatchHook, error) {
-	switch hookId.GetClass() {
-	case "123":
+	switch hookId.GetType() {
+	case uint32(types.POST_DISPATCH_HOOK_TYPE_INTERCHAIN_GAS_PAYMASTER):
 		hook, err := k.interchainGasPaymasters.Get(ctx, hookId.GetInternalId())
 		if err != nil {
 			return nil, err
@@ -53,20 +58,7 @@ func (k Keeper) SwitchHook(ctx sdk.Context, hookId util.HexAddress) (types.PostD
 	return nil, errors.New("invalid hook id")
 }
 
-func (k Keeper) PostDispatch(ctx sdk.Context, hookId util.HexAddress, message util.HyperlaneMessage, metadata any) error {
-	if !k.hexAddressFactory.IsClassMember(hookId) {
-		return nil
-	}
-
-	hook, err := k.SwitchHook(ctx, hookId)
-	if err != nil {
-		return err
-	}
-
-	return hook.PostDispatch(ctx, metadata, message)
-}
-
-func (k Keeper) QuoteDispatch(ctx sdk.Context, hookId util.HexAddress, message util.HyperlaneMessage, metadata any) (sdk.Coins, error) {
+func (k Keeper) PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	if !k.hexAddressFactory.IsClassMember(hookId) {
 		return nil, nil
 	}
@@ -76,5 +68,5 @@ func (k Keeper) QuoteDispatch(ctx sdk.Context, hookId util.HexAddress, message u
 		return nil, err
 	}
 
-	return hook.QuotePostDispatch(ctx, metadata, message)
+	return hook.PostDispatch(ctx, metadata, message, maxFee)
 }

@@ -9,8 +9,7 @@ import (
 type PostDispatchHook interface {
 	HookType() uint8
 	SupportsMetadata(metadata any) bool
-	PostDispatch(ctx sdk.Context, metadata any, message util.HyperlaneMessage) error
-	QuotePostDispatch(ctx sdk.Context, metadata any, message util.HyperlaneMessage) (sdk.Coins, error)
+	PostDispatch(ctx sdk.Context, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
 }
 
 var (

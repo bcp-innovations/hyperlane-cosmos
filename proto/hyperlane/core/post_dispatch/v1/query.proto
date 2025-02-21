@@ -3,10 +3,47 @@ package hyperlane.core.post_dispatch.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types";
 
-// import "cosmos/base/query/v1beta1/pagination.proto";
-// import "google/api/annotations.proto";
-// import "amino/amino.proto";
-// import "gogoproto/gogo.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "google/api/annotations.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "hyperlane/core/post_dispatch/v1/types.proto";
 
 // Msg defines the module Msg service.
-service Query {}
+service Query {
+
+  // Igps ...
+  rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
+    // TODO update url, once migrated
+    option (google.api.http).get = "/hyperlane/v1-refactored/igps";
+  }
+
+  // Igp ...
+  rpc Igp(QueryIgpRequest) returns (QueryIgpResponse) {
+    // TODO update url, once migrated
+    option (google.api.http).get = "/hyperlane/v1-refactored/igps/{id}";
+  }
+}
+
+// QueryIgpsRequest ...
+message QueryIgpsRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryIgpsResponse ...
+message QueryIgpsResponse {
+  repeated InterchainGasPaymaster igps = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryIgpRequest ...
+message QueryIgpRequest { string id = 1; }
+
+// QueryIgpResponse ...
+message QueryIgpResponse {
+  InterchainGasPaymaster igp = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}

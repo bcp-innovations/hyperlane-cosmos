@@ -24,11 +24,11 @@ func GetQueryCmd() *cobra.Command {
 }
 
 // RegisterMsgServer ...
-func RegisterMsgServer(server grpc.Server, queryServer types.MsgServer) {
-	types.RegisterMsgServer(server, queryServer)
+func RegisterMsgServer(server grpc.Server, msgServer types.MsgServer) {
+	types.RegisterMsgServer(server, msgServer)
 }
 
-//// RegisterQueryService registers the gRPC query service for IBC channels.
-//func RegisterQueryService(server grpc.Server, queryServer types.QueryServer) {
-//	types.RegisterQueryServer(server, queryServer)
-//}
+// RegisterQueryService registers the gRPC query service for IBC channels.
+func RegisterQueryService(server grpc.Server, queryServer types.QueryServer) {
+	types.RegisterQueryServer(server, queryServer)
+}

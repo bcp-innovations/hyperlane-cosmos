@@ -9,6 +9,10 @@ import (
 	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/keeper"
 	ismtypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 
+	pdmodule "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch"
+	pdkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/keeper"
+	pdtypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/client/cli"
 	keeper2 "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
@@ -69,7 +73,9 @@ func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwrunt
 		panic(err)
 	}
 
-	// TODO register post dispatch
+	if err := pdtypes.RegisterQueryHandlerClient(context.Background(), mux, pdtypes.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
 // RegisterInterfaces registers interfaces and implementations of the mailbox module.
@@ -78,7 +84,7 @@ func (AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 
 	// Register Submodules
 	ismtypes.RegisterInterfaces(registry)
-	// TODO register other txs
+	pdtypes.RegisterInterfaces(registry)
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
@@ -91,6 +97,9 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 
 	ismmodule.RegisterMsgServer(cfg.MsgServer(), ismkeeper.NewMsgServerImpl(&am.keeper.IsmKeeper))
 	ismmodule.RegisterQueryService(cfg.QueryServer(), ismkeeper.NewQueryServerImpl(&am.keeper.IsmKeeper))
+
+	pdmodule.RegisterMsgServer(cfg.MsgServer(), pdkeeper.NewMsgServerImpl(&am.keeper.PostDispatchKeeper))
+	pdmodule.RegisterQueryService(cfg.QueryServer(), pdkeeper.NewQueryServerImpl(&am.keeper.PostDispatchKeeper))
 }
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
@@ -121,6 +130,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	}
 
 	ismkeeper.InitGenesis(ctx, am.keeper.IsmKeeper, genesisState.IsmGenesis)
+	pdkeeper.InitGenesis(ctx, am.keeper.PostDispatchKeeper, genesisState.PostDispatchGenesis)
 }
 
 // ExportGenesis returns the exported genesis state as raw bytes for the circuit
@@ -132,6 +142,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	}
 
 	gs.IsmGenesis = ismkeeper.ExportGenesis(ctx, am.keeper.IsmKeeper)
+	gs.PostDispatchGenesis = pdkeeper.ExportGenesis(ctx, am.keeper.PostDispatchKeeper)
 
 	return cdc.MustMarshalJSON(gs)
 }

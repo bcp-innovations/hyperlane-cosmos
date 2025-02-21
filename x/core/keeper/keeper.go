@@ -9,6 +9,7 @@ import (
 	storetypes "cosmossdk.io/core/store"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/keeper"
+	postdispatchkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -48,6 +49,9 @@ type Keeper struct {
 	// REFACTORED
 	IsmKeeper ismkeeper.Keeper
 	ismHooks  types.InterchainSecurityHooks
+
+	PostDispatchKeeper postdispatchkeeper.Keeper
+	postDispatchHooks  types.PostDispatchHooks
 }
 
 // NewKeeper creates a new Keeper instance
@@ -78,7 +82,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		bankKeeper:                 bankKeeper,
 
 		// REFACTORED
-		IsmKeeper: ismkeeper.NewKeeper(cdc, storeService),
+		IsmKeeper:          ismkeeper.NewKeeper(cdc, storeService),
+		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService),
 	}
 
 	schema, err := sb.Build()
@@ -121,14 +126,21 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), prefixedIsmId.Bytes())
 }
 
-// Hooks gets the hooks for staking *Keeper {
-func (k *Keeper) Hooks() types.MailboxHooks {
-	if k.hooks == nil {
+func (k *Keeper) PostDispatchHooks() types.PostDispatchHooks {
+	if k.postDispatchHooks == nil {
 		// return a no-op implementation if no hooks are set
-		return types.MultiMailboxHooks{}
+		return types.MultiPostDispatchHooks{}
 	}
 
-	return k.hooks
+	return k.postDispatchHooks
+}
+
+func (k *Keeper) SetPostDispatchHooks(sh types.PostDispatchHooks) {
+	if k.postDispatchHooks != nil {
+		panic("cannot set mailbox hooks twice")
+	}
+
+	k.postDispatchHooks = sh
 }
 
 func (k *Keeper) IsmHooks() types.InterchainSecurityHooks {
@@ -146,6 +158,16 @@ func (k *Keeper) SetIsmHooks(sh types.InterchainSecurityHooks) {
 	}
 
 	k.ismHooks = sh
+}
+
+// Hooks gets the hooks for staking *Keeper {
+func (k *Keeper) Hooks() types.MailboxHooks {
+	if k.hooks == nil {
+		// return a no-op implementation if no hooks are set
+		return types.MultiMailboxHooks{}
+	}
+
+	return k.hooks
 }
 
 // SetHooks sets the validator hooks.  In contrast to other receivers, this method must take a pointer due to nature

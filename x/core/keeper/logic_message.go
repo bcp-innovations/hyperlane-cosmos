@@ -41,6 +41,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return err
 	}
 
+	// TODO convert to hook for mailbox Client
 	rawIsmAddress, err := k.ReceiverIsmMapping.Get(ctx, message.Recipient.Bytes())
 	if err != nil {
 		return fmt.Errorf("failed to get receiver ism address for recipient: %s", message.Recipient.String())
@@ -58,7 +59,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 	}
 
 	// New logic
-	verified, err = k.ismHooks.Verify(ctx, ismId, message, metadata)
+	verified, err = k.ismHooks.Verify(ctx, ismId, metadata, message)
 	if err != nil {
 		return err
 	}
@@ -177,6 +178,92 @@ func (k Keeper) DispatchMessage(
 		Recipient:       recipient.String(),
 		Message:         hypMsg.String(),
 	})
+
+	return hypMsg.Id(), nil
+}
+
+func (k Keeper) DispatchMessage2(
+	ctx sdk.Context,
+	originMailboxId util.HexAddress,
+	// sender address on the origin chain (e.g. token id)
+	sender util.HexAddress,
+	// the maximum amount of tokens the dispatch is allowed to cost
+	maxFee sdk.Coins,
+
+	destinationDomain uint32,
+	// Recipient address on the destination chain (e.g. smart contract)
+	recipient util.HexAddress,
+	body []byte,
+	// Custom metadata for postDispatch Hook
+	metadata any,
+	postDispatchHookId util.HexAddress,
+) (messageId util.HexAddress, error error) {
+	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())
+	if err != nil {
+		return util.HexAddress{}, fmt.Errorf("failed to find mailbox with id: %v", originMailboxId.String())
+	}
+
+	localDomain, err := k.LocalDomain(ctx)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	hypMsg := util.HyperlaneMessage{
+		Version:     3,
+		Nonce:       mailbox.MessageSent,
+		Origin:      localDomain,
+		Sender:      sender,
+		Destination: destinationDomain,
+		Recipient:   recipient,
+		Body:        body,
+	}
+	mailbox.MessageSent++
+
+	err = k.Messages.Set(ctx, hypMsg.Id().Bytes())
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	err = k.Mailboxes.Set(ctx, originMailboxId.Bytes(), mailbox)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.Dispatch{
+		OriginMailboxId: originMailboxId.String(),
+		Sender:          sender.String(),
+		Destination:     destinationDomain,
+		Recipient:       recipient.String(),
+		Message:         hypMsg.String(),
+	})
+
+	requiredHookAddress, err := util.DecodeHexAddress(mailbox.RequiredHook)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+	remainingCoins, err := k.postDispatchHooks.PostDispatch(ctx, requiredHookAddress, metadata, hypMsg, maxFee)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	if postDispatchHookId.IsZeroAddress() {
+		defaultHookAddress, err := util.DecodeHexAddress(mailbox.DefaultHook)
+		if err != nil {
+			return util.HexAddress{}, err
+		}
+		postDispatchHookId = defaultHookAddress
+	}
+
+	finalCoins, err := k.postDispatchHooks.PostDispatch(ctx, postDispatchHookId, metadata, hypMsg, remainingCoins)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	chargedCoins := finalCoins.Add(remainingCoins...)
+
+	if chargedCoins.IsAnyGT(maxFee) {
+		return util.HexAddress{}, fmt.Errorf("maxFee exceeded %s > %s", chargedCoins.String(), maxFee.String())
+	}
 
 	return hypMsg.Id(), nil
 }

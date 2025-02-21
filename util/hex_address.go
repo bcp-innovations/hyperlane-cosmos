@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
@@ -91,6 +92,11 @@ func (h HexAddress) String() string {
 
 func (h HexAddress) Bytes() []byte {
 	return h[:]
+}
+
+func (h HexAddress) IsZeroAddress() bool {
+	emptyByteVar := make([]byte, 32)
+	return bytes.Equal(h[:], emptyByteVar)
 }
 
 func (h HexAddress) GetInternalId() uint64 {

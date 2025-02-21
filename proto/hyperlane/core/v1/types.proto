@@ -25,11 +25,17 @@ message Mailbox {
   // default_ism ...
   string default_ism = 5;
 
-  // igp ...
+  // igp ... TODO remove
   InterchainGasPaymaster igp = 6;
 
-  // tree ...
+  // tree ... TODO remove
   Tree tree = 7;
+
+  // default_hook
+  string default_hook = 8;
+
+  // required_hook
+  string required_hook = 9;
 }
 
 // Tree represents an incremental merkle tree.
