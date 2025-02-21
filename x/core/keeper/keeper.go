@@ -92,9 +92,11 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 }
 
 func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddress, mailboxId util.HexAddress, ismId string) error {
-	prefixedIsmId, err := util.DecodeHexAddress(ismId)
-	if err != nil || ismId == "" {
-		// Use DefaultISM if no ISM is specified
+	var prefixedIsmId util.HexAddress
+	var err error
+
+	// Use DefaultISM if no ISM is specified
+	if ismId == "" {
 		mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
 		if err != nil {
 			return err
@@ -103,6 +105,11 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 		prefixedIsmId, err = util.DecodeHexAddress(mailbox.DefaultIsm)
 		if err != nil {
 			return err
+		}
+	} else {
+		prefixedIsmId, err = util.DecodeHexAddress(ismId)
+		if err != nil {
+			return fmt.Errorf("invalid ism id: %s", err)
 		}
 	}
 

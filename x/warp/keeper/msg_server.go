@@ -29,7 +29,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 
 	mailboxId, err := util.DecodeHexAddress(msg.OriginMailbox)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid mailbox id: %s", err)
 	}
 
 	has, err := ms.k.mailboxKeeper.Mailboxes.Has(ctx, mailboxId.Bytes())
@@ -37,7 +37,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 	if !has {
-		return nil, errors.New("mailbox not found")
+		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
@@ -80,7 +80,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 
 	mailboxId, err := util.DecodeHexAddress(msg.OriginMailbox)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid mailbox id: %s", err)
 	}
 
 	has, err := ms.k.mailboxKeeper.Mailboxes.Has(ctx, mailboxId.Bytes())
@@ -88,7 +88,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		return nil, err
 	}
 	if !has {
-		return nil, errors.New("mailbox not found")
+		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
@@ -170,12 +170,12 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 
 	tokenId, err := util.DecodeHexAddress(msg.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
 	}
 
 	var messageResultId string
@@ -207,7 +207,7 @@ func (ms msgServer) SetInterchainSecurityModule(ctx context.Context, msg *types.
 
 	tokenId, err := util.DecodeHexAddress(msg.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
