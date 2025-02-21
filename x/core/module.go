@@ -95,6 +95,8 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
 func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
+	// TODO include submodule
+
 	return cdc.MustMarshalJSON(types.NewGenesisState())
 }
 
