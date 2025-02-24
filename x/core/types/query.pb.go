@@ -679,6 +679,7 @@ func (m *RecipientIsmResponse) GetIsmId() string {
 	return ""
 }
 
+// TODO: Remove
 // QueryValidatorsRequest ...
 type QueryValidatorsRequest struct {
 	// pagination defines an optional pagination for the request.
@@ -779,6 +780,7 @@ func (m *QueryValidatorsResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+// TODO: Remove
 // QueryAnnouncedStorageLocationsRequest ...
 type QueryAnnouncedStorageLocationsRequest struct {
 	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
@@ -871,6 +873,7 @@ func (m *QueryAnnouncedStorageLocationsResponse) GetStorageLocations() []*Storag
 	return nil
 }
 
+// TODO: Remove
 // QueryAnnouncedStorageLocationsRequest ...
 type QueryLatestAnnouncedStorageLocationRequest struct {
 	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
@@ -1708,10 +1711,13 @@ type QueryClient interface {
 	Delivered(ctx context.Context, in *QueryDeliveredRequest, opts ...grpc.CallOption) (*QueryDeliveredResponse, error)
 	// RecipientIsm ...
 	RecipientIsm(ctx context.Context, in *RecipientIsmRequest, opts ...grpc.CallOption) (*RecipientIsmResponse, error)
+	// TODO: Remove
 	// Validators ...
 	Validators(ctx context.Context, in *QueryValidatorsRequest, opts ...grpc.CallOption) (*QueryValidatorsResponse, error)
+	// TODO: Remove
 	// AnnouncedStorageLocations ...
 	AnnouncedStorageLocations(ctx context.Context, in *QueryAnnouncedStorageLocationsRequest, opts ...grpc.CallOption) (*QueryAnnouncedStorageLocationsResponse, error)
+	// TODO: Remove
 	// LatestAnnouncedStorageLocation ...
 	LatestAnnouncedStorageLocation(ctx context.Context, in *QueryLatestAnnouncedStorageLocationRequest, opts ...grpc.CallOption) (*QueryLatestAnnouncedStorageLocationResponse, error)
 	// Igps ...
@@ -1896,10 +1902,13 @@ type QueryServer interface {
 	Delivered(context.Context, *QueryDeliveredRequest) (*QueryDeliveredResponse, error)
 	// RecipientIsm ...
 	RecipientIsm(context.Context, *RecipientIsmRequest) (*RecipientIsmResponse, error)
+	// TODO: Remove
 	// Validators ...
 	Validators(context.Context, *QueryValidatorsRequest) (*QueryValidatorsResponse, error)
+	// TODO: Remove
 	// AnnouncedStorageLocations ...
 	AnnouncedStorageLocations(context.Context, *QueryAnnouncedStorageLocationsRequest) (*QueryAnnouncedStorageLocationsResponse, error)
+	// TODO: Remove
 	// LatestAnnouncedStorageLocation ...
 	LatestAnnouncedStorageLocation(context.Context, *QueryLatestAnnouncedStorageLocationRequest) (*QueryLatestAnnouncedStorageLocationResponse, error)
 	// Igps ...

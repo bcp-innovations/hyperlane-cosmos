@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+	ismtypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 
 	"cosmossdk.io/math"
 
@@ -696,20 +697,18 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&types.MsgCreateMultisigIsm{
+	res, err := s.RunTx(&ismtypes.MsgCreateMerkleRootMultiSigIsm{
 		Creator: creator,
-		MultiSig: &types.MultiSigIsm{
-			Validators: []string{
-				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
-				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
-				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
-			},
-			Threshold: 2,
+		Validators: []string{
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
 		},
+		Threshold: 2,
 	})
 	Expect(err).To(BeNil())
 
-	var response types.MsgCreateMultisigIsmResponse
+	var response ismtypes.MsgCreateMerkleRootMultiSigIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
@@ -720,12 +719,12 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 }
 
 func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&types.MsgCreateNoopIsm{
+	res, err := s.RunTx(&ismtypes.MsgCreateNoopIsm{
 		Creator: creator,
 	})
 	Expect(err).To(BeNil())
 
-	var response types.MsgCreateNoopIsmResponse
+	var response ismtypes.MsgCreateNoopIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 

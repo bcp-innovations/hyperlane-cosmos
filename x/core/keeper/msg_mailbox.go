@@ -16,7 +16,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, fmt.Errorf("ism id %s is invalid: %s", req.DefaultIsm, err.Error())
 	}
 
-	exists, err := ms.k.IsmIdExists(ctx, ismId)
+	exists, err := ms.k.IsmKeeper.IsmIdExists(ctx, ismId)
 	if err != nil {
 		return nil, err
 	}

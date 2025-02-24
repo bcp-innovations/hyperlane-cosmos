@@ -391,6 +391,7 @@ func (m *MsgProcessMessageResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgProcessMessageResponse proto.InternalMessageInfo
 
+// TODO: Remove
 // MsgAnnounceValidator ...
 type MsgAnnounceValidator struct {
 	// validator ...
@@ -473,6 +474,7 @@ func (m *MsgAnnounceValidator) GetCreator() string {
 	return ""
 }
 
+// TODO: Remove
 // MsgAnnounceValidatorResponse ...
 type MsgAnnounceValidatorResponse struct {
 }
@@ -1334,6 +1336,7 @@ type MsgClient interface {
 	DispatchMessage(ctx context.Context, in *MsgDispatchMessage, opts ...grpc.CallOption) (*MsgDispatchMessageResponse, error)
 	// ProcessMessage ...
 	ProcessMessage(ctx context.Context, in *MsgProcessMessage, opts ...grpc.CallOption) (*MsgProcessMessageResponse, error)
+	// TODO: Remove
 	// AnnounceValidator ...
 	AnnounceValidator(ctx context.Context, in *MsgAnnounceValidator, opts ...grpc.CallOption) (*MsgAnnounceValidatorResponse, error)
 	// CreateIgp ...
@@ -1344,8 +1347,10 @@ type MsgClient interface {
 	PayForGas(ctx context.Context, in *MsgPayForGas, opts ...grpc.CallOption) (*MsgPayForGasResponse, error)
 	// Claim ...
 	Claim(ctx context.Context, in *MsgClaim, opts ...grpc.CallOption) (*MsgClaimResponse, error)
+	// TODO: Remove
 	// CreateMultisigIsm ...
 	CreateMultisigIsm(ctx context.Context, in *MsgCreateMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMultisigIsmResponse, error)
+	// TODO: Remove
 	// CreateNoopIsm ...
 	CreateNoopIsm(ctx context.Context, in *MsgCreateNoopIsm, opts ...grpc.CallOption) (*MsgCreateNoopIsmResponse, error)
 	// UpdateParams updates the module parameters.
@@ -1467,6 +1472,7 @@ type MsgServer interface {
 	DispatchMessage(context.Context, *MsgDispatchMessage) (*MsgDispatchMessageResponse, error)
 	// ProcessMessage ...
 	ProcessMessage(context.Context, *MsgProcessMessage) (*MsgProcessMessageResponse, error)
+	// TODO: Remove
 	// AnnounceValidator ...
 	AnnounceValidator(context.Context, *MsgAnnounceValidator) (*MsgAnnounceValidatorResponse, error)
 	// CreateIgp ...
@@ -1477,8 +1483,10 @@ type MsgServer interface {
 	PayForGas(context.Context, *MsgPayForGas) (*MsgPayForGasResponse, error)
 	// Claim ...
 	Claim(context.Context, *MsgClaim) (*MsgClaimResponse, error)
+	// TODO: Remove
 	// CreateMultisigIsm ...
 	CreateMultisigIsm(context.Context, *MsgCreateMultisigIsm) (*MsgCreateMultisigIsmResponse, error)
+	// TODO: Remove
 	// CreateNoopIsm ...
 	CreateNoopIsm(context.Context, *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error)
 	// UpdateParams updates the module parameters.

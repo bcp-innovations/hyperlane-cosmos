@@ -7,6 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
+// TODO: Remove
 func GetAnnouncementDigest(storageLocation string, domainId uint32, mailbox []byte) [32]byte {
 	var domainHashBytes []byte
 

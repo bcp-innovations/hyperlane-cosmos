@@ -75,6 +75,14 @@ func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, 
 	return ism.Verify(ctx, metadata, message)
 }
 
+func (k Keeper) IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+	exists, err := k.isms.Has(ctx, ismId.GetInternalId())
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
 // TODO outsource to utils class, once migrated
 func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collections.Map[K, T], pagination *query.PageRequest) ([]T, *query.PageResponse, error) {
 	// Parse basic pagination

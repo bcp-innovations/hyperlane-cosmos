@@ -90,11 +90,3 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 		return false, fmt.Errorf("ism type not supported: %T", v)
 	}
 }
-
-func (k Keeper) IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
-	ism, err := k.Isms.Has(ctx, ismId.Bytes())
-	if err != nil {
-		return false, err
-	}
-	return ism, nil
-}

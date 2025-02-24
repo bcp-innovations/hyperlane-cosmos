@@ -42,7 +42,7 @@ func NewMultiInterchainSecurityHooks(hooks ...InterchainSecurityHooks) MultiInte
 	return hooks
 }
 
-func (h MultiInterchainSecurityHooks) Verify(ctx sdk.Context, ismId util.HexAddress, metadata any, message util.HyperlaneMessage) (bool, error) {
+func (h MultiInterchainSecurityHooks) Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	for i := range h {
 		verfied, err := h[i].Verify(ctx, ismId, metadata, message)
 		if err != nil {

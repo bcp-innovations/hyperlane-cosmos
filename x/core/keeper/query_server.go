@@ -27,6 +27,7 @@ type queryServer struct {
 	k *Keeper
 }
 
+// TODO: Remove
 func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *types.QueryLatestAnnouncedStorageLocationRequest) (*types.QueryLatestAnnouncedStorageLocationResponse, error) {
 	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
 	if err != nil {
@@ -40,6 +41,8 @@ func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *t
 		return nil, err
 	}
 
+	iter.Next()
+
 	storageLocations, err := iter.Values()
 	if err != nil {
 		return nil, err
@@ -52,6 +55,7 @@ func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *t
 	}, nil
 }
 
+// TODO: Remove
 func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.QueryAnnouncedStorageLocationsRequest) (*types.QueryAnnouncedStorageLocationsResponse, error) {
 	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
 	if err != nil {
@@ -207,6 +211,7 @@ func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLate
 	}, nil
 }
 
+// TODO: Remove
 func (qs queryServer) Validators(ctx context.Context, req *types.QueryValidatorsRequest) (*types.QueryValidatorsResponse, error) {
 	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Validators, req.Pagination)
 	if err != nil {

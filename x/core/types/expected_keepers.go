@@ -11,7 +11,7 @@ import (
 // Interchain Security Hooks
 
 type InterchainSecurityHooks interface {
-	Verify(ctx sdk.Context, ismId util.HexAddress, metadata any, message util.HyperlaneMessage) (bool, error)
+	Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error)
 }
 
 type InterchainSecurityHooksWrapper struct{ InterchainSecurityHooks }

@@ -86,6 +86,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService),
 	}
 
+	k.IsmKeeper.SetCoreKeeper(k)
+
 	schema, err := sb.Build()
 	if err != nil {
 		panic(err)
@@ -118,7 +120,7 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 		}
 	}
 
-	exists, err := k.IsmIdExists(ctx, prefixedIsmId)
+	exists, err := k.IsmKeeper.IsmIdExists(ctx, prefixedIsmId)
 	if err != nil || !exists {
 		return fmt.Errorf("ism with id %s does not exist", prefixedIsmId)
 	}
@@ -191,6 +193,14 @@ func (k Keeper) IgpIdExists(ctx context.Context, igpId util.HexAddress) (bool, e
 func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {
 	params, err := k.Params.Get(ctx)
 	return params.Domain, err
+}
+
+func (k Keeper) MailboxIdExists(ctx context.Context, mailboxId util.HexAddress) (bool, error) {
+	mailbox, err := k.Igp.Has(ctx, mailboxId.Bytes())
+	if err != nil {
+		return false, err
+	}
+	return mailbox, nil
 }
 
 // TODO out-source to utils

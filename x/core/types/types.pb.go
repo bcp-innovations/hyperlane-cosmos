@@ -144,6 +144,7 @@ func (m *Mailbox) GetRequiredHook() string {
 	return ""
 }
 
+// TODO: Remove
 // Tree represents an incremental merkle tree.
 // Contains current branch and the number of inserted leaves in the tree.
 type Tree struct {
@@ -255,6 +256,7 @@ func (m *InterchainGasPaymaster) GetRequired() bool {
 	return false
 }
 
+// TODO: Remove
 // Validator ...
 type Validator struct {
 	// address ...
@@ -294,6 +296,7 @@ func (m *Validator) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Validator proto.InternalMessageInfo
 
+// TODO: Remove
 // StorageLocation ...
 type StorageLocation struct {
 	// address ...
@@ -545,6 +548,7 @@ func (m *GasOracle) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GasOracle proto.InternalMessageInfo
 
+// TODO: Remove
 // Ism ...
 type Ism struct {
 	// XXX ...

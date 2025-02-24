@@ -8,6 +8,7 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
 
+// TODO: Remove file
 func (ms msgServer) CreateMultisigIsm(ctx context.Context, req *types.MsgCreateMultisigIsm) (*types.MsgCreateMultisigIsmResponse, error) {
 	ismCount, err := ms.k.IsmsSequence.Next(ctx)
 	if err != nil {
