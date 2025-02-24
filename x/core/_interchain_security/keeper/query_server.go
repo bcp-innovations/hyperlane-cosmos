@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/collections"
+
 	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -19,6 +21,70 @@ func NewQueryServerImpl(k *Keeper) types.QueryServer {
 
 type queryServer struct {
 	k *Keeper
+}
+
+// TODO: Check if this query is required for relayer.
+func (qs queryServer) Validators(ctx context.Context, request *types.QueryValidatorsRequest) (*types.QueryValidatorsResponse, error) {
+	panic("not implemented")
+}
+
+func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.QueryAnnouncedStorageLocationsRequest) (*types.QueryAnnouncedStorageLocationsResponse, error) {
+	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
+	if err != nil {
+		return nil, err
+	}
+
+	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	rng := collections.NewSuperPrefixedTripleRange[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
+
+	iter, err := qs.k.storageLocations.Iterate(ctx, rng)
+	if err != nil {
+		return nil, err
+	}
+
+	storageLocations, err := iter.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryAnnouncedStorageLocationsResponse{
+		StorageLocations: storageLocations,
+	}, nil
+}
+
+func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *types.QueryLatestAnnouncedStorageLocationRequest) (*types.QueryLatestAnnouncedStorageLocationResponse, error) {
+	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
+	if err != nil {
+		return nil, err
+	}
+
+	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	rng := collections.NewSuperPrefixedTripleRange[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
+
+	// TODO: Use reverse iterator
+	iter, err := qs.k.storageLocations.Iterate(ctx, rng)
+	if err != nil {
+		return nil, err
+	}
+
+	storageLocations, err := iter.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	location := storageLocations[len(storageLocations)-1]
+
+	return &types.QueryLatestAnnouncedStorageLocationResponse{
+		StorageLocation: location,
+	}, nil
 }
 
 // ISM

@@ -18,7 +18,11 @@ import (
 type Keeper struct {
 	isms         collections.Map[uint64, types.HyperlaneInterchainSecurityModule]
 	ismsSequence collections.Sequence
-	schema       collections.Schema
+	// Key: Mailbox ID, Validator address, Storage Location index
+	storageLocations collections.Map[collections.Triple[[]byte, []byte, uint64], string]
+	schema           collections.Schema
+
+	coreKeeper types.CoreKeeper
 
 	hexAddressFactory util.HexAddressFactory
 }
@@ -34,6 +38,8 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 	k := Keeper{
 		isms:              collections.NewMap(sb, types.IsmsKey, "isms", collections.Uint64Key, codec.CollInterfaceValue[types.HyperlaneInterchainSecurityModule](cdc)),
 		ismsSequence:      collections.NewSequence(sb, types.IsmsSequenceKey, "isms_sequence"),
+		storageLocations:  collections.NewMap(sb, types.StorageLocationsKey, "storage_locations", collections.TripleKeyCodec(collections.BytesKey, collections.BytesKey, collections.Uint64Key), collections.StringValue),
+		coreKeeper:        nil,
 		hexAddressFactory: factory,
 	}
 
@@ -47,7 +53,11 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 	return k
 }
 
-func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, metadata any, message util.HyperlaneMessage) (bool, error) {
+func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
+	k.coreKeeper = coreKeeper
+}
+
+func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	// Global Conventions
 	// - Address must be unique
 	// - Hook must check if id exists (and correct recipient)

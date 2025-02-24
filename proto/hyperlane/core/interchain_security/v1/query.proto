@@ -12,7 +12,6 @@ import "cosmos_proto/cosmos.proto";
 
 // Msg defines the module Msg service.
 service Query {
-
   // Isms ...
   rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
     option (google.api.http).get = "/hyperlane/v1/isms";
@@ -21,6 +20,25 @@ service Query {
   // Ism ...
   rpc Ism(QueryIsmRequest) returns (QueryIsmResponse) {
     option (google.api.http).get = "/hyperlane/v1/isms/{id}";
+  }
+
+  // Validators ...
+  rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
+    option (google.api.http).get = "/hyperlane/v1/validators";
+  }
+
+  // AnnouncedStorageLocations ...
+  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
+      returns (QueryAnnouncedStorageLocationsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/announced_storage_locations/{validator_address}";
+  }
+
+  // LatestAnnouncedStorageLocation ...
+  rpc LatestAnnouncedStorageLocation(QueryLatestAnnouncedStorageLocationRequest)
+      returns (QueryLatestAnnouncedStorageLocationResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/announced_storage_locations/{validator_address}/latest";
   }
 }
 
@@ -47,4 +65,42 @@ message QueryIsmRequest { string id = 1; }
 message QueryIsmResponse {
   google.protobuf.Any ism = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryValidatorsRequest ...
+message QueryValidatorsRequest {
+  string mailbox_id = 1;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryValidatorsResponse ...
+message QueryValidatorsResponse {
+  repeated string validators = 1;
+
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryAnnouncedStorageLocationsRequest ...
+message QueryAnnouncedStorageLocationsRequest {
+  string mailbox_id = 1;
+  string validator_address = 2;
+}
+
+// QueryAnnouncedStorageLocationsResponse ...
+message QueryAnnouncedStorageLocationsResponse {
+  repeated string storage_locations = 1;
+}
+
+// QueryAnnouncedStorageLocationsRequest ...
+message QueryLatestAnnouncedStorageLocationRequest {
+  string mailbox_id = 1;
+  string validator_address = 2;
+}
+
+// QueryAnnouncedStorageLocationsResponse ...
+message QueryLatestAnnouncedStorageLocationResponse {
+  string storage_location = 1;
 }

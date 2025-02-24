@@ -16,6 +16,10 @@ service Msg {
 
   // CreateNoopIsm ...
   rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
+
+  // AnnounceValidator ...
+  rpc AnnounceValidator(MsgAnnounceValidator)
+      returns (MsgAnnounceValidatorResponse);
 }
 
 // MsgCreateMultisigIsm ...
@@ -48,3 +52,27 @@ message MsgCreateNoopIsm {
 
 // MsgCreateNoopIsmResponse ...
 message MsgCreateNoopIsmResponse { string id = 1; }
+
+// MsgAnnounceValidator ...
+message MsgAnnounceValidator {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/MsgAnnounceValidator";
+
+  // validator ...
+  string validator = 1;
+
+  // storage_location ...
+  string storage_location = 2;
+
+  // signature ...
+  string signature = 3;
+
+  // mailbox_id ...
+  string mailbox_id = 4;
+
+  // creator ...
+  string creator = 5;
+}
+
+// MsgAnnounceValidatorResponse ...
+message MsgAnnounceValidatorResponse {}

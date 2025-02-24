@@ -53,11 +53,13 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/recipient_ism/{recipient}";
   }
 
+  // TODO: Remove
   // Validators ...
   rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
     option (google.api.http).get = "/hyperlane/v1/validators";
   }
 
+  // TODO: Remove
   // AnnouncedStorageLocations ...
   rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
       returns (QueryAnnouncedStorageLocationsResponse) {
@@ -65,6 +67,7 @@ service Query {
         "/hyperlane/v1/announced_storage_locations/{validator_address}";
   }
 
+  // TODO: Remove
   // LatestAnnouncedStorageLocation ...
   rpc LatestAnnouncedStorageLocation(QueryLatestAnnouncedStorageLocationRequest)
       returns (QueryLatestAnnouncedStorageLocationResponse) {
@@ -158,6 +161,7 @@ message RecipientIsmRequest { string recipient = 1; }
 // RecipientIsmResponse ...
 message RecipientIsmResponse { string ism_id = 1; }
 
+// TODO: Remove
 // QueryValidatorsRequest ...
 message QueryValidatorsRequest {
   // pagination defines an optional pagination for the request.
@@ -173,6 +177,7 @@ message QueryValidatorsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
+// TODO: Remove
 // QueryAnnouncedStorageLocationsRequest ...
 message QueryAnnouncedStorageLocationsRequest { string validator_address = 1; }
 
@@ -181,6 +186,7 @@ message QueryAnnouncedStorageLocationsResponse {
   repeated StorageLocation storage_locations = 1;
 }
 
+// TODO: Remove
 // QueryAnnouncedStorageLocationsRequest ...
 message QueryLatestAnnouncedStorageLocationRequest {
   string validator_address = 1;

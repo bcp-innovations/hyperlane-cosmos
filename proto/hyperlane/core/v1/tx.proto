@@ -22,6 +22,7 @@ service Msg {
   // ProcessMessage ...
   rpc ProcessMessage(MsgProcessMessage) returns (MsgProcessMessageResponse);
 
+  // TODO: Remove
   // AnnounceValidator ...
   rpc AnnounceValidator(MsgAnnounceValidator)
       returns (MsgAnnounceValidatorResponse);
@@ -39,10 +40,12 @@ service Msg {
   // Claim ...
   rpc Claim(MsgClaim) returns (MsgClaimResponse);
 
+  // TODO: Remove
   // CreateMultisigIsm ...
   rpc CreateMultisigIsm(MsgCreateMultisigIsm)
       returns (MsgCreateMultisigIsmResponse);
 
+  // TODO: Remove
   // CreateNoopIsm ...
   rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
 
@@ -128,6 +131,7 @@ message MsgProcessMessage {
 // MsgProcessMessageResponse ...
 message MsgProcessMessageResponse {}
 
+// TODO: Remove
 // MsgAnnounceValidator ...
 message MsgAnnounceValidator {
   option (cosmos.msg.v1.signer) = "creator";
@@ -149,6 +153,7 @@ message MsgAnnounceValidator {
   string creator = 5;
 }
 
+// TODO: Remove
 // MsgAnnounceValidatorResponse ...
 message MsgAnnounceValidatorResponse {}
 
