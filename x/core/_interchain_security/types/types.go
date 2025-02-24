@@ -4,8 +4,6 @@ import (
 	"encoding/binary"
 	"slices"
 
-	"cosmossdk.io/collections"
-
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
@@ -21,13 +19,14 @@ type HyperlaneInterchainSecurityModule interface {
 }
 
 var (
-	IsmsKey             = collections.NewPrefix(1)
-	IsmsSequenceKey     = collections.NewPrefix(2)
-	StorageLocationsKey = collections.NewPrefix(3)
+	IsmsKey             = []byte{SubModuleId, 0}
+	IsmsSequenceKey     = []byte{SubModuleId, 1}
+	StorageLocationsKey = []byte{SubModuleId, 2}
 )
 
 const (
-	SubModuleName = "ism"
+	SubModuleName       = "ism"
+	SubModuleId   uint8 = 1
 
 	HEX_ADDRESS_CLASS_IDENTIFIER = "coreism"
 )
