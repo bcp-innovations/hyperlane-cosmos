@@ -8,6 +8,7 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 
+//
 // Interchain Security Hooks
 
 type InterchainSecurityHooks interface {
@@ -19,7 +20,8 @@ type InterchainSecurityHooksWrapper struct{ InterchainSecurityHooks }
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
 func (InterchainSecurityHooksWrapper) IsOnePerModuleType() {}
 
-// PostDispatchHooks
+//
+// Post Dispatch Hooks
 
 type PostDispatchHooks interface {
 	PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
@@ -30,13 +32,12 @@ type PostDispatchHooksWrapper struct{ PostDispatchHooks }
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
 func (PostDispatchHooksWrapper) IsOnePerModuleType() {}
 
-// Event Hooks
-// These can be utilized to communicate between a warp keeper and another
-// keeper which must take particular actions
-// TODO
+//
+// Mailbox Hooks
 
 type MailboxHooks interface {
-	Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message util.HyperlaneMessage) error
+	Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error
+	ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error)
 }
 
 type MailboxHooksWrapper struct{ MailboxHooks }
@@ -44,6 +45,7 @@ type MailboxHooksWrapper struct{ MailboxHooks }
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
 func (MailboxHooksWrapper) IsOnePerModuleType() {}
 
+//
 // External Keepers
 
 type BankKeeper interface {

@@ -72,12 +72,6 @@ func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper2.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQueryServerImpl(am.keeper))
-
-	// Register in place module state migration migrations
-	// m := keeper.NewMigrator(am.keeper)
-	// if err := cfg.RegisterMigration(mailbox.ModuleName, 1, m.Migrate1to2); err != nil {
-	// 	panic(fmt.Sprintf("failed to migrate x/%s from version 1 to 2: %v", mailbox.ModuleName, err))
-	// }
 }
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.

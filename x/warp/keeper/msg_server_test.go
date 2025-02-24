@@ -1159,7 +1159,11 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		Expect(err).To(BeNil())
 	}
 
-	err := s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), tokenId, mailboxId, ismId.String())
+	_, err := s.RunTx(&types.MsgSetInterchainSecurityModule{
+		Owner:   owner,
+		TokenId: tokenId.String(),
+		IsmId:   ismId.String(),
+	})
 	Expect(err).To(BeNil())
 
 	tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})

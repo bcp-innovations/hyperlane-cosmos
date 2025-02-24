@@ -41,13 +41,10 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return err
 	}
 
-	// TODO convert to hook for mailbox Client
-	rawIsmAddress, err := k.ReceiverIsmMapping.Get(ctx, message.Recipient.Bytes())
+	ismId, err := k.Hooks().ReceiverIsmId(ctx, message.Recipient)
 	if err != nil {
-		return fmt.Errorf("failed to get receiver ism address for recipient: %s", message.Recipient.String())
+		return err
 	}
-
-	ismId := util.HexAddress(rawIsmAddress)
 
 	// New logic
 	verified, err := k.ismHooks.Verify(ctx, ismId, metadata, message)
@@ -58,7 +55,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return fmt.Errorf("ism verification failed")
 	}
 
-	err = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)
+	err = k.Hooks().Handle(ctx, mailboxId, metadata, message)
 	if err != nil {
 		return err
 	}

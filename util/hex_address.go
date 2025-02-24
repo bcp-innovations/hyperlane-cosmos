@@ -112,6 +112,10 @@ func (h HexAddress) GetType() uint32 {
 	return binary.BigEndian.Uint32(h[20:24])
 }
 
+func NewZeroAddress() HexAddress {
+	return HexAddress{}
+}
+
 func DecodeHexAddress(s string) (HexAddress, error) {
 	s = strings.TrimPrefix(s, "0x")
 

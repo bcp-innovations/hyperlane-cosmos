@@ -28,7 +28,6 @@ type Keeper struct {
 	Mailboxes collections.Map[[]byte, types.Mailbox]
 	Messages  collections.KeySet[[]byte]
 	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
-	ReceiverIsmMapping collections.Map[[]byte, []byte]
 	MailboxesSequence  collections.Sequence
 	// IGP
 	Igp                        collections.Map[[]byte, types.Igp]
@@ -66,7 +65,6 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		Igp:                        collections.NewMap(sb, types.IgpKey, "igp", collections.BytesKey, codec.CollValue[types.Igp](cdc)),
 		IgpDestinationGasConfigMap: collections.NewMap(sb, types.IgpDestinationGasConfigMapKey, "igp_destination_gas_config_map", collections.PairKeyCodec(collections.BytesKey, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
 		IgpSequence:                collections.NewSequence(sb, types.IgpSequenceKey, "igp_sequence"),
-		ReceiverIsmMapping:         collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
 		bankKeeper:                 bankKeeper,
 
 		// REFACTORED
@@ -84,36 +82,6 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 	k.Schema = schema
 
 	return k
-}
-
-func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddress, mailboxId util.HexAddress, ismId string) error {
-	var prefixedIsmId util.HexAddress
-	var err error
-
-	// Use DefaultISM if no ISM is specified
-	if ismId == "" {
-		mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
-		if err != nil {
-			return err
-		}
-
-		prefixedIsmId, err = util.DecodeHexAddress(mailbox.DefaultIsm)
-		if err != nil {
-			return err
-		}
-	} else {
-		prefixedIsmId, err = util.DecodeHexAddress(ismId)
-		if err != nil {
-			return fmt.Errorf("invalid ism id: %s", err)
-		}
-	}
-
-	exists, err := k.IsmKeeper.IsmIdExists(ctx, prefixedIsmId)
-	if err != nil || !exists {
-		return fmt.Errorf("ism with id %s does not exist", prefixedIsmId)
-	}
-
-	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), prefixedIsmId.Bytes())
 }
 
 func (k *Keeper) PostDispatchHooks() types.PostDispatchHooks {

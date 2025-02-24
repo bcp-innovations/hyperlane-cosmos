@@ -12,7 +12,6 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 
-// TODO refactor to Mailbox Client
 var _ MailboxHooks = MultiMailboxHooks{}
 
 type MultiMailboxHooks []MailboxHooks
@@ -21,14 +20,33 @@ func NewMultiMailboxHooks(hooks ...MailboxHooks) MultiMailboxHooks {
 	return hooks
 }
 
-func (h MultiMailboxHooks) Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message util.HyperlaneMessage) error {
+func (h MultiMailboxHooks) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
 	for i := range h {
-		if err := h[i].Handle(ctx, mailboxId, origin, sender, message); err != nil {
+		if err := h[i].Handle(ctx, mailboxId, message); err != nil {
 			return err
 		}
 	}
 
 	return nil
+}
+
+func (h MultiMailboxHooks) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error) {
+	var receiverIsm util.HexAddress
+	for i := range h {
+		ismId, err := h[i].ReceiverIsmId(ctx, recipient)
+		if err != nil {
+			return util.HexAddress{}, nil
+		}
+		if !ismId.IsZeroAddress() {
+			if receiverIsm.IsZeroAddress() {
+				receiverIsm = ismId
+			} else {
+				return util.HexAddress{}, ErrMultipleReceiverIsm
+			}
+		}
+	}
+
+	return util.HexAddress{}, ErrNoReceiverISM
 }
 
 // Interchain Security Module Multi Wrapper

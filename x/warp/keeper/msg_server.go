@@ -40,24 +40,20 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 
-	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
-
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
-	if err != nil {
-		return nil, err
-	}
+	tokenId := ms.k.hexAddressFactory.GenerateId(uint32(types.HYP_TOKEN_TYPE_SYNTHETIC), next)
 
 	newToken := types.HypToken{
-		Id:            tokenId.Bytes(),
+		Id:            next,
 		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
 	}
 
-	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), newToken); err != nil {
+	if err = ms.k.HypTokens.Set(ctx, newToken.Id, newToken); err != nil {
 		return nil, err
 	}
+
 	return &types.MsgCreateSyntheticTokenResponse{Id: tokenId.String()}, nil
 }
 
@@ -91,25 +87,18 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 
-	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
-
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
-	if err != nil {
-		return nil, err
-	}
-
 	newToken := types.HypToken{
-		Id:            tokenId.Bytes(),
+		Id:            next,
 		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_COLLATERAL,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   msg.OriginDenom,
 	}
 
-	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), newToken); err != nil {
+	if err = ms.k.HypTokens.Set(ctx, newToken.Id, newToken); err != nil {
 		return nil, err
 	}
-	return &types.MsgCreateCollateralTokenResponse{Id: tokenId.String()}, nil
+	return &types.MsgCreateCollateralTokenResponse{Id: ms.k.GetAddressFromToken(newToken).String()}, nil
 }
 
 func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnrollRemoteRouter) (*types.MsgEnrollRemoteRouterResponse, error) {
@@ -118,7 +107,7 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
 	}
@@ -131,7 +120,7 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("invalid remote router")
 	}
 
-	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.Bytes(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
+	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
 		return nil, err
 	}
 
@@ -144,7 +133,7 @@ func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnroll
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
 	}
@@ -153,12 +142,12 @@ func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnroll
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
-	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.Bytes(), msg.ReceiverDomain))
+	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.GetInternalId(), msg.ReceiverDomain))
 	if err != nil || !exists {
 		return nil, fmt.Errorf("failed to find remote router for domain %v", msg.ReceiverDomain)
 	}
 
-	if err = ms.k.EnrolledRouters.Remove(ctx, collections.Join(tokenId.Bytes(), msg.ReceiverDomain)); err != nil {
+	if err = ms.k.EnrolledRouters.Remove(ctx, collections.Join(tokenId.GetInternalId(), msg.ReceiverDomain)); err != nil {
 		return nil, err
 	}
 
@@ -173,7 +162,7 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
 	}
@@ -210,7 +199,7 @@ func (ms msgServer) SetInterchainSecurityModule(ctx context.Context, msg *types.
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, err
 	}
@@ -219,7 +208,14 @@ func (ms msgServer) SetInterchainSecurityModule(ctx context.Context, msg *types.
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, util.HexAddress(token.OriginMailbox), msg.IsmId)
+	ismAddress, err := util.DecodeHexAddress(msg.IsmId)
+	if err != nil {
+		return nil, err
+	}
+
+	token.IsmId = ismAddress.String()
+
+	err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), token)
 	if err != nil {
 		return nil, err
 	}

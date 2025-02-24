@@ -33,7 +33,7 @@ func (k *Keeper) ExportGenesis(ctx context.Context) (*types.GenesisState, error)
 	}
 
 	var tokens []types.HypToken
-	if err := k.HypTokens.Walk(ctx, nil, func(key []byte, value types.HypToken) (stop bool, err error) {
+	if err := k.HypTokens.Walk(ctx, nil, func(key uint64, value types.HypToken) (stop bool, err error) {
 		tokens = append(tokens, value)
 
 		return false, nil
@@ -42,8 +42,7 @@ func (k *Keeper) ExportGenesis(ctx context.Context) (*types.GenesisState, error)
 	}
 
 	return &types.GenesisState{
-		Params:     params,
-		Tokens:     tokens,
-		TokenCount: int64(len(tokens)),
+		Params: params,
+		Tokens: tokens,
 	}, nil
 }

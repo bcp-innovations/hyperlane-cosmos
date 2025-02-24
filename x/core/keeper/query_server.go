@@ -47,12 +47,12 @@ func (qs queryServer) RecipientIsm(ctx context.Context, req *types.RecipientIsmR
 		return nil, err
 	}
 
-	get, err := qs.k.ReceiverIsmMapping.Get(ctx, address.Bytes())
+	get, err := qs.k.Hooks().ReceiverIsmId(ctx, address)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.RecipientIsmResponse{IsmId: util.HexAddress(get).String()}, nil
+	return &types.RecipientIsmResponse{IsmId: get.String()}, nil
 }
 
 func (qs queryServer) Mailboxes(ctx context.Context, req *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {

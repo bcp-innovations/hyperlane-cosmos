@@ -26,13 +26,17 @@ type Keeper struct {
 
 	enabledTokens []int32
 
+	hexAddressFactory util.HexAddressFactory
+
 	// state management
 
-	Params          collections.Item[types.Params]
-	Schema          collections.Schema
-	HypTokens       collections.Map[[]byte, types.HypToken]
-	HypTokensCount  collections.Sequence
-	EnrolledRouters collections.Map[collections.Pair[[]byte, uint32], types.RemoteRouter]
+	Params collections.Item[types.Params]
+	Schema collections.Schema
+	// <tokenId> -> Token
+	HypTokens      collections.Map[uint64, types.HypToken]
+	HypTokensCount collections.Sequence
+	// <tokenId> <domain> -> RemoteRouter
+	EnrolledRouters collections.Map[collections.Pair[uint64, uint32], types.RemoteRouter]
 
 	bankKeeper    types.BankKeeper
 	mailboxKeeper *mailboxkeeper.Keeper
@@ -51,18 +55,25 @@ func NewKeeper(
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic(fmt.Errorf("invalid authority address: %w", err))
 	}
+
+	factory, err := util.NewHexAddressFactory(types.HEX_ADDRESS_CLASS_IDENTIFIER)
+	if err != nil {
+		panic(err)
+	}
+
 	sb := collections.NewSchemaBuilder(storeService)
 	k := Keeper{
-		cdc:             cdc,
-		addressCodec:    addressCodec,
-		authority:       authority,
-		enabledTokens:   enabledTokens,
-		HypTokens:       collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.BytesKey, codec.CollValue[types.HypToken](cdc)),
-		Params:          collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		HypTokensCount:  collections.NewSequence(sb, types.HypTokensCountKey, "hyptokens_count"),
-		EnrolledRouters: collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.BytesKey, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
-		bankKeeper:      bankKeeper,
-		mailboxKeeper:   mailboxKeeper,
+		cdc:               cdc,
+		addressCodec:      addressCodec,
+		authority:         authority,
+		enabledTokens:     enabledTokens,
+		hexAddressFactory: factory,
+		HypTokens:         collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.Uint64Key, codec.CollValue[types.HypToken](cdc)),
+		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		HypTokensCount:    collections.NewSequence(sb, types.HypTokensCountKey, "hyptokens_count"),
+		EnrolledRouters:   collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
+		bankKeeper:        bankKeeper,
+		mailboxKeeper:     mailboxKeeper,
 	}
 
 	schema, err := sb.Build()
@@ -75,11 +86,39 @@ func NewKeeper(
 	return k
 }
 
-func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message util.HyperlaneMessage) error {
+func (k *Keeper) GetAddressFromToken(token types.HypToken) util.HexAddress {
+	return k.hexAddressFactory.GenerateId(uint32(token.TokenType), token.Id)
+}
+
+func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error) {
+	// Return nil when the module is not the recipient of the Handle call
+	if !k.hexAddressFactory.IsClassMember(recipient) {
+		return util.NewZeroAddress(), nil
+	}
+
+	token, err := k.HypTokens.Get(ctx, recipient.GetInternalId())
+	if err != nil {
+		return util.NewZeroAddress(), nil
+	}
+
+	hexAddress, err := util.DecodeHexAddress(token.IsmId)
+	if err != nil {
+		return util.NewZeroAddress(), err
+	}
+
+	return hexAddress, nil
+}
+
+func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
+	// Return nil when the module is not the recipient of the Handle call
+	if !k.hexAddressFactory.IsClassMember(message.Recipient) {
+		return nil
+	}
+
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
 	// Return nil when the module is not the recipient of the Handle call
-	token, err := k.HypTokens.Get(ctx, message.Recipient.Bytes())
+	token, err := k.HypTokens.Get(ctx, message.Recipient.GetInternalId())
 	if err != nil {
 		return nil
 	}
@@ -93,12 +132,12 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin u
 		return fmt.Errorf("invalid origin mailbox address")
 	}
 
-	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(message.Recipient.Bytes(), origin))
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(message.Recipient.GetInternalId(), message.Origin))
 	if err != nil {
-		return fmt.Errorf("no enrolled router found for origin %d", origin)
+		return fmt.Errorf("no enrolled router found for origin %d", message.Origin)
 	}
 
-	if sender.String() != remoteRouter.ReceiverContract {
+	if message.Sender.String() != remoteRouter.ReceiverContract {
 		return fmt.Errorf("invalid receiver contract")
 	}
 

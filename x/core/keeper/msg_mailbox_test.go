@@ -617,7 +617,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("ProcessMessage (valid) (Noop ISM)", func() {
 		// Arrange
-		mailboxId, _, ismId := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -633,9 +633,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Recipient:   recipient,
 			Body:        nil,
 		}
-
-		err = s.App().HyperlaneKeeper.RegisterReceiverIsm(s.Ctx(), recipient, mailboxId, ismId.String())
-		Expect(err).To(BeNil())
 
 		// Act
 		_, err = s.RunTx(&types.MsgProcessMessage{

@@ -48,12 +48,14 @@ message QueryTokenRequest { string id = 1; }
 
 // QueryTokenResponse ...
 message QueryTokenResponse {
-  string id = 1;
+  uint64 id = 1;
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   HypTokenType token_type = 3;
 
   string origin_mailbox = 4;
   string origin_denom = 5;
+
+  string ism_id = 7;
 
   repeated RemoteRouter remote_routers = 6;
 }
