@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 

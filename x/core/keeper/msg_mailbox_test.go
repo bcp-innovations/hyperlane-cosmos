@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+
 	ismtypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 
 	"cosmossdk.io/math"

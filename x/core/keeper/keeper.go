@@ -184,7 +184,7 @@ func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {
 }
 
 func (k Keeper) MailboxIdExists(ctx context.Context, mailboxId util.HexAddress) (bool, error) {
-	mailbox, err := k.Igp.Has(ctx, mailboxId.Bytes())
+	mailbox, err := k.Mailboxes.Has(ctx, mailboxId.Bytes())
 	if err != nil {
 		return false, err
 	}

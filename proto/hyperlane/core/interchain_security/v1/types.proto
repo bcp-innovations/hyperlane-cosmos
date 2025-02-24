@@ -40,14 +40,3 @@ message NoopISM {
   // owner ...
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
-
-// StorageLocation ...
-message StorageLocation {
-  option (gogoproto.goproto_getters) = false;
-
-  // address ...
-  string location = 1;
-
-  // id ...
-  uint64 id = 2;
-}
