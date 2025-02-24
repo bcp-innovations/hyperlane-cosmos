@@ -22,11 +22,6 @@ service Msg {
   // ProcessMessage ...
   rpc ProcessMessage(MsgProcessMessage) returns (MsgProcessMessageResponse);
 
-  // TODO: Remove
-  // AnnounceValidator ...
-  rpc AnnounceValidator(MsgAnnounceValidator)
-      returns (MsgAnnounceValidatorResponse);
-
   // CreateIgp ...
   rpc CreateIgp(MsgCreateIgp) returns (MsgCreateIgpResponse);
 
@@ -39,15 +34,6 @@ service Msg {
 
   // Claim ...
   rpc Claim(MsgClaim) returns (MsgClaimResponse);
-
-  // TODO: Remove
-  // CreateMultisigIsm ...
-  rpc CreateMultisigIsm(MsgCreateMultisigIsm)
-      returns (MsgCreateMultisigIsmResponse);
-
-  // TODO: Remove
-  // CreateNoopIsm ...
-  rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
 
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
@@ -131,32 +117,6 @@ message MsgProcessMessage {
 // MsgProcessMessageResponse ...
 message MsgProcessMessageResponse {}
 
-// TODO: Remove
-// MsgAnnounceValidator ...
-message MsgAnnounceValidator {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/MsgAnnounceValidator";
-
-  // validator ...
-  string validator = 1;
-
-  // storage_location ...
-  string storage_location = 2;
-
-  // signature ...
-  string signature = 3;
-
-  // mailbox_id ...
-  string mailbox_id = 4;
-
-  // creator ...
-  string creator = 5;
-}
-
-// TODO: Remove
-// MsgAnnounceValidatorResponse ...
-message MsgAnnounceValidatorResponse {}
-
 // MsgCreateIgp ...
 message MsgCreateIgp {
   option (cosmos.msg.v1.signer) = "owner";
@@ -237,33 +197,6 @@ message MsgClaim {
 
 // MsgClaimResponse ...
 message MsgClaimResponse {}
-
-// MsgCreateMultisigIsm ...
-message MsgCreateMultisigIsm {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/MsgCreateMultiSigIsm";
-
-  // creator is the message sender.
-  string creator = 1;
-
-  // multi_sig ...
-  MultiSigIsm multi_sig = 2;
-}
-
-// MsgCreateMultisigIsmResponse ...
-message MsgCreateMultisigIsmResponse { string id = 1; }
-
-// MsgCreateNoopIsm ...
-message MsgCreateNoopIsm {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/MsgCreateNoopIsm";
-
-  // creator is the message sender.
-  string creator = 1;
-}
-
-// MsgCreateNoopIsmResponse ...
-message MsgCreateNoopIsmResponse { string id = 1; }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {

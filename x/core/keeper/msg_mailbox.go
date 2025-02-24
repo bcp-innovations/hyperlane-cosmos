@@ -46,7 +46,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 
 	prefixedId := util.CreateHexAddress(types.ModuleName, int64(mailboxCount))
 
-	tree := types.NewTree(types.ZeroHashes, 0)
+	tree := util.NewTree(util.ZeroHashes, 0)
 
 	newMailbox := types.Mailbox{
 		Id:              prefixedId.String(),

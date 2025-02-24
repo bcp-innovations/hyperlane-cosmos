@@ -15,8 +15,8 @@ const (
 // MerkleTree represents an incremental merkle tree.
 // Contains current branch and the number of inserted leaves in the tree.
 type MerkleTree struct {
-	branch [TreeDepth][32]byte
-	count  uint32
+	Branch [TreeDepth][32]byte
+	Count  uint32
 }
 
 // ZeroHashes represents an array of TREE_DEPTH zero hashes
@@ -68,13 +68,13 @@ func hexToBytes(hexStr string) [32]byte {
 
 func NewTree(branch [32][32]byte, count uint32) *MerkleTree {
 	tree := &MerkleTree{}
-	copy(tree.branch[:], branch[:])
-	tree.count = count
+	copy(tree.Branch[:], branch[:])
+	tree.Count = count
 	return tree
 }
 
 func (tree *MerkleTree) GetCount() uint32 {
-	return tree.count
+	return tree.Count
 }
 
 func (tree *MerkleTree) GetRoot() [32]byte {
@@ -82,27 +82,27 @@ func (tree *MerkleTree) GetRoot() [32]byte {
 }
 
 func (tree *MerkleTree) GetLatestCheckpoint() ([32]byte, uint32, error) {
-	if tree.count == 0 {
+	if tree.Count == 0 {
 		return [32]byte{}, 0, fmt.Errorf("no leaf inserted yet")
 	}
-	return tree.root(), tree.count - 1, nil
+	return tree.root(), tree.Count - 1, nil
 }
 
 // Insert inserts node into merkle tree
 // Reverts if tree is full
 func (tree *MerkleTree) Insert(node [32]byte) error {
-	if tree.count >= MaxLeaves {
+	if tree.Count >= MaxLeaves {
 		return fmt.Errorf("merkle tree full")
 	}
 
-	tree.count++
-	size := tree.count
+	tree.Count++
+	size := tree.Count
 	for i := uint64(0); i < TreeDepth; i++ {
 		if (size & 1) == 1 {
-			tree.branch[i] = node
+			tree.Branch[i] = node
 			return nil
 		}
-		node = [32]byte(crypto.Keccak256(tree.branch[i][:], node[:]))
+		node = [32]byte(crypto.Keccak256(tree.Branch[i][:], node[:]))
 		size /= 2
 	}
 	// As the loop should always end prematurely with the return statement,
@@ -113,11 +113,11 @@ func (tree *MerkleTree) Insert(node [32]byte) error {
 // rootWithCtx calculates and returns tree's current root given array of zero hashes
 func (tree *MerkleTree) rootWithCtx(zeroes [TreeDepth][32]byte) [32]byte {
 	var current [32]byte = [32]byte{} // zero initialized 32 byte long hash
-	index := tree.count
+	index := tree.Count
 
 	for i := uint64(0); i < TreeDepth; i++ {
 		ithBit := (index >> i) & 0x01
-		next := tree.branch[i]
+		next := tree.Branch[i]
 		if ithBit == 1 {
 			current = crypto.Keccak256Hash(next[:], current[:])
 		} else {

@@ -12,7 +12,7 @@ import (
 
 /*
 
-TEST CASES - msg_ism.go
+TEST CASES - msg_server.go
 
 * Create (valid) Noop ISM
 * Create (invalid) Multisig ISM with less addresses

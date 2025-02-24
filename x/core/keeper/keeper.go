@@ -30,23 +30,16 @@ type Keeper struct {
 	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
 	ReceiverIsmMapping collections.Map[[]byte, []byte]
 	MailboxesSequence  collections.Sequence
-	Validators         collections.Map[[]byte, types.Validator]
-	ValidatorsSequence collections.Sequence
-	StorageLocations   collections.Map[collections.Pair[[]byte, uint64], types.StorageLocation]
 	// IGP
 	Igp                        collections.Map[[]byte, types.Igp]
 	IgpDestinationGasConfigMap collections.Map[collections.Pair[[]byte, uint32], types.DestinationGasConfig]
 	IgpSequence                collections.Sequence
-	// ISM
-	Isms         collections.Map[[]byte, types.Ism]
-	IsmsSequence collections.Sequence
 
 	Params collections.Item[types.Params]
 	Schema collections.Schema
 
 	bankKeeper types.BankKeeper
 
-	// REFACTORED
 	IsmKeeper ismkeeper.Keeper
 	ismHooks  types.InterchainSecurityHooks
 
@@ -70,14 +63,9 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		Params:                     collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		hooks:                      nil,
 		MailboxesSequence:          collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
-		Validators:                 collections.NewMap(sb, types.ValidatorsKey, "validators", collections.BytesKey, codec.CollValue[types.Validator](cdc)),
-		ValidatorsSequence:         collections.NewSequence(sb, types.ValidatorsSequencesKey, "validators_sequence"),
-		StorageLocations:           collections.NewMap(sb, types.StorageLocationsKey, "storage_locations", collections.PairKeyCodec(collections.BytesKey, collections.Uint64Key), codec.CollValue[types.StorageLocation](cdc)),
 		Igp:                        collections.NewMap(sb, types.IgpKey, "igp", collections.BytesKey, codec.CollValue[types.Igp](cdc)),
 		IgpDestinationGasConfigMap: collections.NewMap(sb, types.IgpDestinationGasConfigMapKey, "igp_destination_gas_config_map", collections.PairKeyCodec(collections.BytesKey, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
 		IgpSequence:                collections.NewSequence(sb, types.IgpSequenceKey, "igp_sequence"),
-		Isms:                       collections.NewMap(sb, types.IsmsKey, "isms", collections.BytesKey, codec.CollValue[types.Ism](cdc)),
-		IsmsSequence:               collections.NewSequence(sb, types.IsmsSequencesKey, "isms_sequence"),
 		ReceiverIsmMapping:         collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
 		bankKeeper:                 bankKeeper,
 

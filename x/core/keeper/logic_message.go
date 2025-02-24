@@ -49,24 +49,13 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 
 	ismId := util.HexAddress(rawIsmAddress)
 
-	// TODO remove, once migrated to new module
-	verified, err := k.Verify(ctx, ismId, metadata, message)
+	// New logic
+	verified, err := k.ismHooks.Verify(ctx, ismId, metadata, message)
 	if err != nil {
 		return err
 	}
 	if !verified {
 		return fmt.Errorf("ism verification failed")
-	}
-
-	// New logic
-	verified, err = k.ismHooks.Verify(ctx, ismId, metadata, message)
-	if err != nil {
-		return err
-	}
-	if !verified {
-		// TODO enable, once migrated
-		_ = verified
-		// return fmt.Errorf("ism verification failed")
 	}
 
 	err = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)

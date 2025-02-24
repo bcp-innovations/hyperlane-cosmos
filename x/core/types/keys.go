@@ -1,26 +1,28 @@
 package types
 
 import (
-	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
 )
 
-const ModuleName = "hyperlane"
+const (
+	ModuleName       = "hyperlane"
+	ModuleId   uint8 = 0
+)
 
 var (
-	ParamsKey                     = collections.NewPrefix(0)
-	MailboxesKey                  = collections.NewPrefix(1)
-	MailboxesSequenceKey          = collections.NewPrefix(2)
-	MessagesKey                   = collections.NewPrefix(3)
-	ReceiverIsmKey                = collections.NewPrefix(4)
-	ValidatorsKey                 = collections.NewPrefix(5)
-	ValidatorsSequencesKey        = collections.NewPrefix(6)
-	StorageLocationsKey           = collections.NewPrefix(7)
-	IgpKey                        = collections.NewPrefix(8)
-	IgpDestinationGasConfigMapKey = collections.NewPrefix(9)
-	IgpSequenceKey                = collections.NewPrefix(10)
-	IsmsKey                       = collections.NewPrefix(11)
-	IsmsSequencesKey              = collections.NewPrefix(12)
+	ParamsKey                     = []byte{ModuleId, 0}
+	MailboxesKey                  = []byte{ModuleId, 1}
+	MailboxesSequenceKey          = []byte{ModuleId, 2}
+	MessagesKey                   = []byte{ModuleId, 3}
+	ReceiverIsmKey                = []byte{ModuleId, 4}
+	ValidatorsKey                 = []byte{ModuleId, 5}
+	ValidatorsSequencesKey        = []byte{ModuleId, 6}
+	StorageLocationsKey           = []byte{ModuleId, 7}
+	IgpKey                        = []byte{ModuleId, 8}
+	IgpDestinationGasConfigMapKey = []byte{ModuleId, 9}
+	IgpSequenceKey                = []byte{ModuleId, 10}
+	IsmsKey                       = []byte{ModuleId, 11}
+	IsmsSequencesKey              = []byte{ModuleId, 12}
 )
 
 var TokenExchangeRateScale = math.NewInt(1e10)

@@ -104,7 +104,8 @@ func (h HexAddress) GetInternalId() uint64 {
 }
 
 func (h HexAddress) GetClass() string {
-	return string(h[:20])
+	// Trim empty bytes.
+	return strings.Trim(string(h[:20]), "\x00")
 }
 
 func (h HexAddress) GetType() uint32 {

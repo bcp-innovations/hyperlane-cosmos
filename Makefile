@@ -16,6 +16,7 @@ ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -ldflags '$(ldflags)' -trimpath -buildvcs=false
 
+# TODO: Remove after renaming submodules to 01_ism, ...
 SUBMODULE_DIRS_TO_TEST := ./x/core/_interchain_security/keeper \
 				./x/core/_interchain_security/types
 

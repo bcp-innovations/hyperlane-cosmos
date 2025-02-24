@@ -14,7 +14,7 @@ import (
 
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
-		Use:                        "ism-refactored", // TODO change command to "ism" once migrated
+		Use:                        "ism",
 		Short:                      "Hyperlane Interchain Security Module commands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,

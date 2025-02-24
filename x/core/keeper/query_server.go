@@ -27,63 +27,6 @@ type queryServer struct {
 	k *Keeper
 }
 
-// TODO: Remove
-func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *types.QueryLatestAnnouncedStorageLocationRequest) (*types.QueryLatestAnnouncedStorageLocationResponse, error) {
-	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
-	if err != nil {
-		return nil, err
-	}
-
-	rng := collections.NewPrefixedPairRange[[]byte, uint64](validatorAddress)
-
-	iter, err := qs.k.StorageLocations.Iterate(ctx, rng)
-	if err != nil {
-		return nil, err
-	}
-
-	iter.Next()
-
-	storageLocations, err := iter.Values()
-	if err != nil {
-		return nil, err
-	}
-
-	location := storageLocations[len(storageLocations)-1]
-
-	return &types.QueryLatestAnnouncedStorageLocationResponse{
-		StorageLocation: location.Location,
-	}, nil
-}
-
-// TODO: Remove
-func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.QueryAnnouncedStorageLocationsRequest) (*types.QueryAnnouncedStorageLocationsResponse, error) {
-	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
-	if err != nil {
-		return nil, err
-	}
-
-	rng := collections.NewPrefixedPairRange[[]byte, uint64](validatorAddress)
-
-	iter, err := qs.k.StorageLocations.Iterate(ctx, rng)
-	if err != nil {
-		return nil, err
-	}
-
-	storageLocations, err := iter.Values()
-	if err != nil {
-		return nil, err
-	}
-
-	locations := make([]*types.StorageLocation, len(storageLocations))
-	for i := range storageLocations {
-		locations[i] = &storageLocations[i]
-	}
-
-	return &types.QueryAnnouncedStorageLocationsResponse{
-		StorageLocations: locations,
-	}, nil
-}
-
 func (qs queryServer) Delivered(ctx context.Context, req *types.QueryDeliveredRequest) (*types.QueryDeliveredResponse, error) {
 	messageId, err := util.DecodeEthHex(req.MessageId)
 	if err != nil {
@@ -211,19 +154,6 @@ func (qs queryServer) LatestCheckpoint(ctx context.Context, req *types.QueryLate
 	}, nil
 }
 
-// TODO: Remove
-func (qs queryServer) Validators(ctx context.Context, req *types.QueryValidatorsRequest) (*types.QueryValidatorsResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Validators, req.Pagination)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.QueryValidatorsResponse{
-		Validators: values,
-		Pagination: pagination,
-	}, nil
-}
-
 // IGP
 func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
 	if len(req.IgpId) == 0 {
@@ -317,35 +247,9 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 	}, nil
 }
 
+// TODO: Remove
 func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDryRunRequest) (*types.QueryVerifyDryRunResponse, error) {
-	rawMessage, err := util.DecodeEthHex(req.Message)
-	if err != nil {
-		return nil, err
-	}
-
-	message, err := util.ParseHyperlaneMessage(rawMessage)
-	if err != nil {
-		return nil, err
-	}
-
-	metadata, err := util.DecodeEthHex(req.Metadata)
-	if err != nil {
-		return nil, err
-	}
-
-	ismId, err := util.DecodeHexAddress(req.IsmId)
-	if err != nil {
-		return nil, err
-	}
-
-	verified, err := qs.k.Verify(ctx, ismId, metadata, message)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.QueryVerifyDryRunResponse{
-		Verified: verified,
-	}, nil
+	panic("Not Implemented")
 }
 
 // Params defines the handler for the Query/Params RPC method.

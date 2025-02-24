@@ -60,27 +60,6 @@ message InterchainGasPaymaster {
   bool required = 2;
 }
 
-// TODO: Remove
-// Validator ...
-message Validator {
-  option (gogoproto.goproto_getters) = false;
-
-  // address ...
-  string address = 1;
-}
-
-// TODO: Remove
-// StorageLocation ...
-message StorageLocation {
-  option (gogoproto.goproto_getters) = false;
-
-  // address ...
-  string location = 1;
-
-  // id ...
-  uint64 id = 2;
-}
-
 // Params defines the parameters of the module.
 message Params {
   option (amino.name) = "hyperlane/mailbox/Params";
@@ -140,41 +119,4 @@ message GasOracle {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-}
-
-// TODO: Remove
-// Ism ...
-message Ism {
-  option (gogoproto.goproto_getters) = false;
-
-  // XXX ...
-  string id = 1;
-
-  // ism_type ...
-  uint32 ism_type = 2;
-
-  // creator ...
-  string creator = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-
-  // ism ...
-  oneof ism {
-    MultiSigIsm multi_sig = 4;
-    NoopIsm noop = 5;
-  }
-}
-
-// MultiSigIsm ...
-message MultiSigIsm {
-
-  // validators
-  // these are 20 byte long ethereum style addresses
-  repeated string validators = 1;
-
-  // threshold ...
-  uint32 threshold = 2;
-}
-
-// NoopIsm ...
-message NoopIsm {
-  // No fields needed for Noop
 }

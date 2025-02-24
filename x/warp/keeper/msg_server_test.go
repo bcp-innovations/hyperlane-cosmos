@@ -1043,7 +1043,7 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	})
 	Expect(err).To(BeNil())
 
-	var response coreTypes.MsgCreateMultisigIsmResponse
+	var response ismTypes.MsgCreateMerkleRootMultiSigIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
@@ -1059,7 +1059,7 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	})
 	Expect(err).To(BeNil())
 
-	var response coreTypes.MsgCreateNoopIsmResponse
+	var response ismTypes.MsgCreateNoopIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
