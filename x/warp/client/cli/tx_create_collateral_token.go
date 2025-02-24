@@ -27,7 +27,6 @@ func CmdCreateCollateralToken() *cobra.Command {
 				Owner:         clientCtx.GetFromAddress().String(),
 				OriginMailbox: args[0],
 				OriginDenom:   args[1],
-				IsmId:         ismId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)

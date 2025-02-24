@@ -210,7 +210,7 @@ func (ms msgServer) SetInterchainSecurityModule(ctx context.Context, msg *types.
 
 	ismAddress, err := util.DecodeHexAddress(msg.IsmId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid ism id: %s", err)
 	}
 
 	token.IsmId = ismAddress.String()

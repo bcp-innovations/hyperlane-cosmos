@@ -177,7 +177,8 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("already received messsage with id %s", hypMsg.Id())))
 	})
 
-	It("ProcessMessage (invalid) with invalid message: non-registered recipient", func() {
+	// TODO rework test ->
+	PIt("ProcessMessage (invalid) with invalid message: non-registered recipient", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 

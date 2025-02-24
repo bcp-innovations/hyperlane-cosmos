@@ -3,6 +3,8 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/errors"
+
 	"cosmossdk.io/math"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -43,7 +45,11 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 
 	ismId, err := k.Hooks().ReceiverIsmId(ctx, message.Recipient)
 	if err != nil {
-		return err
+		if errors.IsOf(err, types.ErrNoReceiverISM) {
+			ismId, _ = util.DecodeHexAddress(mailbox.DefaultIsm)
+		} else {
+			return err
+		}
 	}
 
 	// New logic
@@ -55,7 +61,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return fmt.Errorf("ism verification failed")
 	}
 
-	err = k.Hooks().Handle(ctx, mailboxId, metadata, message)
+	err = k.Hooks().Handle(ctx, mailboxId, message)
 	if err != nil {
 		return err
 	}

@@ -28,7 +28,7 @@ type Keeper struct {
 	Mailboxes collections.Map[[]byte, types.Mailbox]
 	Messages  collections.KeySet[[]byte]
 	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
-	MailboxesSequence  collections.Sequence
+	MailboxesSequence collections.Sequence
 	// IGP
 	Igp                        collections.Map[[]byte, types.Igp]
 	IgpDestinationGasConfigMap collections.Map[collections.Pair[[]byte, uint32], types.DestinationGasConfig]

@@ -26,7 +26,6 @@ func CmdCreateSyntheticToken() *cobra.Command {
 			msg := types.MsgCreateSyntheticToken{
 				Owner:         clientCtx.GetFromAddress().String(),
 				OriginMailbox: args[0],
-				IsmId:         ismId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)

@@ -46,7 +46,11 @@ func (h MultiMailboxHooks) ReceiverIsmId(ctx context.Context, recipient util.Hex
 		}
 	}
 
-	return util.HexAddress{}, ErrNoReceiverISM
+	if !receiverIsm.IsZeroAddress() {
+		return receiverIsm, nil
+	} else {
+		return util.HexAddress{}, ErrNoReceiverISM
+	}
 }
 
 // Interchain Security Module Multi Wrapper
