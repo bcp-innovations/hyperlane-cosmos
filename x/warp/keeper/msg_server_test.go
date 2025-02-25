@@ -395,6 +395,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -436,11 +437,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -510,11 +513,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -582,11 +587,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -654,11 +661,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -726,11 +735,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)

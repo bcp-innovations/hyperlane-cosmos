@@ -46,6 +46,11 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		return util.HexAddress{}, fmt.Errorf("failed to decode receiver contract address %s", remoteRouter.ReceiverContract)
 	}
 
+	gas := remoteRouter.Gas
+	if !gasLimit.IsZero() {
+		gas = gasLimit
+	}
+
 	warpPayload, err := types.NewWarpPayload(recipient, *amount.BigInt())
 	if err != nil {
 		return util.HexAddress{}, err
@@ -61,7 +66,7 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		warpPayload.Bytes(),
 		cosmosSender,
 		customIgpId,
-		gasLimit,
+		gas,
 		maxFee,
 	)
 	if err != nil {

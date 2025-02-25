@@ -58,7 +58,6 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 }
 
 // CreateCollateralToken ...
-// TODO: setGasRouter tx
 func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (*types.MsgCreateCollateralTokenResponse, error) {
 	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
 		return nil, fmt.Errorf("module disabled collateral tokens")
@@ -120,11 +119,59 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("invalid remote router")
 	}
 
+	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain))
+	if err != nil {
+		return nil, err
+	}
+
+	if exists {
+		return nil, fmt.Errorf("remote router for domain %v is already enrolled", msg.RemoteRouter.ReceiverDomain)
+	}
+
+	if msg.RemoteRouter.ReceiverContract == "" {
+		return nil, fmt.Errorf("invalid receiver contract")
+	}
+
 	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
 		return nil, err
 	}
 
 	return &types.MsgEnrollRemoteRouterResponse{}, nil
+}
+
+func (ms msgServer) SetRemoteRouter(ctx context.Context, msg *types.MsgSetRemoteRouter) (*types.MsgSetRemoteRouterResponse, error) {
+	tokenId, err := util.DecodeHexAddress(msg.TokenId)
+	if err != nil {
+		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
+	}
+
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	if err != nil {
+		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
+	}
+
+	if token.Owner != msg.Owner {
+		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
+	}
+
+	if msg.RemoteRouter == nil {
+		return nil, fmt.Errorf("invalid remote router")
+	}
+
+	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain))
+	if err != nil || !exists {
+		return nil, fmt.Errorf("failed to find remote router for domain %v", msg.RemoteRouter.ReceiverDomain)
+	}
+
+	if msg.RemoteRouter.ReceiverContract == "" {
+		return nil, fmt.Errorf("invalid receiver contract")
+	}
+
+	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgSetRemoteRouterResponse{}, nil
 }
 
 func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnrollRemoteRouter) (*types.MsgUnrollRemoteRouterResponse, error) {
