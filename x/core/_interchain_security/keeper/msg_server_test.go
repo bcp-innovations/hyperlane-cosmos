@@ -25,11 +25,28 @@ import (
 TEST CASES - msg_server.go
 
 * Create (valid) Noop ISM
-* Create (invalid) Multisig ISM with less addresses
-* Create (invalid) Multisig ISM with invalid threshold
-* Create (invalid) Multisig ISM with duplicate validator addresses
-* Create (invalid) Multisig ISM with invalid validator addresses
-* Create (valid) Multisig ISM
+* Create (invalid) MessageIdMultisig ISM with less addresses
+* Create (invalid) MessageIdMultisig ISM with invalid threshold
+* Create (invalid) MessageIdMultisig ISM with duplicate validator addresses
+* Create (invalid) MessageIdMultisig ISM with invalid validator addresses
+* Create (valid) MessageIdMultisig ISM
+* Create (invalid) MerkleRootMultisig ISM with less addresses
+* Create (invalid) MerkleRootMultisig ISM with invalid threshold
+* Create (invalid) MerkleRootMultisig ISM with duplicate validator addresses
+* Create (invalid) MerkleRootMultisig ISM with invalid validator addresses
+* Create (valid) MerkleRootMultisig ISM
+* AnnounceValidator (invalid) with empty validator
+* AnnounceValidator (invalid) with invalid validator
+* AnnounceValidator (invalid) with empty storage location
+* AnnounceValidator (invalid) with empty signature
+* AnnounceValidator (invalid) with invalid signature
+* AnnounceValidator (invalid) with invalid signature recovery id
+* AnnounceValidator (invalid) same storage location for validator (replay protection)
+* AnnounceValidator (invalid) for non-existing Mailbox ID
+* AnnounceValidator (invalid) for invalid Mailbox ID
+* AnnounceValidator (invalid) for non-matching signature validator pair
+* AnnounceValidator (valid)
+* AnnounceValidator (valid) add another storage location
 
 */
 
@@ -67,11 +84,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.NoopISM{}))
 	})
 
-	It("Create (invalid) Multisig ISM with less address", func() {
+	It("Create (invalid) MessageIdMultisig ISM with less address", func() {
 		// Arrange
 
 		// Act
-		_, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+		_, err := s.RunTx(&types.MsgCreateMessageIdMultisigIsm{
 			Creator:    creator.Address,
 			Validators: []string{},
 			Threshold:  2,
@@ -81,11 +98,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("validator addresses less than threshold"))
 	})
 
-	It("Create (invalid) Multisig ISM with invalid threshold", func() {
+	It("Create (invalid) MessageIdMultisig ISM with invalid threshold", func() {
 		// Arrange
 
 		// Act
-		_, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+		_, err := s.RunTx(&types.MsgCreateMessageIdMultisigIsm{
 			Creator:    creator.Address,
 			Validators: []string{},
 			Threshold:  0,
@@ -95,7 +112,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("threshold must be greater than zero"))
 	})
 
-	It("Create (invalid) Multisig ISM with duplicate validator addresses", func() {
+	It("Create (invalid) MessageIdMultisig ISM with duplicate validator addresses", func() {
 		// Arrange
 		invalidAddress := []string{
 			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
@@ -103,7 +120,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		}
 
 		// Act
-		_, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+		_, err := s.RunTx(&types.MsgCreateMessageIdMultisigIsm{
 			Validators: invalidAddress,
 			Threshold:  2,
 		})
@@ -112,7 +129,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v", invalidAddress[0])))
 	})
 
-	It("Create (invalid) Multisig ISM with invalid validator address", func() {
+	It("Create (invalid) MessageIdMultisig ISM with invalid validator address", func() {
 		// Arrange
 		validValidatorAddress := "0xb05b6a0aa112b61a7aa16c19cac27d970692995e"
 		invalidAddress := []string{
@@ -126,7 +143,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		for _, invalidKey := range invalidAddress {
 			// Act
-			_, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+			_, err := s.RunTx(&types.MsgCreateMessageIdMultisigIsm{
 				Creator: creator.Address,
 				Validators: []string{
 					validValidatorAddress,
@@ -140,11 +157,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		}
 	})
 
-	It("Create (valid) Multisig ISM", func() {
+	It("Create (valid) MessageIdMultisig ISM", func() {
 		// Arrange
 
 		// Act
-		res, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+		res, err := s.RunTx(&types.MsgCreateMessageIdMultisigIsm{
 			Creator: creator.Address,
 			Validators: []string{
 				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
@@ -157,7 +174,109 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		var response types.MsgCreateMerkleRootMultiSigIsmResponse
+		var response types.MsgCreateMessageIdMultisigIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		// ismId, err := util.DecodeHexAddress(response.Id)
+		// Expect(err).To(BeNil())
+
+		// ism, err := keeper.NewQueryServerImpl(&s.App().IsmKeeper).Ism(s.Ctx(), &types.QueryIsmRequest{Id: ismId.String()})
+		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.MerkleRootMultiSigISM{}))
+		// Expect(ism).To(Equal(creator.Address))
+		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG))
+	})
+
+	It("Create (invalid) MerkleRootMultisig ISM with less address", func() {
+		// Arrange
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
+			Creator:    creator.Address,
+			Validators: []string{},
+			Threshold:  2,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("validator addresses less than threshold"))
+	})
+
+	It("Create (invalid) MerkleRootMultisig ISM with invalid threshold", func() {
+		// Arrange
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
+			Creator:    creator.Address,
+			Validators: []string{},
+			Threshold:  0,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("threshold must be greater than zero"))
+	})
+
+	It("Create (invalid) MerkleRootMultisig ISM with duplicate validator addresses", func() {
+		// Arrange
+		invalidAddress := []string{
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+		}
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
+			Validators: invalidAddress,
+			Threshold:  2,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v", invalidAddress[0])))
+	})
+
+	It("Create (invalid) MerkleRootMultisig ISM with invalid validator address", func() {
+		// Arrange
+		validValidatorAddress := "0xb05b6a0aa112b61a7aa16c19cac27d970692995e"
+		invalidAddress := []string{
+			// one character less
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995",
+			// one character more
+			"0xa05b6a0aa112b61a7aa16c19cac27d970692995ef",
+			// invalid character included (`t`)
+			"0xd05b6a0aa112b61a7aa16c19cac27d970692995t",
+		}
+
+		for _, invalidKey := range invalidAddress {
+			// Act
+			_, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
+				Creator: creator.Address,
+				Validators: []string{
+					validValidatorAddress,
+					invalidKey,
+				},
+				Threshold: 2,
+			})
+
+			// Assert
+			Expect(err.Error()).To(Equal(fmt.Sprintf("invalid validator address: %s", invalidKey)))
+		}
+	})
+
+	It("Create (valid) MerkleRootMultisig ISM", func() {
+		// Arrange
+
+		// Act
+		res, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
+			Creator: creator.Address,
+			Validators: []string{
+				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
+			},
+			Threshold: 2,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateMerkleRootMultisigIsmResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
 		// ismId, err := util.DecodeHexAddress(response.Id)
@@ -553,7 +672,7 @@ func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+	res, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
 		Creator: creator,
 		Validators: []string{
 			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
@@ -564,7 +683,7 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	})
 	Expect(err).To(BeNil())
 
-	var response types.MsgCreateMerkleRootMultiSigIsmResponse
+	var response types.MsgCreateMerkleRootMultisigIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 

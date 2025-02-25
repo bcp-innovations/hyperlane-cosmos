@@ -1027,7 +1027,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&ismTypes.MsgCreateMerkleRootMultiSigIsm{
+	res, err := s.RunTx(&ismTypes.MsgCreateMerkleRootMultisigIsm{
 		Creator: creator,
 		Validators: []string{
 			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
@@ -1038,7 +1038,7 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	})
 	Expect(err).To(BeNil())
 
-	var response ismTypes.MsgCreateMerkleRootMultiSigIsmResponse
+	var response ismTypes.MsgCreateMerkleRootMultisigIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 

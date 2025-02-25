@@ -97,7 +97,7 @@ func NewMessageIdMultisigMetadata(metadata []byte) (MessageIdMultisigMetadata, e
 }
 
 func (m *MessageIdMultisigMetadata) digest(message *util.HyperlaneMessage) [32]byte {
-	return CheckpointDigest(
+	return checkpointDigest(
 		message.Origin,
 		m.MerkleTreeHook,
 		m.MerkleRoot,

@@ -121,7 +121,7 @@ func (m *MerkleRootMultisigMetadata) digest(message *util.HyperlaneMessage) [32]
 	messageId := message.Id()
 	signedRoot := util.BranchRoot(messageId, m.MerkleProof, m.MessageIndex)
 
-	return CheckpointDigest(
+	return checkpointDigest(
 		message.Origin,
 		m.MerkleTreeHook,
 		signedRoot,
@@ -130,11 +130,11 @@ func (m *MerkleRootMultisigMetadata) digest(message *util.HyperlaneMessage) [32]
 	)
 }
 
-func CheckpointDigest(origin uint32, merkleTreeHook, checkpointRoot [32]byte, checkpointIndex uint32, messageId [32]byte) [32]byte {
-	domainHash := DomainHash(origin, merkleTreeHook)
+func checkpointDigest(origin uint32, merkleTreeHook, checkpointRoot [32]byte, checkpointIndex uint32, messageId [32]byte) [32]byte {
+	hash := domainHash(origin, merkleTreeHook)
 
 	bytes := make([]byte, 0, 32+32+4+32)
-	bytes = append(bytes, domainHash[:]...)
+	bytes = append(bytes, hash[:]...)
 	bytes = append(bytes, checkpointRoot[:]...)
 	bytes = binary.BigEndian.AppendUint32(bytes, checkpointIndex)
 	bytes = append(bytes, messageId[:]...)
@@ -142,7 +142,7 @@ func CheckpointDigest(origin uint32, merkleTreeHook, checkpointRoot [32]byte, ch
 	return util.GetEthSigningHash(crypto.Keccak256(bytes))
 }
 
-func DomainHash(origin uint32, merkleTreeHook [32]byte) [32]byte {
+func domainHash(origin uint32, merkleTreeHook [32]byte) [32]byte {
 	bytes := make([]byte, 0, 46)
 
 	bytes = binary.BigEndian.AppendUint32(bytes, origin)
