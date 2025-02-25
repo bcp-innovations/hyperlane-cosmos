@@ -40,6 +40,10 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 
+	if err = ValidateTokenMetadata(msg.Metadata); err != nil {
+		return nil, err
+	}
+
 	tokenId := ms.k.hexAddressFactory.GenerateId(uint32(types.HYP_TOKEN_TYPE_SYNTHETIC), next)
 
 	newToken := types.HypToken{
@@ -48,6 +52,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
+		Metadata:      msg.Metadata,
 	}
 
 	if err = ms.k.HypTokens.Set(ctx, newToken.Id, newToken); err != nil {
@@ -92,6 +97,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		TokenType:     types.HYP_TOKEN_TYPE_COLLATERAL,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   msg.OriginDenom,
+		Metadata:      nil,
 	}
 
 	if err = ms.k.HypTokens.Set(ctx, newToken.Id, newToken); err != nil {

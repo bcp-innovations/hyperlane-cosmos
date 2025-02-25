@@ -35,6 +35,9 @@ message HypToken {
   ];
 
   string ism_id = 7;
+
+  // ERC20 metadata used only for synthetic tokens.
+  TokenMetadata metadata = 8;
 }
 
 // RemoteRouter ...
@@ -59,4 +62,15 @@ enum HypTokenType {
 
   // HYP_TOKEN_TYPE_SYNTHETIC ...
   HYP_TOKEN_TYPE_SYNTHETIC = 2;
+}
+
+// TokenMetadata
+message TokenMetadata {
+  string name = 1;
+  string symbol = 2;
+  string total_supply = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint32 decimals = 4;
 }

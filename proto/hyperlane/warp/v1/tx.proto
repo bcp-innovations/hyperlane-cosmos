@@ -65,7 +65,7 @@ message MsgCreateSyntheticToken {
 
   string origin_mailbox = 2;
 
-  // TODO should we add some metadata? e.g. decimals, denom
+  TokenMetadata metadata = 3;
 }
 
 // MsgCreateSyntheticTokenResponse ...

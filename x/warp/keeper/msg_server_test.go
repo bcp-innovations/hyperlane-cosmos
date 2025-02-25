@@ -79,6 +79,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: invalidMailboxId,
+			Metadata:      nil,
 		})
 
 		// Assert
@@ -94,6 +95,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: nonExistingMailboxId,
+			Metadata:      nil,
 		})
 
 		// Assert
@@ -127,11 +129,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	It("MsgCreateSyntheticToken (valid) with default ISM ID", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		metadata := types.TokenMetadata{
+			Name:        "test",
+			Symbol:      "TST",
+			TotalSupply: math.NewInt(100000),
+			Decimals:    18,
+		}
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
+			Metadata:      &metadata,
 		})
 
 		// Assert
@@ -141,11 +150,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	It("MsgCreateSyntheticToken (valid)", func() {
 		// Arrange
 		mailboxId, _, ismId := createValidMailbox(s, owner.Address, "noop", false, 1)
+		metadata := types.TokenMetadata{
+			Name:        "test",
+			Symbol:      "TST",
+			TotalSupply: math.NewInt(100000),
+			Decimals:    18,
+		}
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
+			Metadata:      &metadata,
 		})
 		Expect(err).To(BeNil())
 
@@ -1150,6 +1166,12 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner,
 			OriginMailbox: mailboxId.String(),
+			Metadata: &types.TokenMetadata{
+				Name:        "test",
+				Symbol:      "TST",
+				TotalSupply: math.NewInt(100000),
+				Decimals:    18,
+			},
 		})
 		Expect(err).To(BeNil())
 		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
