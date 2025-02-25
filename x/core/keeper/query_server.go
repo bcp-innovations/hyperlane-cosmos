@@ -56,15 +56,16 @@ func (qs queryServer) RecipientIsm(ctx context.Context, req *types.RecipientIsmR
 }
 
 func (qs queryServer) Mailboxes(ctx context.Context, req *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Mailboxes, req.Pagination)
-	if err != nil {
-		return nil, err
-	}
+	// values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.Mailboxes, req.Pagination, qs.k.MailboxesSequence)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	return &types.QueryMailboxesResponse{
-		Mailboxes:  values,
-		Pagination: pagination,
-	}, nil
+	// return &types.QueryMailboxesResponse{
+	// 	Mailboxes:  values,
+	// 	Pagination: pagination,
+	// }, nil
+	panic("TODO: refactor")
 }
 
 func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxRequest) (*types.QueryMailboxResponse, error) {
@@ -192,15 +193,16 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 }
 
 func (qs queryServer) Igps(ctx context.Context, req *types.QueryIgpsRequest) (*types.QueryIgpsResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Igp, req.Pagination)
-	if err != nil {
-		return nil, err
-	}
+	// values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Igp, req.Pagination)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	return &types.QueryIgpsResponse{
-		Igps:       values,
-		Pagination: pagination,
-	}, nil
+	// return &types.QueryIgpsResponse{
+	// 	Igps:       values,
+	// 	Pagination: pagination,
+	// }, nil
+	panic("TODO: refactor")
 }
 
 func (qs queryServer) Igp(ctx context.Context, req *types.QueryIgpRequest) (*types.QueryIgpResponse, error) {
