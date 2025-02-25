@@ -126,8 +126,7 @@ func (m msgServer) CreateMerkleRootMultiSigIsm(ctx context.Context, req *types.M
 		Threshold:  req.Threshold,
 	}
 
-	err = newIsm.Validate()
-	if err != nil {
+	if err = newIsm.Validate(); err != nil {
 		return nil, err
 	}
 

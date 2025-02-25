@@ -6,6 +6,27 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interch
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
+// MessageIdMultisigISM ...
+message MessageIdMultisigISM {
+  option (gogoproto.goproto_getters) = false;
+  option (cosmos_proto.implements_interface) =
+      "hyperlane.core.v1._interchain_security."
+      "HyperlaneInterchainSecurityModule";
+
+  // XXX ...
+  uint64 id = 1;
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // validators
+  // these are 20 byte long ethereum style addresses
+  repeated string validators = 3;
+
+  // threshold ...
+  uint32 threshold = 4;
+}
+
 // MerkleRootMultiSigISM ...
 message MerkleRootMultiSigISM {
   option (gogoproto.goproto_getters) = false;
