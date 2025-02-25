@@ -15,7 +15,7 @@ import (
 // using keccak256.
 func GetEthSigningHash(msg []byte) [32]byte {
 	const prefix = "\x19Ethereum Signed Message:\n"
-	bytes := []byte(fmt.Sprintf("%v%v", prefix, len(msg)))
+	bytes := fmt.Appendf(nil, "%v%v", prefix, len(msg))
 	bytes = slices.Concat(
 		bytes,
 		msg,

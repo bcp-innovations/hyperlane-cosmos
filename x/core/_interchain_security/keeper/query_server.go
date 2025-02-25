@@ -67,29 +67,32 @@ func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *t
 		return nil, err
 	}
 
-	rng := collections.NewSuperPrefixedTripleRange[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
-
-	// TODO: Use reverse iterator
-	iter, err := qs.k.storageLocations.Iterate(ctx, rng)
+	// encode the prefix key so we can set the order by ourselves
+	key := collections.TripleSuperPrefix[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
+	codec := qs.k.storageLocations.KeyCodec()
+	start := make([]byte, codec.Size(key))
+	_, err = codec.Encode(start, key)
 	if err != nil {
 		return nil, err
 	}
 
-	storageLocations, err := iter.Values()
+	// create a new iterator that is in reverse order
+	// meaning that the first item will be the latest location
+	iter, err := qs.k.storageLocations.IterateRaw(ctx, start, nil, collections.OrderDescending)
 	if err != nil {
 		return nil, err
 	}
 
-	location := storageLocations[len(storageLocations)-1]
+	location, err := iter.Value()
 
 	return &types.QueryLatestAnnouncedStorageLocationResponse{
 		StorageLocation: location,
-	}, nil
+	}, err
 }
 
 // ISM
 func (qs queryServer) Isms(ctx context.Context, req *types.QueryIsmsRequest) (*types.QueryIsmsResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.isms, req.Pagination)
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.isms, req.Pagination, qs.k.ismsSequence)
 	if err != nil {
 		return nil, err
 	}
