@@ -25,6 +25,7 @@ func NewIgpCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdClaim(),
 		CmdCreateIgp(),
+		CmdSetIgpOwner(),
 		CmdPayForGas(),
 		CmdSetDestinationGasConfig(),
 	)
@@ -82,6 +83,43 @@ func CmdCreateIgp() *cobra.Command {
 			if err != nil {
 				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
 			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSetIgpOwner() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-igp-owner [igp-id] [new-owner]",
+		Short: "Update a Hyperlane Interchain Gas Paymaster - CAUTION: NEW OWNER IS NOT VERIFIED",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgSetIgpOwner{
+				Owner:    clientCtx.GetFromAddress().String(),
+				IgpId:    args[0],
+				NewOwner: args[1],
+			}
+
+			_, err = sdk.AccAddressFromBech32(msg.Owner)
+			if err != nil {
+				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
+			}
+
+			// TODO: Verify newOwner's validity
+			//_, err = sdk.AccAddressFromBech32(msg.NewOwner)
+			//if err != nil {
+			//	panic(fmt.Errorf("invalid new owner address (%s)", msg.NewOwner))
+			//}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
