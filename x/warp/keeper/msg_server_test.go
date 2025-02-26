@@ -1360,7 +1360,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
-	Expect(mailbox.Creator).To(Equal(creator))
+	Expect(mailbox.Owner).To(Equal(creator))
 	// Expect(mailbox.Igp.Id).To(Equal(igpId)) // TODO
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
@@ -1375,7 +1375,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailboxes, err := coreKeeper.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &coreTypes.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())
 	Expect(mailboxes.Mailboxes).To(HaveLen(1))
-	Expect(mailboxes.Mailboxes[0].Creator).To(Equal(creator))
+	Expect(mailboxes.Mailboxes[0].Owner).To(Equal(creator))
 
 	return mailboxId
 }

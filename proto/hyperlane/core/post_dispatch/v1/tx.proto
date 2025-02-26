@@ -13,8 +13,11 @@ import "hyperlane/core/post_dispatch/v1/types.proto";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // CreateMerkleRootMultiSigIsm ...
+  // CreateIgp ...
   rpc CreateIgp(MsgCreateIgp) returns (MsgCreateIgpResponse);
+
+  // SetIgpOwner ...
+  rpc SetIgpOwner(MsgSetIgpOwner) returns (MsgSetIgpOwnerResponse);
 
   // SetDestinationGasConfig ...
   rpc SetDestinationGasConfig(MsgSetDestinationGasConfig)
@@ -36,7 +39,7 @@ message MsgCreateIgp {
   option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/MsgCreateInterchainGasPaymaster";
 
-  // creator is the message sender.
+  // owner is the message sender.
   string owner = 1;
 
   // denom
@@ -45,6 +48,24 @@ message MsgCreateIgp {
 
 // MsgCreateIgpResponse ...
 message MsgCreateIgpResponse { string id = 1; }
+
+// MsgSetIgpOwner ...
+message MsgSetIgpOwner {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/MsgSetIgpOwner";
+
+  // owner is the message sender.
+  string owner = 1;
+
+  // igp_id
+  string igp_id = 2;
+
+  // new_owner
+  string new_owner = 3;
+}
+
+// MsgCreateIgpResponse ...
+message MsgSetIgpOwnerResponse {}
 
 // MsgSetDestinationGasConfig ...
 message MsgSetDestinationGasConfig {
