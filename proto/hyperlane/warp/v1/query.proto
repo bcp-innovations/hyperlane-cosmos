@@ -26,6 +26,12 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/tokens/{id}";
   }
 
+  // BridgedSupply ...
+  rpc BridgedSupply(QueryBridgedSupplyRequest)
+      returns (QueryBridgedSupplyResponse) {
+    option (google.api.http).get = "/hyperlane/v1/tokens/{id}/bridged_supply";
+  }
+
   // RemoteRouters ...
   rpc RemoteRouters(QueryRemoteRoutersRequest)
       returns (QueryRemoteRoutersResponse) {
@@ -59,6 +65,12 @@ message QueryTokenResponse {
 
   repeated RemoteRouter remote_routers = 6;
 }
+
+// QueryBridgedSupplyRequest ...
+message QueryBridgedSupplyRequest { string id = 1; }
+
+// QueryBridgedSupplyResponse ...
+message QueryBridgedSupplyResponse { string bridged_supply = 1; }
 
 // QueryRemoteRoutersRequest ...
 message QueryRemoteRoutersRequest { string id = 1; }

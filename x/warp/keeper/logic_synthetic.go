@@ -46,6 +46,11 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		return util.HexAddress{}, fmt.Errorf("failed to decode receiver contract address %s", remoteRouter.ReceiverContract)
 	}
 
+	gas := remoteRouter.Gas
+	if !gasLimit.IsZero() {
+		gas = gasLimit
+	}
+
 	warpPayload, err := types.NewWarpPayload(recipient, *amount.BigInt())
 	if err != nil {
 		return util.HexAddress{}, err
@@ -61,7 +66,7 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		warpPayload.Bytes(),
 		cosmosSender,
 		customIgpId,
-		gasLimit,
+		gas,
 		maxFee,
 	)
 	if err != nil {
@@ -87,5 +92,28 @@ func (k *Keeper) RemoteReceiveSynthetic(ctx sdk.Context, token types.HypToken, p
 		return err
 	}
 
+	return nil
+}
+
+func ValidateTokenMetadata(metadata *types.TokenMetadata) error {
+	if metadata == nil {
+		return fmt.Errorf("metadata is required")
+	}
+
+	if metadata.Symbol == "" {
+		return fmt.Errorf("token symbol is required")
+	}
+
+	if metadata.Name == "" {
+		return fmt.Errorf("token name is required")
+	}
+
+	if metadata.Decimals == 0 {
+		return fmt.Errorf("token decimals cannot be zero")
+	}
+
+	if metadata.TotalSupply.IsZero() {
+		return fmt.Errorf("token total supply cannot be zero")
+	}
 	return nil
 }

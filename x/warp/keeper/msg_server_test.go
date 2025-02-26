@@ -79,6 +79,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: invalidMailboxId,
+			Metadata:      nil,
 		})
 
 		// Assert
@@ -94,6 +95,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: nonExistingMailboxId,
+			Metadata:      nil,
 		})
 
 		// Assert
@@ -127,11 +129,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	It("MsgCreateSyntheticToken (valid) with default ISM ID", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		metadata := types.TokenMetadata{
+			Name:        "test",
+			Symbol:      "TST",
+			TotalSupply: math.NewInt(100000),
+			Decimals:    18,
+		}
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
+			Metadata:      &metadata,
 		})
 
 		// Assert
@@ -141,11 +150,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	It("MsgCreateSyntheticToken (valid)", func() {
 		// Arrange
 		mailboxId, _, ismId := createValidMailbox(s, owner.Address, "noop", false, 1)
+		metadata := types.TokenMetadata{
+			Name:        "test",
+			Symbol:      "TST",
+			TotalSupply: math.NewInt(100000),
+			Decimals:    18,
+		}
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
+			Metadata:      &metadata,
 		})
 		Expect(err).To(BeNil())
 
@@ -395,6 +411,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -431,16 +448,260 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
+	It("MsgSetRemoteRouter (invalid) invalid Token ID", func() {
+		// Arrange
+		remoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
+		}
+
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId.String(),
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId, err := util.DecodeHexAddress(response.Id)
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: &remoteRouter,
+		})
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String() + "test",
+			RemoteRouter: nil,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("invalid token id %s", tokenId.String()+"test")))
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
+		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+	})
+
+	It("MsgSetRemoteRouter (invalid) non-existing Token ID", func() {
+		// Arrange
+		remoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
+		}
+
+		nonExistingTokenId := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId.String(),
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId, err := util.DecodeHexAddress(response.Id)
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: &remoteRouter,
+		})
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      nonExistingTokenId,
+			RemoteRouter: nil,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("token with id %s not found", nonExistingTokenId)))
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
+		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+	})
+
+	It("MsgSetRemoteRouter (invalid) non-owner address", func() {
+		// Arrange
+		remoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
+		}
+
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId.String(),
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId, err := util.DecodeHexAddress(response.Id)
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: &remoteRouter,
+		})
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetRemoteRouter{
+			Owner:        sender.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: nil,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own token with id %s", sender.Address, tokenId.String())))
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
+		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+	})
+
+	It("MsgSetRemoteRouter (invalid) invalid remote router", func() {
+		// Arrange
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		remoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
+		}
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId.String(),
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId, err := util.DecodeHexAddress(response.Id)
+		Expect(err).To(BeNil())
+
+		err = s.MintBaseCoins(sender.Address, 1_000_000)
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: &remoteRouter,
+		})
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: nil,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("invalid remote router"))
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
+		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+	})
+
+	It("MsgSetRemoteRouter (valid)", func() {
+		// Arrange
+		remoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
+		}
+		updatedRemoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(40000),
+		}
+
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId.String(),
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId, err := util.DecodeHexAddress(response.Id)
+		Expect(err).To(BeNil())
+
+		err = s.MintBaseCoins(sender.Address, 1_000_000)
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: &remoteRouter,
+		})
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: &updatedRemoteRouter,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
+		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&updatedRemoteRouter))
+	})
+
 	It("MsgUnrollRemoteRouter (invalid) invalid Token ID", func() {
 		// Arrange
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -510,11 +771,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -582,11 +845,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -654,11 +919,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -726,11 +993,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			Gas:              math.NewInt(50000),
 		}
 
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -1027,7 +1296,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&ismTypes.MsgCreateMerkleRootMultiSigIsm{
+	res, err := s.RunTx(&ismTypes.MsgCreateMerkleRootMultisigIsm{
 		Creator: creator,
 		Validators: []string{
 			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
@@ -1038,7 +1307,7 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	})
 	Expect(err).To(BeNil())
 
-	var response ismTypes.MsgCreateMerkleRootMultiSigIsmResponse
+	var response ismTypes.MsgCreateMerkleRootMultisigIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
@@ -1139,6 +1408,12 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner,
 			OriginMailbox: mailboxId.String(),
+			Metadata: &types.TokenMetadata{
+				Name:        "test",
+				Symbol:      "TST",
+				TotalSupply: math.NewInt(100000),
+				Decimals:    18,
+			},
 		})
 		Expect(err).To(BeNil())
 		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{

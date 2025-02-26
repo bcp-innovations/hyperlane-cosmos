@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"cosmossdk.io/collections"
 
@@ -64,6 +65,30 @@ func (qs queryServer) Params(ctx context.Context, _ *types.QueryParamsRequest) (
 	}
 
 	return &types.QueryParamsResponse{Params: params}, nil
+}
+
+func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBridgedSupplyRequest) (*types.QueryBridgedSupplyResponse, error) {
+	tokenId, err := util.DecodeHexAddress(request.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	token, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	var bridgedSupply string
+	switch token.TokenType {
+	case types.HYP_TOKEN_TYPE_COLLATERAL:
+		bridgedSupply = token.CollateralBalance.String()
+	case types.HYP_TOKEN_TYPE_SYNTHETIC:
+		bridgedSupply = qs.k.bankKeeper.GetSupply(ctx, token.OriginDenom).Amount.String()
+	default:
+		return nil, fmt.Errorf("query doesn't support token type: %s", token.TokenType)
+	}
+
+	return &types.QueryBridgedSupplyResponse{BridgedSupply: bridgedSupply}, nil
 }
 
 func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {

@@ -9,7 +9,8 @@ import (
 // RegisterInterfaces registers the interfaces types with the interface registry.
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateMerkleRootMultiSigIsm{},
+		&MsgCreateMessageIdMultisigIsm{},
+		&MsgCreateMerkleRootMultisigIsm{},
 		&MsgCreateNoopIsm{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
@@ -18,6 +19,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		"hyperlane.core._interchain_security.HyperlaneInterchainSecurityModule",
 		(*HyperlaneInterchainSecurityModule)(nil),
 		&NoopISM{},
-		&MerkleRootMultiSigISM{},
+		&MessageIdMultisigISM{},
+		&MerkleRootMultisigISM{},
 	)
 }

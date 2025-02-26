@@ -72,7 +72,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         receiverAddress,
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 
@@ -87,6 +87,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		amount := math.NewInt(100)
@@ -112,7 +113,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         receiverAddress,
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 
@@ -127,6 +128,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		amount := math.NewInt(100)
@@ -152,7 +154,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         receiverAddress,
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 
@@ -166,6 +168,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		amount := math.NewInt(100)
@@ -191,7 +194,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         "",
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 
@@ -205,6 +208,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		amount := math.NewInt(100)
@@ -230,7 +234,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         "1234gnx",
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 
@@ -245,6 +249,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		amount := math.NewInt(100)
@@ -270,7 +275,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         receiverAddress,
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 
@@ -285,6 +290,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865de",
+			Gas:              math.NewInt(50000),
 		}
 
 		amount := math.NewInt(100)
@@ -310,7 +316,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         receiverAddress,
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 
@@ -325,6 +331,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		amount := math.NewInt(100)
@@ -344,7 +351,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         receiverAddress,
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 
@@ -359,6 +366,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
 		}
 
 		amount := math.NewInt(100)
@@ -384,7 +392,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			Recipient:         receiverAddress,
 			Amount:            amount,
 			IgpId:             igpId.String(),
-			GasLimit:          math.NewInt(50000),
+			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
 		Expect(err).To(BeNil())

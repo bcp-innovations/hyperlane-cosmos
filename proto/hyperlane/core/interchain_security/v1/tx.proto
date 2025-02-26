@@ -10,9 +10,13 @@ import "amino/amino.proto";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // CreateMerkleRootMultiSigIsm ...
-  rpc CreateMerkleRootMultiSigIsm(MsgCreateMerkleRootMultiSigIsm)
-      returns (MsgCreateMerkleRootMultiSigIsmResponse);
+  // CreateMessageIdMultisigIsm ...
+  rpc CreateMessageIdMultisigIsm(MsgCreateMessageIdMultisigIsm)
+      returns (MsgCreateMessageIdMultisigIsmResponse);
+
+  // CreateMerkleRootMultisigIsm ...
+  rpc CreateMerkleRootMultisigIsm(MsgCreateMerkleRootMultisigIsm)
+      returns (MsgCreateMerkleRootMultisigIsmResponse);
 
   // CreateNoopIsm ...
   rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
@@ -22,10 +26,29 @@ service Msg {
       returns (MsgAnnounceValidatorResponse);
 }
 
-// MsgCreateMultisigIsm ...
-message MsgCreateMerkleRootMultiSigIsm {
+// MsgCreateMessageIdMultisigIsm ...
+message MsgCreateMessageIdMultisigIsm {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/MsgCreateMultiSigIsm";
+  option (amino.name) = "hyperlane/MsgCreateMessageIdMultisigIsm";
+
+  // creator is the message sender.
+  string creator = 1;
+
+  // validators
+  // these are 20 byte long ethereum style addresses
+  repeated string validators = 2;
+
+  // threshold ...
+  uint32 threshold = 3;
+}
+
+// MsgCreateMessageIdMultisigIsmResponse ...
+message MsgCreateMessageIdMultisigIsmResponse { string id = 1; }
+
+// MsgCreateMultisigIsm ...
+message MsgCreateMerkleRootMultisigIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/MsgCreateMerkleRootMultisigIsm";
 
   // creator is the message sender.
   string creator = 1;
@@ -39,7 +62,7 @@ message MsgCreateMerkleRootMultiSigIsm {
 }
 
 // MsgCreateMultisigIsmResponse ...
-message MsgCreateMerkleRootMultiSigIsmResponse { string id = 1; }
+message MsgCreateMerkleRootMultisigIsmResponse { string id = 1; }
 
 // MsgCreateNoopIsm ...
 message MsgCreateNoopIsm {

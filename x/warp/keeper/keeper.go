@@ -35,7 +35,7 @@ type Keeper struct {
 	// <tokenId> -> Token
 	HypTokens      collections.Map[uint64, types.HypToken]
 	HypTokensCount collections.Sequence
-	// <tokenId> <domain> -> RemoteRouter
+	// <tokenId> <domain> -> Router
 	EnrolledRouters collections.Map[collections.Pair[uint64, uint32], types.RemoteRouter]
 
 	bankKeeper    types.BankKeeper
