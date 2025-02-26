@@ -28,7 +28,7 @@ type Keeper struct {
 	hooks types.MailboxHooks
 	// state management
 	Mailboxes collections.Map[[]byte, types.Mailbox]
-	// TODO IMPORTANT: store by mailbox
+	// first key is the mailbox ID, second key is the message ID
 	Messages collections.KeySet[collections.Pair[[]byte, []byte]]
 	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
 	MailboxesSequence collections.Sequence

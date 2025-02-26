@@ -43,10 +43,13 @@ func NewRouter[T any](keyPrefix []byte, name string, builder *collections.Schema
 
 	sequence := collections.NewSequence(builder, keyPrefix, name)
 
+	fixedName := [20]byte{}
+	copy(fixedName[:], nameBytes)
+
 	return &Router[T]{
 		modules:  make(map[uint32]T),
 		sequence: sequence,
-		name:     [20]byte(nameBytes),
+		name:     fixedName,
 	}
 }
 
