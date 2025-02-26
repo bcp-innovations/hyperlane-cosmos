@@ -1,24 +1,24 @@
 package types
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ HyperlaneInterchainSecurityModule = &MessageIdMultisigISM{}
 
-func (m *MessageIdMultisigISM) GetId() uint64 {
-	return m.Id
+func (m *MessageIdMultisigISM) GetId() (util.HexAddress, error) {
+	return util.DecodeHexAddress(m.Id)
 }
 
 func (m *MessageIdMultisigISM) ModuleType() uint8 {
 	return INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG
 }
 
-func (m *MessageIdMultisigISM) Verify(_ sdk.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {
+func (m *MessageIdMultisigISM) Verify(_ context.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {
 	metadata, err := NewMessageIdMultisigMetadata(rawMetadata)
 	if err != nil {
 		return false, err

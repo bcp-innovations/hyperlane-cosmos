@@ -100,7 +100,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("CreateMailbox (invalid) with non-existing default ISM and without IGP", func() {
 		// Arrange
-		defaultIsm := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0"
+		defaultIsm := "0x004b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0"
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{

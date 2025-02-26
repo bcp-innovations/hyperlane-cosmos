@@ -114,13 +114,13 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 }
 
 func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.MsgCreateMessageIdMultisigIsm) (*types.MsgCreateMessageIdMultisigIsmResponse, error) {
-	ismId, err := m.k.router.GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG)
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG)
 	if err != nil {
 		return nil, err
 	}
 
 	newIsm := types.MessageIdMultisigISM{
-		Id:         ismId,
+		Id:         ismId.String(),
 		Owner:      req.Creator,
 		Validators: req.Validators,
 		Threshold:  req.Threshold,
@@ -130,22 +130,21 @@ func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.Ms
 		return nil, err
 	}
 
-	if err = m.k.isms.Set(ctx, ismId, &newIsm); err != nil {
+	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgCreateMessageIdMultisigIsmResponse{Id: fmt.Sprintf("%v", ismId)}, nil
+	return &types.MsgCreateMessageIdMultisigIsmResponse{Id: ismId.String()}, nil
 }
 
 func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.MsgCreateMerkleRootMultisigIsm) (*types.MsgCreateMerkleRootMultisigIsmResponse, error) {
-	ismId, err := m.k.router.GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG)
-
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG)
 	if err != nil {
 		return nil, err
 	}
 
 	newIsm := types.MerkleRootMultisigISM{
-		Id:         ismId,
+		Id:         ismId.String(),
 		Owner:      req.Creator,
 		Validators: req.Validators,
 		Threshold:  req.Threshold,
@@ -155,15 +154,15 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 		return nil, err
 	}
 
-	if err = m.k.isms.Set(ctx, ismId, &newIsm); err != nil {
+	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgCreateMerkleRootMultisigIsmResponse{Id: fmt.Sprintf("%v", ismId)}, nil
+	return &types.MsgCreateMerkleRootMultisigIsmResponse{Id: ismId.String()}, nil
 }
 
 func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIsm) (*types.MsgCreateNoopIsmResponse, error) {
-	ismId, err := m.k.router.GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED)
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED)
 	if err != nil {
 		return nil, err
 	}
@@ -172,13 +171,13 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 	}
 
 	newIsm := types.NoopISM{
-		Id:    ismId,
+		Id:    ismId.String(),
 		Owner: ism.Creator,
 	}
 
-	if err = m.k.isms.Set(ctx, ismId, &newIsm); err != nil {
+	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgCreateNoopIsmResponse{Id: fmt.Sprintf("%v", ismId)}, nil
+	return &types.MsgCreateNoopIsmResponse{Id: ismId.String()}, nil
 }

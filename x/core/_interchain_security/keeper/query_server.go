@@ -112,7 +112,7 @@ func (qs queryServer) Ism(ctx context.Context, req *types.QueryIsmRequest) (*typ
 		return nil, err
 	}
 
-	ism, err := qs.k.isms.Get(ctx, ismId.GetInternalId())
+	ism, err := qs.k.isms.Get(ctx, ismId.Bytes())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find ism with id: %v", ismId.String())
 	}

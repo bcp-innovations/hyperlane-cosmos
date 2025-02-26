@@ -23,6 +23,7 @@ var (
 	IgpSequenceKey                = []byte{ModuleId, 10}
 	IsmsKey                       = []byte{ModuleId, 11}
 	IsmsSequencesKey              = []byte{ModuleId, 12}
+	IsmRouterKey                  = []byte{ModuleId, 13}
 )
 
 var TokenExchangeRateScale = math.NewInt(1e10)

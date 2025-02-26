@@ -9,18 +9,6 @@ import (
 )
 
 //
-// Interchain Security Hooks
-
-type InterchainSecurityHooks interface {
-	Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error)
-}
-
-type InterchainSecurityHooksWrapper struct{ InterchainSecurityHooks }
-
-// IsOnePerModuleType implements the depinject.OnePerModuleType interface.
-func (InterchainSecurityHooksWrapper) IsOnePerModuleType() {}
-
-//
 // Post Dispatch Hooks
 
 type PostDispatchHooks interface {

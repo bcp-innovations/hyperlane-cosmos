@@ -53,7 +53,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 	}
 
 	// New logic
-	verified, err := k.ismHooks.Verify(ctx, ismId, metadata, message)
+	verified, err := k.Verify(ctx, ismId, metadata, message)
 	if err != nil {
 		return err
 	}

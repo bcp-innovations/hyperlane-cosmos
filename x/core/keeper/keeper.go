@@ -40,10 +40,11 @@ type Keeper struct {
 	bankKeeper types.BankKeeper
 
 	IsmKeeper ismkeeper.Keeper
-	ismHooks  types.InterchainSecurityHooks
 
 	PostDispatchKeeper postdispatchkeeper.Keeper
 	postDispatchHooks  types.PostDispatchHooks
+
+	ismRouter *util.Router[util.InterchainSecurityModule]
 }
 
 // NewKeeper creates a new Keeper instance
@@ -70,6 +71,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		// REFACTORED
 		IsmKeeper:          ismkeeper.NewKeeper(cdc, storeService),
 		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService),
+
+		ismRouter: util.NewRouter[util.InterchainSecurityModule](types.IsmRouterKey, sb),
 	}
 
 	k.IsmKeeper.SetCoreKeeper(k)
@@ -82,6 +85,10 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 	k.Schema = schema
 
 	return k
+}
+
+func (k Keeper) IsmRouter() *util.Router[util.InterchainSecurityModule] {
+	return k.ismRouter
 }
 
 func (k *Keeper) PostDispatchHooks() types.PostDispatchHooks {
@@ -101,21 +108,12 @@ func (k *Keeper) SetPostDispatchHooks(sh types.PostDispatchHooks) {
 	k.postDispatchHooks = sh
 }
 
-func (k *Keeper) IsmHooks() types.InterchainSecurityHooks {
-	if k.hooks == nil {
-		// return a no-op implementation if no hooks are set
-		return types.MultiInterchainSecurityHooks{}
+func (k *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
+	handler, err := k.ismRouter.GetModule(ctx, ismId)
+	if err != nil {
+		return false, err
 	}
-
-	return k.ismHooks
-}
-
-func (k *Keeper) SetIsmHooks(sh types.InterchainSecurityHooks) {
-	if k.ismHooks != nil {
-		panic("cannot set mailbox hooks twice")
-	}
-
-	k.ismHooks = sh
+	return (*handler).Verify(ctx, ismId, metadata, message)
 }
 
 // Hooks gets the hooks for staking *Keeper {

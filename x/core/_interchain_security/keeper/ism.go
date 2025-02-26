@@ -1,8 +1,9 @@
 package keeper
 
 import (
+	"context"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // special ism handler that is used for HyperlaneInterchainSecurityModule
@@ -17,10 +18,14 @@ func NewIsmHandler(keeper *Keeper) *IsmHandler {
 	}
 }
 
-func (h *IsmHandler) Verify(ctx sdk.Context, ismId uint64, metadata []byte, message util.HyperlaneMessage) (bool, error) {
+func (h *IsmHandler) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	ism, err := h.keeper.GetIsm(ctx, ismId)
 	if err != nil {
 		return false, err
 	}
 	return ism.Verify(ctx, metadata, message)
+}
+
+func (h *IsmHandler) Exists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+	return h.keeper.isms.Has(ctx, ismId.Bytes())
 }
