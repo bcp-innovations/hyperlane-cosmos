@@ -31,7 +31,12 @@ func (qs queryServer) Delivered(ctx context.Context, req *types.QueryDeliveredRe
 		return nil, err
 	}
 
-	delivered, err := qs.k.Messages.Has(ctx, messageId)
+	mailboxId, err := util.DecodeEthHex(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	delivered, err := qs.k.Messages.Has(ctx, collections.Join(mailboxId, messageId))
 	if err != nil {
 		return nil, err
 	}
