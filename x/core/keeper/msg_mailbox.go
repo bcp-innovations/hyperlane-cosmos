@@ -151,21 +151,11 @@ func (ms msgServer) SetMailbox(ctx context.Context, req *types.MsgSetMailbox) (*
 	}
 
 	if req.DefaultIsm != "" {
-		ismId, err := util.DecodeHexAddress(req.DefaultIsm)
-		if err != nil {
-			return nil, fmt.Errorf("ism id %s is invalid: %s", req.DefaultIsm, err.Error())
+		if err = ms.k.AssertIsmExists(ctx, req.DefaultIsm); err != nil {
+			return nil, fmt.Errorf("ism with id %s does not exist", req.DefaultIsm)
 		}
 
-		exists, err := ms.k.IsmKeeper.IsmIdExists(ctx, ismId)
-		if err != nil {
-			return nil, err
-		}
-
-		if !exists {
-			return nil, fmt.Errorf("ism with id %s does not exist", ismId.String())
-		}
-
-		mailbox.DefaultIsm = ismId.String()
+		mailbox.DefaultIsm = req.DefaultIsm
 	}
 
 	// TODO check if postDispatchHook exists
