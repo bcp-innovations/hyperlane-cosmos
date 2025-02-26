@@ -35,7 +35,7 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, igp.ClaimableFees.Int64()))
 
 	// TODO use core-types module name or create sub-account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "TODO", ownerAcc, coins)
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "hyperlane", ownerAcc, coins)
 	if err != nil {
 		return err
 	}

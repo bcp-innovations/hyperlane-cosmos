@@ -75,7 +75,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, amount.Int64()))
 
 	// TODO use core-types module name or create sub-account
-	err = i.k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, "TODO", coins)
+	err = i.k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, "hyperlane", coins)
 	if err != nil {
 		return err
 	}

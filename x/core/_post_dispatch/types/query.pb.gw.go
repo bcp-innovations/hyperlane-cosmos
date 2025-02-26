@@ -533,9 +533,9 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Igps_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1-refactored", "igps"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Igps_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"hyperlane", "v1", "igps"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Igp_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"hyperlane", "v1-refactored", "igps", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Igp_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"hyperlane", "v1", "igps", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_DestinationGasConfigs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"hyperlane", "v1", "igps", "id", "destination_gas_configs"}, "", runtime.AssumeColonVerbOpt(false)))
 
