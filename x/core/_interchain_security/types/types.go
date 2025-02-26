@@ -1,27 +1,28 @@
 package types
 
 import (
+	"context"
 	"encoding/binary"
 	"slices"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/gogoproto/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
 type HyperlaneInterchainSecurityModule interface {
 	proto.Message
 
-	GetId() uint64
 	ModuleType() uint8
-	Verify(ctx sdk.Context, metadata []byte, message util.HyperlaneMessage) (bool, error)
+	GetId() (util.HexAddress, error)
+	Verify(ctx context.Context, metadata []byte, message util.HyperlaneMessage) (bool, error)
 }
 
 var (
 	IsmsKey             = []byte{SubModuleId, 0}
 	IsmsSequenceKey     = []byte{SubModuleId, 1}
 	StorageLocationsKey = []byte{SubModuleId, 2}
+	RouterKey           = []byte{SubModuleId, 3}
 )
 
 const (

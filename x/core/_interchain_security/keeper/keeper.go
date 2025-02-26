@@ -12,35 +12,24 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Keeper struct {
-	isms         collections.Map[uint64, types.HyperlaneInterchainSecurityModule]
-	ismsSequence collections.Sequence
+	isms collections.Map[[]byte, types.HyperlaneInterchainSecurityModule]
 	// Key: Mailbox ID, Validator address, Storage Location index
 	storageLocations collections.Map[collections.Triple[[]byte, []byte, uint64], string]
 	schema           collections.Schema
 
 	coreKeeper types.CoreKeeper
-
-	hexAddressFactory util.HexAddressFactory
 }
 
 func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
-	factory, err := util.NewHexAddressFactory(types.HEX_ADDRESS_CLASS_IDENTIFIER)
-	if err != nil {
-		panic(err)
-	}
-
 	k := Keeper{
-		isms:              collections.NewMap(sb, types.IsmsKey, "isms", collections.Uint64Key, codec.CollInterfaceValue[types.HyperlaneInterchainSecurityModule](cdc)),
-		ismsSequence:      collections.NewSequence(sb, types.IsmsSequenceKey, "isms_sequence"),
-		storageLocations:  collections.NewMap(sb, types.StorageLocationsKey, "storage_locations", collections.TripleKeyCodec(collections.BytesKey, collections.BytesKey, collections.Uint64Key), collections.StringValue),
-		coreKeeper:        nil,
-		hexAddressFactory: factory,
+		isms:             collections.NewMap(sb, types.IsmsKey, "isms", collections.BytesKey, codec.CollInterfaceValue[types.HyperlaneInterchainSecurityModule](cdc)),
+		storageLocations: collections.NewMap(sb, types.StorageLocationsKey, "storage_locations", collections.TripleKeyCodec(collections.BytesKey, collections.BytesKey, collections.Uint64Key), collections.StringValue),
+		coreKeeper:       nil,
 	}
 
 	schema, err := sb.Build()
@@ -54,34 +43,35 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 }
 
 func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
+	if k.coreKeeper != nil {
+		panic("core keeper already set")
+	}
+
 	k.coreKeeper = coreKeeper
+
+	// set the router from the core keeper
+	router := coreKeeper.IsmRouter()
+	// add default modules
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED, NewIsmHandler(k))
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG, NewIsmHandler(k))
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG, NewIsmHandler(k))
 }
 
-func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
-	// Global Conventions
-	// - Address must be unique
-	// - Hook must check if id exists (and correct recipient)
-	// module_name / class / type / custom
-
-	if !k.hexAddressFactory.IsClassMember(ismId) {
-		return false, nil
-	}
-
-	// TODO write test with multiple ISMs
-	ism, err := k.isms.Get(ctx, ismId.GetInternalId())
+func (k *Keeper) GetIsm(ctx context.Context, ismId util.HexAddress) (types.HyperlaneInterchainSecurityModule, error) {
+	ism, err := k.isms.Get(ctx, ismId.Bytes())
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	return ism.Verify(ctx, metadata, message)
+	return ism, nil
 }
 
 func (k Keeper) IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
-	exists, err := k.isms.Has(ctx, ismId.GetInternalId())
+	handler, err := k.coreKeeper.IsmRouter().GetModule(ctx, ismId)
 	if err != nil {
 		return false, err
 	}
-	return exists, nil
+	return (*handler).Exists(ctx, ismId)
 }
 
 // TODO outsource to utils class, once migrated

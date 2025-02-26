@@ -1,25 +1,25 @@
 package types
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
 var _ HyperlaneInterchainSecurityModule = &MerkleRootMultisigISM{}
 
-func (m *MerkleRootMultisigISM) GetId() uint64 {
-	return m.Id
+func (m *MerkleRootMultisigISM) GetId() (util.HexAddress, error) {
+	return util.DecodeHexAddress(m.Id)
 }
 
 func (m *MerkleRootMultisigISM) ModuleType() uint8 {
 	return INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG
 }
 
-func (m *MerkleRootMultisigISM) Verify(_ sdk.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {
+func (m *MerkleRootMultisigISM) Verify(_ context.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {
 	metadata, err := NewMerkleRootMultisigMetadata(rawMetadata)
 	if err != nil {
 		return false, err

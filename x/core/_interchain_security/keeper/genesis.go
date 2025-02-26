@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
@@ -20,17 +18,14 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 		panic(err)
 	}
 
-	for index, ism := range isms {
-		if uint64(index) != ism.GetId() {
-			panic(fmt.Sprintf("unexpected ism %d; expected %d", index, ism.GetId()))
-		}
-		if err := k.isms.Set(ctx, ism.GetId(), ism); err != nil {
+	for _, ism := range isms {
+		id, err := ism.GetId()
+		if err != nil {
 			panic(err)
 		}
-	}
-
-	if err := k.ismsSequence.Set(ctx, uint64(len(isms))); err != nil {
-		panic(err)
+		if err := k.isms.Set(ctx, id.Bytes(), ism); err != nil {
+			panic(err)
+		}
 	}
 }
 

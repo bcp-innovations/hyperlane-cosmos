@@ -739,7 +739,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
 	Expect(mailbox.Creator).To(Equal(creator))
-	//Expect(mailbox.Igp.Id).To(Equal(igpId)) // TODO
+	// Expect(mailbox.Igp.Id).To(Equal(igpId)) // TODO
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))

@@ -114,13 +114,13 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 }
 
 func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.MsgCreateMessageIdMultisigIsm) (*types.MsgCreateMessageIdMultisigIsmResponse, error) {
-	ismCount, err := m.k.ismsSequence.Next(ctx)
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG)
 	if err != nil {
 		return nil, err
 	}
 
 	newIsm := types.MessageIdMultisigISM{
-		Id:         ismCount,
+		Id:         ismId.String(),
 		Owner:      req.Creator,
 		Validators: req.Validators,
 		Threshold:  req.Threshold,
@@ -130,23 +130,21 @@ func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.Ms
 		return nil, err
 	}
 
-	hexAddress := m.k.hexAddressFactory.GenerateId(uint32(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG), ismCount)
-
-	if err = m.k.isms.Set(ctx, ismCount, &newIsm); err != nil {
+	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgCreateMessageIdMultisigIsmResponse{Id: hexAddress.String()}, nil
+	return &types.MsgCreateMessageIdMultisigIsmResponse{Id: ismId.String()}, nil
 }
 
 func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.MsgCreateMerkleRootMultisigIsm) (*types.MsgCreateMerkleRootMultisigIsmResponse, error) {
-	ismCount, err := m.k.ismsSequence.Next(ctx)
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG)
 	if err != nil {
 		return nil, err
 	}
 
 	newIsm := types.MerkleRootMultisigISM{
-		Id:         ismCount,
+		Id:         ismId.String(),
 		Owner:      req.Creator,
 		Validators: req.Validators,
 		Threshold:  req.Threshold,
@@ -156,31 +154,30 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 		return nil, err
 	}
 
-	hexAddress := m.k.hexAddressFactory.GenerateId(uint32(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG), ismCount)
-
-	if err = m.k.isms.Set(ctx, ismCount, &newIsm); err != nil {
+	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgCreateMerkleRootMultisigIsmResponse{Id: hexAddress.String()}, nil
+	return &types.MsgCreateMerkleRootMultisigIsmResponse{Id: ismId.String()}, nil
 }
 
 func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIsm) (*types.MsgCreateNoopIsmResponse, error) {
-	ismCount, err := m.k.ismsSequence.Next(ctx)
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED)
+	if err != nil {
+		return nil, err
+	}
 	if err != nil {
 		return nil, err
 	}
 
 	newIsm := types.NoopISM{
-		Id:    ismCount,
+		Id:    ismId.String(),
 		Owner: ism.Creator,
 	}
 
-	if err = m.k.isms.Set(ctx, ismCount, &newIsm); err != nil {
+	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
 		return nil, err
 	}
 
-	hexAddress := m.k.hexAddressFactory.GenerateId(uint32(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED), ismCount)
-
-	return &types.MsgCreateNoopIsmResponse{Id: hexAddress.String()}, nil
+	return &types.MsgCreateNoopIsmResponse{Id: ismId.String()}, nil
 }

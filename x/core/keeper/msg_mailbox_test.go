@@ -100,7 +100,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("CreateMailbox (invalid) with non-existing default ISM and without IGP", func() {
 		// Arrange
-		defaultIsm := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0"
+		defaultIsm := "0x004b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0"
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
@@ -782,7 +782,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
 	Expect(mailbox.Creator).To(Equal(creator))
-	//Expect(mailbox.Igp.Id).To(Equal(igpId)) TODO fix
+	// Expect(mailbox.Igp.Id).To(Equal(igpId)) TODO fix
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
@@ -812,7 +812,7 @@ func verifyDispatch(s *i.KeeperTestSuite, mailboxId util.HexAddress, messageSent
 	mailbox, _ := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(mailbox.MessageSent).To(Equal(messageSent))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
-	//Expect(mailbox.Tree.Count).To(Equal(messageSent)) // TODO fix
+	// Expect(mailbox.Tree.Count).To(Equal(messageSent)) // TODO fix
 
 	// TODO fix
 	//if messageSent == 0 {

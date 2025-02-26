@@ -53,31 +53,6 @@ func (h MultiMailboxHooks) ReceiverIsmId(ctx context.Context, recipient util.Hex
 	}
 }
 
-// Interchain Security Module Multi Wrapper
-
-// combine multiple mailbox hooks, all hook functions are run in array sequence
-var _ InterchainSecurityHooks = MultiInterchainSecurityHooks{}
-
-type MultiInterchainSecurityHooks []InterchainSecurityHooks
-
-func NewMultiInterchainSecurityHooks(hooks ...InterchainSecurityHooks) MultiInterchainSecurityHooks {
-	return hooks
-}
-
-func (h MultiInterchainSecurityHooks) Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
-	for i := range h {
-		verfied, err := h[i].Verify(ctx, ismId, metadata, message)
-		if err != nil {
-			return false, err
-		}
-		if verfied {
-			return true, nil
-		}
-	}
-
-	return false, nil
-}
-
 // Post Dispatch Hook Multi Wrapper
 
 // combine multiple mailbox hooks, all hook functions are run in array sequence
