@@ -11,7 +11,6 @@ import (
 )
 
 func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailbox) (*types.MsgCreateMailboxResponse, error) {
-
 	// Check ism existence
 	if err := ms.k.AssertIsmExists(ctx, req.DefaultIsm); err != nil {
 		return nil, err

@@ -29,7 +29,7 @@ type Keeper struct {
 	// state management
 	Mailboxes collections.Map[[]byte, types.Mailbox]
 	// TODO IMPORTANT: store by mailbox
-	Messages collections.KeySet[[]byte]
+	Messages collections.KeySet[collections.Pair[[]byte, []byte]]
 	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
 	MailboxesSequence collections.Sequence
 
@@ -57,7 +57,7 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		addressCodec:      addressCodec,
 		authority:         authority,
 		Mailboxes:         collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
-		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.BytesKey),
+		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.BytesKey, collections.BytesKey)),
 		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		hooks:             nil,
 		MailboxesSequence: collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
@@ -67,8 +67,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		IsmKeeper:          ismkeeper.NewKeeper(cdc, storeService),
 		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService, bankKeeper),
 
-		ismRouter:          util.NewRouter[util.InterchainSecurityModule](types.IsmRouterKey, "router_sequence_ism", sb),
-		postDispatchRouter: util.NewRouter[util.PostDispatchModule](types.PostDispatchRouterKey, "router_sequence_post_dispatch", sb),
+		ismRouter:          util.NewRouter[util.InterchainSecurityModule](types.IsmRouterKey, "router_ism", sb),
+		postDispatchRouter: util.NewRouter[util.PostDispatchModule](types.PostDispatchRouterKey, "router_post_dispatch", sb),
 	}
 
 	k.IsmKeeper.SetCoreKeeper(k)

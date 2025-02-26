@@ -31,7 +31,12 @@ func (qs queryServer) Delivered(ctx context.Context, req *types.QueryDeliveredRe
 		return nil, err
 	}
 
-	delivered, err := qs.k.Messages.Has(ctx, messageId)
+	mailboxId, err := util.DecodeEthHex(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	delivered, err := qs.k.Messages.Has(ctx, collections.Join(mailboxId, messageId))
 	if err != nil {
 		return nil, err
 	}
@@ -81,9 +86,23 @@ func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxReques
 	}, nil
 }
 
-// TODO: Remove
 func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDryRunRequest) (*types.QueryVerifyDryRunResponse, error) {
-	panic("Not Implemented")
+	ismId, err := util.DecodeHexAddress(req.IsmId)
+	if err != nil {
+		return nil, err
+	}
+
+	metadata := []byte(req.Metadata)
+
+	msg, err := util.ParseHyperlaneMessage([]byte(req.Message))
+	if err != nil {
+		return nil, err
+	}
+
+	verified, err := qs.k.Verify(ctx, ismId, metadata, msg)
+	return &types.QueryVerifyDryRunResponse{
+		Verified: verified,
+	}, err
 }
 
 // Params defines the handler for the Query/Params RPC method.

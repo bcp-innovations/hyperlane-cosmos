@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/collections"
 	"cosmossdk.io/errors"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -29,14 +30,15 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 	}
 
 	// Check replay protection
-	received, err := k.Messages.Has(ctx, message.Id().Bytes())
+	key := collections.Join(mailboxId.Bytes(), message.Id().Bytes())
+	received, err := k.Messages.Has(ctx, key)
 	if err != nil {
 		return err
 	}
 	if received {
 		return fmt.Errorf("already received messsage with id %s", message.Id().String())
 	}
-	err = k.Messages.Set(ctx, message.Id().Bytes())
+	err = k.Messages.Set(ctx, key)
 	if err != nil {
 		return err
 	}
@@ -113,7 +115,7 @@ func (k Keeper) DispatchMessage(
 	}
 	mailbox.MessageSent++
 
-	err = k.Messages.Set(ctx, hypMsg.Id().Bytes())
+	err = k.Messages.Set(ctx, collections.Join(originMailboxId.Bytes(), hypMsg.Id().Bytes()))
 	if err != nil {
 		return util.HexAddress{}, err
 	}

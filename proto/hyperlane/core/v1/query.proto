@@ -26,9 +26,10 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/mailboxes/{id}";
   }
 
-  // Delivered ... TODO: must be per mailbox
+  // Delivered ...
   rpc Delivered(QueryDeliveredRequest) returns (QueryDeliveredResponse) {
-    option (google.api.http).get = "/hyperlane/v1/delivered/{message_id}";
+    option (google.api.http).get =
+        "/hyperlane/v1/mailboxes/{id}/delivered/{message_id}";
   }
 
   // RecipientIsm ...
@@ -67,7 +68,10 @@ message QueryMailboxResponse {
 }
 
 // QueryDeliveredRequest ...
-message QueryDeliveredRequest { string message_id = 1; }
+message QueryDeliveredRequest {
+  string id = 1;
+  string message_id = 2;
+}
 
 // QueryDeliveredResponse ...
 message QueryDeliveredResponse { bool delivered = 1; }
