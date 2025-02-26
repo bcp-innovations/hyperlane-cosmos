@@ -67,8 +67,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		IsmKeeper:          ismkeeper.NewKeeper(cdc, storeService),
 		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService, bankKeeper),
 
-		ismRouter:          util.NewRouter[util.InterchainSecurityModule](types.IsmRouterKey, "router_sequence_ism", sb),
-		postDispatchRouter: util.NewRouter[util.PostDispatchModule](types.PostDispatchRouterKey, "router_sequence_post_dispatch", sb),
+		ismRouter:          util.NewRouter[util.InterchainSecurityModule](types.IsmRouterKey, "router_ism", sb),
+		postDispatchRouter: util.NewRouter[util.PostDispatchModule](types.PostDispatchRouterKey, "router_post_dispatch", sb),
 	}
 
 	k.IsmKeeper.SetCoreKeeper(k)
