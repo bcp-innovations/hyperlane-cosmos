@@ -17,6 +17,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	//	"hyperlane.core._interchain_security.HyperlaneInterchainSecurityModule",
 	//	(*HyperlaneInterchainSecurityModule)(nil),
 	//	&NoopISM{},
-	//	&MerkleRootMultiSigISM{},
+	//	&MerkleRootMultisigISM{},
 	//)
 }

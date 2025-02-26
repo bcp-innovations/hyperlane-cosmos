@@ -23,7 +23,8 @@ func GetTxCmd() *cobra.Command {
 
 	txCmd.AddCommand(
 		CmdAnnounceValidator(),
-		CmdCreateMultiSigIsm(),
+		CmdCreateMessageIdMultisigIsm(),
+		CmdCreateMerkleRootMultiSigIsm(),
 		CmdCreateNoopIsm(),
 	)
 
@@ -59,10 +60,10 @@ func CmdAnnounceValidator() *cobra.Command {
 	return cmd
 }
 
-func CmdCreateMultiSigIsm() *cobra.Command {
+func CmdCreateMessageIdMultisigIsm() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-merkle-root-multi-sig-ism [validators] [threshold]",
-		Short: "Create a Hyperlane MultiSig ISM",
+		Use:   "create-message-id-multisig-ism [validators] [threshold]",
+		Short: "Create a Hyperlane MessageId Multisig ISM",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			validators := strings.Split(args[0], ",")
@@ -76,7 +77,39 @@ func CmdCreateMultiSigIsm() *cobra.Command {
 				return err
 			}
 
-			msg := types.MsgCreateMerkleRootMultiSigIsm{
+			msg := types.MsgCreateMessageIdMultisigIsm{
+				Creator:    clientCtx.GetFromAddress().String(),
+				Validators: validators,
+				Threshold:  uint32(threshold),
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdCreateMerkleRootMultiSigIsm() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-merkle-root-multisig-ism [validators] [threshold]",
+		Short: "Create a Hyperlane MerkleRoot Multisig ISM",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			validators := strings.Split(args[0], ",")
+			threshold, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgCreateMerkleRootMultisigIsm{
 				Creator:    clientCtx.GetFromAddress().String(),
 				Validators: validators,
 				Threshold:  uint32(threshold),
