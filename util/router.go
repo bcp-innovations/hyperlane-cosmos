@@ -71,9 +71,9 @@ func (r *Router[T]) IsSealed() bool {
 	return r.sealed
 }
 
-func (r *Router[T]) Exists(ctx context.Context, id uint64) bool {
-	_, err := r.mapping.Get(ctx, id)
-	return err == nil
+func (r *Router[T]) Exists(ctx context.Context, id uint64) (bool, error) {
+	exists, err := r.mapping.Has(ctx, id)
+	return exists, err
 }
 
 // GetNextSequence returns the next sequence number and maps it to the given module id.

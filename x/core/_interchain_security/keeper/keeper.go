@@ -75,7 +75,7 @@ func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, 
 	return (*handler).Verify(ctx, id, metadata, message)
 }
 
-func (k Keeper) IsmIdExists(ctx context.Context, ismId util.HexAddress) bool {
+func (k Keeper) IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
 	return k.router.Exists(ctx, ismId.GetInternalId()) // TODO: change to uint64
 }
 
