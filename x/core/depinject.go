@@ -1,9 +1,6 @@
 package core
 
 import (
-	"fmt"
-	"sort"
-
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
@@ -11,7 +8,6 @@ import (
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
-	"golang.org/x/exp/maps"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -31,7 +27,7 @@ func init() {
 	appmodule.Register(
 		&modulev1.Module{},
 		appmodule.Provide(ProvideModule),
-		appmodule.Invoke(InvokeSetMailboxHooks),
+		appmodule.Invoke(),
 	)
 }
 
@@ -65,38 +61,4 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	m := NewAppModule(in.Cdc, &k)
 
 	return ModuleOutputs{Module: m, Keeper: &k}
-}
-
-func InvokeSetMailboxHooks(
-	keeper *keeper.Keeper,
-	mailboxHooks map[string]types.MailboxHooksWrapper,
-) error {
-	if keeper != nil && mailboxHooks == nil {
-		return nil
-	}
-
-	modNames := maps.Keys(mailboxHooks)
-	order := modNames
-	sort.Strings(order)
-
-	if len(order) != len(modNames) {
-		return fmt.Errorf("len(hooks_order: %v) != len(hooks modules: %v)", order, modNames)
-	}
-
-	if len(modNames) == 0 {
-		return nil
-	}
-
-	var multiHooks types.MultiMailboxHooks
-	for _, modName := range order {
-		hook, ok := mailboxHooks[modName]
-		if !ok {
-			return fmt.Errorf("can't find mailbox hooks for module %s", modName)
-		}
-
-		multiHooks = append(multiHooks, hook)
-	}
-
-	keeper.SetHooks(multiHooks)
-	return nil
 }

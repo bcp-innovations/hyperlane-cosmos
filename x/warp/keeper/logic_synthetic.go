@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	"cosmossdk.io/collections"
@@ -65,10 +66,10 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 	}
 
 	// Token destinationDomain, recipientAddress
-	dispatchMsg, err := k.mailboxKeeper.DispatchMessage(
+	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
-		k.GetAddressFromToken(token),
+		util.HexAddress(token.Id),
 		sdk.NewCoins(maxFee),
 
 		remoteRouter.ReceiverDomain,
@@ -90,7 +91,7 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 	return dispatchMsg, nil
 }
 
-func (k *Keeper) RemoteReceiveSynthetic(ctx sdk.Context, token types.HypToken, payload types.WarpPayload) error {
+func (k *Keeper) RemoteReceiveSynthetic(ctx context.Context, token types.HypToken, payload types.WarpPayload) error {
 	account := payload.GetCosmosAccount()
 
 	shadowToken := sdk.NewCoin(

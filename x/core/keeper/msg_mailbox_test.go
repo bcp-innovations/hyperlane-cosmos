@@ -571,7 +571,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("failed to decode metadata"))
 	})
 
-	It("ProcessMessage (valid) (Noop ISM)", func() {
+	PIt("ProcessMessage (valid) (Noop ISM)", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 

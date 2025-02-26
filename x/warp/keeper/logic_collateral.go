@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	"cosmossdk.io/collections"
@@ -59,6 +60,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 
 	igpCustomHookId := util.NewZeroAddress()
 	if customIgpId != "" {
+
 		igpCustomHookId, err = util.DecodeHexAddress(customIgpId)
 		if err != nil {
 			return util.HexAddress{}, err
@@ -66,10 +68,10 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 	}
 
 	// Token destinationDomain, recipientAddress
-	dispatchMsg, err := k.mailboxKeeper.DispatchMessage(
+	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
-		k.GetAddressFromToken(token), // sender
+		util.HexAddress(token.Id), // sender
 		sdk.NewCoins(maxFee),
 
 		remoteRouter.ReceiverDomain,
@@ -92,7 +94,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 	return dispatchMsg, nil
 }
 
-func (k *Keeper) RemoteReceiveCollateral(ctx sdk.Context, token types.HypToken, payload types.WarpPayload) error {
+func (k *Keeper) RemoteReceiveCollateral(ctx context.Context, token types.HypToken, payload types.WarpPayload) error {
 	account := sdk.AccAddress(payload.Recipient()[12:32])
 
 	amount := math.NewIntFromBigInt(payload.Amount())

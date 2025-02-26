@@ -29,6 +29,12 @@ type PostDispatchModule interface {
 	SupportsMetadata(metadata []byte) bool
 }
 
+type HyperlaneApp interface {
+	Exists(ctx context.Context, recipient HexAddress) (bool, error)
+	Handle(ctx context.Context, mailboxId HexAddress, message HyperlaneMessage) error
+	ReceiverIsmId(ctx context.Context, recipient HexAddress) (HexAddress, error)
+}
+
 type Router[T any] struct {
 	modules  map[uint32]T
 	sequence collections.Sequence
@@ -89,7 +95,8 @@ func (r *Router[T]) GetNextSequence(ctx context.Context, moduleId uint8) (HexAdd
 		return HexAddress{}, fmt.Errorf("module with id %d not found", moduleId)
 	}
 
-	return GenerateHexAddress(r.name, id, next), nil
+	address := GenerateHexAddress(r.name, id, next)
+	return address, nil
 }
 
 /*

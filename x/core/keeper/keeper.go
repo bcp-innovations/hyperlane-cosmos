@@ -25,7 +25,6 @@ type Keeper struct {
 	// typically, this should be the x/gov module account.
 	authority string
 
-	hooks types.MailboxHooks
 	// state management
 	Mailboxes collections.Map[[]byte, types.Mailbox]
 	// first key is the mailbox ID, second key is the message ID
@@ -43,6 +42,7 @@ type Keeper struct {
 
 	ismRouter          *util.Router[util.InterchainSecurityModule]
 	postDispatchRouter *util.Router[util.PostDispatchModule]
+	appRouter          *util.Router[util.HyperlaneApp]
 }
 
 // NewKeeper creates a new Keeper instance
@@ -59,7 +59,6 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		Mailboxes:         collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
 		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.BytesKey, collections.BytesKey)),
 		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		hooks:             nil,
 		MailboxesSequence: collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
 		bankKeeper:        bankKeeper,
 
@@ -69,6 +68,7 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 
 		ismRouter:          util.NewRouter[util.InterchainSecurityModule](types.IsmRouterKey, "router_ism", sb),
 		postDispatchRouter: util.NewRouter[util.PostDispatchModule](types.PostDispatchRouterKey, "router_post_dispatch", sb),
+		appRouter:          util.NewRouter[util.HyperlaneApp](types.AppRouterKey, "router_app", sb),
 	}
 
 	k.IsmKeeper.SetCoreKeeper(k)
@@ -82,6 +82,26 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 	k.Schema = schema
 
 	return k
+}
+
+func (k Keeper) AppRouter() *util.Router[util.HyperlaneApp] {
+	return k.appRouter
+}
+
+func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error) {
+	handler, err := k.appRouter.GetModule(ctx, recipient)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+	return (*handler).ReceiverIsmId(ctx, recipient)
+}
+
+func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
+	handler, err := k.appRouter.GetModule(ctx, message.Recipient)
+	if err != nil {
+		return err
+	}
+	return (*handler).Handle(ctx, mailboxId, message)
 }
 
 func (k Keeper) IsmRouter() *util.Router[util.InterchainSecurityModule] {
@@ -147,26 +167,6 @@ func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id string) er
 		return fmt.Errorf("hook with id %s does not exist", hookId.String())
 	}
 	return nil
-}
-
-// Hooks gets the hooks for staking *Keeper {
-func (k *Keeper) Hooks() types.MailboxHooks {
-	if k.hooks == nil {
-		// return a no-op implementation if no hooks are set
-		return types.MultiMailboxHooks{}
-	}
-
-	return k.hooks
-}
-
-// SetHooks sets the validator hooks.  In contrast to other receivers, this method must take a pointer due to nature
-// of the hooks interface and SDK start up sequence.
-func (k *Keeper) SetHooks(sh types.MailboxHooks) {
-	if k.hooks != nil {
-		panic("cannot set mailbox hooks twice")
-	}
-
-	k.hooks = sh
 }
 
 func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {

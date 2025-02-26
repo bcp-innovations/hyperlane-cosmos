@@ -45,12 +45,12 @@ func (qs queryServer) Delivered(ctx context.Context, req *types.QueryDeliveredRe
 }
 
 func (qs queryServer) RecipientIsm(ctx context.Context, req *types.RecipientIsmRequest) (*types.RecipientIsmResponse, error) {
-	address, err := util.DecodeHexAddress(req.Recipient)
+	recipient, err := util.DecodeHexAddress(req.Recipient)
 	if err != nil {
 		return nil, err
 	}
 
-	get, err := qs.k.Hooks().ReceiverIsmId(ctx, address)
+	get, err := qs.k.ReceiverIsmId(ctx, recipient)
 	if err != nil {
 		return nil, err
 	}

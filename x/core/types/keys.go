@@ -21,4 +21,5 @@ var (
 	IsmsSequencesKey              = []byte{ModuleId, 12}
 	IsmRouterKey                  = []byte{ModuleId, 13}
 	PostDispatchRouterKey         = []byte{ModuleId, 14}
+	AppRouterKey                  = []byte{ModuleId, 15}
 )

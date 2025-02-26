@@ -31,7 +31,7 @@ func (qs queryServer) RemoteRouters(ctx context.Context, request *types.QueryRem
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	rng := collections.NewPrefixedPairRange[uint64, uint32](tokenId.GetInternalId())
+	rng := collections.NewPrefixedPairRange[[]byte, uint32](tokenId.Bytes())
 
 	// TODO: Add pagination
 	iter, err := qs.k.EnrolledRouters.Iterate(ctx, rng)
@@ -73,7 +73,7 @@ func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBri
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	token, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	token, err := qs.k.HypTokens.Get(ctx, tokenId.Bytes())
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (qs queryServer) Token(ctx context.Context, request *types.QueryTokenReques
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	get, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	get, err := qs.k.HypTokens.Get(ctx, tokenId.Bytes())
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +135,7 @@ func (qs queryServer) Token(ctx context.Context, request *types.QueryTokenReques
 }
 
 func (qs queryServer) parseTokenResponse(ctx context.Context, get types.HypToken) (types.QueryTokenResponse, error) {
-	rng := collections.NewPrefixedPairRange[uint64, uint32](get.Id)
+	rng := collections.NewPrefixedPairRange[[]byte, uint32](get.Id)
 
 	iter, err := qs.k.EnrolledRouters.Iterate(ctx, rng)
 	if err != nil {

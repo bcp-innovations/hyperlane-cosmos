@@ -54,7 +54,7 @@ message QueryTokenRequest { string id = 1; }
 
 // QueryTokenResponse ...
 message QueryTokenResponse {
-  uint64 id = 1;
+  bytes id = 1;
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   HypTokenType token_type = 3;
 

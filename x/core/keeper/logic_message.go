@@ -43,7 +43,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return err
 	}
 
-	ismId, err := k.Hooks().ReceiverIsmId(ctx, message.Recipient)
+	ismId, err := k.ReceiverIsmId(ctx, message.Recipient)
 	if err != nil {
 		if errors.IsOf(err, types.ErrNoReceiverISM) {
 			ismId, _ = util.DecodeHexAddress(mailbox.DefaultIsm)
@@ -61,7 +61,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return fmt.Errorf("ism verification failed")
 	}
 
-	err = k.Hooks().Handle(ctx, mailboxId, message)
+	err = k.Handle(ctx, mailboxId, message)
 	if err != nil {
 		return err
 	}

@@ -50,13 +50,13 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
 
 		amount := math.NewInt(100)
-		maxFee := sdk.NewCoin("uhyp", math.NewInt(250000))
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, nil, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
 		syntheticDenom := "hyperlane/" + tokenId.String()
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
@@ -91,13 +91,13 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
 		syntheticDenom := "hyperlane/" + tokenId.String()
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
@@ -132,13 +132,13 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
 		syntheticDenom := "hyperlane/" + tokenId.String()
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
@@ -172,13 +172,13 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
 		syntheticDenom := "hyperlane/" + tokenId.String()
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
@@ -212,13 +212,13 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
 		syntheticDenom := "hyperlane/" + tokenId.String()
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
@@ -253,13 +253,13 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
 		syntheticDenom := "hyperlane/" + tokenId.String()
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
@@ -294,13 +294,13 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
 		syntheticDenom := "hyperlane/" + tokenId.String()
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
@@ -335,7 +335,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
@@ -370,13 +370,13 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, mailboxId, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 
 		syntheticDenom := "hyperlane/" + tokenId.String()
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))

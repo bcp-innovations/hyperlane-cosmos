@@ -50,7 +50,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, nil, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
 
@@ -86,11 +86,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, nil, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
@@ -122,11 +122,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, nil, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
 
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Int64()).Uint64())
+		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
 		Expect(err).To(BeNil())
 
 		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
@@ -157,7 +157,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
 
@@ -192,7 +192,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
 
@@ -228,7 +228,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
 
@@ -264,7 +264,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
 
@@ -300,7 +300,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
 
@@ -382,15 +382,13 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
 
 		tokenId, mailboxId, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
-
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
 		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
-
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
@@ -404,7 +402,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount.Sub(amount.Add(maxFee))))
+		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount.Sub(amount.Add(maxFee.Amount))))
 
 		receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
 		Expect(err).To(BeNil())

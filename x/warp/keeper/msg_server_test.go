@@ -1223,7 +1223,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Amount:            math.ZeroInt(),
 			IgpId:             "",
 			GasLimit:          math.ZeroInt(),
-			MaxFee:            math.ZeroInt(),
+			MaxFee:            sdk.NewCoin(denom, math.ZeroInt()),
 		})
 
 		// Assert
@@ -1243,7 +1243,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Amount:            math.ZeroInt(),
 			IgpId:             "",
 			GasLimit:          math.ZeroInt(),
-			MaxFee:            math.ZeroInt(),
+			MaxFee:            sdk.NewCoin(denom, math.ZeroInt()),
 		})
 
 		// Assert
@@ -1284,12 +1284,9 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&coreTypes.MsgCreateMailbox{
-		Creator:    creator,
-		DefaultIsm: ismId.String(),
-		//Igp: &coreTypes.InterchainGasPaymaster{ // TODO
-		//	Id:       igpId.String(),
-		//	Required: igpRequired,
-		//},
+		Creator:      creator,
+		DefaultIsm:   ismId.String(),
+		RequiredHook: igpId.String(),
 	})
 	Expect(err).To(BeNil())
 
