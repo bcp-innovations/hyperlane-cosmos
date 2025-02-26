@@ -408,7 +408,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 
-		igp, _ := s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(gasAmount))
 
 		claimableFees := igp.ClaimableFees
@@ -424,7 +424,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to claim: %s is not permitted to claim", gasPayer.Address)))
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), gasPayer.AccAddress, denom).Amount).To(Equal(nonOwnerBalance.Amount))
 
-		igp, _ = s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ = s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(claimableFees))
 	})
 
@@ -473,7 +473,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 
 		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
 
-		igp, _ := s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(gasAmount))
 
 		// Act
@@ -532,7 +532,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 
 		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
 
-		igp, _ := s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(gasAmount))
 
 		// Act
@@ -562,7 +562,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 
 		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
 
-		igp, _ := s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(math.ZeroInt()))
 
 		// Act
@@ -575,7 +575,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("no claimable fees left"))
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom).Amount).To(Equal(ownerBalance.Amount))
 
-		igp, _ = s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ = s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(math.ZeroInt()))
 	})
 })

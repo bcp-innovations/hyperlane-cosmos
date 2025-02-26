@@ -41,7 +41,7 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 		ClaimableFees: math.NewInt(0),
 	}
 
-	if err = ms.k.igps.Set(ctx, newIgp.InternalId, newIgp); err != nil {
+	if err = ms.k.Igps.Set(ctx, newIgp.InternalId, newIgp); err != nil {
 		return nil, err
 	}
 

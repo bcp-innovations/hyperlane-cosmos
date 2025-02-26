@@ -14,7 +14,7 @@ import (
 )
 
 func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress) error {
-	igp, err := k.igps.Get(ctx, igpId.GetInternalId())
+	igp, err := k.Igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
 		return fmt.Errorf("failed to find ism with id: %s", igpId.String())
 	}
@@ -42,7 +42,7 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 
 	igp.ClaimableFees = math.NewInt(0)
 
-	err = k.igps.Set(ctx, igpId.GetInternalId(), igp)
+	err = k.Igps.Set(ctx, igpId.GetInternalId(), igp)
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 }
 
 func (k Keeper) SetDestinationGasConfig(ctx context.Context, igpId util.HexAddress, owner string, destinationGasConfig *types.DestinationGasConfig) error {
-	igp, err := k.igps.Get(ctx, igpId.GetInternalId())
+	igp, err := k.Igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
 		return fmt.Errorf("igp does not exist: %s", igpId.String())
 	}
@@ -72,7 +72,7 @@ func (k Keeper) SetDestinationGasConfig(ctx context.Context, igpId util.HexAddre
 
 	key := collections.Join(igpId.GetInternalId(), destinationGasConfig.RemoteDomain)
 
-	err = k.igpDestinationGasConfigs.Set(ctx, key, updatedDestinationGasConfig)
+	err = k.IgpDestinationGasConfigs.Set(ctx, key, updatedDestinationGasConfig)
 	if err != nil {
 		return err
 	}

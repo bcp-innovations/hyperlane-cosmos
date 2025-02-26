@@ -66,7 +66,7 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 }
 
 func (qs queryServer) Igps(ctx context.Context, req *types.QueryIgpsRequest) (*types.QueryIgpsResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.igps, req.Pagination)
+	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Igps, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (qs queryServer) Igp(ctx context.Context, req *types.QueryIgpRequest) (*typ
 		return nil, err
 	}
 
-	igp, err := qs.k.igps.Get(ctx, igpId.GetInternalId())
+	igp, err := qs.k.Igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find igp with id: %v", igpId.String())
 	}
@@ -101,7 +101,7 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 
 	rng := collections.NewPrefixedPairRange[uint64, uint32](igpId.GetInternalId())
 
-	iter, err := qs.k.igpDestinationGasConfigs.Iterate(ctx, rng)
+	iter, err := qs.k.IgpDestinationGasConfigs.Iterate(ctx, rng)
 	if err != nil {
 		return nil, err
 	}

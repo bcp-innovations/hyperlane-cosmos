@@ -77,7 +77,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		igpId, err := util.DecodeHexAddress(response.Id)
 		Expect(err).To(BeNil())
 
-		igp, _ := s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.Owner).To(Equal(creator.Address))
 		Expect(igp.Denom).To(Equal(denom))
 		Expect(igp.ClaimableFees).To(Equal(math.NewInt(0)))
@@ -143,9 +143,9 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		rng := collections.NewPrefixedPairRange[[]byte, uint32](igpId.Bytes())
+		rng := collections.NewPrefixedPairRange[uint64, uint32](igpId.GetInternalId())
 
-		iter, err := s.App().HyperlaneKeeper.IgpDestinationGasConfigMap.Iterate(s.Ctx(), rng)
+		iter, err := s.App().HyperlaneKeeper.PostDispatchKeeper.IgpDestinationGasConfigs.Iterate(s.Ctx(), rng)
 		Expect(err).To(BeNil())
 
 		destinationGasConfigs, err := iter.Values()
@@ -252,7 +252,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		Expect(err).To(BeNil())
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), gasPayer.AccAddress, denom).Amount).To(Equal(gasPayerBalance.Amount.Sub(gasAmount)))
 
-		igp, _ := s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(gasAmount))
 	})
 
@@ -302,7 +302,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 
 		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
 
-		igp, _ := s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(gasAmount))
 
 		// Act
@@ -359,7 +359,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 
-		igp, _ := s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(gasAmount))
 
 		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
@@ -374,7 +374,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		Expect(err).To(BeNil())
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom).Amount).To(Equal(ownerBalance.Amount.Add(igp.ClaimableFees)))
 
-		igp, _ = s.App().HyperlaneKeeper.Igp.Get(s.Ctx(), igpId.Bytes())
+		igp, _ = s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.ClaimableFees).To(Equal(math.ZeroInt()))
 	})
 })

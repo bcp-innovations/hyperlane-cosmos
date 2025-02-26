@@ -9,8 +9,8 @@ import (
 )
 
 type Keeper struct {
-	igps                     collections.Map[uint64, types.InterchainGasPaymaster]
-	igpDestinationGasConfigs collections.Map[collections.Pair[uint64, uint32], types.DestinationGasConfig]
+	Igps                     collections.Map[uint64, types.InterchainGasPaymaster]
+	IgpDestinationGasConfigs collections.Map[collections.Pair[uint64, uint32], types.DestinationGasConfig]
 
 	merkleTreeHooks collections.Map[uint64, types.MerkleTreeHook]
 
@@ -24,8 +24,8 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ba
 	sb := collections.NewSchemaBuilder(storeService)
 
 	k := Keeper{
-		igps:                     collections.NewMap(sb, types.PostDispatchHooksKey, "interchain_gas_paymasters", collections.Uint64Key, codec.CollValue[types.InterchainGasPaymaster](cdc)),
-		igpDestinationGasConfigs: collections.NewMap(sb, types.InterchainGasPaymasterConfigsKey, "interchain_gas_paymaster_configs", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
+		Igps:                     collections.NewMap(sb, types.PostDispatchHooksKey, "interchain_gas_paymasters", collections.Uint64Key, codec.CollValue[types.InterchainGasPaymaster](cdc)),
+		IgpDestinationGasConfigs: collections.NewMap(sb, types.InterchainGasPaymasterConfigsKey, "interchain_gas_paymaster_configs", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
 
 		merkleTreeHooks: collections.NewMap(sb, types.MerkleTreeHooksKey, "merkle_tree_hooks_key", collections.Uint64Key, codec.CollValue[types.MerkleTreeHook](cdc)),
 

@@ -43,7 +43,7 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mai
 }
 
 func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
-	has, err := i.k.igps.Has(ctx, hookId.GetInternalId())
+	has, err := i.k.Igps.Has(ctx, hookId.GetInternalId())
 	if err != nil {
 		return false, err
 	}
@@ -54,9 +54,9 @@ func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId ut
 // This is used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
 // amount for e.g. re-funding a certain message-id as the first payment wasn't enough.
 func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, amount math.Int) error {
-	igp, err := i.k.igps.Get(ctx, hookId.GetInternalId())
+	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
-		return fmt.Errorf("igp does not exist: %d", hookId)
+		return fmt.Errorf("igp does not exist: %s", hookId.String())
 	}
 
 	if amount.Equal(math.ZeroInt()) {
@@ -82,7 +82,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 
 	igp.ClaimableFees = igp.ClaimableFees.Add(amount)
 
-	err = i.k.igps.Set(ctx, igp.InternalId, igp)
+	err = i.k.Igps.Set(ctx, igp.InternalId, igp)
 	if err != nil {
 		return err
 	}
@@ -101,12 +101,12 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 }
 
 func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (math.Int, error) {
-	igp, err := i.k.igps.Get(ctx, hookId.GetInternalId())
+	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
-		return math.ZeroInt(), fmt.Errorf("igp does not exist: %d", hookId)
+		return math.ZeroInt(), fmt.Errorf("igp does not exist: %s", hookId.String())
 	}
 
-	destinationGasConfig, err := i.k.igpDestinationGasConfigs.Get(ctx, collections.Join(igp.InternalId, destinationDomain))
+	destinationGasConfig, err := i.k.IgpDestinationGasConfigs.Get(ctx, collections.Join(igp.InternalId, destinationDomain))
 	if err != nil {
 		return math.Int{}, fmt.Errorf("remote domain %v is not supported", destinationDomain)
 	}
