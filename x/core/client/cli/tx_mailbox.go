@@ -33,9 +33,9 @@ func NewMailboxCmd() *cobra.Command {
 
 func CmdCreateMailbox() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-mailbox [default-ism-id] [igp-id]",
+		Use:   "create-mailbox [default-ism-id]",
 		Short: "Create a Hyperlane Mailbox",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -45,7 +45,6 @@ func CmdCreateMailbox() *cobra.Command {
 			msg := types.MsgCreateMailbox{
 				Creator:    clientCtx.GetFromAddress().String(),
 				DefaultIsm: args[0],
-				// TODO add optional post_dispatch_hooks
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Creator)
@@ -56,8 +55,6 @@ func CmdCreateMailbox() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
-
-	cmd.Flags().BoolVar(&igpOptional, "igp-optional", false, "set InterchainGasPaymaster as not required")
 
 	flags.AddTxFlagsToCmd(cmd)
 
