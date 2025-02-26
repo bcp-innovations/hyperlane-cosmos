@@ -29,9 +29,10 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 		}
 	}
 
-	if err := k.ismsSequence.Set(ctx, uint64(len(isms))); err != nil {
-		panic(err)
-	}
+	// TODO: save & load router in genesis state
+	// if err := k.ismsSequence.Set(ctx, uint64(len(isms))); err != nil {
+	// 	panic(err)
+	// }
 }
 
 func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
