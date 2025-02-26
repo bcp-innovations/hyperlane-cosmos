@@ -17,6 +17,12 @@ var (
 	igpId       string
 	igpOptional bool
 	maxFee      string
+
+	// SetMailbox
+	defaultIsm   string
+	defaultHook  string
+	requiredHook string
+	newOwner     string
 )
 
 func GetTxCmd() *cobra.Command {

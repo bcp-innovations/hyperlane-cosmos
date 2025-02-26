@@ -40,7 +40,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 
 	newMailbox := types.Mailbox{
 		Id:              prefixedId.String(),
-		Creator:         req.Creator,
+		Owner:           req.Owner,
 		MessageSent:     0,
 		MessageReceived: 0,
 		DefaultIsm:      req.DefaultIsm,
@@ -133,4 +133,57 @@ func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMes
 	}
 
 	return &types.MsgProcessMessageResponse{}, nil
+}
+
+func (ms msgServer) SetMailbox(ctx context.Context, req *types.MsgSetMailbox) (*types.MsgSetMailboxResponse, error) {
+	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
+	if err != nil {
+		return nil, err
+	}
+
+	mailbox, err := ms.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find mailbox with id: %v", mailboxId.String())
+	}
+
+	if mailbox.Owner != req.Owner {
+		return nil, fmt.Errorf("%s does not own mailbox with id %s", req.Owner, mailboxId.String())
+	}
+
+	if req.DefaultIsm != "" {
+		ismId, err := util.DecodeHexAddress(req.DefaultIsm)
+		if err != nil {
+			return nil, fmt.Errorf("ism id %s is invalid: %s", req.DefaultIsm, err.Error())
+		}
+
+		exists, err := ms.k.IsmKeeper.IsmIdExists(ctx, ismId)
+		if err != nil {
+			return nil, err
+		}
+
+		if !exists {
+			return nil, fmt.Errorf("ism with id %s does not exist", ismId.String())
+		}
+
+		mailbox.DefaultIsm = ismId.String()
+	}
+
+	// TODO check if postDispatchHook exists
+	if req.DefaultHook != "" {
+		mailbox.DefaultHook = req.DefaultHook
+	}
+
+	if req.RequiredHook != "" {
+		mailbox.RequiredHook = req.RequiredHook
+	}
+
+	if req.NewOwner != "" {
+		mailbox.Owner = req.NewOwner
+	}
+
+	if err = ms.k.Mailboxes.Set(ctx, mailboxId.Bytes(), mailbox); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgSetMailboxResponse{}, nil
 }
