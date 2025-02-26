@@ -81,7 +81,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		util.StandardHookMetadata{
 			Variant:  1,
 			Value:    *big.NewInt(0), // TODO figure out usage of maxFee
-			GasLimit: gas,
+			GasLimit: *gas.BigInt(),
 			Address:  senderAcc,
 		}.Bytes(), // metadata for gas payment
 		igpCustomHookId, // don't override post dispatch hook

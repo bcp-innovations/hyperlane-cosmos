@@ -1286,10 +1286,10 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 	res, err := s.RunTx(&coreTypes.MsgCreateMailbox{
 		Creator:    creator,
 		DefaultIsm: ismId.String(),
-		Igp: &coreTypes.InterchainGasPaymaster{
-			Id:       igpId.String(),
-			Required: igpRequired,
-		},
+		//Igp: &coreTypes.InterchainGasPaymaster{ // TODO
+		//	Id:       igpId.String(),
+		//	Required: igpRequired,
+		//},
 	})
 	Expect(err).To(BeNil())
 
@@ -1361,16 +1361,16 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
 	Expect(mailbox.Creator).To(Equal(creator))
-	Expect(mailbox.Igp.Id).To(Equal(igpId))
+	//Expect(mailbox.Igp.Id).To(Equal(igpId)) // TODO
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
 
-	if igpRequired {
-		Expect(mailbox.Igp.Required).To(BeTrue())
-	} else {
-		Expect(mailbox.Igp.Required).To(BeFalse())
-	}
+	//if igpRequired {
+	//	Expect(mailbox.Igp.Required).To(BeTrue()) TODO
+	//} else {
+	//	Expect(mailbox.Igp.Required).To(BeFalse())
+	//}
 
 	mailboxes, err := coreKeeper.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &coreTypes.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())

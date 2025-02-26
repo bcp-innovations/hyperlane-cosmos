@@ -38,7 +38,8 @@ service Query {
   }
 
   // Count ...
-  rpc MerkleTreeHook(QueryMerkleTreeHook) returns (QueryMerkleTreeHookResponse) {
+  rpc MerkleTreeHook(QueryMerkleTreeHook)
+      returns (QueryMerkleTreeHookResponse) {
     option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks/{id}";
   }
 }
