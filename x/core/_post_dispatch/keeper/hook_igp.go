@@ -16,7 +16,7 @@ type InterchainGasPaymasterHookHandler struct {
 	k Keeper
 }
 
-var _ types.PostDispatchHookHandler = InterchainGasPaymasterHookHandler{}
+var _ util.PostDispatchModule = InterchainGasPaymasterHookHandler{}
 
 func (i InterchainGasPaymasterHookHandler) HookType() uint8 {
 	return types.POST_DISPATCH_HOOK_TYPE_INTERCHAIN_GAS_PAYMASTER
@@ -27,13 +27,13 @@ func (i InterchainGasPaymasterHookHandler) SupportsMetadata(metadata []byte) boo
 	panic("implement me")
 }
 
-func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx sdk.Context, hookId uint64, rawMetadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
 	if err != nil {
 		return nil, err
 	}
 
-	err = i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, math.NewIntFromBigInt(&metadata.GasLimit), math.NewIntFromBigInt(&metadata.Value))
+	err = i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, metadata.GasLimit, metadata.Value)
 	if err != nil {
 		return nil, err
 	}
@@ -42,11 +42,19 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx sdk.Context, hookId 
 	return nil, nil
 }
 
+func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
+	has, err := i.k.igps.Has(ctx, hookId.GetInternalId())
+	if err != nil {
+		return false, err
+	}
+	return has, nil
+}
+
 // PayForGasWithoutQuote executes an InterchainGasPayment without using `QuoteGasPayment`.
 // This is used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
 // amount for e.g. re-funding a certain message-id as the first payment wasn't enough.
-func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId uint64, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, amount math.Int) error {
-	igp, err := i.k.igps.Get(ctx, hookId)
+func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, amount math.Int) error {
+	igp, err := i.k.igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return fmt.Errorf("igp does not exist: %d", hookId)
 	}
@@ -74,7 +82,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 
 	igp.ClaimableFees = igp.ClaimableFees.Add(amount)
 
-	err = i.k.igps.Set(ctx, igp.Id, igp)
+	err = i.k.igps.Set(ctx, igp.InternalId, igp)
 	if err != nil {
 		return err
 	}
@@ -86,19 +94,19 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 		Destination: destinationDomain,
 		GasAmount:   gasLimit.String(),
 		Payment:     amount.String(),
-		IgpId:       "", // TODO figure out id usage
+		IgpId:       hookId.String(),
 	})
 
 	return nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, hookId uint64, destinationDomain uint32, gasLimit math.Int) (math.Int, error) {
-	igp, err := i.k.igps.Get(ctx, hookId)
+func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (math.Int, error) {
+	igp, err := i.k.igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return math.ZeroInt(), fmt.Errorf("igp does not exist: %d", hookId)
 	}
 
-	destinationGasConfig, err := i.k.igpDestinationGasConfigs.Get(ctx, collections.Join(igp.Id, destinationDomain))
+	destinationGasConfig, err := i.k.igpDestinationGasConfigs.Get(ctx, collections.Join(igp.InternalId, destinationDomain))
 	if err != nil {
 		return math.Int{}, fmt.Errorf("remote domain %v is not supported", destinationDomain)
 	}
@@ -110,7 +118,7 @@ func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, 
 	return (destinationCost.Mul(destinationGasConfig.GasOracle.TokenExchangeRate)).Quo(types.TokenExchangeRateScale), nil
 }
 
-func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId uint64, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee math.Int) error {
+func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee math.Int) error {
 	requiredPayment, err := i.QuoteGasPayment(ctx, hookId, destinationDomain, gasLimit)
 	if err != nil {
 		return err

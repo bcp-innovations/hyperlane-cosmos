@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"math/big"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
@@ -12,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee math.Int) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee sdk.Coin) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -70,7 +69,7 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		ctx,
 		util.HexAddress(token.OriginMailbox),
 		k.GetAddressFromToken(token),
-		sdk.Coins{}, // TODO use maxFee
+		sdk.NewCoins(maxFee),
 
 		remoteRouter.ReceiverDomain,
 		receiverContract,
@@ -78,8 +77,8 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		warpPayload.Bytes(),
 		util.StandardHookMetadata{
 			Variant:  1,
-			Value:    *big.NewInt(0), // TODO figure out usage of maxFee
-			GasLimit: *gas.BigInt(),
+			Value:    maxFee.Amount,
+			GasLimit: gas,
 			Address:  senderAcc,
 		}.Bytes(),
 		customPostDispatchHookId,

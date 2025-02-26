@@ -6,6 +6,8 @@ import (
 	"math/big"
 	"slices"
 
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -21,8 +23,8 @@ const (
 
 type StandardHookMetadata struct {
 	Variant  uint16
-	Value    big.Int
-	GasLimit big.Int
+	Value    math.Int
+	GasLimit math.Int
 	Address  sdk.AccAddress
 }
 
@@ -34,8 +36,13 @@ func ParseStandardHookMetadata(raw []byte) (StandardHookMetadata, error) {
 	}
 
 	metadata.Variant = binary.BigEndian.Uint16(raw[STANDARD_HOOK_METADATA_VARIANT_OFFSET:STANDARD_HOOK_METADATA_MSG_VALUE_OFFSET])
-	metadata.Value.SetBytes(raw[STANDARD_HOOK_METADATA_MSG_VALUE_OFFSET:STANDARD_HOOK_METADATA_GAS_LIMIT_OFFSET])
-	metadata.GasLimit.SetBytes(raw[STANDARD_HOOK_METADATA_GAS_LIMIT_OFFSET:STANDARD_HOOK_METADATA_REFUND_ADDRESS_OFFSET])
+	valueBig := new(big.Int)
+	valueBig.SetBytes(raw[STANDARD_HOOK_METADATA_MSG_VALUE_OFFSET:STANDARD_HOOK_METADATA_GAS_LIMIT_OFFSET])
+	metadata.Value = math.NewIntFromBigInt(valueBig)
+
+	gasLimitBig := new(big.Int)
+	gasLimitBig.SetBytes(raw[STANDARD_HOOK_METADATA_GAS_LIMIT_OFFSET:STANDARD_HOOK_METADATA_REFUND_ADDRESS_OFFSET])
+	metadata.GasLimit = math.NewIntFromBigInt(gasLimitBig)
 
 	// TODO only 20 bytes cosmos addresses supported
 	metadata.Address = raw[STANDARD_HOOK_METADATA_REFUND_ADDRESS_OFFSET+12 : STANDARD_HOOK_METADATA_MIN_METADATA_LENGTH]
@@ -47,8 +54,8 @@ func (metadata StandardHookMetadata) Bytes() []byte {
 	variant := make([]byte, 4)
 	binary.BigEndian.PutUint16(variant, metadata.Variant)
 
-	value := metadata.Value.Bytes()
-	gasLimit := metadata.GasLimit.Bytes()
+	value := metadata.Value.BigInt().Bytes()
+	gasLimit := metadata.GasLimit.BigInt().Bytes()
 
 	// TODO return error
 

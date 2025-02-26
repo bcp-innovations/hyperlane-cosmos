@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,7 +12,15 @@ type MerkleTreeHookHandler struct {
 	k Keeper
 }
 
-var _ types.PostDispatchHookHandler = MerkleTreeHookHandler{}
+var _ util.PostDispatchModule = MerkleTreeHookHandler{}
+
+func (i MerkleTreeHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
+	has, err := i.k.merkleTreeHooks.Has(ctx, hookId.GetInternalId())
+	if err != nil {
+		return false, err
+	}
+	return has, nil
+}
 
 func (i MerkleTreeHookHandler) HookType() uint8 {
 	return types.POST_DISPATCH_HOOK_TYPE_MERKLE_TREE
@@ -21,8 +31,8 @@ func (i MerkleTreeHookHandler) SupportsMetadata(_ []byte) bool {
 }
 
 // TODO add mailbox id IMPORTANT: Double check if caller = mailboxId
-func (i MerkleTreeHookHandler) PostDispatch(ctx sdk.Context, hookId uint64, rawMetadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
-	merkleTreeHook, err := i.k.merkleTreeHooks.Get(ctx, hookId)
+func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+	merkleTreeHook, err := i.k.merkleTreeHooks.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return nil, err
 	}
@@ -43,12 +53,12 @@ func (i MerkleTreeHookHandler) PostDispatch(ctx sdk.Context, hookId uint64, rawM
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
 		MessageId: message.Id().String(),
 		Index:     count,
-		// MailboxId: mailbox.Id, TODO mailbox Id?? What if multiple mailboxes insert into the same tree-hook
+		MailboxId: mailboxId.String(),
 	})
 
 	merkleTreeHook.Tree = types.ProtoFromTree(tree)
 
-	if err := i.k.merkleTreeHooks.Set(ctx, hookId, merkleTreeHook); err != nil {
+	if err := i.k.merkleTreeHooks.Set(ctx, hookId.GetInternalId(), merkleTreeHook); err != nil {
 		return nil, err
 	}
 

@@ -135,7 +135,7 @@ func (k Keeper) DispatchMessage(
 	if err != nil {
 		return util.HexAddress{}, err
 	}
-	remainingCoins, err := k.postDispatchHooks.PostDispatch(ctx, requiredHookAddress, metadata, hypMsg, maxFee)
+	remainingCoins, err := k.PostDispatch(ctx, originMailboxId, requiredHookAddress, metadata, hypMsg, maxFee)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
@@ -148,7 +148,7 @@ func (k Keeper) DispatchMessage(
 		postDispatchHookId = defaultHookAddress
 	}
 
-	finalCoins, err := k.postDispatchHooks.PostDispatch(ctx, postDispatchHookId, metadata, hypMsg, remainingCoins)
+	finalCoins, err := k.PostDispatch(ctx, originMailboxId, postDispatchHookId, metadata, hypMsg, remainingCoins)
 	if err != nil {
 		return util.HexAddress{}, err
 	}

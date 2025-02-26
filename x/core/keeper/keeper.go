@@ -7,11 +7,13 @@ import (
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/keeper"
 	postdispatchkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 )
 
@@ -36,12 +38,11 @@ type Keeper struct {
 
 	bankKeeper types.BankKeeper
 
-	IsmKeeper ismkeeper.Keeper
-
+	IsmKeeper          ismkeeper.Keeper
 	PostDispatchKeeper postdispatchkeeper.Keeper
-	postDispatchHooks  types.PostDispatchHooks
 
-	ismRouter *util.Router[util.InterchainSecurityModule]
+	ismRouter          *util.Router[util.InterchainSecurityModule]
+	postDispatchRouter *util.Router[util.PostDispatchModule]
 }
 
 // NewKeeper creates a new Keeper instance
@@ -66,10 +67,12 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		IsmKeeper:          ismkeeper.NewKeeper(cdc, storeService),
 		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService, bankKeeper),
 
-		ismRouter: util.NewRouter[util.InterchainSecurityModule](types.IsmRouterKey, sb),
+		ismRouter:          util.NewRouter[util.InterchainSecurityModule](types.IsmRouterKey, "router_sequence_ism", sb),
+		postDispatchRouter: util.NewRouter[util.PostDispatchModule](types.PostDispatchRouterKey, "router_sequence_post_dispatch", sb),
 	}
 
 	k.IsmKeeper.SetCoreKeeper(k)
+	k.PostDispatchKeeper.SetCoreKeeper(k)
 
 	schema, err := sb.Build()
 	if err != nil {
@@ -85,29 +88,24 @@ func (k Keeper) IsmRouter() *util.Router[util.InterchainSecurityModule] {
 	return k.ismRouter
 }
 
-func (k *Keeper) PostDispatchHooks() types.PostDispatchHooks {
-	if k.postDispatchHooks == nil {
-		// return a no-op implementation if no hooks are set
-		return types.MultiPostDispatchHooks{}
-	}
-
-	return k.postDispatchHooks
-}
-
-func (k *Keeper) SetPostDispatchHooks(sh types.PostDispatchHooks) {
-	if k.postDispatchHooks != nil {
-		panic("cannot set mailbox hooks twice")
-	}
-
-	k.postDispatchHooks = sh
-}
-
 func (k *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	handler, err := k.ismRouter.GetModule(ctx, ismId)
 	if err != nil {
 		return false, err
 	}
 	return (*handler).Verify(ctx, ismId, metadata, message)
+}
+
+func (k Keeper) PostDispatchRouter() *util.Router[util.PostDispatchModule] {
+	return k.postDispatchRouter
+}
+
+func (k *Keeper) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+	handler, err := k.postDispatchRouter.GetModule(ctx, hookId)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+	return (*handler).PostDispatch(ctx, mailboxId, hookId, metadata, message, maxFee)
 }
 
 // Hooks gets the hooks for staking *Keeper {

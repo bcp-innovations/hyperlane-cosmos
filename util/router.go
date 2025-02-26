@@ -5,8 +5,9 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"cosmossdk.io/collections"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"cosmossdk.io/collections"
 )
 
 type InterchainSecurityModule interface {
@@ -16,7 +17,9 @@ type InterchainSecurityModule interface {
 
 type PostDispatchModule interface {
 	Exists(ctx context.Context, hookId HexAddress) (bool, error)
-	PostDispatch(ctx context.Context, hookId HexAddress, metadata any, message HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
+	PostDispatch(ctx context.Context, mailboxId, hookId HexAddress, metadata []byte, message HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
+	HookType() uint8
+	SupportsMetadata(metadata []byte) bool
 }
 
 type Router[T any] struct {
@@ -25,8 +28,8 @@ type Router[T any] struct {
 }
 
 // TODO: custom address prefix
-func NewRouter[T any](keyPrefix []byte, builder *collections.SchemaBuilder) *Router[T] {
-	sequence := collections.NewSequence(builder, keyPrefix, "router_sequence")
+func NewRouter[T any](keyPrefix []byte, name string, builder *collections.SchemaBuilder) *Router[T] {
+	sequence := collections.NewSequence(builder, keyPrefix, name)
 
 	return &Router[T]{
 		modules:  make(map[uint8]T),

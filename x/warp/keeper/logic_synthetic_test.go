@@ -50,7 +50,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
 
 		amount := math.NewInt(100)
-		maxFee := math.NewInt(250000)
+		maxFee := sdk.NewCoin("uhyp", math.NewInt(250000))
 
 		tokenId, _, igpId, _ := createToken(s, nil, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
 

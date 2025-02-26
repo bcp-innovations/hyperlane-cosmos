@@ -10,16 +10,19 @@ import "gogoproto/gogo.proto";
 message InterchainGasPaymaster {
 
   // id ...
-  uint64 id = 1;
+  uint64 internal_id = 1;
+
+  // id is the hyperlane hex address
+  string id = 2;
 
   // owner ...
-  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // denom ...
-  string denom = 3;
+  string denom = 4;
 
   // claimable_fees ...
-  string claimable_fees = 4 [
+  string claimable_fees = 5 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -62,13 +65,16 @@ message GasOracle {
 message MerkleTreeHook {
 
   // id ...
-  uint64 id = 1;
+  uint64 internal_id = 1;
+
+  // id is the hyperlane hex address
+  string id = 2;
 
   // owner ...
-  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // tree ...
-  Tree tree = 3;
+  Tree tree = 4;
 }
 
 // Tree represents an incremental merkle tree.

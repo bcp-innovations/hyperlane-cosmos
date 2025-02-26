@@ -3,8 +3,6 @@ package types
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	//"fmt"
 	//sdk "github.com/cosmos/cosmos-sdk/types"
 	//"github.com/cosmos/gogoproto/proto"
@@ -51,28 +49,4 @@ func (h MultiMailboxHooks) ReceiverIsmId(ctx context.Context, recipient util.Hex
 	} else {
 		return util.HexAddress{}, ErrNoReceiverISM
 	}
-}
-
-// Post Dispatch Hook Multi Wrapper
-
-// combine multiple mailbox hooks, all hook functions are run in array sequence
-var _ PostDispatchHooks = MultiPostDispatchHooks{}
-
-type MultiPostDispatchHooks []PostDispatchHooks
-
-func NewMultiPostDispatchHooks(hooks ...PostDispatchHooks) MultiPostDispatchHooks {
-	return hooks
-}
-
-func (m MultiPostDispatchHooks) PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
-	for i := range m {
-		coins, err := m[i].PostDispatch(ctx, hookId, metadata, message, maxFee)
-		if err != nil {
-			return nil, err
-		}
-		if coins != nil {
-			return coins, nil
-		}
-	}
-	return nil, nil
 }

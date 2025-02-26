@@ -27,7 +27,6 @@ type queryServer struct {
 	k *Keeper
 }
 
-// IGP
 func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
 	if len(req.IgpId) == 0 {
 		return nil, errors.New("parameter 'igp_id' is required")
@@ -58,8 +57,7 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 
 	igpHandler := InterchainGasPaymasterHookHandler{*qs.k}
 
-	// TODO figure out id usage
-	payment, err := igpHandler.QuoteGasPayment(ctx, igpId.GetInternalId(), uint32(destinationDomain), gasLimit)
+	payment, err := igpHandler.QuoteGasPayment(ctx, igpId, uint32(destinationDomain), gasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +83,6 @@ func (qs queryServer) Igp(ctx context.Context, req *types.QueryIgpRequest) (*typ
 		return nil, err
 	}
 
-	// TODO figure out id
 	igp, err := qs.k.igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find igp with id: %v", igpId.String())
@@ -102,7 +99,6 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 		return nil, err
 	}
 
-	// TODO figure out id usage
 	rng := collections.NewPrefixedPairRange[uint64, uint32](igpId.GetInternalId())
 
 	iter, err := qs.k.igpDestinationGasConfigs.Iterate(ctx, rng)
@@ -193,7 +189,6 @@ func (qs queryServer) MerkleTreeHook(ctx context.Context, req *types.QueryMerkle
 		return nil, err
 	}
 
-	// TODO figure out internal id
 	merkleTreeHook, err := qs.k.merkleTreeHooks.Get(ctx, merkleTreeHooksId.GetInternalId())
 	if err != nil {
 		return nil, err

@@ -7,6 +7,7 @@ import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "hyperlane/warp/v1/types.proto";
 
 // Msg defines the module Msg service.
@@ -151,10 +152,8 @@ message MsgRemoteTransfer {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string max_fee = 8 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
+  cosmos.base.v1beta1.Coin max_fee = 8
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // MsgRemoteTransferResponse ...

@@ -28,20 +28,24 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 		return nil, fmt.Errorf("denom %s is invalid", req.Denom)
 	}
 
-	newId := ms.k.idFactory.GenerateNewId(ctx)
+	nextId, err := ms.k.coreKeeper.PostDispatchRouter().GetNextSequence(ctx, types.POST_DISPATCH_HOOK_TYPE_INTERCHAIN_GAS_PAYMASTER)
+	if err != nil {
+		return nil, err
+	}
 
 	newIgp := types.InterchainGasPaymaster{
-		Id:            newId,
+		InternalId:    nextId.GetInternalId(),
+		Id:            nextId.String(),
 		Owner:         req.Owner,
 		Denom:         req.Denom,
 		ClaimableFees: math.NewInt(0),
 	}
 
-	if err = ms.k.igps.Set(ctx, newIgp.Id, newIgp); err != nil {
+	if err = ms.k.igps.Set(ctx, newIgp.InternalId, newIgp); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgCreateIgpResponse{Id: ms.k.idFactory.AddressFromId(newId).String()}, nil
+	return &types.MsgCreateIgpResponse{Id: nextId.String()}, nil
 }
 
 // PayForGas executes an InterchainGasPayment without for the specified payment amount.
@@ -53,8 +57,7 @@ func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*ty
 
 	handler := InterchainGasPaymasterHookHandler{*ms.k}
 
-	// TODO figure out internal id
-	return &types.MsgPayForGasResponse{}, handler.PayForGasWithoutQuote(ctx, igpId.GetInternalId(), req.Sender, req.MessageId, req.DestinationDomain, req.GasLimit, req.Amount)
+	return &types.MsgPayForGasResponse{}, handler.PayForGasWithoutQuote(ctx, igpId, req.Sender, req.MessageId, req.DestinationDomain, req.GasLimit, req.Amount)
 }
 
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {

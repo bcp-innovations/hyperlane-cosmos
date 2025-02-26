@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strconv"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -44,9 +46,9 @@ func CmdRemoteTransfer() *cobra.Command {
 				return errors.New("failed to convert `gasLimit` into math.Int")
 			}
 
-			maxFeeInt, ok := math.NewIntFromString(maxFee)
-			if !ok {
-				return errors.New("failed to convert `maxFee` into math.Int")
+			maxFeeCoin, err := sdk.ParseCoinNormalized(maxFee)
+			if err != nil {
+				return err
 			}
 
 			msg := types.MsgRemoteTransfer{
@@ -57,7 +59,7 @@ func CmdRemoteTransfer() *cobra.Command {
 				Amount:            argAmount,
 				IgpId:             igpId,
 				GasLimit:          gasLimitInt,
-				MaxFee:            maxFeeInt,
+				MaxFee:            maxFeeCoin,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

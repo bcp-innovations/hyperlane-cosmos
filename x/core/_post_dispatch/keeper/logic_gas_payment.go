@@ -14,8 +14,6 @@ import (
 )
 
 func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress) error {
-	// TODO either change igp id to uint or check hexAddressMembership
-
 	igp, err := k.igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
 		return fmt.Errorf("failed to find ism with id: %s", igpId.String())
@@ -72,7 +70,6 @@ func (k Keeper) SetDestinationGasConfig(ctx context.Context, igpId util.HexAddre
 		GasOverhead:  destinationGasConfig.GasOverhead,
 	}
 
-	// TODO either change igp id to uint or check hexAddressMembership
 	key := collections.Join(igpId.GetInternalId(), destinationGasConfig.RemoteDomain)
 
 	err = k.igpDestinationGasConfigs.Set(ctx, key, updatedDestinationGasConfig)

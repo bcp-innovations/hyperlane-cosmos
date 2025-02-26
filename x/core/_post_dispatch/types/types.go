@@ -3,15 +3,7 @@ package types
 import (
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
-	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
-
-type PostDispatchHookHandler interface {
-	HookType() uint8
-	SupportsMetadata(metadata []byte) bool
-	PostDispatch(ctx sdk.Context, hookId uint64, metadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
-}
 
 var (
 	// TODO prefix with submodule

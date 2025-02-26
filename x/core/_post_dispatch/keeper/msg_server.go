@@ -21,18 +21,23 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCreateMerkleTreeHook) (*types.MsgCreateMerkleTreeHookResponse, error) {
 	tree := util.NewTree(util.ZeroHashes, 0)
 
+	nextId, err := ms.k.coreKeeper.PostDispatchRouter().GetNextSequence(ctx, types.POST_DISPATCH_HOOK_TYPE_MERKLE_TREE)
+	if err != nil {
+		return nil, err
+	}
 	merkleTreeHook := types.MerkleTreeHook{
-		Id:    ms.k.idFactory.GenerateNewId(ctx),
-		Owner: msg.Owner,
-		Tree:  types.ProtoFromTree(tree),
+		InternalId: nextId.GetInternalId(),
+		Id:         nextId.String(),
+		Owner:      msg.Owner,
+		Tree:       types.ProtoFromTree(tree),
 	}
 
-	err := ms.k.merkleTreeHooks.Set(ctx, merkleTreeHook.Id, merkleTreeHook)
+	err = ms.k.merkleTreeHooks.Set(ctx, merkleTreeHook.InternalId, merkleTreeHook)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.MsgCreateMerkleTreeHookResponse{
-		// TODO return id
+		Id: nextId.String(),
 	}, nil
 }
