@@ -163,7 +163,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("igp with id %s does not exist", igpId)))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("hook with id %s does not exist", igpId)))
 
 		verifyInvalidMailboxCreation(s)
 	})
@@ -181,7 +181,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("igp with id %s does not exist", igpId)))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("hook with id %s does not exist", igpId)))
 
 		verifyInvalidMailboxCreation(s)
 	})
@@ -639,13 +639,14 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsR
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&types.MsgCreateMailbox{
-		Creator:     creator,
-		DefaultIsm:  ismId.String(),
-		DefaultHook: igpId.String(),
+		Creator:      creator,
+		DefaultIsm:   ismId.String(),
+		DefaultHook:  igpId.String(),
+		RequiredHook: igpId.String(),
 	})
 	Expect(err).To(BeNil())
 
-	return verifyNewSingleMailbox(s, res, creator, ismId.String(), igpId.String(), ""), igpId, ismId
+	return verifyNewSingleMailbox(s, res, creator, ismId.String(), igpId.String(), igpId.String()), igpId, ismId
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {

@@ -85,7 +85,7 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 	}
 
 	customIgpId, err := util.DecodeHexAddress(req.CustomIgp)
-	if err != nil {
+	if req.CustomIgp != "" && err != nil {
 		return nil, fmt.Errorf("invalid customIgp: %s", err)
 	}
 

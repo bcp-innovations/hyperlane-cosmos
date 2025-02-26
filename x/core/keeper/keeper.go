@@ -110,12 +110,10 @@ func (k *Keeper) AssertIsmExists(ctx context.Context, id string) error {
 		return fmt.Errorf("ism id %s is invalid: %s", id, err.Error())
 	}
 	ismExists, err := k.IsmExists(ctx, ismId)
-	if err != nil {
-		return err
-	}
-	if !ismExists {
+	if err != nil || !ismExists {
 		return fmt.Errorf("ism with id %s does not exist", ismId.String())
 	}
+
 	return nil
 }
 
@@ -145,10 +143,7 @@ func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id string) er
 		return fmt.Errorf("hook id %s is invalid: %s", id, err.Error())
 	}
 	hookExists, err := k.PostDispatchHookExists(ctx, hookId)
-	if err != nil {
-		return err
-	}
-	if !hookExists {
+	if err != nil || !hookExists {
 		return fmt.Errorf("hook with id %s does not exist", hookId.String())
 	}
 	return nil

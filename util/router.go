@@ -66,7 +66,7 @@ func (r *Router[T]) GetModule(ctx context.Context, id HexAddress) (*T, error) {
 	moduleId := id.GetType()
 	module, ok := r.modules[moduleId]
 	if !ok {
-		return nil, fmt.Errorf("module with id %d not found", moduleId)
+		return nil, fmt.Errorf("id %s not found", id.String())
 	}
 	return &module, nil
 }
