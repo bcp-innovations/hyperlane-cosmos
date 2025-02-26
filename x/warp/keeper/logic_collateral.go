@@ -48,6 +48,11 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		return util.HexAddress{}, fmt.Errorf("failed to decode receiver contract address %s", remoteRouter.ReceiverContract)
 	}
 
+	gas := remoteRouter.Gas
+	if !gasLimit.IsZero() {
+		gas = gasLimit
+	}
+
 	warpPayload, err := types.NewWarpPayload(recipient, *amount.BigInt())
 	if err != nil {
 		return util.HexAddress{}, err
@@ -76,7 +81,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		util.StandardHookMetadata{
 			Variant:  1,
 			Value:    *big.NewInt(0), // TODO figure out usage of maxFee
-			GasLimit: *gasLimit.BigInt(),
+			GasLimit: gas,
 			Address:  senderAcc,
 		}.Bytes(), // metadata for gas payment
 		igpCustomHookId, // don't override post dispatch hook

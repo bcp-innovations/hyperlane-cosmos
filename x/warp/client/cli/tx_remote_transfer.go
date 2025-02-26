@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -71,11 +70,7 @@ func CmdRemoteTransfer() *cobra.Command {
 
 	cmd.Flags().StringVar(&gasLimit, "gas-limit", "50000", "InterchainGasPayment gas limit (default: 50,000)")
 
-	// TODO: Use default value
 	cmd.Flags().StringVar(&maxFee, "max-hyperlane-fee", "0", "maximum Hyperlane InterchainGasPayment")
-	if err := cmd.MarkFlagRequired("max-hyperlane-fee"); err != nil {
-		panic(fmt.Errorf("flag 'max-hyperlane-fee' is required: %w", err))
-	}
 
 	return cmd
 }

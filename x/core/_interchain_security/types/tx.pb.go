@@ -29,8 +29,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgCreateMultisigIsm ...
-type MsgCreateMerkleRootMultiSigIsm struct {
+// MsgCreateMessageIdMultisigIsm ...
+type MsgCreateMessageIdMultisigIsm struct {
 	// creator is the message sender.
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	// validators
@@ -40,18 +40,18 @@ type MsgCreateMerkleRootMultiSigIsm struct {
 	Threshold uint32 `protobuf:"varint,3,opt,name=threshold,proto3" json:"threshold,omitempty"`
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsm) Reset()         { *m = MsgCreateMerkleRootMultiSigIsm{} }
-func (m *MsgCreateMerkleRootMultiSigIsm) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateMerkleRootMultiSigIsm) ProtoMessage()    {}
-func (*MsgCreateMerkleRootMultiSigIsm) Descriptor() ([]byte, []int) {
+func (m *MsgCreateMessageIdMultisigIsm) Reset()         { *m = MsgCreateMessageIdMultisigIsm{} }
+func (m *MsgCreateMessageIdMultisigIsm) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateMessageIdMultisigIsm) ProtoMessage()    {}
+func (*MsgCreateMessageIdMultisigIsm) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4ee100bdd8d27ecb, []int{0}
 }
-func (m *MsgCreateMerkleRootMultiSigIsm) XXX_Unmarshal(b []byte) error {
+func (m *MsgCreateMessageIdMultisigIsm) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateMerkleRootMultiSigIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCreateMessageIdMultisigIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateMerkleRootMultiSigIsm.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCreateMessageIdMultisigIsm.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -61,33 +61,143 @@ func (m *MsgCreateMerkleRootMultiSigIsm) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateMerkleRootMultiSigIsm) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateMerkleRootMultiSigIsm.Merge(m, src)
+func (m *MsgCreateMessageIdMultisigIsm) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateMessageIdMultisigIsm.Merge(m, src)
 }
-func (m *MsgCreateMerkleRootMultiSigIsm) XXX_Size() int {
+func (m *MsgCreateMessageIdMultisigIsm) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateMerkleRootMultiSigIsm) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateMerkleRootMultiSigIsm.DiscardUnknown(m)
+func (m *MsgCreateMessageIdMultisigIsm) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateMessageIdMultisigIsm.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateMerkleRootMultiSigIsm proto.InternalMessageInfo
+var xxx_messageInfo_MsgCreateMessageIdMultisigIsm proto.InternalMessageInfo
 
-func (m *MsgCreateMerkleRootMultiSigIsm) GetCreator() string {
+func (m *MsgCreateMessageIdMultisigIsm) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsm) GetValidators() []string {
+func (m *MsgCreateMessageIdMultisigIsm) GetValidators() []string {
 	if m != nil {
 		return m.Validators
 	}
 	return nil
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsm) GetThreshold() uint32 {
+func (m *MsgCreateMessageIdMultisigIsm) GetThreshold() uint32 {
+	if m != nil {
+		return m.Threshold
+	}
+	return 0
+}
+
+// MsgCreateMessageIdMultisigIsmResponse ...
+type MsgCreateMessageIdMultisigIsmResponse struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *MsgCreateMessageIdMultisigIsmResponse) Reset()         { *m = MsgCreateMessageIdMultisigIsmResponse{} }
+func (m *MsgCreateMessageIdMultisigIsmResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateMessageIdMultisigIsmResponse) ProtoMessage()    {}
+func (*MsgCreateMessageIdMultisigIsmResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{1}
+}
+func (m *MsgCreateMessageIdMultisigIsmResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateMessageIdMultisigIsmResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateMessageIdMultisigIsmResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateMessageIdMultisigIsmResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateMessageIdMultisigIsmResponse.Merge(m, src)
+}
+func (m *MsgCreateMessageIdMultisigIsmResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateMessageIdMultisigIsmResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateMessageIdMultisigIsmResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateMessageIdMultisigIsmResponse proto.InternalMessageInfo
+
+func (m *MsgCreateMessageIdMultisigIsmResponse) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+// MsgCreateMultisigIsm ...
+type MsgCreateMerkleRootMultisigIsm struct {
+	// creator is the message sender.
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// validators
+	// these are 20 byte long ethereum style addresses
+	Validators []string `protobuf:"bytes,2,rep,name=validators,proto3" json:"validators,omitempty"`
+	// threshold ...
+	Threshold uint32 `protobuf:"varint,3,opt,name=threshold,proto3" json:"threshold,omitempty"`
+}
+
+func (m *MsgCreateMerkleRootMultisigIsm) Reset()         { *m = MsgCreateMerkleRootMultisigIsm{} }
+func (m *MsgCreateMerkleRootMultisigIsm) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateMerkleRootMultisigIsm) ProtoMessage()    {}
+func (*MsgCreateMerkleRootMultisigIsm) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{2}
+}
+func (m *MsgCreateMerkleRootMultisigIsm) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateMerkleRootMultisigIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateMerkleRootMultisigIsm.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateMerkleRootMultisigIsm) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateMerkleRootMultisigIsm.Merge(m, src)
+}
+func (m *MsgCreateMerkleRootMultisigIsm) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateMerkleRootMultisigIsm) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateMerkleRootMultisigIsm.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateMerkleRootMultisigIsm proto.InternalMessageInfo
+
+func (m *MsgCreateMerkleRootMultisigIsm) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateMerkleRootMultisigIsm) GetValidators() []string {
+	if m != nil {
+		return m.Validators
+	}
+	return nil
+}
+
+func (m *MsgCreateMerkleRootMultisigIsm) GetThreshold() uint32 {
 	if m != nil {
 		return m.Threshold
 	}
@@ -95,24 +205,24 @@ func (m *MsgCreateMerkleRootMultiSigIsm) GetThreshold() uint32 {
 }
 
 // MsgCreateMultisigIsmResponse ...
-type MsgCreateMerkleRootMultiSigIsmResponse struct {
+type MsgCreateMerkleRootMultisigIsmResponse struct {
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) Reset() {
-	*m = MsgCreateMerkleRootMultiSigIsmResponse{}
+func (m *MsgCreateMerkleRootMultisigIsmResponse) Reset() {
+	*m = MsgCreateMerkleRootMultisigIsmResponse{}
 }
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateMerkleRootMultiSigIsmResponse) ProtoMessage()    {}
-func (*MsgCreateMerkleRootMultiSigIsmResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{1}
+func (m *MsgCreateMerkleRootMultisigIsmResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateMerkleRootMultisigIsmResponse) ProtoMessage()    {}
+func (*MsgCreateMerkleRootMultisigIsmResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{3}
 }
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgCreateMerkleRootMultisigIsmResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgCreateMerkleRootMultisigIsmResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateMerkleRootMultiSigIsmResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgCreateMerkleRootMultisigIsmResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -122,19 +232,19 @@ func (m *MsgCreateMerkleRootMultiSigIsmResponse) XXX_Marshal(b []byte, determini
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateMerkleRootMultiSigIsmResponse.Merge(m, src)
+func (m *MsgCreateMerkleRootMultisigIsmResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateMerkleRootMultisigIsmResponse.Merge(m, src)
 }
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) XXX_Size() int {
+func (m *MsgCreateMerkleRootMultisigIsmResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateMerkleRootMultiSigIsmResponse.DiscardUnknown(m)
+func (m *MsgCreateMerkleRootMultisigIsmResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateMerkleRootMultisigIsmResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateMerkleRootMultiSigIsmResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgCreateMerkleRootMultisigIsmResponse proto.InternalMessageInfo
 
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) GetId() string {
+func (m *MsgCreateMerkleRootMultisigIsmResponse) GetId() string {
 	if m != nil {
 		return m.Id
 	}
@@ -151,7 +261,7 @@ func (m *MsgCreateNoopIsm) Reset()         { *m = MsgCreateNoopIsm{} }
 func (m *MsgCreateNoopIsm) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateNoopIsm) ProtoMessage()    {}
 func (*MsgCreateNoopIsm) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{2}
+	return fileDescriptor_4ee100bdd8d27ecb, []int{4}
 }
 func (m *MsgCreateNoopIsm) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -196,7 +306,7 @@ func (m *MsgCreateNoopIsmResponse) Reset()         { *m = MsgCreateNoopIsmRespon
 func (m *MsgCreateNoopIsmResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateNoopIsmResponse) ProtoMessage()    {}
 func (*MsgCreateNoopIsmResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{3}
+	return fileDescriptor_4ee100bdd8d27ecb, []int{5}
 }
 func (m *MsgCreateNoopIsmResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -250,7 +360,7 @@ func (m *MsgAnnounceValidator) Reset()         { *m = MsgAnnounceValidator{} }
 func (m *MsgAnnounceValidator) String() string { return proto.CompactTextString(m) }
 func (*MsgAnnounceValidator) ProtoMessage()    {}
 func (*MsgAnnounceValidator) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{4}
+	return fileDescriptor_4ee100bdd8d27ecb, []int{6}
 }
 func (m *MsgAnnounceValidator) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -322,7 +432,7 @@ func (m *MsgAnnounceValidatorResponse) Reset()         { *m = MsgAnnounceValidat
 func (m *MsgAnnounceValidatorResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAnnounceValidatorResponse) ProtoMessage()    {}
 func (*MsgAnnounceValidatorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{5}
+	return fileDescriptor_4ee100bdd8d27ecb, []int{7}
 }
 func (m *MsgAnnounceValidatorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -352,8 +462,10 @@ func (m *MsgAnnounceValidatorResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAnnounceValidatorResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgCreateMerkleRootMultiSigIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMerkleRootMultiSigIsm")
-	proto.RegisterType((*MsgCreateMerkleRootMultiSigIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMerkleRootMultiSigIsmResponse")
+	proto.RegisterType((*MsgCreateMessageIdMultisigIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMessageIdMultisigIsm")
+	proto.RegisterType((*MsgCreateMessageIdMultisigIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMessageIdMultisigIsmResponse")
+	proto.RegisterType((*MsgCreateMerkleRootMultisigIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMerkleRootMultisigIsm")
+	proto.RegisterType((*MsgCreateMerkleRootMultisigIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMerkleRootMultisigIsmResponse")
 	proto.RegisterType((*MsgCreateNoopIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateNoopIsm")
 	proto.RegisterType((*MsgCreateNoopIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateNoopIsmResponse")
 	proto.RegisterType((*MsgAnnounceValidator)(nil), "hyperlane.core.interchain_security.v1.MsgAnnounceValidator")
@@ -365,41 +477,44 @@ func init() {
 }
 
 var fileDescriptor_4ee100bdd8d27ecb = []byte{
-	// 538 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xcf, 0x6b, 0x13, 0x41,
-	0x18, 0xed, 0x24, 0x56, 0xc9, 0x40, 0xb5, 0x5d, 0x04, 0x97, 0xb5, 0x0e, 0x21, 0xa0, 0xc4, 0x48,
-	0x77, 0xa9, 0x1e, 0x94, 0x7a, 0x10, 0x2d, 0x1e, 0x0a, 0xae, 0x87, 0x15, 0x04, 0xbd, 0x84, 0xcd,
-	0xee, 0x30, 0x19, 0xdc, 0x9d, 0x6f, 0x99, 0x99, 0x84, 0xe4, 0x26, 0xde, 0xf4, 0xe4, 0xc5, 0x3f,
-	0xc2, 0x5b, 0xc0, 0x7f, 0xc2, 0x63, 0x8f, 0x1e, 0x25, 0x01, 0xf3, 0x6f, 0xc8, 0x6e, 0xf6, 0x47,
-	0xdb, 0xc4, 0x58, 0x7f, 0x5c, 0x06, 0xe6, 0xcd, 0xf7, 0xbe, 0x79, 0xf3, 0xe6, 0xf1, 0x61, 0xbb,
-	0x3f, 0x4e, 0xa8, 0x8c, 0x7c, 0x41, 0x9d, 0x00, 0x24, 0x75, 0xb8, 0xd0, 0x54, 0x06, 0x7d, 0x9f,
-	0x8b, 0xae, 0xa2, 0xc1, 0x40, 0x72, 0x3d, 0x76, 0x86, 0xfb, 0x8e, 0x1e, 0xd9, 0x89, 0x04, 0x0d,
-	0xc6, 0xcd, 0xb2, 0xde, 0x4e, 0xeb, 0xed, 0x15, 0xf5, 0xf6, 0x70, 0xdf, 0xba, 0x16, 0x80, 0x8a,
-	0x41, 0x39, 0xb1, 0x62, 0x29, 0x3d, 0x56, 0x6c, 0xc1, 0xb7, 0x76, 0xfc, 0x98, 0x0b, 0x70, 0xb2,
-	0x75, 0x01, 0xb5, 0x3e, 0x23, 0x4c, 0x5c, 0xc5, 0x0e, 0x25, 0xf5, 0x35, 0x75, 0xa9, 0x7c, 0x13,
-	0x51, 0x0f, 0x40, 0xbb, 0x83, 0x48, 0xf3, 0x17, 0x9c, 0x1d, 0xa9, 0xd8, 0x30, 0xf1, 0xa5, 0x20,
-	0x3d, 0x06, 0x69, 0xa2, 0x26, 0x6a, 0x37, 0xbc, 0x62, 0x6b, 0x10, 0x8c, 0x87, 0x7e, 0xc4, 0xc3,
-	0x74, 0xa3, 0xcc, 0x5a, 0xb3, 0xde, 0x6e, 0x78, 0x27, 0x10, 0x63, 0x17, 0x37, 0x74, 0x5f, 0x52,
-	0xd5, 0x87, 0x28, 0x34, 0xeb, 0x4d, 0xd4, 0xde, 0xf2, 0x2a, 0xe0, 0xc0, 0x79, 0x37, 0x9f, 0x74,
-	0x8a, 0x5e, 0x1f, 0xe6, 0x93, 0x0e, 0xa9, 0xec, 0xa8, 0x24, 0x55, 0x42, 0x5a, 0x0f, 0xf0, 0xad,
-	0xf5, 0x52, 0x3d, 0xaa, 0x12, 0x10, 0x8a, 0x1a, 0x97, 0x71, 0x8d, 0x87, 0xb9, 0xda, 0x1a, 0x0f,
-	0x5b, 0xaf, 0xf0, 0x76, 0xc9, 0x7c, 0x0e, 0x90, 0xac, 0x7d, 0xd6, 0xc1, 0x9d, 0xb3, 0xc2, 0xac,
-	0x15, 0xc2, 0xf2, 0x36, 0xad, 0x0e, 0x36, 0xcf, 0x62, 0xbf, 0x94, 0x31, 0x47, 0xf8, 0xaa, 0xab,
-	0xd8, 0x63, 0x21, 0x60, 0x20, 0x02, 0xfa, 0xb2, 0x70, 0x2a, 0x35, 0xaa, 0xb4, 0x2d, 0xaf, 0xaf,
-	0x00, 0xe3, 0x36, 0xde, 0x56, 0x1a, 0xa4, 0xcf, 0x68, 0x37, 0x82, 0xc0, 0xd7, 0x1c, 0x84, 0x59,
-	0xcb, 0x8a, 0xae, 0xe4, 0xf8, 0xb3, 0x1c, 0x4e, 0x1b, 0x29, 0xce, 0x84, 0xaf, 0x07, 0x92, 0x66,
-	0x8e, 0x37, 0xbc, 0x0a, 0x30, 0x6e, 0x60, 0x1c, 0xfb, 0x3c, 0xea, 0xc1, 0xa8, 0xcb, 0x43, 0xf3,
-	0xc2, 0xe2, 0x38, 0x47, 0x8e, 0xc2, 0x93, 0x8e, 0x6c, 0x9e, 0x76, 0xe4, 0x37, 0x5f, 0xb5, 0xf4,
-	0xa0, 0x16, 0xc1, 0xbb, 0xab, 0xf0, 0xc2, 0x99, 0xbb, 0x3f, 0xea, 0xb8, 0xee, 0x2a, 0x66, 0x7c,
-	0x41, 0xf8, 0xfa, 0xba, 0xec, 0x3d, 0xb5, 0xcf, 0x15, 0x79, 0x7b, 0x7d, 0x2e, 0x2c, 0xf7, 0xbf,
-	0xb4, 0x29, 0xff, 0xf5, 0x3d, 0xc2, 0x5b, 0xa7, 0xc3, 0x74, 0xff, 0x4f, 0x2f, 0xc8, 0x89, 0xd6,
-	0xa3, 0xbf, 0x24, 0x96, 0x5a, 0x3e, 0x21, 0xbc, 0xb3, 0x1c, 0xa8, 0x87, 0xe7, 0x6f, 0xbb, 0x44,
-	0xb6, 0x0e, 0xff, 0x81, 0x5c, 0xe8, 0xb2, 0x36, 0xdf, 0xce, 0x27, 0x1d, 0xf4, 0x84, 0x7d, 0x9d,
-	0x12, 0x74, 0x3c, 0x25, 0xe8, 0xfb, 0x94, 0xa0, 0x8f, 0x33, 0xb2, 0x71, 0x3c, 0x23, 0x1b, 0xdf,
-	0x66, 0x64, 0xe3, 0xb5, 0xcb, 0xb8, 0xee, 0x0f, 0x7a, 0x76, 0x00, 0xb1, 0xd3, 0x0b, 0x92, 0x3d,
-	0x2e, 0x04, 0x0c, 0xb3, 0x14, 0x2b, 0xa7, 0xbc, 0x7f, 0x2f, 0x1f, 0x65, 0xa3, 0xc5, 0x80, 0xec,
-	0xae, 0x9a, 0x90, 0x7a, 0x9c, 0x50, 0xd5, 0xbb, 0x98, 0xcd, 0xb3, 0x7b, 0x3f, 0x03, 0x00, 0x00,
-	0xff, 0xff, 0x75, 0x62, 0x1b, 0xd5, 0x54, 0x05, 0x00, 0x00,
+	// 589 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0xbf, 0x6f, 0xd3, 0x40,
+	0x14, 0xce, 0x25, 0x04, 0x94, 0x27, 0x15, 0x5a, 0x0b, 0x09, 0xcb, 0xb4, 0x56, 0x64, 0xa9, 0x10,
+	0x82, 0x6a, 0xab, 0x30, 0xb4, 0x94, 0x01, 0x41, 0x61, 0x88, 0x54, 0x33, 0x78, 0x40, 0x82, 0x25,
+	0x72, 0xec, 0x93, 0x73, 0xc2, 0xbe, 0xb3, 0x7c, 0x97, 0x28, 0xd9, 0x10, 0x1b, 0x4c, 0x2c, 0x0c,
+	0xfc, 0x17, 0x41, 0xfd, 0x27, 0x18, 0x3b, 0x32, 0xa2, 0x64, 0xc8, 0xbf, 0x81, 0x9c, 0x38, 0xce,
+	0x2f, 0xd7, 0x6a, 0xa1, 0xea, 0x12, 0xe9, 0xbe, 0x7b, 0xdf, 0x77, 0xdf, 0xfb, 0xe2, 0xa7, 0x07,
+	0x7a, 0xbb, 0x1f, 0xe2, 0xc8, 0xb7, 0x29, 0x36, 0x1c, 0x16, 0x61, 0x83, 0x50, 0x81, 0x23, 0xa7,
+	0x6d, 0x13, 0xda, 0xe4, 0xd8, 0xe9, 0x44, 0x44, 0xf4, 0x8d, 0xee, 0xbe, 0x21, 0x7a, 0x7a, 0x18,
+	0x31, 0xc1, 0xa4, 0xdd, 0xb4, 0x5e, 0x8f, 0xeb, 0xf5, 0x8c, 0x7a, 0xbd, 0xbb, 0xaf, 0xdc, 0x73,
+	0x18, 0x0f, 0x18, 0x37, 0x02, 0xee, 0xc5, 0xf4, 0x80, 0x7b, 0x53, 0xbe, 0xb2, 0x65, 0x07, 0x84,
+	0x32, 0x63, 0xf2, 0x3b, 0x85, 0xb4, 0x9f, 0x08, 0x76, 0x4c, 0xee, 0x1d, 0x47, 0xd8, 0x16, 0xd8,
+	0xc4, 0x9c, 0xdb, 0x1e, 0x6e, 0xb8, 0x66, 0xc7, 0x17, 0x84, 0x13, 0xaf, 0xc1, 0x03, 0x49, 0x86,
+	0x5b, 0x4e, 0x7c, 0xcb, 0x22, 0x19, 0x55, 0x51, 0xad, 0x62, 0xcd, 0x8e, 0x92, 0x0a, 0xd0, 0xb5,
+	0x7d, 0xe2, 0xc6, 0x07, 0x2e, 0x17, 0xab, 0xa5, 0x5a, 0xc5, 0x5a, 0x40, 0xa4, 0x6d, 0xa8, 0x88,
+	0x76, 0x84, 0x79, 0x9b, 0xf9, 0xae, 0x5c, 0xaa, 0xa2, 0xda, 0x86, 0x35, 0x07, 0x8e, 0x0e, 0x3f,
+	0x8f, 0x07, 0xf5, 0x99, 0xd6, 0xd7, 0xf1, 0xa0, 0xfe, 0x70, 0x9e, 0x46, 0xae, 0x23, 0xed, 0x00,
+	0x76, 0x73, 0x0b, 0x2c, 0xcc, 0x43, 0x46, 0x39, 0x96, 0x6e, 0x43, 0x91, 0xb8, 0x89, 0xeb, 0x22,
+	0x71, 0xb5, 0x53, 0x04, 0xea, 0x02, 0x33, 0xfa, 0xe8, 0x63, 0x8b, 0x31, 0x71, 0x1d, 0xdd, 0x3e,
+	0x5b, 0xed, 0xb6, 0x96, 0xd9, 0x6d, 0x86, 0x25, 0xed, 0x10, 0x1e, 0xe4, 0x57, 0x9c, 0xdb, 0xef,
+	0x7b, 0xd8, 0x4c, 0x99, 0x6f, 0x19, 0x0b, 0x73, 0x1b, 0x3c, 0x7a, 0xbc, 0x6a, 0x51, 0xc9, 0xb0,
+	0x98, 0xc8, 0x68, 0x75, 0x90, 0x57, 0xb1, 0x73, 0x6d, 0x8c, 0x11, 0xdc, 0x35, 0xb9, 0xf7, 0x92,
+	0x52, 0xd6, 0xa1, 0x0e, 0x7e, 0x37, 0xcb, 0x2c, 0x8e, 0x2c, 0x0d, 0x30, 0xa9, 0x9f, 0x03, 0xd2,
+	0x23, 0xd8, 0xe4, 0x82, 0x45, 0xb6, 0x87, 0x9b, 0x3e, 0x73, 0x6c, 0x41, 0x18, 0x95, 0x8b, 0x93,
+	0xa2, 0x3b, 0x09, 0x7e, 0x92, 0xc0, 0xb1, 0x10, 0x27, 0x1e, 0xb5, 0x45, 0x27, 0xc2, 0x93, 0xec,
+	0x2b, 0xd6, 0x1c, 0x90, 0x76, 0x00, 0x02, 0x9b, 0xf8, 0x2d, 0xd6, 0x6b, 0x12, 0x57, 0xbe, 0x31,
+	0xbd, 0x4e, 0x90, 0x86, 0xbb, 0x98, 0x48, 0x79, 0x39, 0x11, 0x63, 0x35, 0x11, 0x75, 0x29, 0x91,
+	0xb5, 0x86, 0x34, 0x15, 0xb6, 0xb3, 0xf0, 0x59, 0x32, 0x4f, 0x7e, 0x94, 0xa1, 0x64, 0x72, 0x4f,
+	0x1a, 0x20, 0x50, 0x72, 0x46, 0xee, 0xb5, 0x7e, 0xa1, 0x41, 0xd7, 0x73, 0xa7, 0x40, 0x39, 0xb9,
+	0x0a, 0x95, 0xf4, 0x4f, 0x3d, 0x45, 0x70, 0x3f, 0x6f, 0x70, 0xde, 0x5c, 0xfe, 0xb5, 0x0c, 0x19,
+	0xc5, 0xbc, 0x12, 0x99, 0xd4, 0xf5, 0x17, 0x04, 0x1b, 0xcb, 0xdf, 0xff, 0xc1, 0x65, 0x1f, 0x48,
+	0x88, 0xca, 0x8b, 0x7f, 0x24, 0xa6, 0x5e, 0xbe, 0x23, 0xd8, 0x5a, 0x9f, 0x81, 0xe7, 0x17, 0x97,
+	0x5d, 0x23, 0x2b, 0xc7, 0xff, 0x41, 0x9e, 0xf9, 0x52, 0xca, 0x9f, 0xc6, 0x83, 0x3a, 0x7a, 0xe5,
+	0xfd, 0x1a, 0xaa, 0xe8, 0x6c, 0xa8, 0xa2, 0x3f, 0x43, 0x15, 0x7d, 0x1b, 0xa9, 0x85, 0xb3, 0x91,
+	0x5a, 0xf8, 0x3d, 0x52, 0x0b, 0x1f, 0x4c, 0x8f, 0x88, 0x76, 0xa7, 0xa5, 0x3b, 0x2c, 0x30, 0x5a,
+	0x4e, 0xb8, 0x47, 0x28, 0x65, 0xdd, 0xc9, 0xe0, 0x71, 0x23, 0x7d, 0x7f, 0x2f, 0x59, 0x3a, 0xbd,
+	0xe9, 0x2a, 0x6b, 0x66, 0xed, 0x32, 0xd1, 0x0f, 0x31, 0x6f, 0xdd, 0x9c, 0x6c, 0x9e, 0xa7, 0x7f,
+	0x03, 0x00, 0x00, 0xff, 0xff, 0x16, 0x28, 0x75, 0xf5, 0xfe, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -414,8 +529,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// CreateMerkleRootMultiSigIsm ...
-	CreateMerkleRootMultiSigIsm(ctx context.Context, in *MsgCreateMerkleRootMultiSigIsm, opts ...grpc.CallOption) (*MsgCreateMerkleRootMultiSigIsmResponse, error)
+	// CreateMessageIdMultisigIsm ...
+	CreateMessageIdMultisigIsm(ctx context.Context, in *MsgCreateMessageIdMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMessageIdMultisigIsmResponse, error)
+	// CreateMerkleRootMultisigIsm ...
+	CreateMerkleRootMultisigIsm(ctx context.Context, in *MsgCreateMerkleRootMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMerkleRootMultisigIsmResponse, error)
 	// CreateNoopIsm ...
 	CreateNoopIsm(ctx context.Context, in *MsgCreateNoopIsm, opts ...grpc.CallOption) (*MsgCreateNoopIsmResponse, error)
 	// AnnounceValidator ...
@@ -430,9 +547,18 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) CreateMerkleRootMultiSigIsm(ctx context.Context, in *MsgCreateMerkleRootMultiSigIsm, opts ...grpc.CallOption) (*MsgCreateMerkleRootMultiSigIsmResponse, error) {
-	out := new(MsgCreateMerkleRootMultiSigIsmResponse)
-	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/CreateMerkleRootMultiSigIsm", in, out, opts...)
+func (c *msgClient) CreateMessageIdMultisigIsm(ctx context.Context, in *MsgCreateMessageIdMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMessageIdMultisigIsmResponse, error) {
+	out := new(MsgCreateMessageIdMultisigIsmResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/CreateMessageIdMultisigIsm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CreateMerkleRootMultisigIsm(ctx context.Context, in *MsgCreateMerkleRootMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMerkleRootMultisigIsmResponse, error) {
+	out := new(MsgCreateMerkleRootMultisigIsmResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/CreateMerkleRootMultisigIsm", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -459,8 +585,10 @@ func (c *msgClient) AnnounceValidator(ctx context.Context, in *MsgAnnounceValida
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// CreateMerkleRootMultiSigIsm ...
-	CreateMerkleRootMultiSigIsm(context.Context, *MsgCreateMerkleRootMultiSigIsm) (*MsgCreateMerkleRootMultiSigIsmResponse, error)
+	// CreateMessageIdMultisigIsm ...
+	CreateMessageIdMultisigIsm(context.Context, *MsgCreateMessageIdMultisigIsm) (*MsgCreateMessageIdMultisigIsmResponse, error)
+	// CreateMerkleRootMultisigIsm ...
+	CreateMerkleRootMultisigIsm(context.Context, *MsgCreateMerkleRootMultisigIsm) (*MsgCreateMerkleRootMultisigIsmResponse, error)
 	// CreateNoopIsm ...
 	CreateNoopIsm(context.Context, *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error)
 	// AnnounceValidator ...
@@ -471,8 +599,11 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) CreateMerkleRootMultiSigIsm(ctx context.Context, req *MsgCreateMerkleRootMultiSigIsm) (*MsgCreateMerkleRootMultiSigIsmResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateMerkleRootMultiSigIsm not implemented")
+func (*UnimplementedMsgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *MsgCreateMessageIdMultisigIsm) (*MsgCreateMessageIdMultisigIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMessageIdMultisigIsm not implemented")
+}
+func (*UnimplementedMsgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *MsgCreateMerkleRootMultisigIsm) (*MsgCreateMerkleRootMultisigIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMerkleRootMultisigIsm not implemented")
 }
 func (*UnimplementedMsgServer) CreateNoopIsm(ctx context.Context, req *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNoopIsm not implemented")
@@ -485,20 +616,38 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_CreateMerkleRootMultiSigIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreateMerkleRootMultiSigIsm)
+func _Msg_CreateMessageIdMultisigIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateMessageIdMultisigIsm)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CreateMerkleRootMultiSigIsm(ctx, in)
+		return srv.(MsgServer).CreateMessageIdMultisigIsm(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/CreateMerkleRootMultiSigIsm",
+		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/CreateMessageIdMultisigIsm",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreateMerkleRootMultiSigIsm(ctx, req.(*MsgCreateMerkleRootMultiSigIsm))
+		return srv.(MsgServer).CreateMessageIdMultisigIsm(ctx, req.(*MsgCreateMessageIdMultisigIsm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CreateMerkleRootMultisigIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateMerkleRootMultisigIsm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateMerkleRootMultisigIsm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/CreateMerkleRootMultisigIsm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateMerkleRootMultisigIsm(ctx, req.(*MsgCreateMerkleRootMultisigIsm))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -545,8 +694,12 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateMerkleRootMultiSigIsm",
-			Handler:    _Msg_CreateMerkleRootMultiSigIsm_Handler,
+			MethodName: "CreateMessageIdMultisigIsm",
+			Handler:    _Msg_CreateMessageIdMultisigIsm_Handler,
+		},
+		{
+			MethodName: "CreateMerkleRootMultisigIsm",
+			Handler:    _Msg_CreateMerkleRootMultisigIsm_Handler,
 		},
 		{
 			MethodName: "CreateNoopIsm",
@@ -561,7 +714,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "hyperlane/core/interchain_security/v1/tx.proto",
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsm) Marshal() (dAtA []byte, err error) {
+func (m *MsgCreateMessageIdMultisigIsm) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -571,12 +724,12 @@ func (m *MsgCreateMerkleRootMultiSigIsm) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsm) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCreateMessageIdMultisigIsm) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCreateMessageIdMultisigIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -605,7 +758,7 @@ func (m *MsgCreateMerkleRootMultiSigIsm) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgCreateMessageIdMultisigIsmResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -615,12 +768,86 @@ func (m *MsgCreateMerkleRootMultiSigIsmResponse) Marshal() (dAtA []byte, err err
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgCreateMessageIdMultisigIsmResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgCreateMessageIdMultisigIsmResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateMerkleRootMultisigIsm) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateMerkleRootMultisigIsm) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateMerkleRootMultisigIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Threshold != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Threshold))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Validators) > 0 {
+		for iNdEx := len(m.Validators) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Validators[iNdEx])
+			copy(dAtA[i:], m.Validators[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.Validators[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateMerkleRootMultisigIsmResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateMerkleRootMultisigIsmResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateMerkleRootMultisigIsmResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -787,7 +1014,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgCreateMerkleRootMultiSigIsm) Size() (n int) {
+func (m *MsgCreateMessageIdMultisigIsm) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -809,7 +1036,42 @@ func (m *MsgCreateMerkleRootMultiSigIsm) Size() (n int) {
 	return n
 }
 
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) Size() (n int) {
+func (m *MsgCreateMessageIdMultisigIsmResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreateMerkleRootMultisigIsm) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Validators) > 0 {
+		for _, s := range m.Validators {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	if m.Threshold != 0 {
+		n += 1 + sovTx(uint64(m.Threshold))
+	}
+	return n
+}
+
+func (m *MsgCreateMerkleRootMultisigIsmResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -892,7 +1154,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgCreateMerkleRootMultiSigIsm) Unmarshal(dAtA []byte) error {
+func (m *MsgCreateMessageIdMultisigIsm) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -915,10 +1177,10 @@ func (m *MsgCreateMerkleRootMultiSigIsm) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateMerkleRootMultiSigIsm: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCreateMessageIdMultisigIsm: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateMerkleRootMultiSigIsm: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCreateMessageIdMultisigIsm: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1025,7 +1287,7 @@ func (m *MsgCreateMerkleRootMultiSigIsm) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCreateMerkleRootMultiSigIsmResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgCreateMessageIdMultisigIsmResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1048,10 +1310,225 @@ func (m *MsgCreateMerkleRootMultiSigIsmResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateMerkleRootMultiSigIsmResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgCreateMessageIdMultisigIsmResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateMerkleRootMultiSigIsmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgCreateMessageIdMultisigIsmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateMerkleRootMultisigIsm) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateMerkleRootMultisigIsm: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateMerkleRootMultisigIsm: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validators", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validators = append(m.Validators, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Threshold", wireType)
+			}
+			m.Threshold = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Threshold |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateMerkleRootMultisigIsmResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateMerkleRootMultisigIsmResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateMerkleRootMultisigIsmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
