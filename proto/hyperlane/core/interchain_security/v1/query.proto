@@ -22,11 +22,6 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/isms/{id}";
   }
 
-  // Validators ...
-  rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/validators";
-  }
-
   // AnnouncedStorageLocations ...
   rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
       returns (QueryAnnouncedStorageLocationsResponse) {
@@ -65,22 +60,6 @@ message QueryIsmRequest { string id = 1; }
 message QueryIsmResponse {
   google.protobuf.Any ism = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-}
-
-// QueryValidatorsRequest ...
-message QueryValidatorsRequest {
-  string mailbox_id = 1;
-
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-// QueryValidatorsResponse ...
-message QueryValidatorsResponse {
-  repeated string validators = 1;
-
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryAnnouncedStorageLocationsRequest ...

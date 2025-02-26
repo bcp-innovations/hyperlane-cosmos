@@ -23,11 +23,6 @@ type queryServer struct {
 	k *Keeper
 }
 
-// TODO: Check if this query is required for relayer.
-func (qs queryServer) Validators(ctx context.Context, request *types.QueryValidatorsRequest) (*types.QueryValidatorsResponse, error) {
-	panic("not implemented")
-}
-
 func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.QueryAnnouncedStorageLocationsRequest) (*types.QueryAnnouncedStorageLocationsResponse, error) {
 	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
 	if err != nil {
@@ -66,25 +61,27 @@ func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *t
 	if err != nil {
 		return nil, err
 	}
-
-	rng := collections.NewSuperPrefixedTripleRange[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
-
-	// TODO: Use reverse iterator
-	iter, err := qs.k.storageLocations.Iterate(ctx, rng)
+	// encode the prefix key so we can set the order by ourselves
+	key := collections.TripleSuperPrefix[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
+	codec := qs.k.storageLocations.KeyCodec()
+	start := make([]byte, codec.Size(key))
+	_, err = codec.Encode(start, key)
 	if err != nil {
 		return nil, err
 	}
 
-	storageLocations, err := iter.Values()
+	// create a new iterator that is in reverse order
+	// meaning that the first item will be the latest location
+	iter, err := qs.k.storageLocations.IterateRaw(ctx, start, nil, collections.OrderDescending)
 	if err != nil {
 		return nil, err
 	}
 
-	location := storageLocations[len(storageLocations)-1]
+	location, err := iter.Value()
 
 	return &types.QueryLatestAnnouncedStorageLocationResponse{
 		StorageLocation: location,
-	}, nil
+	}, err
 }
 
 // ISM
