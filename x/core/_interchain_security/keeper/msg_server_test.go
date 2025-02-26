@@ -77,7 +77,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// ism, _ := s.App().HyperlaneKeeper.Isms.Get(s.Ctx(), ismId.Bytes())
-		// Expect(ism.Creator).To(Equal(creator.Address))
+		// Expect(ism.Owner).To(Equal(creator.Address))
 		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED))
 		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.NoopISM{}))
 	})
@@ -640,7 +640,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&types2.MsgCreateMailbox{
-		Creator:    creator,
+		Owner:      creator,
 		DefaultIsm: ismId.String(),
 		// TODO fix
 		//Igp: &types.InterchainGasPaymaster{
@@ -738,7 +738,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
-	Expect(mailbox.Creator).To(Equal(creator))
+	Expect(mailbox.Owner).To(Equal(creator))
 	// Expect(mailbox.Igp.Id).To(Equal(igpId)) // TODO
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
@@ -753,7 +753,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailboxes, err := keeper2.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &types2.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())
 	Expect(mailboxes.Mailboxes).To(HaveLen(1))
-	Expect(mailboxes.Mailboxes[0].Creator).To(Equal(creator))
+	Expect(mailboxes.Mailboxes[0].Owner).To(Equal(creator))
 
 	return mailboxId
 }

@@ -71,7 +71,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
+			Owner:      creator.Address,
 			DefaultIsm: defaultIsm,
 		})
 
@@ -87,7 +87,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
+			Owner:      creator.Address,
 			DefaultIsm: defaultIsm,
 		})
 
@@ -103,7 +103,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
+			Owner:      creator.Address,
 			DefaultIsm: defaultIsm,
 		})
 
@@ -121,7 +121,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:     creator.Address,
+			Owner:       creator.Address,
 			DefaultIsm:  ismId.String(),
 			DefaultHook: igpId,
 		})
@@ -139,7 +139,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:     creator.Address,
+			Owner:       creator.Address,
 			DefaultIsm:  ismId.String(),
 			DefaultHook: igpId,
 		})
@@ -157,7 +157,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:     creator.Address,
+			Owner:       creator.Address,
 			DefaultIsm:  ismId.String(),
 			DefaultHook: igpId,
 		})
@@ -175,7 +175,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:     creator.Address,
+			Owner:       creator.Address,
 			DefaultIsm:  ismId.String(),
 			DefaultHook: igpId,
 		})
@@ -194,7 +194,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:      creator.Address,
+			Owner:        creator.Address,
 			DefaultIsm:   ismId.String(),
 			RequiredHook: igpId.String(),
 		})
@@ -212,7 +212,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:      creator.Address,
+			Owner:        creator.Address,
 			DefaultIsm:   ismId.String(),
 			RequiredHook: igpId.String(),
 		})
@@ -230,7 +230,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:     creator.Address,
+			Owner:       creator.Address,
 			DefaultIsm:  ismId.String(),
 			DefaultHook: igpId.String(),
 		})
@@ -639,7 +639,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsR
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&types.MsgCreateMailbox{
-		Creator:      creator,
+		Owner:      creator,
 		DefaultIsm:   ismId.String(),
 		DefaultHook:  igpId.String(),
 		RequiredHook: igpId.String(),
@@ -713,7 +713,7 @@ func verifyNewSingleMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, ismI
 
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
-	Expect(mailbox.Creator).To(Equal(creator))
+	Expect(mailbox.Owner).To(Equal(creator))
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
 	Expect(mailbox.DefaultHook).To(Equal(defaultHookId))
 	Expect(mailbox.RequiredHook).To(Equal(requiredHookId))
@@ -723,7 +723,7 @@ func verifyNewSingleMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, ismI
 	mailboxes, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &types.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())
 	Expect(mailboxes.Mailboxes).To(HaveLen(1))
-	Expect(mailboxes.Mailboxes[0].Creator).To(Equal(creator))
+	Expect(mailboxes.Mailboxes[0].Owner).To(Equal(creator))
 
 	return mailboxId
 }

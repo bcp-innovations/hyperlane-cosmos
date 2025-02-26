@@ -22,6 +22,9 @@ service Msg {
   rpc CreateSyntheticToken(MsgCreateSyntheticToken)
       returns (MsgCreateSyntheticTokenResponse);
 
+  // SetTokenOwner ...
+  rpc SetTokenOwner(MsgSetTokenOwner) returns (MsgSetTokenOwnerResponse);
+
   // EnrollRemoteRouter ...
   rpc EnrollRemoteRouter(MsgEnrollRemoteRouter)
       returns (MsgEnrollRemoteRouterResponse);
@@ -71,6 +74,20 @@ message MsgCreateSyntheticToken {
 
 // MsgCreateSyntheticTokenResponse ...
 message MsgCreateSyntheticTokenResponse { string id = 1; }
+
+// MsgSetTokenOwner ...
+message MsgSetTokenOwner {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/MsgSetTokenOwner";
+
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string token_id = 2;
+  string new_owner = 3;
+}
+
+// MsgSetTokenOwnerResponse ...
+message MsgSetTokenOwnerResponse {}
 
 // MsgEnrollRemoteRouter ...
 message MsgEnrollRemoteRouter {

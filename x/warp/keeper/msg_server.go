@@ -106,6 +106,31 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	return &types.MsgCreateCollateralTokenResponse{Id: ms.k.GetAddressFromToken(newToken).String()}, nil
 }
 
+func (ms msgServer) SetTokenOwner(ctx context.Context, msg *types.MsgSetTokenOwner) (*types.MsgSetTokenOwnerResponse, error) {
+	tokenId, err := util.DecodeHexAddress(msg.TokenId)
+	if err != nil {
+		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
+	}
+
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
+	}
+
+	if token.Owner != msg.Owner {
+		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
+	}
+
+	token.Owner = msg.NewOwner
+
+	err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), token)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgSetTokenOwnerResponse{}, nil
+}
+
 func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnrollRemoteRouter) (*types.MsgEnrollRemoteRouterResponse, error) {
 	tokenId, err := util.DecodeHexAddress(msg.TokenId)
 	if err != nil {
