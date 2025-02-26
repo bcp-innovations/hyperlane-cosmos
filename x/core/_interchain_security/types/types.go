@@ -53,7 +53,6 @@ func GetAnnouncementDigest(storageLocation string, domainId uint32, mailbox []by
 	domainIdBytes := make([]byte, 4)
 	binary.BigEndian.PutUint32(domainIdBytes, domainId)
 
-	// TODO: Check if all of them are required
 	domainHashBytes = slices.Concat(
 		domainIdBytes,
 		mailbox,
