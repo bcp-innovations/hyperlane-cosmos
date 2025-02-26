@@ -6,7 +6,7 @@ import (
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/gogoproto/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -22,6 +22,7 @@ var (
 	IsmsKey             = []byte{SubModuleId, 0}
 	IsmsSequenceKey     = []byte{SubModuleId, 1}
 	StorageLocationsKey = []byte{SubModuleId, 2}
+	RouterKey           = []byte{SubModuleId, 3}
 )
 
 const (
