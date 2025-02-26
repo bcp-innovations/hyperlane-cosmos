@@ -110,7 +110,7 @@ func (ms msgServer) SetTokenOwner(ctx context.Context, msg *types.MsgSetTokenOwn
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
 	}
@@ -121,7 +121,7 @@ func (ms msgServer) SetTokenOwner(ctx context.Context, msg *types.MsgSetTokenOwn
 
 	token.Owner = msg.NewOwner
 
-	err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), token)
+	err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), token)
 	if err != nil {
 		return nil, err
 	}

@@ -84,7 +84,6 @@ func (k *Keeper) Exists(ctx context.Context, tokenId util.HexAddress) (bool, err
 }
 
 func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error) {
-
 	token, err := k.HypTokens.Get(ctx, recipient.Bytes())
 	if err != nil {
 		return util.HexAddress{}, nil
@@ -99,7 +98,6 @@ func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (
 }
 
 func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
-
 	token, err := k.HypTokens.Get(ctx, message.Recipient.Bytes())
 	if err != nil {
 		return nil

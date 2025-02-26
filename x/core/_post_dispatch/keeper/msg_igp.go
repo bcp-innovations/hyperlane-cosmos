@@ -54,7 +54,7 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 		return nil, err
 	}
 
-	igp, err := ms.k.igps.Get(ctx, igpId.GetInternalId())
+	igp, err := ms.k.Igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find igp with id: %v", igpId.String())
 	}
@@ -67,7 +67,7 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 
 	igp.Owner = req.NewOwner
 
-	if err = ms.k.igps.Set(ctx, igpId.GetInternalId(), igp); err != nil {
+	if err = ms.k.Igps.Set(ctx, igpId.GetInternalId(), igp); err != nil {
 		return nil, err
 	}
 

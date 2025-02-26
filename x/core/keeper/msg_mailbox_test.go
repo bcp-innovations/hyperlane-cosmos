@@ -639,7 +639,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsR
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&types.MsgCreateMailbox{
-		Owner:      creator,
+		Owner:        creator,
 		DefaultIsm:   ismId.String(),
 		DefaultHook:  igpId.String(),
 		RequiredHook: igpId.String(),
