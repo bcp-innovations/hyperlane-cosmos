@@ -28,6 +28,7 @@ func GetTxCmd() *cobra.Command {
 		CmdRemoteTransfer(),
 		CmdSetIsm(),
 		CmdSetRemoteRouter(),
+		CmdSetTokenOwner(),
 		CmdUnrollRemoteRouter(),
 	)
 

@@ -26,6 +26,7 @@ func NewMailboxCmd() *cobra.Command {
 		CmdCreateMailbox(),
 		CmdDispatchMessage(),
 		CmdProcessMessage(),
+		CmdSetMailbox(),
 	)
 
 	return cmd
@@ -43,13 +44,13 @@ func CmdCreateMailbox() *cobra.Command {
 			}
 
 			msg := types.MsgCreateMailbox{
-				Creator:    clientCtx.GetFromAddress().String(),
+				Owner:      clientCtx.GetFromAddress().String(),
 				DefaultIsm: args[0],
 			}
 
-			_, err = sdk.AccAddressFromBech32(msg.Creator)
+			_, err = sdk.AccAddressFromBech32(msg.Owner)
 			if err != nil {
-				panic(fmt.Errorf("invalid creator address (%s)", msg.Creator))
+				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
@@ -124,7 +125,7 @@ func CmdDispatchMessage() *cobra.Command {
 
 func CmdProcessMessage() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "process [mailboxId] [metadata] [message]",
+		Use:   "process [mailbox-id] [metadata] [message]",
 		Short: "Process a Hyperlane message",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -147,6 +148,45 @@ func CmdProcessMessage() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSetMailbox() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-mailbox [mailbox-id]",
+		Short: "Update a Hyperlane Mailbox",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgSetMailbox{
+				Owner:        clientCtx.GetFromAddress().String(),
+				MailboxId:    args[0],
+				DefaultIsm:   defaultIsm,
+				DefaultHook:  defaultHook,
+				RequiredHook: requiredHook,
+				NewOwner:     newOwner,
+			}
+
+			_, err = sdk.AccAddressFromBech32(msg.Owner)
+			if err != nil {
+				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	cmd.Flags().StringVar(&defaultIsm, "default-ism", "", "set updated defaultIsm")
+	cmd.Flags().StringVar(&defaultHook, "default-hook", "", "set updated defaultHook")
+	cmd.Flags().StringVar(&requiredHook, "required-hook", "", "set updated requiredHook")
+	cmd.Flags().StringVar(&newOwner, "new-owner", "", "set updated owner")
 
 	flags.AddTxFlagsToCmd(cmd)
 
