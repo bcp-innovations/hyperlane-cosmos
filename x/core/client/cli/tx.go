@@ -29,7 +29,6 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		NewIgpCmd(),
 		NewMailboxCmd(),
 		ism.GetTxCmd(),
 		pdmodule.GetTxCmd(),

@@ -67,7 +67,8 @@ func (k Keeper) Verify(ctx sdk.Context, ismId util.HexAddress, metadata []byte, 
 		return false, nil
 	}
 
-	ism, err := k.isms.Get(ctx, 0)
+	// TODO write test with multiple ISMs
+	ism, err := k.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
 		return false, err
 	}

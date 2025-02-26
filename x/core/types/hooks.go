@@ -89,7 +89,7 @@ func NewMultiPostDispatchHooks(hooks ...PostDispatchHooks) MultiPostDispatchHook
 	return hooks
 }
 
-func (m MultiPostDispatchHooks) PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+func (m MultiPostDispatchHooks) PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	for i := range m {
 		coins, err := m[i].PostDispatch(ctx, hookId, metadata, message, maxFee)
 		if err != nil {

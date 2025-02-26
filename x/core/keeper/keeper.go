@@ -26,13 +26,10 @@ type Keeper struct {
 	hooks types.MailboxHooks
 	// state management
 	Mailboxes collections.Map[[]byte, types.Mailbox]
-	Messages  collections.KeySet[[]byte]
+	// TODO IMPORTANT: store by mailbox
+	Messages collections.KeySet[[]byte]
 	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
 	MailboxesSequence collections.Sequence
-	// IGP
-	Igp                        collections.Map[[]byte, types.Igp]
-	IgpDestinationGasConfigMap collections.Map[collections.Pair[[]byte, uint32], types.DestinationGasConfig]
-	IgpSequence                collections.Sequence
 
 	Params collections.Item[types.Params]
 	Schema collections.Schema
@@ -54,22 +51,19 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 
 	sb := collections.NewSchemaBuilder(storeService)
 	k := Keeper{
-		cdc:                        cdc,
-		addressCodec:               addressCodec,
-		authority:                  authority,
-		Mailboxes:                  collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
-		Messages:                   collections.NewKeySet(sb, types.MessagesKey, "messages", collections.BytesKey),
-		Params:                     collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		hooks:                      nil,
-		MailboxesSequence:          collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
-		Igp:                        collections.NewMap(sb, types.IgpKey, "igp", collections.BytesKey, codec.CollValue[types.Igp](cdc)),
-		IgpDestinationGasConfigMap: collections.NewMap(sb, types.IgpDestinationGasConfigMapKey, "igp_destination_gas_config_map", collections.PairKeyCodec(collections.BytesKey, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
-		IgpSequence:                collections.NewSequence(sb, types.IgpSequenceKey, "igp_sequence"),
-		bankKeeper:                 bankKeeper,
+		cdc:               cdc,
+		addressCodec:      addressCodec,
+		authority:         authority,
+		Mailboxes:         collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
+		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.BytesKey),
+		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		hooks:             nil,
+		MailboxesSequence: collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
+		bankKeeper:        bankKeeper,
 
 		// REFACTORED
 		IsmKeeper:          ismkeeper.NewKeeper(cdc, storeService),
-		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService),
+		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService, bankKeeper),
 	}
 
 	k.IsmKeeper.SetCoreKeeper(k)
@@ -136,14 +130,6 @@ func (k *Keeper) SetHooks(sh types.MailboxHooks) {
 	}
 
 	k.hooks = sh
-}
-
-func (k Keeper) IgpIdExists(ctx context.Context, igpId util.HexAddress) (bool, error) {
-	igp, err := k.Igp.Has(ctx, igpId.Bytes())
-	if err != nil {
-		return false, err
-	}
-	return igp, nil
 }
 
 func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {

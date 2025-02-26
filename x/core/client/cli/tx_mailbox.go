@@ -45,10 +45,7 @@ func CmdCreateMailbox() *cobra.Command {
 			msg := types.MsgCreateMailbox{
 				Creator:    clientCtx.GetFromAddress().String(),
 				DefaultIsm: args[0],
-				Igp: &types.InterchainGasPaymaster{
-					Id:       args[1],
-					Required: !igpOptional,
-				},
+				// TODO add optional post_dispatch_hooks
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Creator)

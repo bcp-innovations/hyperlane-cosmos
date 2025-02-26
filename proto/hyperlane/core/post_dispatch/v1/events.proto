@@ -1,0 +1,36 @@
+syntax = "proto3";
+package hyperlane.core.post_dispatch.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types";
+
+// InsertedIntoTree ...
+message InsertedIntoTree {
+
+  // message_id ...
+  string message_id = 1;
+
+  // index ...
+  uint32 index = 2;
+
+  // mailbox_id ...
+  string mailbox_id = 3;
+}
+
+// GasPayment ...
+message GasPayment {
+
+  // message_id ...
+  string message_id = 1;
+
+  // destination ...
+  uint32 destination = 2;
+
+  // gas_amount ...
+  string gas_amount = 3;
+
+  // payment ...
+  string payment = 4;
+
+  // igp_id ...
+  string igp_id = 5;
+}

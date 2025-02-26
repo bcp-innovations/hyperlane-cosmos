@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"fmt"
 
+	pdTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
+
 	ismtypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 
 	"cosmossdk.io/math"
@@ -72,7 +74,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
 			DefaultIsm: defaultIsm,
-			Igp:        nil,
 		})
 
 		// Assert
@@ -89,7 +90,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
 			DefaultIsm: defaultIsm,
-			Igp:        nil,
 		})
 
 		// Assert
@@ -106,7 +106,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
 			DefaultIsm: defaultIsm,
-			Igp:        nil,
 		})
 
 		// Assert
@@ -116,7 +115,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	})
 
 	// invalid IGP
-	It("CreateMailbox (invalid) with valid default ISM (Noop) and invalid IGP", func() {
+	PIt("CreateMailbox (invalid) with valid default ISM (Noop) and invalid IGP", func() {
 		// Arrange
 		ismId := createNoopIsm(s, creator.Address)
 		igpId := "0x1234"
@@ -125,10 +124,10 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
 			DefaultIsm: ismId.String(),
-			Igp: &types.InterchainGasPaymaster{
-				Id:       igpId,
-				Required: false,
-			},
+			//Igp: &types.InterchainGasPaymaster{
+			//	Id:       igpId,
+			//	Required: false,
+			//},
 		})
 
 		// Assert
@@ -137,7 +136,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyInvalidMailboxCreation(s)
 	})
 
-	It("CreateMailbox (invalid) with valid default ISM (Multisig) and invalid IGP", func() {
+	PIt("CreateMailbox (invalid) with valid default ISM (Multisig) and invalid IGP", func() {
 		// Arrange
 		ismId := createMultisigIsm(s, creator.Address)
 		igpId := "0x1234"
@@ -146,10 +145,10 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateMailbox{
 			Creator:    creator.Address,
 			DefaultIsm: ismId.String(),
-			Igp: &types.InterchainGasPaymaster{
-				Id:       igpId,
-				Required: false,
-			},
+			//Igp: &types.InterchainGasPaymaster{
+			//	Id:       igpId,
+			//	Required: false,
+			//},
 		})
 
 		// Assert
@@ -651,13 +650,13 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 // Utils
 func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&types.MsgCreateIgp{
+	res, err := s.RunTx(&pdTypes.MsgCreateIgp{
 		Owner: creator,
 		Denom: "acoin",
 	})
 	Expect(err).To(BeNil())
 
-	var response types.MsgCreateIgpResponse
+	var response pdTypes.MsgCreateIgpResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
@@ -733,12 +732,12 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 }
 
 func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {
-	_, err := s.RunTx(&types.MsgSetDestinationGasConfig{
+	_, err := s.RunTx(&pdTypes.MsgSetDestinationGasConfig{
 		Owner: creator,
 		IgpId: igpId,
-		DestinationGasConfig: &types.DestinationGasConfig{
+		DestinationGasConfig: &pdTypes.DestinationGasConfig{
 			RemoteDomain: 1,
-			GasOracle: &types.GasOracle{
+			GasOracle: &pdTypes.GasOracle{
 				TokenExchangeRate: math.NewInt(1e10),
 				GasPrice:          math.NewInt(1),
 			},

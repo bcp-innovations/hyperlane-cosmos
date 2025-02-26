@@ -24,7 +24,7 @@ func (InterchainSecurityHooksWrapper) IsOnePerModuleType() {}
 // Post Dispatch Hooks
 
 type PostDispatchHooks interface {
-	PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
+	PostDispatch(ctx sdk.Context, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
 }
 
 type PostDispatchHooksWrapper struct{ PostDispatchHooks }

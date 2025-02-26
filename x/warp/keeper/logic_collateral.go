@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"math/big"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
@@ -52,18 +53,33 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		return util.HexAddress{}, err
 	}
 
+	igpCustomHookId := util.NewZeroAddress()
+	if customIgpId != "" {
+		igpCustomHookId, err = util.DecodeHexAddress(customIgpId)
+		if err != nil {
+			return util.HexAddress{}, err
+		}
+	}
+
 	// Token destinationDomain, recipientAddress
 	dispatchMsg, err := k.mailboxKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
+		k.GetAddressFromToken(token), // sender
+		sdk.Coins{},                  // TODO figure out Coins                    // maxFee the user is willing to pay
+
 		remoteRouter.ReceiverDomain,
 		receiverContract,
-		k.GetAddressFromToken(token),
-		warpPayload.Bytes(),
-		cosmosSender,
-		customIgpId,
-		gasLimit,
-		maxFee,
+
+		warpPayload.Bytes(), // message body
+
+		util.StandardHookMetadata{
+			Variant:  1,
+			Value:    *big.NewInt(0), // TODO figure out usage of maxFee
+			GasLimit: *gasLimit.BigInt(),
+			Address:  senderAcc,
+		}.Bytes(), // metadata for gas payment
+		igpCustomHookId, // don't override post dispatch hook
 	)
 	if err != nil {
 		return util.HexAddress{}, err

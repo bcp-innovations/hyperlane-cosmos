@@ -2,19 +2,23 @@ package types
 
 import (
 	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type PostDispatchHook interface {
+type PostDispatchHookHandler interface {
 	HookType() uint8
-	SupportsMetadata(metadata any) bool
-	PostDispatch(ctx sdk.Context, metadata any, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
+	SupportsMetadata(metadata []byte) bool
+	PostDispatch(ctx sdk.Context, hookId uint64, metadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
 }
 
 var (
-	PostDispatchHooksKey         = collections.NewPrefix(1)
-	PostDispatchHooksSequenceKey = collections.NewPrefix(2)
+	// TODO prefix with submodule
+	PostDispatchHooksKey             = collections.NewPrefix(1)
+	PostDispatchHooksSequenceKey     = collections.NewPrefix(2)
+	InterchainGasPaymasterConfigsKey = collections.NewPrefix(3)
+	MerkleTreeHooksKey               = collections.NewPrefix(4)
 )
 
 const (
@@ -22,6 +26,8 @@ const (
 
 	HEX_ADDRESS_CLASS_IDENTIFIER = "corepostdispatch"
 )
+
+var TokenExchangeRateScale = math.NewInt(1e10)
 
 const (
 	POST_DISPATCH_HOOK_TYPE_UNUSED uint8 = iota

@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
+
 	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
 
 func (ms msgServer) Claim(ctx context.Context, req *types.MsgClaim) (*types.MsgClaimResponse, error) {
@@ -27,25 +28,20 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 		return nil, fmt.Errorf("denom %s is invalid", req.Denom)
 	}
 
-	igpCount, err := ms.k.IgpSequence.Next(ctx)
-	if err != nil {
-		return nil, err
-	}
+	newId := ms.k.idFactory.GenerateNewId(ctx)
 
-	prefixedId := util.CreateHexAddress(fmt.Sprintf(types.ModuleName+"/igp"), int64(igpCount))
-
-	newIgp := types.Igp{
-		Id:            prefixedId.String(),
+	newIgp := types.InterchainGasPaymaster{
+		Id:            newId,
 		Owner:         req.Owner,
 		Denom:         req.Denom,
 		ClaimableFees: math.NewInt(0),
 	}
 
-	if err = ms.k.Igp.Set(ctx, prefixedId.Bytes(), newIgp); err != nil {
+	if err = ms.k.igps.Set(ctx, newIgp.Id, newIgp); err != nil {
 		return nil, err
 	}
 
-	return &types.MsgCreateIgpResponse{Id: prefixedId.String()}, nil
+	return &types.MsgCreateIgpResponse{Id: ms.k.idFactory.AddressFromId(newId).String()}, nil
 }
 
 // PayForGas executes an InterchainGasPayment without for the specified payment amount.
@@ -55,7 +51,10 @@ func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*ty
 		return nil, fmt.Errorf("ism id %s is invalid: %s", req.IgpId, err.Error())
 	}
 
-	return &types.MsgPayForGasResponse{}, ms.k.PayForGasWithoutQuote(ctx, req.Sender, igpId, req.MessageId, req.DestinationDomain, req.GasLimit, req.Amount)
+	handler := InterchainGasPaymasterHookHandler{*ms.k}
+
+	// TODO figure out internal id
+	return &types.MsgPayForGasResponse{}, handler.PayForGasWithoutQuote(ctx, igpId.GetInternalId(), req.Sender, req.MessageId, req.DestinationDomain, req.GasLimit, req.Amount)
 }
 
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {

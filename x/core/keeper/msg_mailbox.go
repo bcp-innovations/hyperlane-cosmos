@@ -25,19 +25,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, fmt.Errorf("ism with id %s does not exist", ismId.String())
 	}
 
-	igpId, err := util.DecodeHexAddress(req.Igp.Id)
-	if err != nil {
-		return nil, fmt.Errorf("igp id %s is invalid: %s", req.Igp.Id, err.Error())
-	}
-
-	exists, err = ms.k.IgpIdExists(ctx, igpId)
-	if err != nil {
-		return nil, err
-	}
-
-	if !exists {
-		return nil, fmt.Errorf("igp with id %s does not exist", igpId.String())
-	}
+	// TODO check if postDispatchHook exists
 
 	mailboxCount, err := ms.k.MailboxesSequence.Next(ctx)
 	if err != nil {
@@ -46,19 +34,14 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 
 	prefixedId := util.CreateHexAddress(types.ModuleName, int64(mailboxCount))
 
-	tree := util.NewTree(util.ZeroHashes, 0)
-
 	newMailbox := types.Mailbox{
 		Id:              prefixedId.String(),
+		Creator:         req.Creator,
 		MessageSent:     0,
 		MessageReceived: 0,
-		Creator:         req.Creator,
 		DefaultIsm:      ismId.String(),
-		Igp: &types.InterchainGasPaymaster{
-			Id:       req.Igp.Id,
-			Required: req.Igp.Required,
-		},
-		Tree: types.ProtoFromTree(tree),
+		DefaultHook:     req.DefaultHook,
+		RequiredHook:    req.RequiredHook,
 	}
 
 	if err = ms.k.Mailboxes.Set(ctx, prefixedId.Bytes(), newMailbox); err != nil {
@@ -91,7 +74,8 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 		return nil, fmt.Errorf("invalid recipient: %s", err)
 	}
 
-	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, req.Destination, recipient, sender, bodyBytes, req.Sender, req.IgpId, req.GasLimit, req.MaxFee)
+	// TODO maxFee, metadata, customPostDispatchHookId
+	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, sender, sdk.Coins{}, req.Destination, recipient, bodyBytes, []byte{}, util.HexAddress{})
 	if err != nil {
 		return nil, err
 	}

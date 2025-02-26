@@ -5,8 +5,6 @@ import (
 
 	"cosmossdk.io/errors"
 
-	"cosmossdk.io/math"
-
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -81,102 +79,6 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 func (k Keeper) DispatchMessage(
 	ctx sdk.Context,
 	originMailboxId util.HexAddress,
-	destinationDomain uint32,
-	// Recipient address on the destination chain (e.g. smart contract)
-	recipient util.HexAddress,
-	// sender address on the origin chain (e.g. token id)
-	sender util.HexAddress,
-	body []byte,
-	// Custom IGP settings
-	cosmosSender string,
-	customIgpId string,
-	gasLimit math.Int,
-	maxFee math.Int,
-) (messageId util.HexAddress, error error) {
-	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())
-	if err != nil {
-		return util.HexAddress{}, fmt.Errorf("failed to find mailbox with id: %v", originMailboxId.String())
-	}
-
-	localDomain, err := k.LocalDomain(ctx)
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-
-	hypMsg := util.HyperlaneMessage{
-		Version:     3,
-		Nonce:       mailbox.MessageSent,
-		Origin:      localDomain,
-		Sender:      sender,
-		Destination: destinationDomain,
-		Recipient:   recipient,
-		Body:        body,
-	}
-	mailbox.MessageSent++
-
-	tree, err := types.TreeFromProto(mailbox.Tree)
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-
-	count := tree.GetCount()
-
-	if err = tree.Insert(hypMsg.Id()); err != nil {
-		return util.HexAddress{}, err
-	}
-
-	err = k.Messages.Set(ctx, hypMsg.Id().Bytes())
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
-	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
-		MessageId: hypMsg.Id().String(),
-		Index:     count,
-		MailboxId: mailbox.Id,
-	})
-
-	mailbox.Tree = types.ProtoFromTree(tree)
-
-	err = k.Mailboxes.Set(ctx, originMailboxId.Bytes(), mailbox)
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-
-	// Interchain Gas Payment
-	igpId, err := util.DecodeHexAddress(mailbox.Igp.Id)
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-
-	if !mailbox.Igp.Required && customIgpId != "" {
-		igpId, err = util.DecodeHexAddress(customIgpId)
-		if err != nil {
-			return util.HexAddress{}, nil
-		}
-	}
-
-	err = k.PayForGas(ctx, cosmosSender, igpId, hypMsg.Id().String(), destinationDomain, gasLimit, maxFee)
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-
-	_ = sdkCtx.EventManager().EmitTypedEvent(&types.Dispatch{
-		OriginMailboxId: originMailboxId.String(),
-		Sender:          sender.String(),
-		Destination:     destinationDomain,
-		Recipient:       recipient.String(),
-		Message:         hypMsg.String(),
-	})
-
-	return hypMsg.Id(), nil
-}
-
-func (k Keeper) DispatchMessage2(
-	ctx sdk.Context,
-	originMailboxId util.HexAddress,
 	// sender address on the origin chain (e.g. token id)
 	sender util.HexAddress,
 	// the maximum amount of tokens the dispatch is allowed to cost
@@ -187,7 +89,7 @@ func (k Keeper) DispatchMessage2(
 	recipient util.HexAddress,
 	body []byte,
 	// Custom metadata for postDispatch Hook
-	metadata any,
+	metadata []byte,
 	postDispatchHookId util.HexAddress,
 ) (messageId util.HexAddress, error error) {
 	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())

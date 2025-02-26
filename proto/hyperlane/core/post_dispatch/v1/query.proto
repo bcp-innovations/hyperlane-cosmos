@@ -23,6 +23,24 @@ service Query {
     // TODO update url, once migrated
     option (google.api.http).get = "/hyperlane/v1-refactored/igps/{id}";
   }
+
+  // DestinationGasConfigs ...
+  rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest)
+      returns (QueryDestinationGasConfigsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/igps/{id}/destination_gas_configs";
+  }
+
+  // QuoteGasPayment ...
+  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest)
+      returns (QueryQuoteGasPaymentResponse) {
+    option (google.api.http).get = "/hyperlane/v1/quote_gas_payment";
+  }
+
+  // Count ...
+  rpc MerkleTreeHook(QueryMerkleTreeHook) returns (QueryMerkleTreeHookResponse) {
+    option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks/{id}";
+  }
 }
 
 // QueryIgpsRequest ...
@@ -46,4 +64,33 @@ message QueryIgpRequest { string id = 1; }
 message QueryIgpResponse {
   InterchainGasPaymaster igp = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryDestinationGasConfigsRequest ...
+message QueryDestinationGasConfigsRequest { string id = 1; }
+
+// QueryDestinationGasConfigsResponse ...
+message QueryDestinationGasConfigsResponse {
+  // TODO support pagination
+  repeated DestinationGasConfig destination_gas_configs = 1;
+}
+
+// QueryQuoteGasPaymentRequest ...
+message QueryQuoteGasPaymentRequest {
+  string igp_id = 1;
+  string destination_domain = 2;
+  string gas_limit = 3;
+}
+
+// QueryQuoteGasPaymentResponse ...
+message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
+
+// QueryCountRequest ...
+message QueryMerkleTreeHook { string id = 1; }
+
+// QueryCountResponse ...
+message QueryMerkleTreeHookResponse {
+  bytes root = 1;
+  uint32 count = 2;
+  MerkleTreeHook merkle_tree_hook = 3;
 }

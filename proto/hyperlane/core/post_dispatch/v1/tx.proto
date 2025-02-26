@@ -5,29 +5,121 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_di
 
 import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "hyperlane/core/post_dispatch/v1/types.proto";
 
 // Msg defines the module Msg service.
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
   // CreateMerkleRootMultiSigIsm ...
-  rpc CreateInterchainGasPaymaster(MsgCreateInterchainGasPaymaster)
-      returns (MsgCreateInterchainGasPaymasterResponse);
+  rpc CreateIgp(MsgCreateIgp) returns (MsgCreateIgpResponse);
 
-  // TODO add other messages for modifying IGP
+  // SetDestinationGasConfig ...
+  rpc SetDestinationGasConfig(MsgSetDestinationGasConfig)
+      returns (MsgSetDestinationGasConfigResponse);
+
+  // PayForGas ...
+  rpc PayForGas(MsgPayForGas) returns (MsgPayForGasResponse);
+
+  // Claim ...
+  rpc Claim(MsgClaim) returns (MsgClaimResponse);
+
+  // CreateMerkleTreeHook ...
+  rpc CreateMerkleTreeHook(MsgCreateMerkleTreeHook)
+      returns (MsgCreateMerkleTreeHookResponse);
 }
 
-// MsgCreateMultisigIsm ...
-message MsgCreateInterchainGasPaymaster {
-  option (cosmos.msg.v1.signer) = "creator";
+// MsgCreateIgp ...
+message MsgCreateIgp {
+  option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/MsgCreateInterchainGasPaymaster";
 
   // creator is the message sender.
-  string creator = 1;
+  string owner = 1;
 
   // denom
   string denom = 2;
 }
 
-// MsgCreateMultisigIsmResponse ...
-message MsgCreateInterchainGasPaymasterResponse { string id = 1; }
+// MsgCreateIgpResponse ...
+message MsgCreateIgpResponse { string id = 1; }
+
+// MsgSetDestinationGasConfig ...
+message MsgSetDestinationGasConfig {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/MsgSetDestinationGasConfig";
+
+  // owner ...
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // igp_id ...
+  string igp_id = 2;
+
+  // destination_gas_config ...
+  DestinationGasConfig destination_gas_config = 3;
+}
+
+// MsgSetDestinationGasConfigResponse ...
+message MsgSetDestinationGasConfigResponse {}
+
+// MsgPayForGas ...
+message MsgPayForGas {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/MsgPayForGas";
+
+  // sender ...
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // igp_id ...
+  string igp_id = 2;
+
+  // message_id ...
+  string message_id = 3;
+
+  // destination_domain ...
+  uint32 destination_domain = 4;
+
+  // gas_limit ...
+  string gas_limit = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // amount ...
+  string amount = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgPayForGasResponse ...
+message MsgPayForGasResponse {}
+
+// MsgClaim ...
+message MsgClaim {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/MsgClaim";
+
+  // sender ...
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // igp_id ...
+  string igp_id = 2;
+}
+
+// MsgClaimResponse ...
+message MsgClaimResponse {}
+
+// MsgMerkleTreeHook ...
+message MsgCreateMerkleTreeHook {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/MsgCreateMerkleTreeHook";
+
+  // sender ...
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgCreateMerkleTreeHookResponse ...
+message MsgCreateMerkleTreeHookResponse {}

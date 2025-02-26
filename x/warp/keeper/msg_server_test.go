@@ -8,6 +8,7 @@ import (
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	ismTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
+	pdTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
 	coreKeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
@@ -983,13 +984,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 // Utils
 func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&coreTypes.MsgCreateIgp{
+	res, err := s.RunTx(&pdTypes.MsgCreateIgp{
 		Owner: creator,
 		Denom: denom,
 	})
 	Expect(err).To(BeNil())
 
-	var response coreTypes.MsgCreateIgpResponse
+	var response pdTypes.MsgCreateIgpResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
@@ -1065,12 +1066,12 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 }
 
 func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {
-	_, err := s.RunTx(&coreTypes.MsgSetDestinationGasConfig{
+	_, err := s.RunTx(&pdTypes.MsgSetDestinationGasConfig{
 		Owner: creator,
 		IgpId: igpId,
-		DestinationGasConfig: &coreTypes.DestinationGasConfig{
+		DestinationGasConfig: &pdTypes.DestinationGasConfig{
 			RemoteDomain: domain,
-			GasOracle: &coreTypes.GasOracle{
+			GasOracle: &pdTypes.GasOracle{
 				TokenExchangeRate: math.NewInt(1e10),
 				GasPrice:          math.NewInt(1),
 			},
