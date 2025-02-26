@@ -16,6 +16,9 @@ service Msg {
   // CreateMailbox ...
   rpc CreateMailbox(MsgCreateMailbox) returns (MsgCreateMailboxResponse);
 
+  // SetMailbox ...
+  rpc SetMailbox(MsgSetMailbox) returns (MsgSetMailboxResponse);
+
   // DispatchMessage ...
   rpc DispatchMessage(MsgDispatchMessage) returns (MsgDispatchMessageResponse);
 
@@ -28,11 +31,11 @@ service Msg {
 
 // MsgCreateMailbox ...
 message MsgCreateMailbox {
-  option (cosmos.msg.v1.signer) = "creator";
+  option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/MsgCreateMailbox";
 
-  // sender is the message sender.
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // default_ism ...
   string default_ism = 2;
@@ -46,6 +49,33 @@ message MsgCreateMailbox {
 
 // MsgCreateMailboxResponse ...
 message MsgCreateMailboxResponse { string id = 1; }
+
+// MsgSetMailbox ...
+message MsgSetMailbox {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/MsgSetMailbox";
+
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // mailbox_id
+  string mailbox_id = 2;
+
+  // default_ism ...
+  string default_ism = 3;
+
+  // default_hook ...
+  string default_hook = 4;
+
+  // required_hook ...
+  string required_hook = 5;
+
+  // new_owner ...
+  string new_owner = 6;
+}
+
+// MsgSetMailboxResponse ...
+message MsgSetMailboxResponse {}
 
 // MsgDispatchMessage ...
 message MsgDispatchMessage {
