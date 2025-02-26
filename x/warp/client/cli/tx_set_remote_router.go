@@ -16,9 +16,9 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
-func CmdEnrollRemoteRouter() *cobra.Command {
+func CmdSetRemoteRouter() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "enroll-remote-router [token-id] [receiver-domain] [receiver-contract] [gas]",
+		Use:   "set-remote-router [token-id] [receiver-domain] [receiver-contract] [gas]",
 		Short: "Enroll remote router for a certain token",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
