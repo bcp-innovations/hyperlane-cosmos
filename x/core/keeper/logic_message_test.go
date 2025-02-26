@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"cosmossdk.io/math"
 
@@ -52,9 +53,9 @@ var _ = Describe("logic_message.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -177,7 +178,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("already received messsage with id %s", hypMsg.Id())))
 	})
 
-	// TODO rework test ->
+	// TODO rework test, once warp is refactored to use router
 	PIt("ProcessMessage (invalid) with invalid message: non-registered recipient", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)

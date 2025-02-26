@@ -11,21 +11,26 @@ import (
 )
 
 func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailbox) (*types.MsgCreateMailboxResponse, error) {
-	ismId, err := util.DecodeHexAddress(req.DefaultIsm)
-	if err != nil {
-		return nil, fmt.Errorf("ism id %s is invalid: %s", req.DefaultIsm, err.Error())
-	}
 
-	exists, err := ms.k.IsmKeeper.IsmIdExists(ctx, ismId)
-	if err != nil {
+	// Check ism existence
+	if err := ms.k.AssertIsmExists(ctx, req.DefaultIsm); err != nil {
 		return nil, err
 	}
 
-	if !exists {
-		return nil, fmt.Errorf("ism with id %s does not exist", ismId.String())
+	// Check default is valid if set
+	if req.DefaultHook != "" {
+		if err := ms.k.AssertPostDispatchHookExists(ctx, req.DefaultHook); err != nil {
+			return nil, err
+		}
 	}
 
-	// TODO check if postDispatchHook exists
+	// Check required hook is valid if set.
+	// The "required" means that this hook can not be overridden by the message dispatcher
+	if req.RequiredHook != "" {
+		if err := ms.k.AssertPostDispatchHookExists(ctx, req.RequiredHook); err != nil {
+			return nil, err
+		}
+	}
 
 	mailboxCount, err := ms.k.MailboxesSequence.Next(ctx)
 	if err != nil {
@@ -39,7 +44,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		Creator:         req.Creator,
 		MessageSent:     0,
 		MessageReceived: 0,
-		DefaultIsm:      ismId.String(),
+		DefaultIsm:      req.DefaultIsm,
 		DefaultHook:     req.DefaultHook,
 		RequiredHook:    req.RequiredHook,
 	}
@@ -51,6 +56,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 	return &types.MsgCreateMailboxResponse{Id: prefixedId.String()}, nil
 }
 
+// DispatchMessage assumes an Interchain GasPaymaster as a hook, as there are currently no other hooks available
 func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchMessage) (*types.MsgDispatchMessageResponse, error) {
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
@@ -69,13 +75,27 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 		return nil, fmt.Errorf("invalid sender: %s", err)
 	}
 
+	accSender, err := sdk.AccAddressFromBech32(req.Sender)
+	if err != nil {
+		return nil, fmt.Errorf("invalid sender: %s", err)
+	}
+
 	recipient, err := util.DecodeHexAddress(req.Recipient)
 	if err != nil {
 		return nil, fmt.Errorf("invalid recipient: %s", err)
 	}
 
-	// TODO maxFee, metadata, customPostDispatchHookId
-	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, sender, sdk.Coins{}, req.Destination, recipient, bodyBytes, []byte{}, util.HexAddress{})
+	customIgpId, err := util.DecodeHexAddress(req.CustomIgp)
+	if err != nil {
+		return nil, fmt.Errorf("invalid customIgp: %s", err)
+	}
+
+	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, sender, sdk.NewCoins(req.MaxFee), req.Destination, recipient, bodyBytes, util.StandardHookMetadata{
+		Variant:  1,
+		Value:    req.MaxFee.Amount,
+		GasLimit: req.GasLimit,
+		Address:  accSender,
+	}.Bytes(), customIgpId)
 	if err != nil {
 		return nil, err
 	}

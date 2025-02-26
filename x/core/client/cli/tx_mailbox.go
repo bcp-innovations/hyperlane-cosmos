@@ -90,9 +90,9 @@ func CmdDispatchMessage() *cobra.Command {
 				return errors.New("failed to convert `gasLimit` into math.Int")
 			}
 
-			maxFeeInt, ok := math.NewIntFromString(maxFee)
-			if !ok {
-				return errors.New("failed to convert `maxFee` into math.Int")
+			maxFeeCoin, err := sdk.ParseCoinNormalized(maxFee)
+			if err != nil {
+				return err
 			}
 
 			msg := types.MsgDispatchMessage{
@@ -101,9 +101,9 @@ func CmdDispatchMessage() *cobra.Command {
 				Destination: uint32(destinationDomain),
 				Recipient:   recipient,
 				Body:        messageBody,
-				IgpId:       igpId,
+				CustomIgp:   igpId,
 				GasLimit:    gasLimitInt,
-				MaxFee:      maxFeeInt,
+				MaxFee:      maxFeeCoin,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

@@ -33,7 +33,6 @@ TEST CASES - msg_mailbox.go
 * CreateMailbox (valid) with NoopISM and required IGP
 * CreateMailbox (valid) with MultisigISM and required IGP
 * CreateMailbox (valid) with NoopISM and optional IGP
-* CreateMailbox (valid) with MultisigISM and optional IGP
 * DispatchMessage (invalid) with empty body
 * DispatchMessage (invalid) with invalid body
 * DispatchMessage (invalid) with invalid Mailbox ID
@@ -115,68 +114,53 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	})
 
 	// invalid IGP
-	PIt("CreateMailbox (invalid) with valid default ISM (Noop) and invalid IGP", func() {
+	It("CreateMailbox (invalid) with valid default ISM (Noop) and invalid IGP", func() {
 		// Arrange
 		ismId := createNoopIsm(s, creator.Address)
 		igpId := "0x1234"
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
-			DefaultIsm: ismId.String(),
-			//Igp: &types.InterchainGasPaymaster{
-			//	Id:       igpId,
-			//	Required: false,
-			//},
+			Creator:     creator.Address,
+			DefaultIsm:  ismId.String(),
+			DefaultHook: igpId,
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("igp id %s is invalid: invalid hex address length", igpId)))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("hook id %s is invalid: invalid hex address length", igpId)))
 
 		verifyInvalidMailboxCreation(s)
 	})
 
-	PIt("CreateMailbox (invalid) with valid default ISM (Multisig) and invalid IGP", func() {
+	It("CreateMailbox (invalid) with valid default ISM (Multisig) and invalid IGP", func() {
 		// Arrange
 		ismId := createMultisigIsm(s, creator.Address)
 		igpId := "0x1234"
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
-			DefaultIsm: ismId.String(),
-			// TODO fix
-			//Igp: &types.InterchainGasPaymaster{
-			//	Id:       igpId,
-			//	Required: false,
-			//},
+			Creator:     creator.Address,
+			DefaultIsm:  ismId.String(),
+			DefaultHook: igpId,
 		})
-		_ = ismId
-		_ = igpId
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("igp id %s is invalid: invalid hex address length", igpId)))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("hook id %s is invalid: invalid hex address length", igpId)))
 
 		verifyInvalidMailboxCreation(s)
 	})
 
-	PIt("CreateMailbox (invalid) with valid default ISM (Noop) and non-existent IGP", func() {
+	It("CreateMailbox (invalid) with valid default ISM (Noop) and non-existent IGP", func() {
 		// Arrange
 		ismId := createNoopIsm(s, creator.Address)
 		igpId := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
-			DefaultIsm: ismId.String(),
-			// TODO fix
-			//Igp: &types.InterchainGasPaymaster{
-			//	Id:       igpId,
-			//	Required: false,
-			//},
+			Creator:     creator.Address,
+			DefaultIsm:  ismId.String(),
+			DefaultHook: igpId,
 		})
-		_ = ismId
-		_ = igpId
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("igp with id %s does not exist", igpId)))
@@ -184,23 +168,17 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyInvalidMailboxCreation(s)
 	})
 
-	PIt("CreateMailbox (invalid) with valid default ISM (Multisig) and non-existent IGP", func() {
+	It("CreateMailbox (invalid) with valid default ISM (Multisig) and non-existent IGP", func() {
 		// Arrange
 		ismId := createMultisigIsm(s, creator.Address)
 		igpId := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
-			DefaultIsm: ismId.String(),
-			// TODO fix
-			//Igp: &types.InterchainGasPaymaster{
-			//	Id:       igpId,
-			//	Required: false,
-			//},
+			Creator:     creator.Address,
+			DefaultIsm:  ismId.String(),
+			DefaultHook: igpId,
 		})
-		_ = ismId
-		_ = igpId
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("igp with id %s does not exist", igpId)))
@@ -209,100 +187,58 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	})
 
 	// Mailbox valid cases
-	PIt("CreateMailbox (valid) with NoopISM and required IGP", func() {
+	It("CreateMailbox (valid) with NoopISM and required IGP", func() {
 		// Arrange
 		igpId := createIgp(s, creator.Address)
 		ismId := createNoopIsm(s, creator.Address)
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
-			DefaultIsm: ismId.String(),
-			// TODO fix
-			//Igp: &types.InterchainGasPaymaster{
-			//	Id:       igpId,
-			//	Required: false,
-			//},
+			Creator:      creator.Address,
+			DefaultIsm:   ismId.String(),
+			RequiredHook: igpId.String(),
 		})
-		_ = ismId
-		_ = igpId
 
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId.String(), true)
+		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), "", igpId.String())
 	})
 
-	PIt("CreateMailbox (valid) with MultisigISM and required IGP", func() {
+	It("CreateMailbox (valid) with MultisigISM and required IGP", func() {
 		// Arrange
 		igpId := createIgp(s, creator.Address)
 		ismId := createMultisigIsm(s, creator.Address)
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
-			DefaultIsm: ismId.String(),
-			// TODO fix
-			//Igp: &types.InterchainGasPaymaster{
-			//	Id:       igpId,
-			//	Required: false,
-			//},
+			Creator:      creator.Address,
+			DefaultIsm:   ismId.String(),
+			RequiredHook: igpId.String(),
 		})
-		_ = ismId
-		_ = igpId
 
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId.String(), true)
+		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), "", igpId.String())
 	})
 
-	PIt("CreateMailbox (valid) with NoopISM and optional IGP", func() {
+	It("CreateMailbox (valid) with NoopISM and optional IGP", func() {
 		// Arrange
 		igpId := createIgp(s, creator.Address)
 		ismId := createNoopIsm(s, creator.Address)
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
-			DefaultIsm: ismId.String(),
-			// TODO fix
-			//Igp: &types.InterchainGasPaymaster{
-			//	Id:       igpId,
-			//	Required: false,
-			//},
+			Creator:     creator.Address,
+			DefaultIsm:  ismId.String(),
+			DefaultHook: igpId.String(),
 		})
-		_ = ismId
-		_ = igpId
 
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId.String(), false)
-	})
-
-	PIt("CreateMailbox (valid) with MultisigISM and optional IGP", func() {
-		// Arrange
-		igpId := createIgp(s, creator.Address)
-		ismId := createMultisigIsm(s, creator.Address)
-
-		// Act
-		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Creator:    creator.Address,
-			DefaultIsm: ismId.String(),
-			// TODO fix
-			//Igp: &types.InterchainGasPaymaster{
-			//	Id:       igpId,
-			//	Required: false,
-			//},
-		})
-		_ = ismId
-		_ = igpId
-
-		// Assert
-		Expect(err).To(BeNil())
-
-		verifyNewMailbox(s, res, creator.Address, igpId.String(), ismId.String(), false)
+		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), "")
 	})
 
 	// DispatchMessage
@@ -320,9 +256,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -345,9 +281,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "12345",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -370,9 +306,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -395,9 +331,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -420,9 +356,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -445,9 +381,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -470,9 +406,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e7gzc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -495,9 +431,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       igpId.String(),
+			CustomIgp:   igpId.String(),
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -520,9 +456,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -545,9 +481,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Destination: 1,
 			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			IgpId:       "",
+			CustomIgp:   "",
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      math.NewInt(1000000),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
 		})
 
 		// Assert
@@ -687,7 +623,8 @@ func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return igpId
 }
 
-func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
+// TODO fix
+func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsRequiredHook bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
 	var ismId util.HexAddress
 	switch ism {
 	case "noop":
@@ -702,19 +639,13 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&types.MsgCreateMailbox{
-		Creator:    creator,
-		DefaultIsm: ismId.String(),
-		// TODO fix
-		//Igp: &types.InterchainGasPaymaster{
-		//	Id:       igpId,
-		//	Required: false,
-		//},
+		Creator:     creator,
+		DefaultIsm:  ismId.String(),
+		DefaultHook: igpId.String(),
 	})
-	_ = ismId
-	_ = igpId
 	Expect(err).To(BeNil())
 
-	return verifyNewMailbox(s, res, creator, igpId.String(), ismId.String(), igpRequired), igpId, ismId
+	return verifyNewSingleMailbox(s, res, creator, ismId.String(), igpId.String(), ""), igpId, ismId
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
@@ -772,7 +703,7 @@ func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string,
 	return err
 }
 
-func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ismId string, igpRequired bool) util.HexAddress {
+func verifyNewSingleMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, ismId, defaultHookId, requiredHookId string) util.HexAddress {
 	var response types.MsgCreateMailboxResponse
 	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
@@ -782,17 +713,11 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
 	Expect(mailbox.Creator).To(Equal(creator))
-	// Expect(mailbox.Igp.Id).To(Equal(igpId)) TODO fix
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
+	Expect(mailbox.DefaultHook).To(Equal(defaultHookId))
+	Expect(mailbox.RequiredHook).To(Equal(requiredHookId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
-
-	//if igpRequired {
-	//	Expect(mailbox.Igp.Required).To(BeTrue())
-	//} else {
-	//	Expect(mailbox.Igp.Required).To(BeFalse())
-	//}
-	// TODO fix
 
 	mailboxes, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &types.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())
@@ -812,18 +737,4 @@ func verifyDispatch(s *i.KeeperTestSuite, mailboxId util.HexAddress, messageSent
 	mailbox, _ := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(mailbox.MessageSent).To(Equal(messageSent))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
-	// Expect(mailbox.Tree.Count).To(Equal(messageSent)) // TODO fix
-
-	// TODO fix
-	//if messageSent == 0 {
-	//	_, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).LatestCheckpoint(s.Ctx(), &types.QueryLatestCheckpointRequest{Id: mailboxId.String()})
-	//	Expect(err.Error()).To(Equal("no leaf inserted yet"))
-	//} else {
-	//	latestCheckpoint, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).LatestCheckpoint(s.Ctx(), &types.QueryLatestCheckpointRequest{Id: mailboxId.String()})
-	//	Expect(err).To(BeNil())
-	//
-	//	Expect(latestCheckpoint.Count).To(Equal(messageSent - 1))
-	//}
-
-	// TODO: Check claimable fees of IGP
 }

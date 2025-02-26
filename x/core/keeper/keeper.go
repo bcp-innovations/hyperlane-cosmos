@@ -96,6 +96,29 @@ func (k *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []b
 	return (*handler).Verify(ctx, ismId, metadata, message)
 }
 
+func (k *Keeper) IsmExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+	handler, err := k.ismRouter.GetModule(ctx, ismId)
+	if err != nil {
+		return false, err
+	}
+	return (*handler).Exists(ctx, ismId)
+}
+
+func (k *Keeper) AssertIsmExists(ctx context.Context, id string) error {
+	ismId, err := util.DecodeHexAddress(id)
+	if err != nil {
+		return fmt.Errorf("ism id %s is invalid: %s", id, err.Error())
+	}
+	ismExists, err := k.IsmExists(ctx, ismId)
+	if err != nil {
+		return err
+	}
+	if !ismExists {
+		return fmt.Errorf("ism with id %s does not exist", ismId.String())
+	}
+	return nil
+}
+
 func (k Keeper) PostDispatchRouter() *util.Router[util.PostDispatchModule] {
 	return k.postDispatchRouter
 }
@@ -106,6 +129,29 @@ func (k *Keeper) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAdd
 		return sdk.NewCoins(), err
 	}
 	return (*handler).PostDispatch(ctx, mailboxId, hookId, metadata, message, maxFee)
+}
+
+func (k *Keeper) PostDispatchHookExists(ctx context.Context, hookId util.HexAddress) (bool, error) {
+	handler, err := k.postDispatchRouter.GetModule(ctx, hookId)
+	if err != nil {
+		return false, err
+	}
+	return (*handler).Exists(ctx, hookId)
+}
+
+func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id string) error {
+	hookId, err := util.DecodeHexAddress(id)
+	if err != nil {
+		return fmt.Errorf("hook id %s is invalid: %s", id, err.Error())
+	}
+	hookExists, err := k.PostDispatchHookExists(ctx, hookId)
+	if err != nil {
+		return err
+	}
+	if !hookExists {
+		return fmt.Errorf("hook with id %s does not exist", hookId.String())
+	}
+	return nil
 }
 
 // Hooks gets the hooks for staking *Keeper {
