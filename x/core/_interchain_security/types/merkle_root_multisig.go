@@ -9,17 +9,17 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
-var _ HyperlaneInterchainSecurityModule = &MerkleRootMultiSigISM{}
+var _ HyperlaneInterchainSecurityModule = &MerkleRootMultisigISM{}
 
-func (m *MerkleRootMultiSigISM) GetId() uint64 {
+func (m *MerkleRootMultisigISM) GetId() uint64 {
 	return m.Id
 }
 
-func (m *MerkleRootMultiSigISM) ModuleType() uint8 {
+func (m *MerkleRootMultisigISM) ModuleType() uint8 {
 	return INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG
 }
 
-func (m *MerkleRootMultiSigISM) Verify(_ sdk.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {
+func (m *MerkleRootMultisigISM) Verify(_ sdk.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {
 	metadata, err := NewMerkleRootMultisigMetadata(rawMetadata)
 	if err != nil {
 		return false, err
@@ -34,15 +34,15 @@ func (m *MerkleRootMultiSigISM) Verify(_ sdk.Context, rawMetadata []byte, messag
 	return VerifyMultisig(m.Validators, m.Threshold, metadata.Signatures, digest)
 }
 
-func (m *MerkleRootMultiSigISM) GetThreshold() uint32 {
+func (m *MerkleRootMultisigISM) GetThreshold() uint32 {
 	return m.Threshold
 }
 
-func (m *MerkleRootMultiSigISM) GetValidators() []string {
+func (m *MerkleRootMultisigISM) GetValidators() []string {
 	return m.Validators
 }
 
-func (m *MerkleRootMultiSigISM) Validate() error {
+func (m *MerkleRootMultisigISM) Validate() error {
 	return ValidateNewMultisig(m)
 }
 

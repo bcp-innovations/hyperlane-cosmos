@@ -145,7 +145,7 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 		return nil, err
 	}
 
-	newIsm := types.MerkleRootMultiSigISM{
+	newIsm := types.MerkleRootMultisigISM{
 		Id:         ismCount,
 		Owner:      req.Creator,
 		Validators: req.Validators,

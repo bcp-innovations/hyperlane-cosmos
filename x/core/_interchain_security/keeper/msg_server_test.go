@@ -181,7 +181,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Expect(err).To(BeNil())
 
 		// ism, err := keeper.NewQueryServerImpl(&s.App().IsmKeeper).Ism(s.Ctx(), &types.QueryIsmRequest{Id: ismId.String()})
-		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.MerkleRootMultiSigISM{}))
+		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.MerkleRootMultisigISM{}))
 		// Expect(ism).To(Equal(creator.Address))
 		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG))
 	})
@@ -283,7 +283,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Expect(err).To(BeNil())
 
 		// ism, err := keeper.NewQueryServerImpl(&s.App().IsmKeeper).Ism(s.Ctx(), &types.QueryIsmRequest{Id: ismId.String()})
-		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.MerkleRootMultiSigISM{}))
+		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.MerkleRootMultisigISM{}))
 		// Expect(ism).To(Equal(creator.Address))
 		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG))
 	})

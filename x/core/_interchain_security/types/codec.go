@@ -20,6 +20,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		(*HyperlaneInterchainSecurityModule)(nil),
 		&NoopISM{},
 		&MessageIdMultisigISM{},
-		&MerkleRootMultiSigISM{},
+		&MerkleRootMultisigISM{},
 	)
 }
