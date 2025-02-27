@@ -70,11 +70,13 @@ message MerkleTreeHook {
   // id is the hyperlane hex address
   string id = 2;
 
+  string mailbox_id = 3;
+
   // owner ...
-  string owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // tree ...
-  Tree tree = 4;
+  Tree tree = 5;
 }
 
 // Tree represents an incremental merkle tree.
@@ -86,4 +88,12 @@ message Tree {
 
   // count ...
   uint32 count = 2;
+}
+
+// NoopHook ...
+message NoopHook {
+  string id = 1;
+
+  // owner ...
+  string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }

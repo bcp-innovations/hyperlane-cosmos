@@ -6,9 +6,9 @@ import (
 
 var (
 	PostDispatchHooksKey             = []byte{SubModuleId, 1}
-	PostDispatchHooksSequenceKey     = []byte{SubModuleId, 2}
 	InterchainGasPaymasterConfigsKey = []byte{SubModuleId, 3}
 	MerkleTreeHooksKey               = []byte{SubModuleId, 4}
+	NoopHooksKey                     = []byte{SubModuleId, 5}
 )
 
 const (

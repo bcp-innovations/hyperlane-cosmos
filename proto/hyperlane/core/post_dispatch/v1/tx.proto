@@ -32,6 +32,9 @@ service Msg {
   // CreateMerkleTreeHook ...
   rpc CreateMerkleTreeHook(MsgCreateMerkleTreeHook)
       returns (MsgCreateMerkleTreeHookResponse);
+
+  // CreateNoopHook ...
+  rpc CreateNoopHook(MsgCreateNoopHook) returns (MsgCreateNoopHookResponse);
 }
 
 // MsgCreateIgp ...
@@ -146,3 +149,15 @@ message MsgCreateMerkleTreeHook {
 
 // MsgCreateMerkleTreeHookResponse ...
 message MsgCreateMerkleTreeHookResponse { string id = 1; }
+
+// MsgMerkleTreeHook ...
+message MsgCreateNoopHook {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/MsgCreateMerkleTreeHook";
+
+  // sender ...
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgCreateMerkleTreeHookResponse ...
+message MsgCreateNoopHookResponse { string id = 1; }
