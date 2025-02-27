@@ -60,6 +60,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	var s *i.KeeperTestSuite
 	var owner i.TestValidatorAddress
 	var sender i.TestValidatorAddress
+	var noopPostDispatchHandler *i.NoopPostDispatchHookHandler
 
 	BeforeEach(func() {
 		s = i.NewCleanChain()
@@ -67,7 +68,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		sender = i.GenerateTestValidatorAddress("Sender")
 		err := s.MintBaseCoins(owner.Address, 1_000_000)
 		Expect(err).To(BeNil())
-		_ = sender // TODO REMOVE
+
+		noopPostDispatchHandler = i.CreateNoopDispatchHookHandler(s.App().HyperlaneKeeper.PostDispatchRouter())
+		_, err = noopPostDispatchHandler.CreateHook(s.Ctx())
+		Expect(err).To(BeNil())
 	})
 
 	It("MsgCreateSyntheticToken (invalid) invalid Mailbox ID", func() {
@@ -1269,6 +1273,23 @@ func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return igpId
 }
 
+func createMerkleHook(s *i.KeeperTestSuite, creator string, mailboxId string) util.HexAddress {
+	res, err := s.RunTx(&pdTypes.MsgCreateMerkleTreeHook{
+		Owner:     creator,
+		MailboxId: mailboxId,
+	})
+	Expect(err).To(BeNil())
+
+	var response pdTypes.MsgCreateMerkleTreeHookResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+
+	hookId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	return hookId
+}
+
 func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
 	var ismId util.HexAddress
 	switch ism {
@@ -1284,11 +1305,32 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&coreTypes.MsgCreateMailbox{
-		Creator:      creator,
-		DefaultIsm:   ismId.String(),
-		RequiredHook: igpId.String(),
+		Owner:      creator,
+		DefaultIsm: ismId.String(),
 	})
 	Expect(err).To(BeNil())
+
+	var response coreTypes.MsgCreateMailboxResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+	mailboxId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	merkleHook := createMerkleHook(s, creator, mailboxId.String())
+
+	_, err = s.RunTx(&coreTypes.MsgSetMailbox{
+		Owner:        creator,
+		MailboxId:    mailboxId.String(),
+		DefaultIsm:   ismId.String(),
+		DefaultHook:  igpId.String(),
+		RequiredHook: merkleHook.String(),
+		NewOwner:     creator,
+	})
+	Expect(err).To(BeNil())
+
+	if err != nil {
+		return [32]byte{}, [32]byte{}, [32]byte{}
+	}
 
 	return verifyNewMailbox(s, res, creator, igpId.String(), ismId.String(), igpRequired), igpId, ismId
 }
@@ -1358,10 +1400,10 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
 	Expect(mailbox.Owner).To(Equal(creator))
-	// Expect(mailbox.Igp.Id).To(Equal(igpId)) // TODO
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
+	Expect(mailbox.DefaultHook).To(Equal(igpId))
 
 	//if igpRequired {
 	//	Expect(mailbox.Igp.Required).To(BeTrue()) TODO

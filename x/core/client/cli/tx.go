@@ -13,10 +13,9 @@ import (
 )
 
 var (
-	gasLimit    string
-	igpId       string
-	igpOptional bool
-	maxFee      string
+	gasLimit string
+	igpId    string
+	maxFee   string
 
 	// SetMailbox
 	defaultIsm   string
