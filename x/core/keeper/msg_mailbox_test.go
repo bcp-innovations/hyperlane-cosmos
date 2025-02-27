@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"fmt"
 
-	pdTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
+	pdTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
-	ismtypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
+	ismtypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
 
 	"cosmossdk.io/math"
 

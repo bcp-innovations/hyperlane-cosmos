@@ -5,7 +5,7 @@ import (
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
-	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module"
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module/v1"
 	coreKeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"

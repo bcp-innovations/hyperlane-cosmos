@@ -1,7 +1,7 @@
 syntax = "proto3";
 package hyperlane.core.interchain_security.v1;
 
-option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types";
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types";
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
@@ -47,7 +47,7 @@ message QueryIsmsRequest {
 message QueryIsmsResponse {
   repeated google.protobuf.Any isms = 1
       [ (cosmos_proto.accepts_interface) =
-            "hyperlane.core.v1._interchain_security_module."
+            "hyperlane.core.v1.01_interchain_security_module."
             "HyperlaneInterchainSecurityModule" ];
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;

@@ -1,7 +1,7 @@
 syntax = "proto3";
 package hyperlane.core.interchain_security.v1;
 
-option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types";
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types";
 
 import "google/protobuf/any.proto";
 

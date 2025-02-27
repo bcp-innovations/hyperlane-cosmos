@@ -1,7 +1,7 @@
 syntax = "proto3";
 package hyperlane.core.post_dispatch.v1;
 
-option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types";
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";

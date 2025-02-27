@@ -5,8 +5,8 @@ package types
 
 import (
 	fmt "fmt"
-	types "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
-	types1 "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
+	types "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
+	types1 "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"

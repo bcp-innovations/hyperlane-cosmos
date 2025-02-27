@@ -16,12 +16,6 @@ ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -ldflags '$(ldflags)' -trimpath -buildvcs=false
 
-# TODO: Remove after renaming submodules to 01_ism, ...
-SUBMODULE_DIRS_TO_TEST := ./x/core/_interchain_security/keeper \
-				./x/core/_interchain_security/types \
-				./x/core/_post_dispatch/keeper \
-				./x/core/_post_dispatch/types
-
 all: proto-all format lint test build-simapp
 
 #################
@@ -44,7 +38,7 @@ release-simapp:
 
 test:
 	@echo "--> Running tests"
-	@go test -cover -mod=readonly ./x/... $(SUBMODULE_DIRS_TO_TEST)
+	@go test -cover -mod=readonly ./x/...
 
 
 .PHONY: build-simapp release-simapp test
