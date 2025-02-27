@@ -35,10 +35,21 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/quote_gas_payment";
   }
 
-  // Count ...
+  // MerkleTreeHook ...
+  rpc MerkleTreeHooks(QueryMerkleTreeHooks)
+      returns (QueryMerkleTreeHooksResponse) {
+    option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks";
+  }
+
+  // MerkleTreeHook ...
   rpc MerkleTreeHook(QueryMerkleTreeHook)
       returns (QueryMerkleTreeHookResponse) {
     option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks/{id}";
+  }
+
+  // MerkleTreeHook ...
+  rpc NoopHook(QueryNoopHook) returns (QueryNoopHookResponse) {
+    option (google.api.http).get = "/hyperlane/v1/noop_hooks/{id}";
   }
 }
 
@@ -66,12 +77,17 @@ message QueryIgpResponse {
 }
 
 // QueryDestinationGasConfigsRequest ...
-message QueryDestinationGasConfigsRequest { string id = 1; }
+message QueryDestinationGasConfigsRequest {
+  string id = 1;
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
 
 // QueryDestinationGasConfigsResponse ...
 message QueryDestinationGasConfigsResponse {
-  // TODO support pagination
   repeated DestinationGasConfig destination_gas_configs = 1;
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryQuoteGasPaymentRequest ...
@@ -85,6 +101,17 @@ message QueryQuoteGasPaymentRequest {
 message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
 
 // QueryCountRequest ...
+message QueryMerkleTreeHooks {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryCountResponse ...
+message QueryMerkleTreeHooksResponse {
+  repeated QueryMerkleTreeHookResponse merkle_tree_hooks = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryCountRequest ...
 message QueryMerkleTreeHook { string id = 1; }
 
 // QueryCountResponse ...
@@ -93,3 +120,9 @@ message QueryMerkleTreeHookResponse {
   uint32 count = 2;
   MerkleTreeHook merkle_tree_hook = 3;
 }
+
+// QueryCountRequest ...
+message QueryNoopHook { string id = 1; }
+
+// QueryCountResponse ...
+message QueryNoopHookResponse { NoopHook noop_hook = 1; }

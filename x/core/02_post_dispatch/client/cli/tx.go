@@ -17,6 +17,7 @@ func GetTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		NewIgpCmd(),
 		NewMerkleCmd(),
+		NewNoopHookCmd(),
 	)
 
 	return txCmd

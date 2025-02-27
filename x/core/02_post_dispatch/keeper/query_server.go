@@ -65,6 +65,9 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 	return &types.QueryQuoteGasPaymentResponse{GasPayment: payment.String()}, nil
 }
 
+//
+// Interchain Gas Paymaster
+
 func (qs queryServer) Igps(ctx context.Context, req *types.QueryIgpsRequest) (*types.QueryIgpsResponse, error) {
 	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Igps, req.Pagination)
 	if err != nil {
@@ -118,6 +121,81 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 
 	return &types.QueryDestinationGasConfigsResponse{
 		DestinationGasConfigs: configs,
+	}, nil
+}
+
+//
+// Merkle Tree Hook
+
+func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkleTreeHooks) (*types.QueryMerkleTreeHooksResponse, error) {
+	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.merkleTreeHooks, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]*types.QueryMerkleTreeHookResponse, len(values))
+	for i := 0; i < len(values); i++ {
+		merkleTreeHook := values[i]
+		tree, err := types.TreeFromProto(merkleTreeHook.Tree)
+		if err != nil {
+			return nil, err
+		}
+
+		root := tree.GetRoot()
+		responses[i] = &types.QueryMerkleTreeHookResponse{
+			Root:           root[:],
+			Count:          tree.Count,
+			MerkleTreeHook: &merkleTreeHook,
+		}
+	}
+
+	return &types.QueryMerkleTreeHooksResponse{
+		MerkleTreeHooks: responses,
+		Pagination:      pagination,
+	}, nil
+}
+
+func (qs queryServer) MerkleTreeHook(ctx context.Context, req *types.QueryMerkleTreeHook) (*types.QueryMerkleTreeHookResponse, error) {
+	merkleTreeHooksId, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	merkleTreeHook, err := qs.k.merkleTreeHooks.Get(ctx, merkleTreeHooksId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	tree, err := types.TreeFromProto(merkleTreeHook.Tree)
+	if err != nil {
+		return nil, err
+	}
+
+	root := tree.GetRoot()
+
+	return &types.QueryMerkleTreeHookResponse{
+		Root:           root[:],
+		Count:          tree.Count,
+		MerkleTreeHook: &merkleTreeHook,
+	}, nil
+}
+
+//
+// Noop Hook
+
+func (qs queryServer) NoopHook(ctx context.Context, req *types.QueryNoopHook) (*types.QueryNoopHookResponse, error) {
+	hookId, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	noopHook, err := qs.k.noopHooks.Get(ctx, hookId.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryNoopHookResponse{
+		NoopHook: &noopHook,
 	}, nil
 }
 
@@ -181,29 +259,4 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 	}
 
 	return data, &pageResponse, nil
-}
-
-func (qs queryServer) MerkleTreeHook(ctx context.Context, req *types.QueryMerkleTreeHook) (*types.QueryMerkleTreeHookResponse, error) {
-	merkleTreeHooksId, err := util.DecodeHexAddress(req.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	merkleTreeHook, err := qs.k.merkleTreeHooks.Get(ctx, merkleTreeHooksId.GetInternalId())
-	if err != nil {
-		return nil, err
-	}
-
-	tree, err := types.TreeFromProto(merkleTreeHook.Tree)
-	if err != nil {
-		return nil, err
-	}
-
-	root := tree.GetRoot()
-
-	return &types.QueryMerkleTreeHookResponse{
-		Root:           root[:],
-		Count:          tree.Count,
-		MerkleTreeHook: &merkleTreeHook,
-	}, nil
 }
