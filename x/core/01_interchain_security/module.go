@@ -1,4 +1,4 @@
-package _1_interchain_security
+package interchain_security
 
 import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"

@@ -1,4 +1,4 @@
-package _post_dispatch
+package post_dispatch
 
 import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
