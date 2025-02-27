@@ -28,8 +28,6 @@ var (
 const (
 	SubModuleName       = "ism"
 	SubModuleId   uint8 = 1
-
-	HEX_ADDRESS_CLASS_IDENTIFIER = "coreism"
 )
 
 const (

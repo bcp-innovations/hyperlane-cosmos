@@ -1,22 +1,19 @@
 package types
 
 import (
-	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
 )
 
 var (
-	// TODO prefix with submodule
-	PostDispatchHooksKey             = collections.NewPrefix(1)
-	PostDispatchHooksSequenceKey     = collections.NewPrefix(2)
-	InterchainGasPaymasterConfigsKey = collections.NewPrefix(3)
-	MerkleTreeHooksKey               = collections.NewPrefix(4)
+	PostDispatchHooksKey             = []byte{SubModuleId, 1}
+	PostDispatchHooksSequenceKey     = []byte{SubModuleId, 2}
+	InterchainGasPaymasterConfigsKey = []byte{SubModuleId, 3}
+	MerkleTreeHooksKey               = []byte{SubModuleId, 4}
 )
 
 const (
-	SubModuleName = "post_dispatch"
-
-	HEX_ADDRESS_CLASS_IDENTIFIER = "corepostdispatch"
+	SubModuleName       = "post_dispatch"
+	SubModuleId   uint8 = 2
 )
 
 var TokenExchangeRateScale = math.NewInt(1e10)
