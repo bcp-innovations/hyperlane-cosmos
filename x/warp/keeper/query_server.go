@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"cosmossdk.io/math"
+
 	"cosmossdk.io/collections"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -89,6 +91,37 @@ func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBri
 	}
 
 	return &types.QueryBridgedSupplyResponse{BridgedSupply: bridgedSupply}, nil
+}
+
+func (qs queryServer) QuoteGasPayment(ctx context.Context, request *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
+	tokenId, err := util.DecodeHexAddress(request.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	token, err := qs.k.HypTokens.Get(ctx, tokenId.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	remoteRouter, err := qs.k.EnrolledRouters.Get(ctx, collections.Join(tokenId.Bytes(), request.DestinationDomain))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get remote router for destination domain %v", request.DestinationDomain)
+	}
+
+	metadata := util.StandardHookMetadata{
+		Variant:  0,
+		Value:    math.Int{},
+		GasLimit: remoteRouter.Gas,
+		Address:  nil,
+	}
+
+	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), metadata.Bytes(), util.HyperlaneMessage{})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryQuoteGasPaymentResponse{GasPayment: requiredPayment.String()}, nil
 }
 
 func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {

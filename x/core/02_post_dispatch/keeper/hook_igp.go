@@ -42,6 +42,15 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mai
 	return nil, nil
 }
 
+func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (math.Int, error) {
+	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
+	if err != nil {
+		return math.ZeroInt(), err
+	}
+
+	return i.QuoteGasPayment(ctx, hookId, message.Destination, metadata.GasLimit)
+}
+
 func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
 	has, err := i.k.Igps.Has(ctx, hookId.GetInternalId())
 	if err != nil {

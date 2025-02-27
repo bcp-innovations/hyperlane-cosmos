@@ -3,6 +3,8 @@ package types
 import (
 	"context"
 
+	"cosmossdk.io/math"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -34,4 +36,5 @@ type CoreKeeper interface {
 		metadata []byte,
 		postDispatchHookId util.HexAddress,
 	) (messageId util.HexAddress, error error)
+	QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (math.Int, error)
 }

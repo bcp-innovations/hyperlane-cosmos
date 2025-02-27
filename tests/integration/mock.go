@@ -3,6 +3,8 @@ package integration
 import (
 	"context"
 
+	"cosmossdk.io/math"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -46,6 +48,10 @@ func (n NoopPostDispatchHookHandler) PostDispatch(ctx context.Context, mailboxId
 	}
 
 	return sdk.NewCoins(), nil
+}
+
+func (n NoopPostDispatchHookHandler) QuoteDispatch(ctx context.Context, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (math.Int, error) {
+	return math.ZeroInt(), nil
 }
 
 func (n NoopPostDispatchHookHandler) HookType() uint8 {

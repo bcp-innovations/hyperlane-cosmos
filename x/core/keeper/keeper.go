@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/math"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
@@ -155,6 +157,39 @@ func (k *Keeper) PostDispatchHookExists(ctx context.Context, hookId util.HexAddr
 		return false, err
 	}
 	return (*handler).Exists(ctx, hookId)
+}
+
+func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (math.Int, error) {
+	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return math.ZeroInt(), fmt.Errorf("failed to find mailbox with id %s", mailboxId.String())
+	}
+
+	calculateGasPayment := func(hookId string) (math.Int, error) {
+		id, err := util.DecodeHexAddress(hookId)
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+
+		handler, err := k.postDispatchRouter.GetModule(ctx, id)
+		if err != nil {
+			return math.ZeroInt(), err
+		}
+
+		return (*handler).QuoteDispatch(ctx, id, metadata, message)
+	}
+
+	requiredGasPayment, err := calculateGasPayment(mailbox.RequiredHook)
+	if err != nil {
+		return math.ZeroInt(), err
+	}
+
+	defaultGasPayment, err := calculateGasPayment(mailbox.DefaultHook)
+	if err != nil {
+		return math.ZeroInt(), err
+	}
+
+	return requiredGasPayment.Add(defaultGasPayment), nil
 }
 
 func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id string) error {

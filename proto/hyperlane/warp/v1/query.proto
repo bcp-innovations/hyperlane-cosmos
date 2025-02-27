@@ -37,6 +37,13 @@ service Query {
       returns (QueryRemoteRoutersResponse) {
     option (google.api.http).get = "/hyperlane/v1/tokens/{id}/remote_routers";
   }
+
+  // QuoteGasPayment ...
+  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest)
+      returns (QueryQuoteGasPaymentResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/tokens/{id}/quote_gas_payment/{destination_domain}";
+  }
 }
 
 // QueryTokensRequest ...
@@ -77,6 +84,15 @@ message QueryRemoteRoutersRequest { string id = 1; }
 
 // QueryRemoteRoutersResponse ...
 message QueryRemoteRoutersResponse { repeated RemoteRouter remote_routers = 6; }
+
+// QueryQuoteGasPaymentRequest ...
+message QueryQuoteGasPaymentRequest {
+  string id = 1;
+  uint32 destination_domain = 2;
+}
+
+// QueryQuoteGasPaymentResponse ...
+message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}
