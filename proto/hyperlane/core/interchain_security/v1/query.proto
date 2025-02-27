@@ -26,14 +26,16 @@ service Query {
   rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
       returns (QueryAnnouncedStorageLocationsResponse) {
     option (google.api.http).get =
-        "/hyperlane/v1/announced_storage_locations/{validator_address}";
+        "/hyperlane/v1/{mailbox_id}/announced_storage_locations/"
+        "{validator_address}";
   }
 
   // LatestAnnouncedStorageLocation ...
   rpc LatestAnnouncedStorageLocation(QueryLatestAnnouncedStorageLocationRequest)
       returns (QueryLatestAnnouncedStorageLocationResponse) {
     option (google.api.http).get =
-        "/hyperlane/v1/announced_storage_locations/{validator_address}/latest";
+        "/hyperlane/v1/{mailbox_id}/announced_storage_locations/"
+        "{validator_address}/latest";
   }
 }
 
