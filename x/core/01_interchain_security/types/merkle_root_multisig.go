@@ -81,7 +81,7 @@ func NewMerkleRootMultisigMetadata(metadata []byte) (MerkleRootMultisigMetadata,
 	}
 
 	signaturesLen := len(metadata) - signaturesOffset
-	signatureCount := uint32(signaturesLen / signaturesOffset)
+	signatureCount := uint32(signaturesLen / signatureLength)
 
 	if signaturesLen%signatureLength != 0 {
 		return MerkleRootMultisigMetadata{}, fmt.Errorf("invalid signatures length in metadata")
