@@ -87,8 +87,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 		return err
 	}
 
-	// TODO: Refactor claimableFees to sdk.Coins
-	igp.ClaimableFees = igp.ClaimableFees.Add(amount.AmountOf(igp.Denom))
+	igp.ClaimableFees = igp.ClaimableFees.Add(amount...)
 
 	err = i.k.Igps.Set(ctx, igp.InternalId, igp)
 	if err != nil {

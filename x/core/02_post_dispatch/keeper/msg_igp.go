@@ -6,8 +6,6 @@ import (
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
-	"cosmossdk.io/math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -38,7 +36,7 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 		Id:            nextId.String(),
 		Owner:         req.Owner,
 		Denom:         req.Denom,
-		ClaimableFees: math.NewInt(0),
+		ClaimableFees: sdk.NewCoins(),
 	}
 
 	if err = ms.k.Igps.Set(ctx, newIgp.InternalId, newIgp); err != nil {
