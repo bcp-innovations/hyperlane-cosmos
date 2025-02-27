@@ -188,6 +188,7 @@ func (qs queryServer) parseTokenResponse(ctx context.Context, get types.HypToken
 		remoteRouters[i] = &routers[i]
 	}
 
+	// TODO: double check if this is 32 bytes long
 	return types.QueryTokenResponse{
 		Id:        util.HexAddress(get.Id).String(),
 		Owner:     get.Owner,

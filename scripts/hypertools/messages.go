@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	warpTypes "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -18,7 +17,7 @@ func Decode(messageStr string) error {
 		return err
 	}
 
-	message, err := coreTypes.ParseHyperlaneMessage(messageBytes)
+	message, err := util.ParseHyperlaneMessage(messageBytes)
 	if err != nil {
 		return err
 	}
@@ -66,7 +65,7 @@ func GenerateWarpTransfer(senderContract string, recipientContract string, recip
 		panic(err)
 	}
 
-	msg := coreTypes.HyperlaneMessage{
+	msg := util.HyperlaneMessage{
 		Version:     1,
 		Nonce:       3,
 		Origin:      1,

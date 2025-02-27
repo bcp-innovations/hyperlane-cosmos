@@ -14,6 +14,8 @@ type Keeper struct {
 
 	merkleTreeHooks collections.Map[uint64, types.MerkleTreeHook]
 
+	noopHooks collections.Map[[]byte, types.NoopHook]
+
 	schema collections.Schema
 
 	coreKeeper types.CoreKeeper
@@ -28,6 +30,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ba
 		IgpDestinationGasConfigs: collections.NewMap(sb, types.InterchainGasPaymasterConfigsKey, "interchain_gas_paymaster_configs", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
 
 		merkleTreeHooks: collections.NewMap(sb, types.MerkleTreeHooksKey, "merkle_tree_hooks_key", collections.Uint64Key, codec.CollValue[types.MerkleTreeHook](cdc)),
+		noopHooks:       collections.NewMap(sb, types.NoopHooksKey, "noop_hooks_key", collections.BytesKey, codec.CollValue[types.NoopHook](cdc)),
 
 		bankKeeper: bankKeeper,
 	}
@@ -53,4 +56,5 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 	// add default post dispatch hooks
 	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_MERKLE_TREE, MerkleTreeHookHandler{*k})
 	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_INTERCHAIN_GAS_PAYMASTER, InterchainGasPaymasterHookHandler{*k})
+	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_UNUSED, NoopHookHandler{*k})
 }

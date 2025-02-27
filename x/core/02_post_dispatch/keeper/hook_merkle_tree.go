@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/errors"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -30,11 +32,14 @@ func (i MerkleTreeHookHandler) SupportsMetadata(_ []byte) bool {
 	return false
 }
 
-// TODO add mailbox id IMPORTANT: Double check if caller = mailboxId
 func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	merkleTreeHook, err := i.k.merkleTreeHooks.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return nil, err
+	}
+
+	if merkleTreeHook.MailboxId != mailboxId.String() {
+		return nil, errors.Wrapf(types.ErrSenderIsNotDesignatedMailbox, "required mailbox id: %s, sender mailbox id: %s", merkleTreeHook.MailboxId, mailboxId.String())
 	}
 
 	tree, err := types.TreeFromProto(merkleTreeHook.Tree)

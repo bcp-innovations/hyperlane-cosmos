@@ -4,6 +4,18 @@ package hyperlane.core.post_dispatch.v1;
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
 
 // InsertedIntoTree ...
+message EventCreateMerkleTreeHook {
+
+  // id ...
+  string id = 1;
+
+  // mailbox_id ...
+  string mailbox_id = 2;
+
+  string owner = 3;
+}
+
+// InsertedIntoTree ...
 message InsertedIntoTree {
 
   // message_id ...
@@ -33,4 +45,14 @@ message GasPayment {
 
   // igp_id ...
   string igp_id = 5;
+}
+
+// InsertedIntoTree ...
+message EventCreateNoopHook {
+
+  // id ...
+  string id = 1;
+
+  // owner ...
+  string owner = 2;
 }
