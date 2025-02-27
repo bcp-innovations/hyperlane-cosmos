@@ -4,8 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
-	"cosmossdk.io/math"
+	"strconv"
 
 	"cosmossdk.io/collections"
 
@@ -104,24 +103,28 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, request *types.QueryQ
 		return nil, err
 	}
 
-	remoteRouter, err := qs.k.EnrolledRouters.Get(ctx, collections.Join(tokenId.Bytes(), request.DestinationDomain))
-	if err != nil {
-		return nil, fmt.Errorf("failed to get remote router for destination domain %v", request.DestinationDomain)
-	}
-
-	metadata := util.StandardHookMetadata{
-		Variant:  0,
-		Value:    math.Int{},
-		GasLimit: remoteRouter.Gas,
-		Address:  nil,
-	}
-
-	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), metadata.Bytes(), util.HyperlaneMessage{})
+	destinationDomain, err := strconv.ParseUint(request.DestinationDomain, 10, 32)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.QueryQuoteGasPaymentResponse{GasPayment: requiredPayment.String()}, nil
+	remoteRouter, err := qs.k.EnrolledRouters.Get(ctx, collections.Join(tokenId.Bytes(), uint32(destinationDomain)))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get remote router for destination domain %v", request.DestinationDomain)
+	}
+
+	metadata, err := util.CreateEmptyStandardHookMetadata()
+	if err != nil {
+		return nil, err
+	}
+	metadata.GasLimit = remoteRouter.Gas
+
+	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), metadata.Bytes(), util.HyperlaneMessage{Destination: uint32(destinationDomain)})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryQuoteGasPaymentResponse{GasPayment: requiredPayment}, nil
 }
 
 func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {
@@ -186,7 +189,7 @@ func (qs queryServer) parseTokenResponse(ctx context.Context, get types.HypToken
 	}
 
 	return types.QueryTokenResponse{
-		Id:        get.Id,
+		Id:        util.HexAddress(get.Id).String(),
 		Owner:     get.Owner,
 		TokenType: get.TokenType,
 

@@ -258,7 +258,7 @@ func request_Query_QuoteGasPayment_0(ctx context.Context, marshaler runtime.Mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "destination_domain")
 	}
 
-	protoReq.DestinationDomain, err = runtime.Uint32(val)
+	protoReq.DestinationDomain, err = runtime.String(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "destination_domain", err)
@@ -296,7 +296,7 @@ func local_request_Query_QuoteGasPayment_0(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "destination_domain")
 	}
 
-	protoReq.DestinationDomain, err = runtime.Uint32(val)
+	protoReq.DestinationDomain, err = runtime.String(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "destination_domain", err)

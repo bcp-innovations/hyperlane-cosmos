@@ -3,8 +3,6 @@ package keeper
 import (
 	"context"
 
-	"cosmossdk.io/math"
-
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -67,6 +65,6 @@ func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hook
 	return nil, nil
 }
 
-func (i MerkleTreeHookHandler) QuoteDispatch(_ context.Context, _ util.HexAddress, _ []byte, _ util.HyperlaneMessage) (math.Int, error) {
-	return math.ZeroInt(), nil
+func (i MerkleTreeHookHandler) QuoteDispatch(_ context.Context, _ util.HexAddress, _ []byte, _ util.HyperlaneMessage) (sdk.Coins, error) {
+	return sdk.NewCoins(), nil
 }
