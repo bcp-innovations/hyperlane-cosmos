@@ -9,7 +9,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/query"
 
-	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 )
@@ -55,23 +54,6 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED, NewIsmHandler(k))
 	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG, NewIsmHandler(k))
 	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG, NewIsmHandler(k))
-}
-
-func (k *Keeper) GetIsm(ctx context.Context, ismId util.HexAddress) (types.HyperlaneInterchainSecurityModule, error) {
-	ism, err := k.isms.Get(ctx, ismId.Bytes())
-	if err != nil {
-		return nil, err
-	}
-
-	return ism, nil
-}
-
-func (k Keeper) IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
-	handler, err := k.coreKeeper.IsmRouter().GetModule(ctx, ismId)
-	if err != nil {
-		return false, err
-	}
-	return (*handler).Exists(ctx, ismId)
 }
 
 // TODO outsource to utils class, once migrated
