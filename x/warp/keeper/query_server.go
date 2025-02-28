@@ -11,7 +11,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"cosmossdk.io/math"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ types.QueryServer = queryServer{}
@@ -78,14 +80,24 @@ func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBri
 		return nil, err
 	}
 
-	var bridgedSupply string
+	var amount math.Int
 	switch token.TokenType {
 	case types.HYP_TOKEN_TYPE_COLLATERAL:
-		bridgedSupply = token.CollateralBalance.String()
+		amount = token.CollateralBalance
 	case types.HYP_TOKEN_TYPE_SYNTHETIC:
-		bridgedSupply = qs.k.bankKeeper.GetSupply(ctx, token.OriginDenom).Amount.String()
+		amount = qs.k.bankKeeper.GetSupply(ctx, token.OriginDenom).Amount
 	default:
 		return nil, fmt.Errorf("query doesn't support token type: %s", token.TokenType)
+	}
+
+	bridgedSupply := sdk.Coin{
+		Amount: amount,
+		Denom:  token.OriginDenom,
+	}
+
+	err = bridgedSupply.Validate()
+	if err != nil {
+		return nil, err
 	}
 
 	return &types.QueryBridgedSupplyResponse{BridgedSupply: bridgedSupply}, nil

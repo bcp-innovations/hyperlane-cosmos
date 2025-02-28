@@ -4,6 +4,7 @@ package hyperlane.warp.v1;
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
 
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "hyperlane/warp/v1/types.proto";
 import "google/api/annotations.proto";
 import "cosmos_proto/cosmos.proto";
@@ -58,8 +59,6 @@ message QueryTokensResponse {
 message QueryTokenRequest { string id = 1; }
 
 // QueryTokenResponse ...
-// TODO: warp the response into a token object
-// TODO: remove Remote Router
 message QueryTokenResponse { WrappedHypToken token = 1; }
 
 /// HypToken
@@ -78,8 +77,10 @@ message WrappedHypToken {
 message QueryBridgedSupplyRequest { string id = 1; }
 
 // QueryBridgedSupplyResponse ...
-// TODO: return sdk.Coin
-message QueryBridgedSupplyResponse { string bridged_supply = 1; }
+message QueryBridgedSupplyResponse {
+  cosmos.base.v1beta1.Coin bridged_supply = 8
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
 
 // QueryRemoteRoutersRequest ...
 message QueryRemoteRoutersRequest {
@@ -88,7 +89,6 @@ message QueryRemoteRoutersRequest {
 }
 
 // QueryRemoteRoutersResponse ...
-// TODO: add pagination
 message QueryRemoteRoutersResponse {
   // Remote Routers ...
   repeated RemoteRouter remote_routers = 1;
