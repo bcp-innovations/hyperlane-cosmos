@@ -39,11 +39,11 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/tokens/{id}/remote_routers";
   }
 
-  // QuoteGasPayment ...
-  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest)
-      returns (QueryQuoteGasPaymentResponse) {
+  // QuoteRemoteTransfer ...
+  rpc QuoteRemoteTransfer(QueryQuoteRemoteTransferRequest)
+      returns (QueryQuoteRemoteTransferResponse) {
     option (google.api.http).get =
-        "/hyperlane/v1/tokens/{id}/quote_gas_payment/{destination_domain}";
+        "/hyperlane/v1/tokens/{id}/quote_remote_transfer/{destination_domain}";
   }
 }
 
@@ -86,14 +86,14 @@ message QueryRemoteRoutersRequest { string id = 1; }
 // QueryRemoteRoutersResponse ...
 message QueryRemoteRoutersResponse { repeated RemoteRouter remote_routers = 6; }
 
-// QueryQuoteGasPaymentRequest ...
-message QueryQuoteGasPaymentRequest {
+// QueryQuoteRemoteTransferRequest ...
+message QueryQuoteRemoteTransferRequest {
   string id = 1;
   string destination_domain = 2;
 }
 
-// QueryQuoteGasPaymentResponse ...
-message QueryQuoteGasPaymentResponse {
+// QueryQuoteRemoteTransferResponse ...
+message QueryQuoteRemoteTransferResponse {
   repeated cosmos.base.v1beta1.Coin gas_payment = 1 [
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true,

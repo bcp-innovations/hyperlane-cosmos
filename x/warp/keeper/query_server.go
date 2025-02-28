@@ -6,6 +6,10 @@ import (
 	"fmt"
 	"strconv"
 
+	"cosmossdk.io/math"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"cosmossdk.io/collections"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -92,7 +96,7 @@ func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBri
 	return &types.QueryBridgedSupplyResponse{BridgedSupply: bridgedSupply}, nil
 }
 
-func (qs queryServer) QuoteGasPayment(ctx context.Context, request *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
+func (qs queryServer) QuoteRemoteTransfer(ctx context.Context, request *types.QueryQuoteRemoteTransferRequest) (*types.QueryQuoteRemoteTransferResponse, error) {
 	tokenId, err := util.DecodeHexAddress(request.Id)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -113,18 +117,19 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, request *types.QueryQ
 		return nil, fmt.Errorf("failed to get remote router for destination domain %v", request.DestinationDomain)
 	}
 
-	metadata, err := util.CreateEmptyStandardHookMetadata()
+	metadata := util.StandardHookMetadata{
+		Variant:  uint16(0),
+		Value:    math.NewInt(1),
+		GasLimit: remoteRouter.Gas,
+		Address:  sdk.AccAddress("mocked_addr_________"),
+	}
+
+	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), util.NewZeroAddress(), metadata.Bytes(), util.HyperlaneMessage{Destination: uint32(destinationDomain)})
 	if err != nil {
 		return nil, err
 	}
-	metadata.GasLimit = remoteRouter.Gas
 
-	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), metadata.Bytes(), util.HyperlaneMessage{Destination: uint32(destinationDomain)})
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.QueryQuoteGasPaymentResponse{GasPayment: requiredPayment}, nil
+	return &types.QueryQuoteRemoteTransferResponse{GasPayment: requiredPayment}, nil
 }
 
 func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {

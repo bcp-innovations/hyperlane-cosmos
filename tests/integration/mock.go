@@ -48,7 +48,7 @@ func (n NoopPostDispatchHookHandler) PostDispatch(ctx context.Context, mailboxId
 	return sdk.NewCoins(), nil
 }
 
-func (n NoopPostDispatchHookHandler) QuoteDispatch(ctx context.Context, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (n NoopPostDispatchHookHandler) QuoteDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
 	return sdk.NewCoins(), nil
 }
 

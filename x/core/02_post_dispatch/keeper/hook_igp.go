@@ -42,13 +42,13 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mai
 	return nil, nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, _, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
 	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
 	if err != nil {
 		return sdk.NewCoins(), err
 	}
 
-	return i.QuoteGasPayment(ctx, hookId, message.Destination, metadata.GasLimit)
+	return i.QuoteGasPayment(ctx, util.NewZeroAddress(), hookId, message.Destination, metadata.GasLimit)
 }
 
 func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
@@ -107,7 +107,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	return nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, _, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (sdk.Coins, error) {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return sdk.NewCoins(), fmt.Errorf("igp does not exist: %s", hookId.String())
@@ -133,12 +133,11 @@ func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId
 		return fmt.Errorf("igp does not exist: %s", hookId.String())
 	}
 
-	requiredPayment, err := i.QuoteGasPayment(ctx, hookId, destinationDomain, gasLimit)
+	requiredPayment, err := i.QuoteGasPayment(ctx, util.NewZeroAddress(), hookId, destinationDomain, gasLimit)
 	if err != nil {
 		return err
 	}
 
-	// TODO: Support multiple denoms
 	if requiredPayment.AmountOf(igp.Denom).GT(maxFee) {
 		return fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
 	}

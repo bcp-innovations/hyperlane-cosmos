@@ -157,37 +157,47 @@ func (k *Keeper) PostDispatchHookExists(ctx context.Context, hookId util.HexAddr
 	return (*handler).Exists(ctx, hookId)
 }
 
-func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId, overwriteHookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
 	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
 		return sdk.NewCoins(), fmt.Errorf("failed to find mailbox with id %s", mailboxId.String())
 	}
 
-	calculateGasPayment := func(hookId string) (sdk.Coins, error) {
-		id, err := util.DecodeHexAddress(hookId)
+	calculateGasPayment := func(hookId util.HexAddress) (sdk.Coins, error) {
+		handler, err := k.postDispatchRouter.GetModule(ctx, hookId)
 		if err != nil {
 			return sdk.NewCoins(), err
 		}
 
-		handler, err := k.postDispatchRouter.GetModule(ctx, id)
+		return (*handler).QuoteDispatch(ctx, mailboxId, hookId, metadata, message)
+	}
+
+	requiredHookId, err := util.DecodeHexAddress(mailbox.RequiredHook)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	requiredGasPayment, err := calculateGasPayment(requiredHookId)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	var defaultHookId util.HexAddress
+	if overwriteHookId.IsZeroAddress() {
+		defaultHookId, err = util.DecodeHexAddress(mailbox.DefaultHook)
 		if err != nil {
 			return sdk.NewCoins(), err
 		}
-
-		return (*handler).QuoteDispatch(ctx, id, metadata, message)
+	} else {
+		defaultHookId = overwriteHookId
 	}
 
-	requiredGasPayment, err := calculateGasPayment(mailbox.RequiredHook)
+	defaultGasPayment, err := calculateGasPayment(defaultHookId)
 	if err != nil {
 		return sdk.NewCoins(), err
 	}
 
-	defaultGasPayment, err := calculateGasPayment(mailbox.DefaultHook)
-	if err != nil {
-		return sdk.NewCoins(), err
-	}
-
-	return append(requiredGasPayment, defaultGasPayment...), nil
+	return sdk.Coins.Add(requiredGasPayment, defaultGasPayment...), nil
 }
 
 func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id string) error {

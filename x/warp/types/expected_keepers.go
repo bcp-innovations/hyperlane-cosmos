@@ -34,5 +34,5 @@ type CoreKeeper interface {
 		metadata []byte,
 		postDispatchHookId util.HexAddress,
 	) (messageId util.HexAddress, error error)
-	QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error)
+	QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, overwriteHookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error)
 }

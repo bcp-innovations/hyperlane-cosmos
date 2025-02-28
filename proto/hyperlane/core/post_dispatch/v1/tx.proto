@@ -113,7 +113,7 @@ message MsgPayForGas {
   ];
 
   // amount ...
-  cosmos.base.v1beta1.Coin amount = 7
+  cosmos.base.v1beta1.Coin amount = 6
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 

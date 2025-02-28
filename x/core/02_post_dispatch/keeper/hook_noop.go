@@ -40,6 +40,6 @@ func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAdd
 	return sdk.NewCoins(), nil
 }
 
-func (i NoopHookHandler) QuoteDispatch(_ context.Context, _ util.HexAddress, _ []byte, _ util.HyperlaneMessage) (sdk.Coins, error) {
+func (i NoopHookHandler) QuoteDispatch(_ context.Context, _, _ util.HexAddress, _ []byte, _ util.HyperlaneMessage) (sdk.Coins, error) {
 	return sdk.NewCoins(), nil
 }
