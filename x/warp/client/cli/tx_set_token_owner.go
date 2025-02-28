@@ -12,6 +12,7 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
+// TODO: refactor to set-token
 func CmdSetTokenOwner() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-token-owner [token-id] [new-owner]",

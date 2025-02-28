@@ -14,6 +14,7 @@ import (
 )
 
 type Keeper struct {
+	// TODO: move to internal id -> uint64
 	isms collections.Map[[]byte, types.HyperlaneInterchainSecurityModule]
 	// Key: Mailbox ID, Validator address, Storage Location index
 	storageLocations collections.Map[collections.Triple[[]byte, []byte, uint64], string]

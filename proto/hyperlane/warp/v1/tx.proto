@@ -69,7 +69,8 @@ message MsgCreateSyntheticToken {
 
   string origin_mailbox = 2;
 
-  TokenMetadata metadata = 3;
+  // TODO: check if we need this
+  // TokenMetadata metadata = 3;
 }
 
 // MsgCreateSyntheticTokenResponse ...

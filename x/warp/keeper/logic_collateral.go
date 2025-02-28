@@ -25,7 +25,12 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 
 	token.CollateralBalance = token.CollateralBalance.Add(amount)
 
-	if err = k.HypTokens.Set(ctx, token.Id, token); err != nil {
+	tokenId, err := util.DecodeHexAddress(token.Id)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	if err = k.HypTokens.Set(ctx, tokenId.GetInternalId(), token); err != nil {
 		return util.HexAddress{}, err
 	}
 
@@ -38,7 +43,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		return util.HexAddress{}, fmt.Errorf("invalid recipient address")
 	}
 
-	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(token.Id, destinationDomain))
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(tokenId.GetInternalId(), destinationDomain))
 	if err != nil {
 		return util.HexAddress{}, fmt.Errorf("no enrolled router found for destination domain %d", destinationDomain)
 	}
@@ -71,7 +76,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
-		util.HexAddress(token.Id), // sender
+		tokenId, // sender
 		sdk.NewCoins(maxFee),
 
 		remoteRouter.ReceiverDomain,
@@ -104,7 +109,12 @@ func (k *Keeper) RemoteReceiveCollateral(ctx context.Context, token types.HypTok
 		return types.ErrNotEnoughCollateral
 	}
 
-	if err := k.HypTokens.Set(ctx, token.Id, token); err != nil {
+	tokenId, err := util.DecodeHexAddress(token.Id)
+	if err != nil {
+		return err
+	}
+
+	if err := k.HypTokens.Set(ctx, tokenId.GetInternalId(), token); err != nil {
 		return err
 	}
 

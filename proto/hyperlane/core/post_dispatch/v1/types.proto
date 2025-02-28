@@ -9,6 +9,7 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 // InterchainGasPaymaster ...
+// TODO: remove internal_id
 message InterchainGasPaymaster {
 
   // id ...
