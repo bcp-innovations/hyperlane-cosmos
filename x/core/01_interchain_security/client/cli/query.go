@@ -5,8 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// TODO
-// GetQueryCmd returns the query commands for IBC clients
+// GetQueryCmd returns the query commands for accessing the API through the CLI
 func GetQueryCmd() *cobra.Command {
 	queryCmd := &cobra.Command{
 		Use:                        "ism",
@@ -17,7 +16,7 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	queryCmd.AddCommand(
-	// TODO add query commands
+	// TODO(low priority) add query commands
 	)
 
 	return queryCmd

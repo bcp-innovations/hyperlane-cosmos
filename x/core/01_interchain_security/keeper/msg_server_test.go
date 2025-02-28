@@ -76,10 +76,15 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		_, err = util.DecodeHexAddress(response.Id)
 		Expect(err).To(BeNil())
 
-		// ism, _ := s.App().HyperlaneKeeper.Isms.Get(s.Ctx(), ismId.Bytes())
-		// Expect(ism.Owner).To(Equal(creator.Address))
-		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED))
-		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.NoopISM{}))
+		queryServer := keeper.NewQueryServerImpl(&s.App().HyperlaneKeeper.IsmKeeper)
+		ism, err := queryServer.Ism(s.Ctx(), &types.QueryIsmRequest{Id: response.Id})
+		Expect(err).To(BeNil())
+		Expect(ism.Ism.TypeUrl).To(Equal("/hyperlane.core.interchain_security.v1.NoopISM"))
+		var noopIsm types.NoopISM
+		err = proto.Unmarshal(ism.Ism.Value, &noopIsm)
+		Expect(err).To(BeNil())
+		Expect(noopIsm.Owner).To(Equal(creator.Address))
+		Expect(noopIsm.Id.String()).To(Equal(response.Id))
 	})
 
 	It("Create (invalid) MessageIdMultisig ISM with less address", func() {

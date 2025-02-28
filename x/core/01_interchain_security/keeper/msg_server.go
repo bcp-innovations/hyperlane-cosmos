@@ -123,7 +123,7 @@ func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.Ms
 	}
 
 	newIsm := types.MessageIdMultisigISM{
-		Id:         ismId.String(),
+		Id:         ismId,
 		Owner:      req.Creator,
 		Validators: req.Validators,
 		Threshold:  req.Threshold,
@@ -147,7 +147,7 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 	}
 
 	newIsm := types.MerkleRootMultisigISM{
-		Id:         ismId.String(),
+		Id:         ismId,
 		Owner:      req.Creator,
 		Validators: req.Validators,
 		Threshold:  req.Threshold,
@@ -171,7 +171,7 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 	}
 
 	newIsm := types.NoopISM{
-		Id:    ismId.String(),
+		Id:    ismId,
 		Owner: ism.Creator,
 	}
 

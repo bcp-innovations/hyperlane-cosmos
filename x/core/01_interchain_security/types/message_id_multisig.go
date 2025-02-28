@@ -11,7 +11,7 @@ import (
 var _ HyperlaneInterchainSecurityModule = &MessageIdMultisigISM{}
 
 func (m *MessageIdMultisigISM) GetId() (util.HexAddress, error) {
-	return util.DecodeHexAddress(m.Id)
+	return m.Id, nil
 }
 
 func (m *MessageIdMultisigISM) ModuleType() uint8 {

@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"slices"
@@ -166,4 +167,46 @@ func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
 	copy(hexAddressBytes[32-len(bech32):], bech32)
 
 	return HexAddress(hexAddressBytes), nil
+}
+
+func (t HexAddress) Marshal() ([]byte, error) {
+	return t.Bytes(), nil
+}
+
+func (t *HexAddress) MarshalTo(data []byte) (n int, err error) {
+	n = copy(data, t.Bytes())
+	return n, nil
+}
+
+func (t *HexAddress) Unmarshal(data []byte) error {
+	if len(data) != 32 {
+		return errors.New("invalid hex address length2")
+	}
+	copy(t[:], data)
+	return nil
+}
+
+func (t *HexAddress) Size() int {
+	return len(*t)
+}
+
+func (t HexAddress) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.String())
+}
+
+func (t *HexAddress) UnmarshalJSON(data []byte) error {
+	address, err := DecodeHexAddress(string(data))
+	if err != nil {
+		return err
+	}
+	copy(t[:], address.Bytes())
+	return nil
+}
+
+func (t HexAddress) Compare(other HexAddress) int {
+	return bytes.Compare(t.Bytes(), other.Bytes())
+}
+
+func (t HexAddress) Equal(other HexAddress) bool {
+	return bytes.Equal(t.Bytes(), other.Bytes())
 }
