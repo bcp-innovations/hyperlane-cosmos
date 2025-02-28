@@ -30,10 +30,10 @@ type Keeper struct {
 	Params collections.Item[types.Params]
 	Schema collections.Schema
 	// <tokenId> -> Token
-	HypTokens      collections.Map[[]byte, types.HypToken]
+	HypTokens      collections.Map[uint64, types.HypToken]
 	HypTokensCount collections.Sequence
 	// <tokenId> <domain> -> Router
-	EnrolledRouters collections.Map[collections.Pair[[]byte, uint32], types.RemoteRouter]
+	EnrolledRouters collections.Map[collections.Pair[uint64, uint32], types.RemoteRouter]
 
 	bankKeeper types.BankKeeper
 	coreKeeper types.CoreKeeper
@@ -59,10 +59,10 @@ func NewKeeper(
 		addressCodec:    addressCodec,
 		authority:       authority,
 		enabledTokens:   enabledTokens,
-		HypTokens:       collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.BytesKey, codec.CollValue[types.HypToken](cdc)),
+		HypTokens:       collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.Uint64Key, codec.CollValue[types.HypToken](cdc)),
 		Params:          collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		HypTokensCount:  collections.NewSequence(sb, types.HypTokensCountKey, "hyptokens_count"),
-		EnrolledRouters: collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.BytesKey, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
+		EnrolledRouters: collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
 		bankKeeper:      bankKeeper,
 		coreKeeper:      coreKeeper,
 	}
@@ -81,11 +81,11 @@ func NewKeeper(
 }
 
 func (k *Keeper) Exists(ctx context.Context, tokenId util.HexAddress) (bool, error) {
-	return k.HypTokens.Has(ctx, tokenId.Bytes())
+	return k.HypTokens.Has(ctx, tokenId.GetInternalId())
 }
 
 func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error) {
-	token, err := k.HypTokens.Get(ctx, recipient.Bytes())
+	token, err := k.HypTokens.Get(ctx, recipient.GetInternalId())
 	if err != nil {
 		return util.HexAddress{}, nil
 	}
@@ -99,7 +99,7 @@ func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (
 }
 
 func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
-	token, err := k.HypTokens.Get(ctx, message.Recipient.Bytes())
+	token, err := k.HypTokens.Get(ctx, message.Recipient.GetInternalId())
 	if err != nil {
 		return nil
 	}
@@ -113,7 +113,7 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message 
 		return fmt.Errorf("invalid origin mailbox address")
 	}
 
-	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(message.Recipient.Bytes(), message.Origin))
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(message.Recipient.GetInternalId(), message.Origin))
 	if err != nil {
 		return fmt.Errorf("no enrolled router found for origin %d", message.Origin)
 	}

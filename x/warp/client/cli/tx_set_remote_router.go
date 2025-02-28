@@ -16,6 +16,7 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
+// TODO: remove
 func CmdSetRemoteRouter() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-remote-router [token-id] [receiver-domain] [receiver-contract] [gas]",

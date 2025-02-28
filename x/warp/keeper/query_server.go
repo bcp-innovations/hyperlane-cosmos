@@ -31,7 +31,7 @@ func (qs queryServer) RemoteRouters(ctx context.Context, request *types.QueryRem
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	rng := collections.NewPrefixedPairRange[[]byte, uint32](tokenId.Bytes())
+	rng := collections.NewPrefixedPairRange[uint64, uint32](tokenId.GetInternalId())
 
 	// TODO: Add pagination
 	iter, err := qs.k.EnrolledRouters.Iterate(ctx, rng)
@@ -73,7 +73,7 @@ func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBri
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	token, err := qs.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, err
 	}
@@ -102,16 +102,13 @@ func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (
 		return nil, err
 	}
 
-	responseTokens := make([]types.QueryTokenResponse, len(tokens))
-	for i, t := range tokens {
-		responseTokens[i], err = qs.parseTokenResponse(ctx, t)
-		if err != nil {
-			return nil, err
-		}
+	response := make([]types.WrappedHypToken, 0, len(tokens))
+	for _, t := range tokens {
+		response = append(response, *parseTokenResponse(t))
 	}
 
 	return &types.QueryTokensResponse{
-		Tokens: responseTokens,
+		Tokens: response,
 	}, nil
 }
 
@@ -121,47 +118,25 @@ func (qs queryServer) Token(ctx context.Context, request *types.QueryTokenReques
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	get, err := qs.k.HypTokens.Get(ctx, tokenId.Bytes())
+	get, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := qs.parseTokenResponse(ctx, get)
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &types.QueryTokenResponse{
+		Token: parseTokenResponse(get),
+	}, nil
 }
 
-func (qs queryServer) parseTokenResponse(ctx context.Context, get types.HypToken) (types.QueryTokenResponse, error) {
-	rng := collections.NewPrefixedPairRange[[]byte, uint32](get.Id)
-
-	iter, err := qs.k.EnrolledRouters.Iterate(ctx, rng)
-	if err != nil {
-		return types.QueryTokenResponse{}, err
-	}
-
-	routers, err := iter.Values()
-	if err != nil {
-		return types.QueryTokenResponse{}, err
-	}
-
-	remoteRouters := make([]*types.RemoteRouter, len(routers))
-	for i := range routers {
-		remoteRouters[i] = &routers[i]
-	}
-
-	// TODO: double check if this is 32 bytes long
-	return types.QueryTokenResponse{
-		Id:        util.HexAddress(get.Id).String(),
+func parseTokenResponse(get types.HypToken) *types.WrappedHypToken {
+	return &types.WrappedHypToken{
+		Id:        get.Id,
 		Owner:     get.Owner,
 		TokenType: get.TokenType,
 
 		OriginMailbox: util.HexAddress(get.OriginMailbox).String(),
 		OriginDenom:   get.OriginDenom,
-		RemoteRouters: remoteRouters,
 
 		IsmId: get.IsmId,
-	}, nil
+	}
 }

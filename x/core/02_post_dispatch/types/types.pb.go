@@ -26,6 +26,7 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // InterchainGasPaymaster ...
+// TODO: remove internal_id
 type InterchainGasPaymaster struct {
 	// id ...
 	InternalId uint64 `protobuf:"varint,1,opt,name=internal_id,json=internalId,proto3" json:"internal_id,omitempty"`

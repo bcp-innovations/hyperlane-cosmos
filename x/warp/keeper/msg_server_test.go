@@ -84,7 +84,6 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: invalidMailboxId,
-			Metadata:      nil,
 		})
 
 		// Assert
@@ -100,7 +99,6 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: nonExistingMailboxId,
-			Metadata:      nil,
 		})
 
 		// Assert
@@ -134,18 +132,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	It("MsgCreateSyntheticToken (valid) with default ISM ID", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
-		metadata := types.TokenMetadata{
-			Name:        "test",
-			Symbol:      "TST",
-			TotalSupply: math.NewInt(100000),
-			Decimals:    18,
-		}
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
-			Metadata:      &metadata,
 		})
 
 		// Assert
@@ -155,18 +146,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	It("MsgCreateSyntheticToken (valid)", func() {
 		// Arrange
 		mailboxId, _, ismId := createValidMailbox(s, owner.Address, "noop", false, 1)
-		metadata := types.TokenMetadata{
-			Name:        "test",
-			Symbol:      "TST",
-			TotalSupply: math.NewInt(100000),
-			Decimals:    18,
-		}
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
-			Metadata:      &metadata,
 		})
 		Expect(err).To(BeNil())
 
@@ -311,9 +295,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("invalid token id %s", tokenId.String()+"test")))
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(0))
+		Expect(tokens.RemoteRouters).To(HaveLen(0))
 	})
 
 	It("MsgEnrollRemoteRouter (invalid) non-existing Token ID", func() {
@@ -338,10 +324,6 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("token with id %s not found", nonExistingTokenId)))
-
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
-		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(0))
 	})
 
 	It("MsgEnrollRemoteRouter (invalid) non-owner address", func() {
@@ -371,9 +353,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own token with id %s", sender.Address, tokenId.String())))
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(0))
+		Expect(tokens.RemoteRouters).To(HaveLen(0))
 	})
 
 	It("MsgEnrollRemoteRouter (invalid) invalid remote router", func() {
@@ -406,9 +390,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal("invalid remote router"))
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(0))
+		Expect(tokens.RemoteRouters).To(HaveLen(0))
 	})
 
 	It("MsgEnrollRemoteRouter (valid)", func() {
@@ -447,10 +433,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(tokens.RemoteRouters).To(HaveLen(1))
+		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
 	It("MsgSetRemoteRouter (invalid) invalid Token ID", func() {
@@ -493,10 +481,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("invalid token id %s", tokenId.String()+"test")))
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(tokens.RemoteRouters).To(HaveLen(1))
+		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
 	It("MsgSetRemoteRouter (invalid) non-existing Token ID", func() {
@@ -541,10 +531,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("token with id %s not found", nonExistingTokenId)))
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(tokens.RemoteRouters).To(HaveLen(1))
+		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
 	It("MsgSetRemoteRouter (invalid) non-owner address", func() {
@@ -587,10 +579,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own token with id %s", sender.Address, tokenId.String())))
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(tokens.RemoteRouters).To(HaveLen(1))
+		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
 	It("MsgSetRemoteRouter (invalid) invalid remote router", func() {
@@ -635,10 +629,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err.Error()).To(Equal("invalid remote router"))
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(tokens.RemoteRouters).To(HaveLen(1))
+		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
 	It("MsgSetRemoteRouter (valid)", func() {
@@ -689,10 +685,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Assert
 		Expect(err).To(BeNil())
 
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&updatedRemoteRouter))
+		Expect(tokens.RemoteRouters).To(HaveLen(1))
+		Expect(tokens.RemoteRouters[0]).To(Equal(&updatedRemoteRouter))
 	})
 
 	It("MsgUnrollRemoteRouter (invalid) invalid Token ID", func() {
@@ -737,9 +735,14 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
 		Expect(err).To(BeNil())
 		Expect(tokens.Tokens).To(HaveLen(1))
+
+		routers, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
+		Expect(err).To(BeNil())
 		Expect(tokens.Tokens[0].Owner).To(Equal(owner.Address))
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(routers.RemoteRouters).To(HaveLen(1))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
 
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
 			Owner:        owner.Address,
@@ -748,10 +751,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 
 		// Act
 		_, err = s.RunTx(&types.MsgUnrollRemoteRouter{
@@ -762,11 +768,15 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("invalid token id %s", tokenId.String()+"test")))
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 	})
 
 	It("MsgUnrollRemoteRouter (invalid) non-existing Token ID", func() {
@@ -814,8 +824,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 		Expect(tokens.Tokens).To(HaveLen(1))
 		Expect(tokens.Tokens[0].Owner).To(Equal(owner.Address))
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+
+		routers, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
+		Expect(err).To(BeNil())
+		Expect(routers.RemoteRouters).To(HaveLen(1))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
 
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
 			Owner:        owner.Address,
@@ -824,10 +839,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 
 		// Act
 		_, err = s.RunTx(&types.MsgUnrollRemoteRouter{
@@ -838,11 +856,15 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("token with id %s not found", nonExistingTokenId)))
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 	})
 
 	It("MsgUnrollRemoteRouter (invalid) non-owner address", func() {
@@ -888,8 +910,14 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 		Expect(tokens.Tokens).To(HaveLen(1))
 		Expect(tokens.Tokens[0].Owner).To(Equal(owner.Address))
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+
+		routers, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
+		Expect(err).To(BeNil())
+
+		Expect(routers.RemoteRouters).To(HaveLen(1))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
 
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
 			Owner:        owner.Address,
@@ -898,10 +926,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 
 		// Act
 		_, err = s.RunTx(&types.MsgUnrollRemoteRouter{
@@ -912,11 +943,15 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own token with id %s", sender.Address, tokenId.String())))
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 	})
 
 	It("MsgUnrollRemoteRouter (invalid) non-existing remote domain", func() {
@@ -962,8 +997,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 		Expect(tokens.Tokens).To(HaveLen(1))
 		Expect(tokens.Tokens[0].Owner).To(Equal(owner.Address))
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+
+		routers, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
+		Expect(err).To(BeNil())
+		Expect(routers.RemoteRouters).To(HaveLen(1))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
 
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
 			Owner:        owner.Address,
@@ -972,10 +1012,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 
 		// Act
 		_, err = s.RunTx(&types.MsgUnrollRemoteRouter{
@@ -986,11 +1028,15 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find remote router for domain %v", 3)))
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 	})
 
 	It("MsgUnrollRemoteRouter (valid)", func() {
@@ -1036,8 +1082,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 		Expect(tokens.Tokens).To(HaveLen(1))
 		Expect(tokens.Tokens[0].Owner).To(Equal(owner.Address))
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+
+		routers, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
+		Expect(err).To(BeNil())
+		Expect(routers.RemoteRouters).To(HaveLen(1))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
 
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
 			Owner:        owner.Address,
@@ -1046,10 +1097,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(2))
-		Expect(tokens.Tokens[0].RemoteRouters[1]).To(Equal(&secondRemoteRouter))
+		Expect(routers.RemoteRouters).To(HaveLen(2))
+		Expect(routers.RemoteRouters[1]).To(Equal(&secondRemoteRouter))
 
 		// Act
 		_, err = s.RunTx(&types.MsgUnrollRemoteRouter{
@@ -1060,10 +1113,14 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
-		tokens, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+
+		routers, err = keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
 		Expect(err).To(BeNil())
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(&remoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(1))
+		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
 	It("MsgSetInterchainSecurityModule (invalid) empty ISM ID", func() {
@@ -1448,12 +1505,6 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner,
 			OriginMailbox: mailboxId.String(),
-			Metadata: &types.TokenMetadata{
-				Name:        "test",
-				Symbol:      "TST",
-				TotalSupply: math.NewInt(100000),
-				Decimals:    18,
-			},
 		})
 		Expect(err).To(BeNil())
 		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
@@ -1491,11 +1542,17 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 	Expect(tokens.Tokens).To(HaveLen(1))
 	Expect(tokens.Tokens[0].Owner).To(Equal(owner))
 
+	routers, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+		Id: tokenId.String(),
+	})
+	Expect(err).To(BeNil())
 	if remoteRouter != nil {
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(1))
-		Expect(tokens.Tokens[0].RemoteRouters[0]).To(Equal(remoteRouter))
+
+		Expect(routers.RemoteRouters).To(HaveLen(1))
+		Expect(routers.RemoteRouters[0]).To(Equal(remoteRouter))
+
 	} else {
-		Expect(tokens.Tokens[0].RemoteRouters).To(HaveLen(0))
+		Expect(routers.RemoteRouters).To(HaveLen(0))
 	}
 
 	return tokenId, mailboxId, igpId, ismId

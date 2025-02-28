@@ -3,11 +3,12 @@ package hyperlane.warp.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "hyperlane/warp/v1/types.proto";
 import "google/api/annotations.proto";
-import "amino/amino.proto";
-import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
 
 // Msg defines the module Msg service.
 service Query {
@@ -40,20 +41,29 @@ service Query {
 }
 
 // QueryTokensRequest ...
-message QueryTokensRequest {}
+message QueryTokensRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
 // QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryTokensResponse {
   // params defines the parameters of the module.
-  repeated QueryTokenResponse tokens = 1
+  repeated WrappedHypToken tokens = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryTokenRequest ...
 message QueryTokenRequest { string id = 1; }
 
 // QueryTokenResponse ...
-message QueryTokenResponse {
+// TODO: warp the response into a token object
+// TODO: remove Remote Router
+message QueryTokenResponse { WrappedHypToken token = 1; }
+
+/// HypToken
+message WrappedHypToken {
   string id = 1;
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   HypTokenType token_type = 3;
@@ -62,21 +72,29 @@ message QueryTokenResponse {
   string origin_denom = 5;
 
   string ism_id = 7;
-
-  repeated RemoteRouter remote_routers = 6;
 }
 
 // QueryBridgedSupplyRequest ...
 message QueryBridgedSupplyRequest { string id = 1; }
 
 // QueryBridgedSupplyResponse ...
+// TODO: return sdk.Coin
 message QueryBridgedSupplyResponse { string bridged_supply = 1; }
 
 // QueryRemoteRoutersRequest ...
-message QueryRemoteRoutersRequest { string id = 1; }
+message QueryRemoteRoutersRequest {
+  string id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
 
 // QueryRemoteRoutersResponse ...
-message QueryRemoteRoutersResponse { repeated RemoteRouter remote_routers = 6; }
+// TODO: add pagination
+message QueryRemoteRoutersResponse {
+  // Remote Routers ...
+  repeated RemoteRouter remote_routers = 1;
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}

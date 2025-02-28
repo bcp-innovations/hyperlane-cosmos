@@ -26,6 +26,7 @@ type Keeper struct {
 	authority string
 
 	// state management
+	// TODO: use similar hex address factory like the module routers
 	Mailboxes collections.Map[[]byte, types.Mailbox]
 	// first key is the mailbox ID, second key is the message ID
 	Messages collections.KeySet[collections.Pair[[]byte, []byte]]
