@@ -39,6 +39,13 @@ service Query {
       returns (QueryRemoteRoutersResponse) {
     option (google.api.http).get = "/hyperlane/v1/tokens/{id}/remote_routers";
   }
+
+  // QuoteRemoteTransfer ...
+  rpc QuoteRemoteTransfer(QueryQuoteRemoteTransferRequest)
+      returns (QueryQuoteRemoteTransferResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/tokens/{id}/quote_remote_transfer/{destination_domain}";
+  }
 }
 
 // QueryTokensRequest ...
@@ -94,6 +101,21 @@ message QueryRemoteRoutersResponse {
   repeated RemoteRouter remote_routers = 1;
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryQuoteRemoteTransferRequest ...
+message QueryQuoteRemoteTransferRequest {
+  string id = 1;
+  string destination_domain = 2;
+}
+
+// QueryQuoteRemoteTransferResponse ...
+message QueryQuoteRemoteTransferResponse {
+  repeated cosmos.base.v1beta1.Coin gas_payment = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.

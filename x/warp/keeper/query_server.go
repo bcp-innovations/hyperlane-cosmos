@@ -4,6 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
+
+	"cosmossdk.io/math"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"cosmossdk.io/collections"
 
@@ -101,6 +106,42 @@ func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBri
 	}
 
 	return &types.QueryBridgedSupplyResponse{BridgedSupply: bridgedSupply}, nil
+}
+
+func (qs queryServer) QuoteRemoteTransfer(ctx context.Context, request *types.QueryQuoteRemoteTransferRequest) (*types.QueryQuoteRemoteTransferResponse, error) {
+	tokenId, err := util.DecodeHexAddress(request.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	token, err := qs.k.HypTokens.Get(ctx, tokenId.Bytes())
+	if err != nil {
+		return nil, err
+	}
+
+	destinationDomain, err := strconv.ParseUint(request.DestinationDomain, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+
+	remoteRouter, err := qs.k.EnrolledRouters.Get(ctx, collections.Join(tokenId.Bytes(), uint32(destinationDomain)))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get remote router for destination domain %v", request.DestinationDomain)
+	}
+
+	metadata := util.StandardHookMetadata{
+		Variant:  uint16(0),
+		Value:    math.NewInt(1),
+		GasLimit: remoteRouter.Gas,
+		Address:  sdk.AccAddress("mocked_addr_________"),
+	}
+
+	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), util.NewZeroAddress(), metadata.Bytes(), util.HyperlaneMessage{Destination: uint32(destinationDomain)})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryQuoteRemoteTransferResponse{GasPayment: requiredPayment}, nil
 }
 
 func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {

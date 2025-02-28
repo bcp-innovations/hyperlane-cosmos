@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"fmt"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
 	"cosmossdk.io/math"
@@ -173,7 +175,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         "testMessageId",
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(1),
-			Amount:            math.NewInt(10),
+			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
 		})
 
 		// Assert
@@ -216,7 +218,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         "testMessageId",
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(1),
-			Amount:            math.NewInt(0),
+			Amount:            sdk.NewCoin(denom, math.ZeroInt()),
 		})
 
 		// Assert
@@ -258,7 +260,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         "",
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(1),
-			Amount:            math.NewInt(10),
+			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
 		})
 
 		// Assert
@@ -300,7 +302,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         "messageIdTest",
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(50000),
-			Amount:            math.NewInt(10),
+			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
 		})
 
 		// Assert
@@ -342,7 +344,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         "messageIdTest",
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(50000),
-			Amount:            math.NewInt(10),
+			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
 		})
 
 		// Assert
@@ -403,15 +405,15 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			IgpId:             igpId.String(),
 			MessageId:         "messageIdTest",
 			DestinationDomain: 1,
-			GasLimit:          math.NewInt(50000),
-			Amount:            gasAmount,
+			GasLimit:          math.ZeroInt(),
+			Amount:            sdk.NewCoin(denom, gasAmount),
 		})
 		Expect(err).To(BeNil())
 
 		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees).To(Equal(gasAmount))
+		Expect(igp.ClaimableFees.AmountOf(denom)).To(Equal(gasAmount))
 
-		claimableFees := igp.ClaimableFees
+		claimableFees := igp.ClaimableFees.AmountOf(denom)
 		nonOwnerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), gasPayer.AccAddress, denom)
 
 		// Act
@@ -425,7 +427,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), gasPayer.AccAddress, denom).Amount).To(Equal(nonOwnerBalance.Amount))
 
 		igp, _ = s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees).To(Equal(claimableFees))
+		Expect(igp.ClaimableFees.AmountOf(denom)).To(Equal(claimableFees))
 	})
 
 	It("Claim (invalid) with invalid address", func() {
@@ -467,14 +469,14 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         "messageIdTest",
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(50000),
-			Amount:            gasAmount,
+			Amount:            sdk.NewCoin(denom, gasAmount),
 		})
 		Expect(err).To(BeNil())
 
 		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
 
 		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees).To(Equal(gasAmount))
+		Expect(igp.ClaimableFees.AmountOf(denom)).To(Equal(gasAmount))
 
 		// Act
 		_, err = s.RunTx(&types.MsgClaim{
@@ -526,14 +528,14 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         "messageIdTest",
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(50000),
-			Amount:            gasAmount,
+			Amount:            sdk.NewCoin(denom, gasAmount),
 		})
 		Expect(err).To(BeNil())
 
 		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
 
 		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees).To(Equal(gasAmount))
+		Expect(igp.ClaimableFees.AmountOf(denom)).To(Equal(gasAmount))
 
 		// Act
 		_, err = s.RunTx(&types.MsgClaim{
@@ -563,7 +565,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
 
 		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees).To(Equal(math.ZeroInt()))
+		Expect(igp.ClaimableFees.IsZero()).To(BeTrue())
 
 		// Act
 		_, err = s.RunTx(&types.MsgClaim{
@@ -576,6 +578,6 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom).Amount).To(Equal(ownerBalance.Amount))
 
 		igp, _ = s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees).To(Equal(math.ZeroInt()))
+		Expect(igp.ClaimableFees.IsZero()).To(BeTrue())
 	})
 })

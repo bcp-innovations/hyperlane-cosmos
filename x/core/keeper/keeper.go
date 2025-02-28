@@ -158,6 +158,49 @@ func (k *Keeper) PostDispatchHookExists(ctx context.Context, hookId util.HexAddr
 	return (*handler).Exists(ctx, hookId)
 }
 
+func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId, overwriteHookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	if err != nil {
+		return sdk.NewCoins(), fmt.Errorf("failed to find mailbox with id %s", mailboxId.String())
+	}
+
+	calculateGasPayment := func(hookId util.HexAddress) (sdk.Coins, error) {
+		handler, err := k.postDispatchRouter.GetModule(ctx, hookId)
+		if err != nil {
+			return sdk.NewCoins(), err
+		}
+
+		return (*handler).QuoteDispatch(ctx, mailboxId, hookId, metadata, message)
+	}
+
+	requiredHookId, err := util.DecodeHexAddress(mailbox.RequiredHook)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	requiredGasPayment, err := calculateGasPayment(requiredHookId)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	var defaultHookId util.HexAddress
+	if overwriteHookId.IsZeroAddress() {
+		defaultHookId, err = util.DecodeHexAddress(mailbox.DefaultHook)
+		if err != nil {
+			return sdk.NewCoins(), err
+		}
+	} else {
+		defaultHookId = overwriteHookId
+	}
+
+	defaultGasPayment, err := calculateGasPayment(defaultHookId)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	return sdk.Coins.Add(requiredGasPayment, defaultGasPayment...), nil
+}
+
 func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id string) error {
 	hookId, err := util.DecodeHexAddress(id)
 	if err != nil {
