@@ -148,15 +148,6 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("invalid remote router")
 	}
 
-	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.Bytes(), msg.RemoteRouter.ReceiverDomain))
-	if err != nil {
-		return nil, err
-	}
-
-	if exists {
-		return nil, fmt.Errorf("remote router for domain %v is already enrolled", msg.RemoteRouter.ReceiverDomain)
-	}
-
 	if msg.RemoteRouter.ReceiverContract == "" {
 		return nil, fmt.Errorf("invalid receiver contract")
 	}
@@ -166,41 +157,6 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 	}
 
 	return &types.MsgEnrollRemoteRouterResponse{}, nil
-}
-
-func (ms msgServer) SetRemoteRouter(ctx context.Context, msg *types.MsgSetRemoteRouter) (*types.MsgSetRemoteRouterResponse, error) {
-	tokenId, err := util.DecodeHexAddress(msg.TokenId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
-	}
-
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
-	}
-
-	if token.Owner != msg.Owner {
-		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
-	}
-
-	if msg.RemoteRouter == nil {
-		return nil, fmt.Errorf("invalid remote router")
-	}
-
-	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.Bytes(), msg.RemoteRouter.ReceiverDomain))
-	if err != nil || !exists {
-		return nil, fmt.Errorf("failed to find remote router for domain %v", msg.RemoteRouter.ReceiverDomain)
-	}
-
-	if msg.RemoteRouter.ReceiverContract == "" {
-		return nil, fmt.Errorf("invalid receiver contract")
-	}
-
-	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.Bytes(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
-		return nil, err
-	}
-
-	return &types.MsgSetRemoteRouterResponse{}, nil
 }
 
 func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnrollRemoteRouter) (*types.MsgUnrollRemoteRouterResponse, error) {
