@@ -85,7 +85,7 @@ message QueryBridgedSupplyRequest { string id = 1; }
 
 // QueryBridgedSupplyResponse ...
 message QueryBridgedSupplyResponse {
-  cosmos.base.v1beta1.Coin bridged_supply = 8
+  cosmos.base.v1beta1.Coin bridged_supply = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
