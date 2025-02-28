@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/types/query"
-
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
 
@@ -69,7 +67,7 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 // Interchain Gas Paymaster
 
 func (qs queryServer) Igps(ctx context.Context, req *types.QueryIgpsRequest) (*types.QueryIgpsResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Igps, req.Pagination)
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.Igps, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -124,11 +122,9 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 	}, nil
 }
 
-//
 // Merkle Tree Hook
-
 func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkleTreeHooks) (*types.QueryMerkleTreeHooksResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.merkleTreeHooks, req.Pagination)
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.merkleTreeHooks, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -197,66 +193,4 @@ func (qs queryServer) NoopHook(ctx context.Context, req *types.QueryNoopHook) (*
 	return &types.QueryNoopHookResponse{
 		NoopHook: &noopHook,
 	}, nil
-}
-
-// TODO remove once PR (pagination is merged)
-func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collections.Map[K, T], pagination *query.PageRequest) ([]T, *query.PageResponse, error) {
-	// Parse basic pagination
-	if pagination == nil {
-		pagination = &query.PageRequest{CountTotal: true}
-	}
-
-	offset := pagination.Offset
-	key := pagination.Key
-	limit := pagination.Limit
-	reverse := pagination.Reverse
-
-	if limit == 0 {
-		limit = query.DefaultLimit
-	}
-
-	pageResponse := query.PageResponse{}
-
-	// user has to use either offset or key, not both
-	if offset > 0 && key != nil {
-		return nil, nil, fmt.Errorf("invalid request, either offset or key is expected, got both")
-	}
-
-	ordering := collections.OrderDescending
-	if reverse {
-		ordering = collections.OrderAscending
-	}
-
-	// TODO: subject to change -> use it as key so we can jump to the offset directly
-	it, err := collection.IterateRaw(ctx, key, nil, ordering)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	defer it.Close()
-
-	data := make([]T, 0, limit)
-	keyValues, err := it.KeyValues()
-	if err != nil {
-		return nil, nil, err
-	}
-	length := uint64(len(keyValues))
-
-	i := uint64(offset)
-	for ; i < limit+offset && i < length; i++ {
-		data = append(data, keyValues[i].Value)
-	}
-
-	if i < length {
-		encodedKey := keyValues[i].Key
-		codec := collection.KeyCodec()
-		buffer := make([]byte, codec.Size(encodedKey))
-		_, err := codec.Encode(buffer, encodedKey)
-		if err != nil {
-			return nil, nil, err
-		}
-		pageResponse.NextKey = buffer
-	}
-
-	return data, &pageResponse, nil
 }

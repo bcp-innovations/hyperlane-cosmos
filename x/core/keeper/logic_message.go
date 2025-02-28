@@ -133,7 +133,6 @@ func (k Keeper) DispatchMessage(
 		Message:         hypMsg.String(),
 	})
 
-	// TODO: check if we want to allow nil-able hooks
 	requiredHookAddress, err := util.DecodeHexAddress(mailbox.RequiredHook)
 	if err != nil {
 		return util.HexAddress{}, err

@@ -23,7 +23,6 @@ service Query {
   }
 
   // AnnouncedStorageLocations ...
-  // TODO: announced storage locations mailbox independand
   rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
       returns (QueryAnnouncedStorageLocationsResponse) {
     option (google.api.http).get =

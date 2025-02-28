@@ -86,7 +86,7 @@ func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *t
 
 // Isms returns all ism which are registered in this module.
 func (qs queryServer) Isms(ctx context.Context, req *types.QueryIsmsRequest) (*types.QueryIsmsResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.isms, req.Pagination)
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.isms, req.Pagination)
 	if err != nil {
 		return nil, err
 	}

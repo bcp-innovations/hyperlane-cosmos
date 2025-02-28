@@ -2,17 +2,19 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
 
-	"github.com/cosmos/cosmos-sdk/types/query"
-
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
+// ISM Keeper is used to handle all core implementations of Isms and implements the
+// Go HyperlaneInterchainSecurityModule. Every core ISM does not require any outside keeper
+// and can therefore all be handled by the same handler. If an ISM needs to access state
+// in the future, one needs to provide another IsmHandler which holds the keeper and can access state.
 type Keeper struct {
 	// TODO: move to internal id -> uint64
 	isms collections.Map[[]byte, types.HyperlaneInterchainSecurityModule]
@@ -52,69 +54,22 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 	// set the router from the core keeper
 	router := coreKeeper.IsmRouter()
 	// add default modules
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED, NewIsmHandler(k))
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG, NewIsmHandler(k))
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG, NewIsmHandler(k))
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG, k)
 }
 
-// TODO outsource to utils class, once migrated
-func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collections.Map[K, T], pagination *query.PageRequest) ([]T, *query.PageResponse, error) {
-	// Parse basic pagination
-	if pagination == nil {
-		pagination = &query.PageRequest{CountTotal: true}
-	}
-
-	offset := pagination.Offset
-	key := pagination.Key
-	limit := pagination.Limit
-	reverse := pagination.Reverse
-
-	if limit == 0 {
-		limit = query.DefaultLimit
-	}
-
-	pageResponse := query.PageResponse{}
-
-	// user has to use either offset or key, not both
-	if offset > 0 && key != nil {
-		return nil, nil, fmt.Errorf("invalid request, either offset or key is expected, got both")
-	}
-
-	ordering := collections.OrderDescending
-	if reverse {
-		ordering = collections.OrderAscending
-	}
-
-	// TODO: subject to change -> use it as key so we can jump to the offset directly
-	it, err := collection.IterateRaw(ctx, key, nil, ordering)
+// Verify checks if the metadata has signed the message correctly.
+func (h *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
+	ism, err := h.isms.Get(ctx, ismId.Bytes())
 	if err != nil {
-		return nil, nil, err
+		return false, err
 	}
 
-	defer it.Close()
+	return ism.Verify(ctx, metadata, message)
+}
 
-	data := make([]T, 0, limit)
-	keyValues, err := it.KeyValues()
-	if err != nil {
-		return nil, nil, err
-	}
-	length := uint64(len(keyValues))
-
-	i := uint64(offset)
-	for ; i < limit+offset && i < length; i++ {
-		data = append(data, keyValues[i].Value)
-	}
-
-	if i < length {
-		encodedKey := keyValues[i].Key
-		codec := collection.KeyCodec()
-		buffer := make([]byte, codec.Size(encodedKey))
-		_, err := codec.Encode(buffer, encodedKey)
-		if err != nil {
-			return nil, nil, err
-		}
-		pageResponse.NextKey = buffer
-	}
-
-	return data, &pageResponse, nil
+// Exists checks if the given ISM id does exist.
+func (h *Keeper) Exists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+	return h.isms.Has(ctx, ismId.Bytes())
 }

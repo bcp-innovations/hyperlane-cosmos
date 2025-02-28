@@ -59,7 +59,7 @@ func (qs queryServer) RecipientIsm(ctx context.Context, req *types.RecipientIsmR
 }
 
 func (qs queryServer) Mailboxes(ctx context.Context, req *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {
-	values, pagination, err := GetPaginatedFromMap(ctx, qs.k.Mailboxes, req.Pagination)
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.Mailboxes, req.Pagination)
 	if err != nil {
 		return nil, err
 	}

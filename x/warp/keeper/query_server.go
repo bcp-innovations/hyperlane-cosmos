@@ -34,15 +34,7 @@ func (qs queryServer) RemoteRouters(ctx context.Context, request *types.QueryRem
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	rng := collections.NewPrefixedPairRange[uint64, uint32](tokenId.GetInternalId())
-
-	// TODO: Add pagination
-	iter, err := qs.k.EnrolledRouters.Iterate(ctx, rng)
-	if err != nil {
-		return &types.QueryRemoteRoutersResponse{}, err
-	}
-
-	routers, err := iter.Values()
+	routers, page, err := util.GetPaginatedPrefixFromMap(ctx, qs.k.EnrolledRouters, request.Pagination, tokenId.GetInternalId())
 	if err != nil {
 		return &types.QueryRemoteRoutersResponse{}, err
 	}
@@ -54,6 +46,7 @@ func (qs queryServer) RemoteRouters(ctx context.Context, request *types.QueryRem
 
 	return &types.QueryRemoteRoutersResponse{
 		RemoteRouters: remoteRouters,
+		Pagination:    page,
 	}, nil
 }
 
@@ -140,13 +133,8 @@ func (qs queryServer) QuoteRemoteTransfer(ctx context.Context, request *types.Qu
 	return &types.QueryQuoteRemoteTransferResponse{GasPayment: requiredPayment}, nil
 }
 
-func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {
-	it, err := qs.k.HypTokens.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	tokens, err := it.Values()
+func (qs queryServer) Tokens(ctx context.Context, req *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {
+	tokens, page, err := util.GetPaginatedFromMap(ctx, qs.k.HypTokens, req.Pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +145,8 @@ func (qs queryServer) Tokens(ctx context.Context, _ *types.QueryTokensRequest) (
 	}
 
 	return &types.QueryTokensResponse{
-		Tokens: response,
+		Tokens:     response,
+		Pagination: page,
 	}, nil
 }
 
