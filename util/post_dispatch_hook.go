@@ -76,12 +76,12 @@ func (metadata StandardHookMetadata) Bytes() []byte {
 func CreateEmptyStandardHookMetadata() (StandardHookMetadata, error) {
 	mockBytes := make([]byte, STANDARD_HOOK_METADATA_MIN_METADATA_LENGTH)
 
-	binary.BigEndian.PutUint16(mockBytes[STANDARD_HOOK_METADATA_VARIANT_OFFSET:STANDARD_HOOK_METADATA_MSG_VALUE_OFFSET], 1)
+	binary.BigEndian.PutUint16(mockBytes[STANDARD_HOOK_METADATA_VARIANT_OFFSET:STANDARD_HOOK_METADATA_MSG_VALUE_OFFSET], 0)
 
-	value := big.NewInt(100)
+	value := big.NewInt(0)
 	copy(mockBytes[STANDARD_HOOK_METADATA_MSG_VALUE_OFFSET:STANDARD_HOOK_METADATA_GAS_LIMIT_OFFSET], value.FillBytes(make([]byte, 32)))
 
-	gasLimit := big.NewInt(5000)
+	gasLimit := big.NewInt(0)
 	copy(mockBytes[STANDARD_HOOK_METADATA_GAS_LIMIT_OFFSET:STANDARD_HOOK_METADATA_REFUND_ADDRESS_OFFSET], gasLimit.FillBytes(make([]byte, 32)))
 
 	copy(mockBytes[STANDARD_HOOK_METADATA_REFUND_ADDRESS_OFFSET:STANDARD_HOOK_METADATA_MIN_METADATA_LENGTH], sdk.AccAddress("mocked_addr________").Bytes())
