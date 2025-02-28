@@ -39,6 +39,7 @@ type MsgCreateCollateralToken struct {
 	Owner         string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 	OriginMailbox string `protobuf:"bytes,2,opt,name=origin_mailbox,json=originMailbox,proto3" json:"origin_mailbox,omitempty"`
 	OriginDenom   string `protobuf:"bytes,3,opt,name=origin_denom,json=originDenom,proto3" json:"origin_denom,omitempty"`
+	IsmId         string `protobuf:"bytes,4,opt,name=ism_id,json=ismId,proto3" json:"ism_id,omitempty"`
 }
 
 func (m *MsgCreateCollateralToken) Reset()         { *m = MsgCreateCollateralToken{} }
@@ -95,6 +96,13 @@ func (m *MsgCreateCollateralToken) GetOriginDenom() string {
 	return ""
 }
 
+func (m *MsgCreateCollateralToken) GetIsmId() string {
+	if m != nil {
+		return m.IsmId
+	}
+	return ""
+}
+
 // MsgCreateCollateralTokenResponse ...
 type MsgCreateCollateralTokenResponse struct {
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -145,7 +153,8 @@ type MsgCreateSyntheticToken struct {
 	// owner is the message sender.
 	Owner         string         `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 	OriginMailbox string         `protobuf:"bytes,2,opt,name=origin_mailbox,json=originMailbox,proto3" json:"origin_mailbox,omitempty"`
-	Metadata      *TokenMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	IsmId         string         `protobuf:"bytes,3,opt,name=ism_id,json=ismId,proto3" json:"ism_id,omitempty"`
+	Metadata      *TokenMetadata `protobuf:"bytes,4,opt,name=metadata,proto3" json:"metadata,omitempty"`
 }
 
 func (m *MsgCreateSyntheticToken) Reset()         { *m = MsgCreateSyntheticToken{} }
@@ -191,6 +200,13 @@ func (m *MsgCreateSyntheticToken) GetOwner() string {
 func (m *MsgCreateSyntheticToken) GetOriginMailbox() string {
 	if m != nil {
 		return m.OriginMailbox
+	}
+	return ""
+}
+
+func (m *MsgCreateSyntheticToken) GetIsmId() string {
+	if m != nil {
+		return m.IsmId
 	}
 	return ""
 }
@@ -247,26 +263,27 @@ func (m *MsgCreateSyntheticTokenResponse) GetId() string {
 	return ""
 }
 
-// MsgSetTokenOwner ...
-type MsgSetTokenOwner struct {
+// MsgSetToken ...
+type MsgSetToken struct {
 	// owner is the message sender.
 	Owner    string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 	TokenId  string `protobuf:"bytes,2,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 	NewOwner string `protobuf:"bytes,3,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
+	IsmId    string `protobuf:"bytes,4,opt,name=ism_id,json=ismId,proto3" json:"ism_id,omitempty"`
 }
 
-func (m *MsgSetTokenOwner) Reset()         { *m = MsgSetTokenOwner{} }
-func (m *MsgSetTokenOwner) String() string { return proto.CompactTextString(m) }
-func (*MsgSetTokenOwner) ProtoMessage()    {}
-func (*MsgSetTokenOwner) Descriptor() ([]byte, []int) {
+func (m *MsgSetToken) Reset()         { *m = MsgSetToken{} }
+func (m *MsgSetToken) String() string { return proto.CompactTextString(m) }
+func (*MsgSetToken) ProtoMessage()    {}
+func (*MsgSetToken) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9d1a3f4c9d53a091, []int{4}
 }
-func (m *MsgSetTokenOwner) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetToken) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgSetTokenOwner) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgSetTokenOwner.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetToken.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -276,55 +293,62 @@ func (m *MsgSetTokenOwner) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *MsgSetTokenOwner) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSetTokenOwner.Merge(m, src)
+func (m *MsgSetToken) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetToken.Merge(m, src)
 }
-func (m *MsgSetTokenOwner) XXX_Size() int {
+func (m *MsgSetToken) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgSetTokenOwner) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSetTokenOwner.DiscardUnknown(m)
+func (m *MsgSetToken) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetToken.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgSetTokenOwner proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetToken proto.InternalMessageInfo
 
-func (m *MsgSetTokenOwner) GetOwner() string {
+func (m *MsgSetToken) GetOwner() string {
 	if m != nil {
 		return m.Owner
 	}
 	return ""
 }
 
-func (m *MsgSetTokenOwner) GetTokenId() string {
+func (m *MsgSetToken) GetTokenId() string {
 	if m != nil {
 		return m.TokenId
 	}
 	return ""
 }
 
-func (m *MsgSetTokenOwner) GetNewOwner() string {
+func (m *MsgSetToken) GetNewOwner() string {
 	if m != nil {
 		return m.NewOwner
 	}
 	return ""
 }
 
-// MsgSetTokenOwnerResponse ...
-type MsgSetTokenOwnerResponse struct {
+func (m *MsgSetToken) GetIsmId() string {
+	if m != nil {
+		return m.IsmId
+	}
+	return ""
 }
 
-func (m *MsgSetTokenOwnerResponse) Reset()         { *m = MsgSetTokenOwnerResponse{} }
-func (m *MsgSetTokenOwnerResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgSetTokenOwnerResponse) ProtoMessage()    {}
-func (*MsgSetTokenOwnerResponse) Descriptor() ([]byte, []int) {
+// MsgSetTokenResponse ...
+type MsgSetTokenResponse struct {
+}
+
+func (m *MsgSetTokenResponse) Reset()         { *m = MsgSetTokenResponse{} }
+func (m *MsgSetTokenResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetTokenResponse) ProtoMessage()    {}
+func (*MsgSetTokenResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9d1a3f4c9d53a091, []int{5}
 }
-func (m *MsgSetTokenOwnerResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgSetTokenResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgSetTokenOwnerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSetTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgSetTokenOwnerResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSetTokenResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -334,17 +358,17 @@ func (m *MsgSetTokenOwnerResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgSetTokenOwnerResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSetTokenOwnerResponse.Merge(m, src)
+func (m *MsgSetTokenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetTokenResponse.Merge(m, src)
 }
-func (m *MsgSetTokenOwnerResponse) XXX_Size() int {
+func (m *MsgSetTokenResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgSetTokenOwnerResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSetTokenOwnerResponse.DiscardUnknown(m)
+func (m *MsgSetTokenResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetTokenResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgSetTokenOwnerResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgSetTokenResponse proto.InternalMessageInfo
 
 // MsgEnrollRemoteRouter ...
 type MsgEnrollRemoteRouter struct {
@@ -544,107 +568,6 @@ func (m *MsgUnrollRemoteRouterResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUnrollRemoteRouterResponse proto.InternalMessageInfo
 
-// MsgSetInterchainSecurityModule ...
-type MsgSetInterchainSecurityModule struct {
-	// owner is the message sender.
-	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	TokenId string `protobuf:"bytes,2,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
-	IsmId   string `protobuf:"bytes,3,opt,name=ism_id,json=ismId,proto3" json:"ism_id,omitempty"`
-}
-
-func (m *MsgSetInterchainSecurityModule) Reset()         { *m = MsgSetInterchainSecurityModule{} }
-func (m *MsgSetInterchainSecurityModule) String() string { return proto.CompactTextString(m) }
-func (*MsgSetInterchainSecurityModule) ProtoMessage()    {}
-func (*MsgSetInterchainSecurityModule) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9d1a3f4c9d53a091, []int{10}
-}
-func (m *MsgSetInterchainSecurityModule) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgSetInterchainSecurityModule) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgSetInterchainSecurityModule.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgSetInterchainSecurityModule) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSetInterchainSecurityModule.Merge(m, src)
-}
-func (m *MsgSetInterchainSecurityModule) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgSetInterchainSecurityModule) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSetInterchainSecurityModule.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgSetInterchainSecurityModule proto.InternalMessageInfo
-
-func (m *MsgSetInterchainSecurityModule) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
-func (m *MsgSetInterchainSecurityModule) GetTokenId() string {
-	if m != nil {
-		return m.TokenId
-	}
-	return ""
-}
-
-func (m *MsgSetInterchainSecurityModule) GetIsmId() string {
-	if m != nil {
-		return m.IsmId
-	}
-	return ""
-}
-
-// MsgSetInterchainSecurityModuleResponse ...
-type MsgSetInterchainSecurityModuleResponse struct {
-}
-
-func (m *MsgSetInterchainSecurityModuleResponse) Reset() {
-	*m = MsgSetInterchainSecurityModuleResponse{}
-}
-func (m *MsgSetInterchainSecurityModuleResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgSetInterchainSecurityModuleResponse) ProtoMessage()    {}
-func (*MsgSetInterchainSecurityModuleResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9d1a3f4c9d53a091, []int{11}
-}
-func (m *MsgSetInterchainSecurityModuleResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgSetInterchainSecurityModuleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgSetInterchainSecurityModuleResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgSetInterchainSecurityModuleResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSetInterchainSecurityModuleResponse.Merge(m, src)
-}
-func (m *MsgSetInterchainSecurityModuleResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgSetInterchainSecurityModuleResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSetInterchainSecurityModuleResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgSetInterchainSecurityModuleResponse proto.InternalMessageInfo
-
 // MsgRemoteTransfer ...
 type MsgRemoteTransfer struct {
 	Sender            string                `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
@@ -662,7 +585,7 @@ func (m *MsgRemoteTransfer) Reset()         { *m = MsgRemoteTransfer{} }
 func (m *MsgRemoteTransfer) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoteTransfer) ProtoMessage()    {}
 func (*MsgRemoteTransfer) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9d1a3f4c9d53a091, []int{12}
+	return fileDescriptor_9d1a3f4c9d53a091, []int{10}
 }
 func (m *MsgRemoteTransfer) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -742,7 +665,7 @@ func (m *MsgRemoteTransferResponse) Reset()         { *m = MsgRemoteTransferResp
 func (m *MsgRemoteTransferResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoteTransferResponse) ProtoMessage()    {}
 func (*MsgRemoteTransferResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9d1a3f4c9d53a091, []int{13}
+	return fileDescriptor_9d1a3f4c9d53a091, []int{11}
 }
 func (m *MsgRemoteTransferResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -783,14 +706,12 @@ func init() {
 	proto.RegisterType((*MsgCreateCollateralTokenResponse)(nil), "hyperlane.warp.v1.MsgCreateCollateralTokenResponse")
 	proto.RegisterType((*MsgCreateSyntheticToken)(nil), "hyperlane.warp.v1.MsgCreateSyntheticToken")
 	proto.RegisterType((*MsgCreateSyntheticTokenResponse)(nil), "hyperlane.warp.v1.MsgCreateSyntheticTokenResponse")
-	proto.RegisterType((*MsgSetTokenOwner)(nil), "hyperlane.warp.v1.MsgSetTokenOwner")
-	proto.RegisterType((*MsgSetTokenOwnerResponse)(nil), "hyperlane.warp.v1.MsgSetTokenOwnerResponse")
+	proto.RegisterType((*MsgSetToken)(nil), "hyperlane.warp.v1.MsgSetToken")
+	proto.RegisterType((*MsgSetTokenResponse)(nil), "hyperlane.warp.v1.MsgSetTokenResponse")
 	proto.RegisterType((*MsgEnrollRemoteRouter)(nil), "hyperlane.warp.v1.MsgEnrollRemoteRouter")
 	proto.RegisterType((*MsgEnrollRemoteRouterResponse)(nil), "hyperlane.warp.v1.MsgEnrollRemoteRouterResponse")
 	proto.RegisterType((*MsgUnrollRemoteRouter)(nil), "hyperlane.warp.v1.MsgUnrollRemoteRouter")
 	proto.RegisterType((*MsgUnrollRemoteRouterResponse)(nil), "hyperlane.warp.v1.MsgUnrollRemoteRouterResponse")
-	proto.RegisterType((*MsgSetInterchainSecurityModule)(nil), "hyperlane.warp.v1.MsgSetInterchainSecurityModule")
-	proto.RegisterType((*MsgSetInterchainSecurityModuleResponse)(nil), "hyperlane.warp.v1.MsgSetInterchainSecurityModuleResponse")
 	proto.RegisterType((*MsgRemoteTransfer)(nil), "hyperlane.warp.v1.MsgRemoteTransfer")
 	proto.RegisterType((*MsgRemoteTransferResponse)(nil), "hyperlane.warp.v1.MsgRemoteTransferResponse")
 }
@@ -798,71 +719,67 @@ func init() {
 func init() { proto.RegisterFile("hyperlane/warp/v1/tx.proto", fileDescriptor_9d1a3f4c9d53a091) }
 
 var fileDescriptor_9d1a3f4c9d53a091 = []byte{
-	// 1011 bytes of a gzipped FileDescriptorProto
+	// 959 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xce, 0x26, 0xc4, 0xb1, 0xa7, 0x4d, 0x20, 0xab, 0x44, 0x75, 0xb6, 0xc4, 0x0e, 0xa6, 0xb4,
-	0x51, 0x8a, 0x77, 0xe3, 0x44, 0x20, 0xb0, 0xca, 0x81, 0x24, 0x20, 0x2c, 0x61, 0x21, 0x6d, 0xea,
-	0x0b, 0x17, 0x6b, 0xec, 0x9d, 0xae, 0x47, 0xf5, 0xce, 0xac, 0x66, 0xc6, 0x8e, 0x7d, 0x43, 0x1c,
-	0xe1, 0xc2, 0x9f, 0x81, 0x38, 0xe5, 0xd0, 0x13, 0x5c, 0x38, 0xf6, 0xc0, 0xa1, 0xea, 0x09, 0x21,
-	0x51, 0xa1, 0x44, 0x28, 0xff, 0x06, 0xda, 0x99, 0xc9, 0x92, 0xad, 0x77, 0x2d, 0x47, 0x6a, 0x2e,
-	0x96, 0xf7, 0xbd, 0xef, 0xfd, 0xf8, 0xbe, 0x37, 0x3b, 0x6f, 0x81, 0xd5, 0x1b, 0x87, 0x88, 0xf5,
-	0x21, 0x41, 0xce, 0x09, 0x64, 0xa1, 0x33, 0xac, 0x39, 0x62, 0x64, 0x87, 0x8c, 0x0a, 0x6a, 0xae,
-	0xc6, 0x3e, 0x3b, 0xf2, 0xd9, 0xc3, 0x9a, 0x75, 0xa7, 0x4b, 0x79, 0x40, 0xb9, 0x13, 0x70, 0x3f,
-	0x82, 0x06, 0xdc, 0x57, 0x58, 0x6b, 0xcd, 0xa7, 0x3e, 0x95, 0x7f, 0x9d, 0xe8, 0x9f, 0xb6, 0xae,
-	0xc2, 0x00, 0x13, 0xea, 0xc8, 0x5f, 0x6d, 0xda, 0x50, 0x19, 0xda, 0x0a, 0xab, 0x1e, 0xb4, 0xab,
-	0xa4, 0x93, 0x77, 0x20, 0x47, 0xce, 0xb0, 0xd6, 0x41, 0x02, 0xd6, 0x9c, 0x2e, 0xc5, 0x44, 0xfb,
-	0x37, 0x53, 0x7a, 0x1d, 0x87, 0x48, 0x87, 0x57, 0xfe, 0x30, 0x40, 0xb1, 0xc9, 0xfd, 0x43, 0x86,
-	0xa0, 0x40, 0x87, 0xb4, 0xdf, 0x87, 0x02, 0x31, 0xd8, 0x7f, 0x4c, 0x9f, 0x22, 0x62, 0xda, 0x60,
-	0x91, 0x9e, 0x10, 0xc4, 0x8a, 0xc6, 0x96, 0xb1, 0x5d, 0x38, 0x28, 0xbe, 0x7c, 0x56, 0x5d, 0xd3,
-	0xc5, 0x3f, 0xf7, 0x3c, 0x86, 0x38, 0x3f, 0x16, 0x0c, 0x13, 0xdf, 0x55, 0x30, 0xf3, 0x03, 0xb0,
-	0x42, 0x19, 0xf6, 0x31, 0x69, 0x07, 0x10, 0xf7, 0x3b, 0x74, 0x54, 0x9c, 0x8f, 0x02, 0xdd, 0x65,
-	0x65, 0x6d, 0x2a, 0xa3, 0xf9, 0x1e, 0xb8, 0xad, 0x61, 0x1e, 0x22, 0x34, 0x28, 0x2e, 0x48, 0xd0,
-	0x2d, 0x65, 0x3b, 0x8a, 0x4c, 0xf5, 0x8f, 0xbf, 0xbf, 0x38, 0xdd, 0x51, 0x59, 0x7f, 0xb8, 0x38,
-	0xdd, 0x79, 0xf0, 0x1a, 0x89, 0xac, 0x8e, 0x2b, 0x7b, 0x60, 0x2b, 0xcb, 0xe7, 0x22, 0x1e, 0x52,
-	0xc2, 0x91, 0xb9, 0x02, 0xe6, 0xb1, 0xa7, 0x28, 0xb9, 0xf3, 0xd8, 0xab, 0xfc, 0x6b, 0x80, 0x3b,
-	0x71, 0xd0, 0xf1, 0x98, 0x88, 0x1e, 0x12, 0xb8, 0x7b, 0xa3, 0x0a, 0x3c, 0x02, 0xf9, 0x00, 0x09,
-	0xe8, 0x41, 0x01, 0x25, 0xfb, 0x5b, 0x7b, 0x5b, 0xf6, 0xc4, 0xb9, 0xb1, 0x65, 0x0b, 0x4d, 0x8d,
-	0x73, 0xe3, 0x88, 0xfa, 0x47, 0x49, 0x71, 0xee, 0x67, 0x89, 0x93, 0xe4, 0x52, 0xa9, 0x81, 0x72,
-	0x86, 0x2b, 0x53, 0x9a, 0x5f, 0x0c, 0xf0, 0x4e, 0x93, 0xfb, 0xc7, 0x48, 0x48, 0xdc, 0x37, 0x92,
-	0xe3, 0x75, 0x35, 0xd9, 0x00, 0x79, 0x11, 0x45, 0xb7, 0xb1, 0xa7, 0xd5, 0x58, 0x92, 0xcf, 0x0d,
-	0xcf, 0xbc, 0x0b, 0x0a, 0x04, 0x9d, 0xb4, 0x55, 0x3a, 0x75, 0x0c, 0xf2, 0x04, 0x9d, 0xc8, 0x3a,
-	0x75, 0x3b, 0x49, 0xb3, 0x3c, 0x49, 0x33, 0xd1, 0x57, 0xc5, 0x92, 0x27, 0x39, 0x61, 0xbb, 0x24,
-	0x56, 0xf9, 0xdb, 0x00, 0xeb, 0x4d, 0xee, 0x7f, 0x41, 0x18, 0xed, 0xf7, 0x5d, 0x14, 0x50, 0x81,
-	0x5c, 0x3a, 0x10, 0x6f, 0x96, 0xcd, 0x11, 0x58, 0x66, 0x32, 0x75, 0x9b, 0xc9, 0xdc, 0x7a, 0xb4,
-	0xe5, 0x94, 0xd1, 0x5e, 0x6d, 0xc1, 0xbd, 0xcd, 0xae, 0x3c, 0xd5, 0xf7, 0x93, 0xb4, 0xef, 0x4d,
-	0xd2, 0x9e, 0x64, 0x51, 0x29, 0x83, 0xcd, 0x54, 0x47, 0x2c, 0xc0, 0xef, 0x4a, 0x80, 0xd6, 0x8d,
-	0x0a, 0xf0, 0x00, 0xbc, 0xcd, 0x50, 0x17, 0xe1, 0x21, 0x62, 0x6d, 0x8f, 0x06, 0x10, 0x13, 0x29,
-	0xc1, 0xb2, 0xbb, 0x72, 0x69, 0x3e, 0x92, 0xd6, 0x19, 0x38, 0xb6, 0xb2, 0x38, 0xb6, 0xa6, 0x72,
-	0x2c, 0xa9, 0x13, 0xd0, 0x20, 0x02, 0xb1, 0x6e, 0x0f, 0x62, 0x72, 0x8c, 0xba, 0x03, 0x86, 0xc5,
-	0xb8, 0x49, 0xbd, 0x41, 0x1f, 0xbd, 0x49, 0xb2, 0xeb, 0x20, 0x87, 0x79, 0x10, 0x39, 0xd4, 0xc1,
-	0x5d, 0xc4, 0x3c, 0x68, 0x78, 0xf5, 0x47, 0x49, 0x6a, 0xd5, 0xd4, 0x53, 0x9b, 0xd5, 0x5f, 0x65,
-	0x1b, 0xdc, 0x9f, 0x8e, 0x88, 0xc9, 0xfe, 0xb6, 0x00, 0x56, 0x9b, 0xdc, 0x57, 0x42, 0x3c, 0x66,
-	0x90, 0xf0, 0x27, 0x88, 0x99, 0xbb, 0x20, 0xc7, 0x11, 0xf1, 0x66, 0x20, 0xa8, 0x71, 0xd3, 0x18,
-	0x56, 0x81, 0xe9, 0x21, 0x2e, 0x30, 0x81, 0x02, 0x53, 0x92, 0x9c, 0xe8, 0xea, 0x15, 0x8f, 0x1a,
-	0xaa, 0xf9, 0x2e, 0x28, 0x30, 0xd4, 0xc5, 0x21, 0x46, 0x44, 0x14, 0xdf, 0x92, 0xa9, 0xfe, 0x37,
-	0x98, 0x5f, 0x81, 0x1c, 0x0c, 0xe8, 0x80, 0x88, 0xe2, 0xa2, 0xec, 0x6c, 0xf7, 0xf9, 0xab, 0xf2,
-	0xdc, 0x5f, 0xaf, 0xca, 0xeb, 0xaa, 0x3b, 0xee, 0x3d, 0xb5, 0x31, 0x75, 0x02, 0x28, 0x7a, 0x76,
-	0x83, 0x88, 0x97, 0xcf, 0xaa, 0x40, 0xb7, 0xdd, 0x20, 0xe2, 0xe7, 0x8b, 0xd3, 0x1d, 0xc3, 0xd5,
-	0xf1, 0x52, 0x78, 0x3f, 0x8c, 0xfa, 0xcd, 0x69, 0xe1, 0xfd, 0xb0, 0xe1, 0x99, 0x75, 0x50, 0xf0,
-	0x21, 0x6f, 0xf7, 0x71, 0x80, 0x45, 0x71, 0x49, 0xd6, 0xd8, 0x9c, 0x5a, 0xc3, 0xcd, 0xfb, 0x90,
-	0x7f, 0x1d, 0xc1, 0xcd, 0xcf, 0xc0, 0x52, 0x00, 0x47, 0xed, 0x27, 0x08, 0x15, 0xf3, 0xf2, 0x9d,
-	0xdd, 0xb0, 0x75, 0xf5, 0x68, 0xad, 0xda, 0x7a, 0xad, 0xda, 0x87, 0x14, 0x93, 0x83, 0x42, 0x94,
-	0x54, 0x77, 0x14, 0xc0, 0xd1, 0x97, 0x08, 0xd5, 0x77, 0xa3, 0x99, 0x6b, 0x41, 0xa3, 0xa1, 0x6f,
-	0x4d, 0x0e, 0x3d, 0x39, 0xa7, 0x4a, 0x1d, 0x6c, 0x4c, 0x18, 0xe3, 0x5b, 0x78, 0x13, 0x80, 0x00,
-	0x71, 0x0e, 0x7d, 0xd4, 0x8e, 0x6f, 0xe3, 0x82, 0xb6, 0x34, 0xbc, 0xbd, 0x5f, 0x73, 0x60, 0xa1,
-	0xc9, 0x7d, 0x73, 0x0c, 0xd6, 0xd3, 0xd7, 0xf6, 0xc3, 0x94, 0x0b, 0x27, 0x6b, 0x2b, 0x5a, 0xfb,
-	0xd7, 0x00, 0xc7, 0x1d, 0x0e, 0xc1, 0x5a, 0xea, 0xba, 0xdc, 0x99, 0x96, 0x2c, 0x89, 0xb5, 0xf6,
-	0x66, 0xc7, 0xc6, 0x75, 0x21, 0x58, 0x4e, 0xee, 0xa2, 0xf7, 0xd3, 0x93, 0x24, 0x40, 0xd6, 0xc3,
-	0x19, 0x40, 0x71, 0x89, 0x10, 0x98, 0x29, 0x5b, 0x62, 0x3b, 0x3d, 0xc5, 0x24, 0xd2, 0xda, 0x9d,
-	0x15, 0x79, 0xb5, 0x62, 0x6b, 0xe6, 0x8a, 0xad, 0x99, 0x2b, 0x66, 0x5f, 0x94, 0xe6, 0x8f, 0x06,
-	0xb8, 0x3b, 0xed, 0x96, 0xac, 0x65, 0x0a, 0x96, 0x15, 0x62, 0x7d, 0x7a, 0xed, 0x90, 0xb8, 0x1b,
-	0x0f, 0xac, 0xbc, 0x76, 0x8b, 0xdd, 0x4b, 0x4f, 0x96, 0x44, 0x59, 0x1f, 0xce, 0x82, 0xba, 0xac,
-	0x62, 0x2d, 0x7e, 0x17, 0xbd, 0xb2, 0x07, 0xee, 0xf3, 0xb3, 0x92, 0xf1, 0xe2, 0xac, 0x64, 0xfc,
-	0x73, 0x56, 0x32, 0x7e, 0x3a, 0x2f, 0xcd, 0xbd, 0x38, 0x2f, 0xcd, 0xfd, 0x79, 0x5e, 0x9a, 0xfb,
-	0xf6, 0x13, 0x1f, 0x8b, 0xde, 0xa0, 0x63, 0x77, 0x69, 0xe0, 0x74, 0xba, 0x61, 0x15, 0x13, 0x42,
-	0x87, 0xf2, 0x7e, 0xe3, 0x4e, 0x5c, 0xa8, 0xaa, 0xbf, 0xb6, 0x47, 0xea, 0xc5, 0x96, 0x5f, 0xd2,
-	0x9d, 0x9c, 0xfc, 0x94, 0xde, 0xff, 0x2f, 0x00, 0x00, 0xff, 0xff, 0x07, 0x99, 0x6d, 0x65, 0x17,
-	0x0c, 0x00, 0x00,
+	0x14, 0xce, 0x36, 0xd8, 0xb1, 0x27, 0x4d, 0x50, 0x96, 0x58, 0x75, 0x16, 0x62, 0x07, 0xab, 0xb4,
+	0x25, 0xe0, 0xdd, 0xd8, 0x11, 0x08, 0x59, 0x70, 0x20, 0x09, 0x08, 0x4b, 0x58, 0x48, 0x9b, 0xfa,
+	0xc2, 0xc5, 0x1a, 0x7b, 0x5f, 0x37, 0xa3, 0x7a, 0x67, 0x56, 0x33, 0x13, 0xc7, 0xb9, 0x21, 0x8e,
+	0x9c, 0xf8, 0x07, 0xb8, 0x73, 0xcc, 0xa1, 0x12, 0x07, 0x2e, 0x1c, 0x7b, 0xac, 0x7a, 0x42, 0x48,
+	0x54, 0x28, 0x39, 0xe4, 0x9f, 0xe0, 0x80, 0x76, 0x76, 0xbc, 0xb5, 0xeb, 0xdd, 0xc8, 0x20, 0x7a,
+	0xb1, 0x3c, 0xef, 0x7d, 0xef, 0xc7, 0xf7, 0xcd, 0xcc, 0x9b, 0x45, 0xd6, 0xc9, 0x79, 0x08, 0x7c,
+	0x88, 0x29, 0x38, 0x67, 0x98, 0x87, 0xce, 0xa8, 0xe1, 0xc8, 0xb1, 0x1d, 0x72, 0x26, 0x99, 0xb9,
+	0x91, 0xf8, 0xec, 0xc8, 0x67, 0x8f, 0x1a, 0xd6, 0x9d, 0x01, 0x13, 0x01, 0x13, 0x4e, 0x20, 0xfc,
+	0x08, 0x1a, 0x08, 0x3f, 0xc6, 0x5a, 0x9b, 0x3e, 0xf3, 0x99, 0xfa, 0xeb, 0x44, 0xff, 0xb4, 0x75,
+	0x03, 0x07, 0x84, 0x32, 0x47, 0xfd, 0x6a, 0xd3, 0x56, 0x9c, 0xa1, 0x17, 0x63, 0xe3, 0x85, 0x76,
+	0x55, 0x74, 0xf2, 0x3e, 0x16, 0xe0, 0x8c, 0x1a, 0x7d, 0x90, 0xb8, 0xe1, 0x0c, 0x18, 0xa1, 0xda,
+	0xbf, 0x9d, 0xd2, 0xeb, 0x79, 0x08, 0x3a, 0xbc, 0x76, 0x65, 0xa0, 0x72, 0x47, 0xf8, 0x87, 0x1c,
+	0xb0, 0x84, 0x43, 0x36, 0x1c, 0x62, 0x09, 0x1c, 0x0f, 0x1f, 0xb2, 0xc7, 0x40, 0x4d, 0x1b, 0xe5,
+	0xd8, 0x19, 0x05, 0x5e, 0x36, 0x76, 0x8c, 0x07, 0xc5, 0x83, 0xf2, 0xf3, 0x27, 0xf5, 0x4d, 0x5d,
+	0xfc, 0x73, 0xcf, 0xe3, 0x20, 0xc4, 0xb1, 0xe4, 0x84, 0xfa, 0x6e, 0x0c, 0x33, 0xdf, 0x43, 0xeb,
+	0x8c, 0x13, 0x9f, 0xd0, 0x5e, 0x80, 0xc9, 0xb0, 0xcf, 0xc6, 0xe5, 0x5b, 0x51, 0xa0, 0xbb, 0x16,
+	0x5b, 0x3b, 0xb1, 0xd1, 0x7c, 0x17, 0xdd, 0xd6, 0x30, 0x0f, 0x28, 0x0b, 0xca, 0xcb, 0x0a, 0xb4,
+	0x1a, 0xdb, 0x8e, 0x22, 0x93, 0x59, 0x42, 0x79, 0x22, 0x82, 0x1e, 0xf1, 0xca, 0x6f, 0x28, 0x67,
+	0x8e, 0x88, 0xa0, 0xed, 0xb5, 0x3e, 0xfe, 0xfe, 0xfa, 0x62, 0x37, 0x2e, 0xf6, 0xc3, 0xf5, 0xc5,
+	0xee, 0xfd, 0x57, 0xb8, 0x65, 0x11, 0xa9, 0x35, 0xd1, 0x4e, 0x96, 0xcf, 0x05, 0x11, 0x32, 0x2a,
+	0xc0, 0x5c, 0x47, 0xb7, 0x88, 0x17, 0x33, 0x75, 0x6f, 0x11, 0xaf, 0xf6, 0xb7, 0x81, 0xee, 0x24,
+	0x41, 0xc7, 0xe7, 0x54, 0x9e, 0x80, 0x24, 0x83, 0xd7, 0x2a, 0xcc, 0x4b, 0xd6, 0xcb, 0x53, 0xac,
+	0xcd, 0x4f, 0x51, 0x21, 0x00, 0x89, 0x3d, 0x2c, 0xb1, 0x92, 0x63, 0xb5, 0xb9, 0x63, 0xcf, 0x9d,
+	0x32, 0x5b, 0x75, 0xd6, 0xd1, 0x38, 0x37, 0x89, 0x68, 0x7d, 0x34, 0xab, 0xd9, 0xbd, 0x2c, 0xcd,
+	0x66, 0x29, 0xd6, 0x1a, 0xa8, 0x9a, 0xe1, 0xca, 0x54, 0xec, 0x17, 0x03, 0xad, 0x76, 0x84, 0x7f,
+	0x0c, 0xf2, 0xbf, 0xa9, 0xb4, 0x85, 0x0a, 0x32, 0x0a, 0x8c, 0x04, 0x88, 0xf5, 0x59, 0x51, 0xeb,
+	0xb6, 0x67, 0xbe, 0x8d, 0x8a, 0x14, 0xce, 0x7a, 0x71, 0xba, 0x58, 0x9c, 0x02, 0x85, 0xb3, 0x6f,
+	0x54, 0x5c, 0xc6, 0x61, 0x79, 0x7f, 0x96, 0xb8, 0x35, 0x4f, 0x7c, 0xd2, 0x69, 0xad, 0x84, 0xde,
+	0x9a, 0x5a, 0x4e, 0x08, 0xd6, 0xfe, 0x34, 0x50, 0xa9, 0x23, 0xfc, 0x2f, 0x28, 0x67, 0xc3, 0xa1,
+	0x0b, 0x01, 0x93, 0xe0, 0xb2, 0x53, 0x09, 0xfc, 0xff, 0xa4, 0x76, 0x84, 0xd6, 0xb8, 0x4a, 0xdd,
+	0xe3, 0x2a, 0xb7, 0xa2, 0xb7, 0xda, 0xac, 0xa6, 0x6c, 0xf1, 0x74, 0x0b, 0xee, 0x6d, 0x3e, 0xb5,
+	0x6a, 0xed, 0xcf, 0x92, 0xbd, 0x3b, 0x4f, 0x76, 0x9e, 0x45, 0xad, 0x8a, 0xb6, 0x53, 0x1d, 0x89,
+	0x00, 0xbf, 0xc5, 0x02, 0x74, 0x5f, 0xab, 0x00, 0xf7, 0xd1, 0x9b, 0x1c, 0x06, 0x40, 0x46, 0xc0,
+	0x7b, 0x1e, 0x0b, 0x30, 0xa1, 0x4a, 0x82, 0x35, 0x77, 0x7d, 0x62, 0x3e, 0x52, 0xd6, 0x05, 0x38,
+	0x76, 0xb3, 0x38, 0x76, 0xb3, 0x39, 0xfe, 0xba, 0x8c, 0x36, 0x3a, 0xc2, 0x8f, 0x7d, 0x0f, 0x39,
+	0xa6, 0xe2, 0x11, 0x70, 0x73, 0x0f, 0xe5, 0x05, 0x50, 0x6f, 0x01, 0x82, 0x1a, 0x77, 0x13, 0xc3,
+	0x3a, 0x32, 0x3d, 0x10, 0x92, 0x50, 0x2c, 0x09, 0xa3, 0xb3, 0x24, 0x37, 0xa6, 0x3c, 0x31, 0x4f,
+	0xf3, 0x1d, 0x54, 0xe4, 0x30, 0x20, 0x21, 0x01, 0x2a, 0xf5, 0x91, 0x7e, 0x69, 0x30, 0xbf, 0x42,
+	0x79, 0x1c, 0xb0, 0x53, 0x2a, 0xcb, 0x39, 0xd5, 0xd9, 0xde, 0xd3, 0x17, 0xd5, 0xa5, 0x3f, 0x5e,
+	0x54, 0x4b, 0x71, 0x77, 0xc2, 0x7b, 0x6c, 0x13, 0xe6, 0x04, 0x58, 0x9e, 0xd8, 0x6d, 0x2a, 0x9f,
+	0x3f, 0xa9, 0x23, 0xdd, 0x76, 0x9b, 0xca, 0x9f, 0xaf, 0x2f, 0x76, 0x0d, 0x57, 0xc7, 0xab, 0x7b,
+	0xe3, 0x87, 0x51, 0xbf, 0x79, 0x7d, 0x6f, 0xfc, 0xb0, 0xed, 0x99, 0x2d, 0x54, 0xf4, 0xb1, 0xe8,
+	0x0d, 0x49, 0x40, 0x64, 0x79, 0x45, 0xd5, 0xd8, 0xbe, 0xb1, 0x86, 0x5b, 0xf0, 0xb1, 0xf8, 0x3a,
+	0x82, 0x9b, 0x9f, 0xa1, 0x95, 0x00, 0x8f, 0x7b, 0x8f, 0x00, 0xca, 0x05, 0x75, 0x8c, 0xb7, 0x6c,
+	0x5d, 0x3d, 0x7a, 0x9f, 0x6c, 0xfd, 0x3e, 0xd9, 0x87, 0x8c, 0xd0, 0x83, 0x62, 0x94, 0x54, 0x77,
+	0x14, 0xe0, 0xf1, 0x97, 0x00, 0xad, 0xbd, 0x68, 0x87, 0xb5, 0xa0, 0xd1, 0x16, 0xef, 0xcc, 0x6f,
+	0xf1, 0xec, 0x3e, 0xd5, 0x5a, 0x68, 0x6b, 0xce, 0x98, 0x0c, 0xa8, 0x6d, 0x84, 0x02, 0x10, 0x02,
+	0xfb, 0xd0, 0x4b, 0x06, 0x55, 0x51, 0x5b, 0xda, 0x5e, 0xf3, 0xa7, 0x1c, 0x5a, 0xee, 0x08, 0xdf,
+	0x3c, 0x47, 0xa5, 0xf4, 0xf7, 0xef, 0x83, 0x94, 0x3b, 0x98, 0xf5, 0x8e, 0x58, 0xfb, 0xff, 0x02,
+	0x9c, 0x74, 0x38, 0x42, 0x9b, 0xa9, 0x0f, 0xcc, 0xee, 0x4d, 0xc9, 0x66, 0xb1, 0x56, 0x73, 0x71,
+	0x6c, 0x52, 0xd7, 0x45, 0x85, 0x64, 0x4c, 0x57, 0xd2, 0xe3, 0x27, 0x7e, 0xeb, 0xde, 0xcd, 0xfe,
+	0x24, 0x67, 0x88, 0xcc, 0x94, 0x49, 0xf9, 0x20, 0x3d, 0x7a, 0x1e, 0x69, 0xed, 0x2d, 0x8a, 0x9c,
+	0xae, 0xd8, 0x5d, 0xb8, 0x62, 0x77, 0xe1, 0x8a, 0xd9, 0xc3, 0xc2, 0xf4, 0xd0, 0xfa, 0x2b, 0x83,
+	0xe2, 0x6e, 0x7a, 0x8e, 0x59, 0x94, 0xf5, 0xe1, 0x22, 0xa8, 0x49, 0x15, 0x2b, 0xf7, 0x5d, 0x74,
+	0x2b, 0x0e, 0xdc, 0xa7, 0x97, 0x15, 0xe3, 0xd9, 0x65, 0xc5, 0xf8, 0xeb, 0xb2, 0x62, 0xfc, 0x78,
+	0x55, 0x59, 0x7a, 0x76, 0x55, 0x59, 0xfa, 0xfd, 0xaa, 0xb2, 0xf4, 0xed, 0x27, 0x3e, 0x91, 0x27,
+	0xa7, 0x7d, 0x7b, 0xc0, 0x02, 0xa7, 0x3f, 0x08, 0xeb, 0x84, 0x52, 0x36, 0x52, 0x23, 0x44, 0x38,
+	0x49, 0xa1, 0xba, 0xfe, 0x32, 0x1c, 0xc7, 0x77, 0x47, 0x7d, 0xf5, 0xf5, 0xf3, 0xea, 0xb3, 0x6f,
+	0xff, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x07, 0x47, 0x58, 0xc1, 0xc3, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -881,14 +798,12 @@ type MsgClient interface {
 	CreateCollateralToken(ctx context.Context, in *MsgCreateCollateralToken, opts ...grpc.CallOption) (*MsgCreateCollateralTokenResponse, error)
 	// CreateSyntheticToken ...
 	CreateSyntheticToken(ctx context.Context, in *MsgCreateSyntheticToken, opts ...grpc.CallOption) (*MsgCreateSyntheticTokenResponse, error)
-	// SetTokenOwner ...
-	SetTokenOwner(ctx context.Context, in *MsgSetTokenOwner, opts ...grpc.CallOption) (*MsgSetTokenOwnerResponse, error)
+	// SetToken ...
+	SetToken(ctx context.Context, in *MsgSetToken, opts ...grpc.CallOption) (*MsgSetTokenResponse, error)
 	// EnrollRemoteRouter ...
 	EnrollRemoteRouter(ctx context.Context, in *MsgEnrollRemoteRouter, opts ...grpc.CallOption) (*MsgEnrollRemoteRouterResponse, error)
 	// UnrollRemoteRouter ...
 	UnrollRemoteRouter(ctx context.Context, in *MsgUnrollRemoteRouter, opts ...grpc.CallOption) (*MsgUnrollRemoteRouterResponse, error)
-	// SetInterchainSecurityModule ...
-	SetInterchainSecurityModule(ctx context.Context, in *MsgSetInterchainSecurityModule, opts ...grpc.CallOption) (*MsgSetInterchainSecurityModuleResponse, error)
 	// RemoteTransfer ...
 	RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error)
 }
@@ -919,9 +834,9 @@ func (c *msgClient) CreateSyntheticToken(ctx context.Context, in *MsgCreateSynth
 	return out, nil
 }
 
-func (c *msgClient) SetTokenOwner(ctx context.Context, in *MsgSetTokenOwner, opts ...grpc.CallOption) (*MsgSetTokenOwnerResponse, error) {
-	out := new(MsgSetTokenOwnerResponse)
-	err := c.cc.Invoke(ctx, "/hyperlane.warp.v1.Msg/SetTokenOwner", in, out, opts...)
+func (c *msgClient) SetToken(ctx context.Context, in *MsgSetToken, opts ...grpc.CallOption) (*MsgSetTokenResponse, error) {
+	out := new(MsgSetTokenResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.warp.v1.Msg/SetToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -946,15 +861,6 @@ func (c *msgClient) UnrollRemoteRouter(ctx context.Context, in *MsgUnrollRemoteR
 	return out, nil
 }
 
-func (c *msgClient) SetInterchainSecurityModule(ctx context.Context, in *MsgSetInterchainSecurityModule, opts ...grpc.CallOption) (*MsgSetInterchainSecurityModuleResponse, error) {
-	out := new(MsgSetInterchainSecurityModuleResponse)
-	err := c.cc.Invoke(ctx, "/hyperlane.warp.v1.Msg/SetInterchainSecurityModule", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error) {
 	out := new(MsgRemoteTransferResponse)
 	err := c.cc.Invoke(ctx, "/hyperlane.warp.v1.Msg/RemoteTransfer", in, out, opts...)
@@ -970,14 +876,12 @@ type MsgServer interface {
 	CreateCollateralToken(context.Context, *MsgCreateCollateralToken) (*MsgCreateCollateralTokenResponse, error)
 	// CreateSyntheticToken ...
 	CreateSyntheticToken(context.Context, *MsgCreateSyntheticToken) (*MsgCreateSyntheticTokenResponse, error)
-	// SetTokenOwner ...
-	SetTokenOwner(context.Context, *MsgSetTokenOwner) (*MsgSetTokenOwnerResponse, error)
+	// SetToken ...
+	SetToken(context.Context, *MsgSetToken) (*MsgSetTokenResponse, error)
 	// EnrollRemoteRouter ...
 	EnrollRemoteRouter(context.Context, *MsgEnrollRemoteRouter) (*MsgEnrollRemoteRouterResponse, error)
 	// UnrollRemoteRouter ...
 	UnrollRemoteRouter(context.Context, *MsgUnrollRemoteRouter) (*MsgUnrollRemoteRouterResponse, error)
-	// SetInterchainSecurityModule ...
-	SetInterchainSecurityModule(context.Context, *MsgSetInterchainSecurityModule) (*MsgSetInterchainSecurityModuleResponse, error)
 	// RemoteTransfer ...
 	RemoteTransfer(context.Context, *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error)
 }
@@ -992,17 +896,14 @@ func (*UnimplementedMsgServer) CreateCollateralToken(ctx context.Context, req *M
 func (*UnimplementedMsgServer) CreateSyntheticToken(ctx context.Context, req *MsgCreateSyntheticToken) (*MsgCreateSyntheticTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSyntheticToken not implemented")
 }
-func (*UnimplementedMsgServer) SetTokenOwner(ctx context.Context, req *MsgSetTokenOwner) (*MsgSetTokenOwnerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetTokenOwner not implemented")
+func (*UnimplementedMsgServer) SetToken(ctx context.Context, req *MsgSetToken) (*MsgSetTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetToken not implemented")
 }
 func (*UnimplementedMsgServer) EnrollRemoteRouter(ctx context.Context, req *MsgEnrollRemoteRouter) (*MsgEnrollRemoteRouterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnrollRemoteRouter not implemented")
 }
 func (*UnimplementedMsgServer) UnrollRemoteRouter(ctx context.Context, req *MsgUnrollRemoteRouter) (*MsgUnrollRemoteRouterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnrollRemoteRouter not implemented")
-}
-func (*UnimplementedMsgServer) SetInterchainSecurityModule(ctx context.Context, req *MsgSetInterchainSecurityModule) (*MsgSetInterchainSecurityModuleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetInterchainSecurityModule not implemented")
 }
 func (*UnimplementedMsgServer) RemoteTransfer(ctx context.Context, req *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoteTransfer not implemented")
@@ -1048,20 +949,20 @@ func _Msg_CreateSyntheticToken_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_SetTokenOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSetTokenOwner)
+func _Msg_SetToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetToken)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).SetTokenOwner(ctx, in)
+		return srv.(MsgServer).SetToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hyperlane.warp.v1.Msg/SetTokenOwner",
+		FullMethod: "/hyperlane.warp.v1.Msg/SetToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetTokenOwner(ctx, req.(*MsgSetTokenOwner))
+		return srv.(MsgServer).SetToken(ctx, req.(*MsgSetToken))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1102,24 +1003,6 @@ func _Msg_UnrollRemoteRouter_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_SetInterchainSecurityModule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSetInterchainSecurityModule)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).SetInterchainSecurityModule(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/hyperlane.warp.v1.Msg/SetInterchainSecurityModule",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SetInterchainSecurityModule(ctx, req.(*MsgSetInterchainSecurityModule))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_RemoteTransfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgRemoteTransfer)
 	if err := dec(in); err != nil {
@@ -1152,8 +1035,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_CreateSyntheticToken_Handler,
 		},
 		{
-			MethodName: "SetTokenOwner",
-			Handler:    _Msg_SetTokenOwner_Handler,
+			MethodName: "SetToken",
+			Handler:    _Msg_SetToken_Handler,
 		},
 		{
 			MethodName: "EnrollRemoteRouter",
@@ -1162,10 +1045,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnrollRemoteRouter",
 			Handler:    _Msg_UnrollRemoteRouter_Handler,
-		},
-		{
-			MethodName: "SetInterchainSecurityModule",
-			Handler:    _Msg_SetInterchainSecurityModule_Handler,
 		},
 		{
 			MethodName: "RemoteTransfer",
@@ -1196,6 +1075,13 @@ func (m *MsgCreateCollateralToken) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
+	if len(m.IsmId) > 0 {
+		i -= len(m.IsmId)
+		copy(dAtA[i:], m.IsmId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.IsmId)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.OriginDenom) > 0 {
 		i -= len(m.OriginDenom)
 		copy(dAtA[i:], m.OriginDenom)
@@ -1280,6 +1166,13 @@ func (m *MsgCreateSyntheticToken) MarshalToSizedBuffer(dAtA []byte) (int, error)
 			i = encodeVarintTx(dAtA, i, uint64(size))
 		}
 		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.IsmId) > 0 {
+		i -= len(m.IsmId)
+		copy(dAtA[i:], m.IsmId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.IsmId)))
+		i--
 		dAtA[i] = 0x1a
 	}
 	if len(m.OriginMailbox) > 0 {
@@ -1329,7 +1222,7 @@ func (m *MsgCreateSyntheticTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgSetTokenOwner) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetToken) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1339,16 +1232,23 @@ func (m *MsgSetTokenOwner) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgSetTokenOwner) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetToken) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgSetTokenOwner) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.IsmId) > 0 {
+		i -= len(m.IsmId)
+		copy(dAtA[i:], m.IsmId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.IsmId)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.NewOwner) > 0 {
 		i -= len(m.NewOwner)
 		copy(dAtA[i:], m.NewOwner)
@@ -1373,7 +1273,7 @@ func (m *MsgSetTokenOwner) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgSetTokenOwnerResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgSetTokenResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1383,12 +1283,12 @@ func (m *MsgSetTokenOwnerResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgSetTokenOwnerResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSetTokenResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgSetTokenOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSetTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1526,73 +1426,6 @@ func (m *MsgUnrollRemoteRouterResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgUnrollRemoteRouterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgSetInterchainSecurityModule) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgSetInterchainSecurityModule) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgSetInterchainSecurityModule) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.IsmId) > 0 {
-		i -= len(m.IsmId)
-		copy(dAtA[i:], m.IsmId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.IsmId)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.TokenId) > 0 {
-		i -= len(m.TokenId)
-		copy(dAtA[i:], m.TokenId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.TokenId)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgSetInterchainSecurityModuleResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgSetInterchainSecurityModuleResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgSetInterchainSecurityModuleResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1745,6 +1578,10 @@ func (m *MsgCreateCollateralToken) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.IsmId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1775,6 +1612,10 @@ func (m *MsgCreateSyntheticToken) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.IsmId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	if m.Metadata != nil {
 		l = m.Metadata.Size()
 		n += 1 + l + sovTx(uint64(l))
@@ -1795,7 +1636,7 @@ func (m *MsgCreateSyntheticTokenResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgSetTokenOwner) Size() (n int) {
+func (m *MsgSetToken) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1813,10 +1654,14 @@ func (m *MsgSetTokenOwner) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.IsmId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
-func (m *MsgSetTokenOwnerResponse) Size() (n int) {
+func (m *MsgSetTokenResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1876,36 +1721,6 @@ func (m *MsgUnrollRemoteRouter) Size() (n int) {
 }
 
 func (m *MsgUnrollRemoteRouterResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgSetInterchainSecurityModule) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.TokenId)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.IsmId)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgSetInterchainSecurityModuleResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2091,6 +1906,38 @@ func (m *MsgCreateCollateralToken) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.OriginDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IsmId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2290,6 +2137,38 @@ func (m *MsgCreateSyntheticToken) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IsmId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
 			}
 			var msglen int
@@ -2427,7 +2306,7 @@ func (m *MsgCreateSyntheticTokenResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgSetTokenOwner) Unmarshal(dAtA []byte) error {
+func (m *MsgSetToken) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2450,10 +2329,10 @@ func (m *MsgSetTokenOwner) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSetTokenOwner: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetToken: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSetTokenOwner: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetToken: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2552,6 +2431,38 @@ func (m *MsgSetTokenOwner) Unmarshal(dAtA []byte) error {
 			}
 			m.NewOwner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IsmId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -2573,7 +2484,7 @@ func (m *MsgSetTokenOwner) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgSetTokenOwnerResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgSetTokenResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2596,10 +2507,10 @@ func (m *MsgSetTokenOwnerResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSetTokenOwnerResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSetTokenResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSetTokenOwnerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSetTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -2983,202 +2894,6 @@ func (m *MsgUnrollRemoteRouterResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUnrollRemoteRouterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgSetInterchainSecurityModule) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSetInterchainSecurityModule: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSetInterchainSecurityModule: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.TokenId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.IsmId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgSetInterchainSecurityModuleResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSetInterchainSecurityModuleResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSetInterchainSecurityModuleResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
