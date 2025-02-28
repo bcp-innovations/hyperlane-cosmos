@@ -12,21 +12,22 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
-func CmdSetTokenOwner() *cobra.Command {
+func CmdSetToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-token-owner [token-id] [new-owner]",
-		Short: "Update the Interchain Security Module for a certain token - CAUTION: NEW OWNER IS NOT VERIFIED",
-		Args:  cobra.ExactArgs(2),
+		Use:   "set-token [token-id]",
+		Short: "Update the Warp token",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.MsgSetTokenOwner{
+			msg := types.MsgSetToken{
 				Owner:    clientCtx.GetFromAddress().String(),
 				TokenId:  args[0],
-				NewOwner: args[1],
+				NewOwner: newOwner,
+				IsmId:    ismId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)
@@ -34,15 +35,12 @@ func CmdSetTokenOwner() *cobra.Command {
 				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
 			}
 
-			// TODO: Verify newOwner's validity?
-			//_, err = sdk.AccAddressFromBech32(msg.NewOwner)
-			//if err != nil {
-			//	panic(fmt.Errorf("invalid new owner address (%s)", msg.NewOwner))
-			//}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
+
+	cmd.Flags().StringVar(&newOwner, "new-owner", "", "set updated owner")
+	cmd.Flags().StringVar(&ismId, "ism-id", "", "set updated ism")
 
 	flags.AddTxFlagsToCmd(cmd)
 

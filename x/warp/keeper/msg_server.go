@@ -44,11 +44,6 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
-	ismAddress, err := util.DecodeHexAddress(msg.IsmId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid ism id: %s", err)
-	}
-
 	newToken := types.HypToken{
 		Id:            tokenId.Bytes(),
 		Owner:         msg.Owner,
@@ -56,7 +51,6 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
 		Metadata:      msg.Metadata,
-		IsmId:         ismAddress.String(),
 	}
 
 	if err = ms.k.HypTokens.Set(ctx, newToken.Id, newToken); err != nil {
@@ -95,11 +89,6 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		return nil, err
 	}
 
-	ismAddress, err := util.DecodeHexAddress(msg.IsmId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid ism id: %s", err)
-	}
-
 	newToken := types.HypToken{
 		Id:            tokenId.Bytes(),
 		Owner:         msg.Owner,
@@ -107,7 +96,6 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   msg.OriginDenom,
 		Metadata:      nil,
-		IsmId:         ismAddress.String(),
 	}
 
 	if err = ms.k.HypTokens.Set(ctx, newToken.Id, newToken); err != nil {

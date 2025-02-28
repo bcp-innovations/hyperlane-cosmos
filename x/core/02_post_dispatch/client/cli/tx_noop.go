@@ -15,11 +15,11 @@ import (
 func NewNoopHookCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "noop",
-		Short: "Hyperlane Merkle Tree Hook commands",
+		Short: "Hyperlane Noop Hook commands",
 	}
 
 	cmd.AddCommand(
-		CmdCreateMerkle(),
+		CmdCreateNoopHook(),
 	)
 
 	return cmd

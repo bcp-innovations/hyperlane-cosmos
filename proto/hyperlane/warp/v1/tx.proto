@@ -47,7 +47,6 @@ message MsgCreateCollateralToken {
 
   string origin_mailbox = 2;
   string origin_denom = 3;
-  string ism_id = 4;
 }
 
 // MsgCreateCollateralTokenResponse ...
@@ -62,8 +61,6 @@ message MsgCreateSyntheticToken {
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   string origin_mailbox = 2;
-
-  string ism_id = 3;
 
   TokenMetadata metadata = 4;
 }

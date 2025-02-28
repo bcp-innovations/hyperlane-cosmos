@@ -33,7 +33,7 @@ func GetTxCmd() *cobra.Command {
 
 func CmdAnnounceValidator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "announce-validator [address] [storage-location] [signature] [mailbox-id]",
+		Use:   "announce [address] [storage-location] [signature] [mailbox-id]",
 		Short: "Announce a Hyperlane validator",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -62,7 +62,7 @@ func CmdAnnounceValidator() *cobra.Command {
 
 func CmdCreateMessageIdMultisigIsm() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-message-id-multisig-ism [validators] [threshold]",
+		Use:   "create-message-id-multisig [validators] [threshold]",
 		Short: "Create a Hyperlane MessageId Multisig ISM",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -94,7 +94,7 @@ func CmdCreateMessageIdMultisigIsm() *cobra.Command {
 
 func CmdCreateMerkleRootMultiSigIsm() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-merkle-root-multisig-ism [validators] [threshold]",
+		Use:   "create-merkle-root-multisig [validators] [threshold]",
 		Short: "Create a Hyperlane MerkleRoot Multisig ISM",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -126,7 +126,7 @@ func CmdCreateMerkleRootMultiSigIsm() *cobra.Command {
 
 func CmdCreateNoopIsm() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-noop-ism",
+		Use:   "create-noop",
 		Short: "Create a Hyperlane Noop ISM",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, _ []string) (err error) {

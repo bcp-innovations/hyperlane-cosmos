@@ -65,7 +65,7 @@ func CmdClaim() *cobra.Command {
 
 func CmdCreateIgp() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-igp [denom]",
+		Use:   "create [denom]",
 		Short: "Create a Hyperlane Interchain Gas Paymaster",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -95,8 +95,8 @@ func CmdCreateIgp() *cobra.Command {
 
 func CmdSetIgpOwner() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-igp-owner [igp-id] [new-owner]",
-		Short: "Update a Hyperlane Interchain Gas Paymaster - CAUTION: NEW OWNER IS NOT VERIFIED",
+		Use:   "set-owner [igp-id] [new-owner]",
+		Short: "Update a Hyperlane Interchain Gas Paymaster",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
