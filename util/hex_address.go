@@ -114,7 +114,9 @@ func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
 //
 // For custom type serialization we prefer readability to storage space
 // In the entire CosmosSDK ecosystem, there is always the string representation used for addresses.
-// We therefore store the 66 (0x prefixed) hex representation of the address.
+// We therefore store the 66 (0x + 32 bytes hex encoded = 66 bytes) hex representation of the address.
+
+const HEX_ADDRESS_LENGTH = 66
 
 func (t HexAddress) Marshal() ([]byte, error) {
 	return []byte(t.String()), nil
@@ -122,14 +124,14 @@ func (t HexAddress) Marshal() ([]byte, error) {
 
 func (t *HexAddress) MarshalTo(data []byte) (n int, err error) {
 	n = copy(data, t.String())
-	if n != 66 {
+	if n != HEX_ADDRESS_LENGTH {
 		return n, fmt.Errorf("invalid hex address length: %d", n)
 	}
 	return n, nil
 }
 
 func (t *HexAddress) Unmarshal(data []byte) error {
-	if len(data) != 66 {
+	if len(data) != HEX_ADDRESS_LENGTH {
 		return errors.New("invalid hex address length")
 	}
 	addr, err := DecodeHexAddress(string(data))
@@ -141,7 +143,7 @@ func (t *HexAddress) Unmarshal(data []byte) error {
 }
 
 func (t *HexAddress) Size() int {
-	return 66
+	return HEX_ADDRESS_LENGTH
 }
 
 func (t HexAddress) MarshalJSON() ([]byte, error) {
