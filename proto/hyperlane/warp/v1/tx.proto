@@ -29,16 +29,9 @@ service Msg {
   rpc EnrollRemoteRouter(MsgEnrollRemoteRouter)
       returns (MsgEnrollRemoteRouterResponse);
 
-  // SetRemoteRouter ...
-  rpc SetRemoteRouter(MsgSetRemoteRouter) returns (MsgSetRemoteRouterResponse);
-
   // UnrollRemoteRouter ...
   rpc UnrollRemoteRouter(MsgUnrollRemoteRouter)
       returns (MsgUnrollRemoteRouterResponse);
-
-  // SetInterchainSecurityModule ...
-  rpc SetInterchainSecurityModule(MsgSetInterchainSecurityModule)
-      returns (MsgSetInterchainSecurityModuleResponse);
 
   // RemoteTransfer ...
   rpc RemoteTransfer(MsgRemoteTransfer) returns (MsgRemoteTransferResponse);

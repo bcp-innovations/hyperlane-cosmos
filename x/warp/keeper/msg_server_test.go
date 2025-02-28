@@ -422,8 +422,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Id: tokenId.String(),
 		})
 		Expect(err).To(BeNil())
-		Expect(tokens.RemoteRouters).To(HaveLen(1))
-		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
+		Expect(tokens.RemoteRouters).To(HaveLen(0))
 	})
 
 	It("MsgEnrollRemoteRouter (valid)", func() {
@@ -467,7 +466,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 		Expect(err).To(BeNil())
 		Expect(tokens.RemoteRouters).To(HaveLen(1))
-		Expect(tokens.RemoteRouters[0]).To(Equal(&updatedRemoteRouter))
+		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
 	It("MsgUnrollRemoteRouter (invalid) invalid Token ID", func() {
