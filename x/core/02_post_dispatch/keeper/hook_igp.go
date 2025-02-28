@@ -42,6 +42,15 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mai
 	return nil, nil
 }
 
+func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	return i.QuoteGasPayment(ctx, mailboxId, hookId, message.Destination, metadata.GasLimit)
+}
+
 func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
 	has, err := i.k.Igps.Has(ctx, hookId.GetInternalId())
 	if err != nil {
@@ -53,13 +62,13 @@ func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId ut
 // PayForGasWithoutQuote executes an InterchainGasPayment without using `QuoteGasPayment`.
 // This is used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
 // amount for e.g. re-funding a certain message-id as the first payment wasn't enough.
-func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, amount math.Int) error {
+func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, amount sdk.Coins) error {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return fmt.Errorf("igp does not exist: %s", hookId.String())
 	}
 
-	if amount.Equal(math.ZeroInt()) {
+	if amount.IsZero() {
 		return fmt.Errorf("amount must be greater than zero")
 	}
 
@@ -72,15 +81,13 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 		return err
 	}
 
-	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, amount.Int64()))
-
 	// TODO use core-types module name or create sub-account
-	err = i.k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, "hyperlane", coins)
+	err = i.k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, "hyperlane", amount)
 	if err != nil {
 		return err
 	}
 
-	igp.ClaimableFees = igp.ClaimableFees.Add(amount)
+	igp.ClaimableFees = igp.ClaimableFees.Add(amount...)
 
 	err = i.k.Igps.Set(ctx, igp.InternalId, igp)
 	if err != nil {
@@ -100,31 +107,47 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	return nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (math.Int, error) {
+func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, _, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (sdk.Coins, error) {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
-		return math.ZeroInt(), fmt.Errorf("igp does not exist: %s", hookId.String())
+		return sdk.NewCoins(), fmt.Errorf("igp does not exist: %s", hookId.String())
 	}
 
 	destinationGasConfig, err := i.k.IgpDestinationGasConfigs.Get(ctx, collections.Join(igp.InternalId, destinationDomain))
 	if err != nil {
-		return math.Int{}, fmt.Errorf("remote domain %v is not supported", destinationDomain)
+		return sdk.NewCoins(), fmt.Errorf("remote domain %v is not supported", destinationDomain)
 	}
 
 	gasLimit = gasLimit.Add(destinationGasConfig.GasOverhead)
 
 	destinationCost := gasLimit.Mul(destinationGasConfig.GasOracle.GasPrice)
 
-	return (destinationCost.Mul(destinationGasConfig.GasOracle.TokenExchangeRate)).Quo(types.TokenExchangeRateScale), nil
+	amount := (destinationCost.Mul(destinationGasConfig.GasOracle.TokenExchangeRate)).Quo(types.TokenExchangeRateScale)
+
+	coin := sdk.Coin{
+		Denom:  igp.Denom,
+		Amount: amount,
+	}
+
+	if err = coin.Validate(); err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	return sdk.NewCoins(coin), nil
 }
 
 func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee math.Int) error {
-	requiredPayment, err := i.QuoteGasPayment(ctx, hookId, destinationDomain, gasLimit)
+	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
+	if err != nil {
+		return fmt.Errorf("igp does not exist: %s", hookId.String())
+	}
+
+	requiredPayment, err := i.QuoteGasPayment(ctx, util.NewZeroAddress(), hookId, destinationDomain, gasLimit)
 	if err != nil {
 		return err
 	}
 
-	if requiredPayment.GT(maxFee) {
+	if requiredPayment.AmountOf(igp.Denom).GT(maxFee) {
 		return fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
 	}
 

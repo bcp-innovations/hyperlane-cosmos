@@ -7,8 +7,6 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
 	"cosmossdk.io/collections"
-	"cosmossdk.io/math"
-
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -23,7 +21,7 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 		return fmt.Errorf("failed to claim: %s is not permitted to claim", sender)
 	}
 
-	if igp.ClaimableFees.Equal(math.ZeroInt()) {
+	if igp.ClaimableFees.IsZero() {
 		return fmt.Errorf("no claimable fees left")
 	}
 
@@ -32,15 +30,13 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 		return err
 	}
 
-	coins := sdk.NewCoins(sdk.NewInt64Coin(igp.Denom, igp.ClaimableFees.Int64()))
-
 	// TODO use core-types module name or create sub-account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "hyperlane", ownerAcc, coins)
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "hyperlane", ownerAcc, igp.ClaimableFees)
 	if err != nil {
 		return err
 	}
 
-	igp.ClaimableFees = math.NewInt(0)
+	igp.ClaimableFees = sdk.NewCoins()
 
 	err = k.Igps.Set(ctx, igpId.GetInternalId(), igp)
 	if err != nil {

@@ -3,8 +3,10 @@ package hyperlane.core.post_dispatch.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
 
+import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 // InterchainGasPaymaster ...
 message InterchainGasPaymaster {
@@ -22,9 +24,10 @@ message InterchainGasPaymaster {
   string denom = 4;
 
   // claimable_fees ...
-  string claimable_fees = 5 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
+  repeated cosmos.base.v1beta1.Coin claimable_fees = 5 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
 }
 

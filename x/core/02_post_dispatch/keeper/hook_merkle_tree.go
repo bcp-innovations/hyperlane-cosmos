@@ -69,3 +69,7 @@ func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hook
 
 	return nil, nil
 }
+
+func (i MerkleTreeHookHandler) QuoteDispatch(_ context.Context, _, _ util.HexAddress, _ []byte, _ util.HyperlaneMessage) (sdk.Coins, error) {
+	return sdk.NewCoins(), nil
+}
