@@ -5,6 +5,7 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_inter
 
 import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
+import "gogoproto/gogo.proto";
 
 // Msg defines the module Msg service.
 service Msg {
@@ -43,7 +44,13 @@ message MsgCreateMessageIdMultisigIsm {
 }
 
 // MsgCreateMessageIdMultisigIsmResponse ...
-message MsgCreateMessageIdMultisigIsmResponse { string id = 1; }
+message MsgCreateMessageIdMultisigIsmResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
 
 // MsgCreateMultisigIsm ...
 message MsgCreateMerkleRootMultisigIsm {
@@ -62,7 +69,13 @@ message MsgCreateMerkleRootMultisigIsm {
 }
 
 // MsgCreateMultisigIsmResponse ...
-message MsgCreateMerkleRootMultisigIsmResponse { string id = 1; }
+message MsgCreateMerkleRootMultisigIsmResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
 
 // MsgCreateNoopIsm ...
 message MsgCreateNoopIsm {
@@ -74,7 +87,13 @@ message MsgCreateNoopIsm {
 }
 
 // MsgCreateNoopIsmResponse ...
-message MsgCreateNoopIsmResponse { string id = 1; }
+message MsgCreateNoopIsmResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
 
 // MsgAnnounceValidator ...
 message MsgAnnounceValidator {

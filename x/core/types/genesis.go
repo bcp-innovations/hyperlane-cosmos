@@ -19,5 +19,7 @@ func (gs *GenesisState) Validate() error {
 		return fmt.Errorf("local domain cannot be 0")
 	}
 
+	// TODO validate
+
 	return nil
 }

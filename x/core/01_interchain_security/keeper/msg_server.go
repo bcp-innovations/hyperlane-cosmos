@@ -5,6 +5,8 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/errors"
+
 	"cosmossdk.io/collections"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -119,7 +121,7 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.MsgCreateMessageIdMultisigIsm) (*types.MsgCreateMessageIdMultisigIsmResponse, error) {
 	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	newIsm := types.MessageIdMultisigISM{
@@ -130,20 +132,20 @@ func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.Ms
 	}
 
 	if err = newIsm.Validate(); err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrInvalidMultisigConfiguration, err.Error())
 	}
 
-	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
-		return nil, err
+	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
-	return &types.MsgCreateMessageIdMultisigIsmResponse{Id: ismId.String()}, nil
+	return &types.MsgCreateMessageIdMultisigIsmResponse{Id: ismId}, nil
 }
 
 func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.MsgCreateMerkleRootMultisigIsm) (*types.MsgCreateMerkleRootMultisigIsmResponse, error) {
 	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	newIsm := types.MerkleRootMultisigISM{
@@ -154,20 +156,20 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 	}
 
 	if err = newIsm.Validate(); err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrInvalidMultisigConfiguration, err.Error())
 	}
 
-	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
-		return nil, err
+	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
-	return &types.MsgCreateMerkleRootMultisigIsmResponse{Id: ismId.String()}, nil
+	return &types.MsgCreateMerkleRootMultisigIsmResponse{Id: ismId}, nil
 }
 
 func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIsm) (*types.MsgCreateNoopIsmResponse, error) {
 	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	newIsm := types.NoopISM{
@@ -177,9 +179,9 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 
 	// no validation needed, as there are no params to this ism
 
-	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
-		return nil, err
+	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
-	return &types.MsgCreateNoopIsmResponse{Id: ismId.String()}, nil
+	return &types.MsgCreateNoopIsmResponse{Id: ismId}, nil
 }

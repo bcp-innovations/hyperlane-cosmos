@@ -73,18 +73,16 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateNoopIsmResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		_, err = util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
 
 		queryServer := keeper.NewQueryServerImpl(&s.App().HyperlaneKeeper.IsmKeeper)
-		ism, err := queryServer.Ism(s.Ctx(), &types.QueryIsmRequest{Id: response.Id})
+		ism, err := queryServer.Ism(s.Ctx(), &types.QueryIsmRequest{Id: response.Id.String()})
 		Expect(err).To(BeNil())
 		Expect(ism.Ism.TypeUrl).To(Equal("/hyperlane.core.interchain_security.v1.NoopISM"))
 		var noopIsm types.NoopISM
 		err = proto.Unmarshal(ism.Ism.Value, &noopIsm)
 		Expect(err).To(BeNil())
 		Expect(noopIsm.Owner).To(Equal(creator.Address))
-		Expect(noopIsm.Id.String()).To(Equal(response.Id))
+		Expect(noopIsm.Id.String()).To(Equal(response.Id.String()))
 	})
 
 	It("Create (invalid) MessageIdMultisig ISM with less address", func() {
@@ -98,7 +96,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("validator addresses less than threshold"))
+		Expect(err.Error()).To(Equal("validator addresses less than threshold: invalid multisig configuration"))
 	})
 
 	It("Create (invalid) MessageIdMultisig ISM with invalid threshold", func() {
@@ -112,7 +110,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("threshold must be greater than zero"))
+		Expect(err.Error()).To(Equal("threshold must be greater than zero: invalid multisig configuration"))
 	})
 
 	It("Create (invalid) MessageIdMultisig ISM with duplicate validator addresses", func() {
@@ -129,7 +127,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v", invalidAddress[0])))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v: invalid multisig configuration", invalidAddress[0])))
 	})
 
 	It("Create (invalid) MessageIdMultisig ISM with invalid validator address", func() {
@@ -156,7 +154,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			})
 
 			// Assert
-			Expect(err.Error()).To(Equal(fmt.Sprintf("invalid validator address: %s", invalidKey)))
+			Expect(err.Error()).To(Equal(fmt.Sprintf("invalid validator address: %s: invalid multisig configuration", invalidKey)))
 		}
 	})
 
@@ -200,7 +198,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("validator addresses less than threshold"))
+		Expect(err.Error()).To(Equal("validator addresses less than threshold: invalid multisig configuration"))
 	})
 
 	It("Create (invalid) MerkleRootMultisig ISM with invalid threshold", func() {
@@ -214,7 +212,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("threshold must be greater than zero"))
+		Expect(err.Error()).To(Equal("threshold must be greater than zero: invalid multisig configuration"))
 	})
 
 	It("Create (invalid) MerkleRootMultisig ISM with duplicate validator addresses", func() {
@@ -231,7 +229,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v", invalidAddress[0])))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v: invalid multisig configuration", invalidAddress[0])))
 	})
 
 	It("Create (invalid) MerkleRootMultisig ISM with invalid validator address", func() {
@@ -258,7 +256,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			})
 
 			// Assert
-			Expect(err.Error()).To(Equal(fmt.Sprintf("invalid validator address: %s", invalidKey)))
+			Expect(err.Error()).To(Equal(fmt.Sprintf("invalid validator address: %s: invalid multisig configuration", invalidKey)))
 		}
 	})
 
@@ -694,10 +692,7 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	ismId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-
-	return ismId
+	return response.Id
 }
 
 func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
@@ -710,10 +705,7 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	ismId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-
-	return ismId
+	return response.Id
 }
 
 func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {

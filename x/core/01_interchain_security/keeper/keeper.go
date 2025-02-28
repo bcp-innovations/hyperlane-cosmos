@@ -16,8 +16,7 @@ import (
 // and can therefore all be handled by the same handler. If an ISM needs to access state
 // in the future, one needs to provide another IsmHandler which holds the keeper and can access state.
 type Keeper struct {
-	// TODO: move to internal id -> uint64
-	isms collections.Map[[]byte, types.HyperlaneInterchainSecurityModule]
+	isms collections.Map[uint64, types.HyperlaneInterchainSecurityModule]
 	// Key: Mailbox ID, Validator address, Storage Location index
 	storageLocations collections.Map[collections.Triple[[]byte, []byte, uint64], string]
 	schema           collections.Schema
@@ -29,7 +28,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 	sb := collections.NewSchemaBuilder(storeService)
 
 	k := Keeper{
-		isms:             collections.NewMap(sb, types.IsmsKey, "isms", collections.BytesKey, codec.CollInterfaceValue[types.HyperlaneInterchainSecurityModule](cdc)),
+		isms:             collections.NewMap(sb, types.IsmsKey, "isms", collections.Uint64Key, codec.CollInterfaceValue[types.HyperlaneInterchainSecurityModule](cdc)),
 		storageLocations: collections.NewMap(sb, types.StorageLocationsKey, "storage_locations", collections.TripleKeyCodec(collections.BytesKey, collections.BytesKey, collections.Uint64Key), collections.StringValue),
 		coreKeeper:       nil,
 	}
@@ -61,7 +60,7 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 
 // Verify checks if the metadata has signed the message correctly.
 func (h *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
-	ism, err := h.isms.Get(ctx, ismId.Bytes())
+	ism, err := h.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
 		return false, err
 	}
@@ -71,5 +70,5 @@ func (h *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []b
 
 // Exists checks if the given ISM id does exist.
 func (h *Keeper) Exists(ctx context.Context, ismId util.HexAddress) (bool, error) {
-	return h.isms.Has(ctx, ismId.Bytes())
+	return h.isms.Has(ctx, ismId.GetInternalId())
 }

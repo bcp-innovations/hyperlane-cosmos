@@ -24,7 +24,7 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 		if err != nil {
 			panic(err)
 		}
-		if err := k.isms.Set(ctx, id.Bytes(), ism); err != nil {
+		if err := k.isms.Set(ctx, id.GetInternalId(), ism); err != nil {
 			panic(err)
 		}
 	}

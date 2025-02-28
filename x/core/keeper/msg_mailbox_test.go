@@ -688,10 +688,7 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	ismId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-
-	return ismId
+	return response.Id
 }
 
 func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
@@ -704,10 +701,7 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	ismId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-
-	return ismId
+	return response.Id
 }
 
 func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {

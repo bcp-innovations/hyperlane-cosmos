@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
-	"fmt"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"cosmossdk.io/collections"
 
@@ -88,14 +90,18 @@ func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *t
 func (qs queryServer) Isms(ctx context.Context, req *types.QueryIsmsRequest) (*types.QueryIsmsResponse, error) {
 	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.isms, req.Pagination)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	msgs := make([]proto.Message, len(values))
 	for i, value := range values {
 		msgs[i] = value
 	}
-	isms, _ := util.PackAnys(msgs)
+
+	isms, err := util.PackAnys(msgs)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
 	return &types.QueryIsmsResponse{
 		Isms:       isms,
@@ -107,17 +113,17 @@ func (qs queryServer) Isms(ctx context.Context, req *types.QueryIsmsRequest) (*t
 func (qs queryServer) Ism(ctx context.Context, req *types.QueryIsmRequest) (*types.QueryIsmResponse, error) {
 	ismId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.InvalidArgument, "invalid hex address %s, %s", req.Id, err.Error())
 	}
 
-	ism, err := qs.k.isms.Get(ctx, ismId.Bytes())
+	ism, err := qs.k.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
-		return nil, fmt.Errorf("failed to find ism with id: %v", ismId.String())
+		return nil, status.Errorf(codes.NotFound, "ism %s not found", req.Id)
 	}
 
 	toAny, err := util.PackAny(ism)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &types.QueryIsmResponse{
