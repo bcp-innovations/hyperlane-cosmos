@@ -151,9 +151,9 @@ func CmdPayForGas() *cobra.Command {
 				return errors.New("failed to convert `gasLimit` into math.Int")
 			}
 
-			amount, ok := math.NewIntFromString(args[4])
-			if !ok {
-				return errors.New("failed to convert `maxFee` into math.Int")
+			amount, err := sdk.ParseCoinNormalized(args[4])
+			if err != nil {
+				return err
 			}
 
 			msg := types.MsgPayForGas{

@@ -30,6 +30,7 @@ service Query {
   }
 
   // QuoteGasPayment ...
+  // TODO: move to /hyperlane/v1/igps/{id}/quote_gas_payment
   rpc QuoteGasPayment(QueryQuoteGasPaymentRequest)
       returns (QueryQuoteGasPaymentResponse) {
     option (google.api.http).get = "/hyperlane/v1/quote_gas_payment";
@@ -48,6 +49,7 @@ service Query {
   }
 
   // MerkleTreeHook ...
+  // TODO: add get all query & pagination
   rpc NoopHook(QueryNoopHook) returns (QueryNoopHookResponse) {
     option (google.api.http).get = "/hyperlane/v1/noop_hooks/{id}";
   }
@@ -98,6 +100,7 @@ message QueryQuoteGasPaymentRequest {
 }
 
 // QueryQuoteGasPaymentResponse ...
+// TODO: sdk.Coin
 message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
 
 // QueryCountRequest ...
@@ -115,6 +118,22 @@ message QueryMerkleTreeHooksResponse {
 message QueryMerkleTreeHook { string id = 1; }
 
 // QueryCountResponse ...
+// TODO: same for get all
+/**
+{
+  merkle_tree_hook: {
+    id: string;
+    owner: string;
+    mailbox_id: string;
+    tree: {
+      leafs: string[];
+      count: number;
+      root: string;
+    }
+  }
+}
+
+*/
 message QueryMerkleTreeHookResponse {
   bytes root = 1;
   uint32 count = 2;

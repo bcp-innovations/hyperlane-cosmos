@@ -37,7 +37,12 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		return util.HexAddress{}, fmt.Errorf("invalid recipient address")
 	}
 
-	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(token.Id, destinationDomain))
+	tokenId, err := util.DecodeHexAddress(token.Id)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(tokenId.GetInternalId(), destinationDomain))
 	if err != nil {
 		return util.HexAddress{}, fmt.Errorf("no enrolled router found for destination domain %d", destinationDomain)
 	}
@@ -69,7 +74,7 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
-		util.HexAddress(token.Id),
+		tokenId,
 		sdk.NewCoins(maxFee),
 
 		remoteRouter.ReceiverDomain,
@@ -110,25 +115,25 @@ func (k *Keeper) RemoteReceiveSynthetic(ctx context.Context, token types.HypToke
 	return nil
 }
 
-func ValidateTokenMetadata(metadata *types.TokenMetadata) error {
-	if metadata == nil {
-		return fmt.Errorf("metadata is required")
-	}
+// func ValidateTokenMetadata(metadata *types.TokenMetadata) error {
+// 	if metadata == nil {
+// 		return fmt.Errorf("metadata is required")
+// 	}
 
-	if metadata.Symbol == "" {
-		return fmt.Errorf("token symbol is required")
-	}
+// 	if metadata.Symbol == "" {
+// 		return fmt.Errorf("token symbol is required")
+// 	}
 
-	if metadata.Name == "" {
-		return fmt.Errorf("token name is required")
-	}
+// 	if metadata.Name == "" {
+// 		return fmt.Errorf("token name is required")
+// 	}
 
-	if metadata.Decimals == 0 {
-		return fmt.Errorf("token decimals cannot be zero")
-	}
+// 	if metadata.Decimals == 0 {
+// 		return fmt.Errorf("token decimals cannot be zero")
+// 	}
 
-	if metadata.TotalSupply.IsZero() {
-		return fmt.Errorf("token total supply cannot be zero")
-	}
-	return nil
-}
+// 	if metadata.TotalSupply.IsZero() {
+// 		return fmt.Errorf("token total supply cannot be zero")
+// 	}
+// 	return nil
+// }

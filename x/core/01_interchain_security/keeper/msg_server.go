@@ -24,6 +24,9 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
+// AnnounceValidator lets a validator store a string in the state, which is queryable.
+// The string should contain the storage location for the proofs (e.g. an S3 bucket)
+// The Relayer uses this information to fetch the signatures for messages.
 func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounceValidator) (*types.MsgAnnounceValidatorResponse, error) {
 	if req.Validator == "" {
 		return nil, fmt.Errorf("validator cannot be empty")
@@ -120,7 +123,7 @@ func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.Ms
 	}
 
 	newIsm := types.MessageIdMultisigISM{
-		Id:         ismId.String(),
+		Id:         ismId,
 		Owner:      req.Creator,
 		Validators: req.Validators,
 		Threshold:  req.Threshold,
@@ -144,7 +147,7 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 	}
 
 	newIsm := types.MerkleRootMultisigISM{
-		Id:         ismId.String(),
+		Id:         ismId,
 		Owner:      req.Creator,
 		Validators: req.Validators,
 		Threshold:  req.Threshold,
@@ -166,14 +169,13 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 	if err != nil {
 		return nil, err
 	}
-	if err != nil {
-		return nil, err
-	}
 
 	newIsm := types.NoopISM{
-		Id:    ismId.String(),
+		Id:    ismId,
 		Owner: ism.Creator,
 	}
+
+	// no validation needed, as there are no params to this ism
 
 	if err = m.k.isms.Set(ctx, ismId.Bytes(), &newIsm); err != nil {
 		return nil, err

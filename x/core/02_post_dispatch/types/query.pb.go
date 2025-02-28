@@ -391,6 +391,7 @@ func (m *QueryQuoteGasPaymentRequest) GetGasLimit() string {
 }
 
 // QueryQuoteGasPaymentResponse ...
+// TODO: sdk.Coin
 type QueryQuoteGasPaymentResponse struct {
 	GasPayment string `protobuf:"bytes,1,opt,name=gas_payment,json=gasPayment,proto3" json:"gas_payment,omitempty"`
 }
@@ -578,7 +579,19 @@ func (m *QueryMerkleTreeHook) GetId() string {
 	return ""
 }
 
-// QueryCountResponse ...
+// *
+// {
+// merkle_tree_hook: {
+// id: string;
+// owner: string;
+// mailbox_id: string;
+// tree: {
+// leafs: string[];
+// count: number;
+// root: string;
+// }
+// }
+// }
 type QueryMerkleTreeHookResponse struct {
 	Root           []byte          `protobuf:"bytes,1,opt,name=root,proto3" json:"root,omitempty"`
 	Count          uint32          `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
@@ -833,12 +846,14 @@ type QueryClient interface {
 	// DestinationGasConfigs ...
 	DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error)
 	// QuoteGasPayment ...
+	// TODO: move to /hyperlane/v1/igps/{id}/quote_gas_payment
 	QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error)
 	// MerkleTreeHook ...
 	MerkleTreeHooks(ctx context.Context, in *QueryMerkleTreeHooks, opts ...grpc.CallOption) (*QueryMerkleTreeHooksResponse, error)
 	// MerkleTreeHook ...
 	MerkleTreeHook(ctx context.Context, in *QueryMerkleTreeHook, opts ...grpc.CallOption) (*QueryMerkleTreeHookResponse, error)
 	// MerkleTreeHook ...
+	// TODO: add get all query & pagination
 	NoopHook(ctx context.Context, in *QueryNoopHook, opts ...grpc.CallOption) (*QueryNoopHookResponse, error)
 }
 
@@ -922,12 +937,14 @@ type QueryServer interface {
 	// DestinationGasConfigs ...
 	DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error)
 	// QuoteGasPayment ...
+	// TODO: move to /hyperlane/v1/igps/{id}/quote_gas_payment
 	QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error)
 	// MerkleTreeHook ...
 	MerkleTreeHooks(context.Context, *QueryMerkleTreeHooks) (*QueryMerkleTreeHooksResponse, error)
 	// MerkleTreeHook ...
 	MerkleTreeHook(context.Context, *QueryMerkleTreeHook) (*QueryMerkleTreeHookResponse, error)
 	// MerkleTreeHook ...
+	// TODO: add get all query & pagination
 	NoopHook(context.Context, *QueryNoopHook) (*QueryNoopHookResponse, error)
 }
 

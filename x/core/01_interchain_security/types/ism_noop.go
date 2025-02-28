@@ -9,7 +9,7 @@ import (
 var _ HyperlaneInterchainSecurityModule = &NoopISM{}
 
 func (m *NoopISM) GetId() (util.HexAddress, error) {
-	return util.DecodeHexAddress(m.Id)
+	return m.Id, nil
 }
 
 func (m *NoopISM) ModuleType() uint8 {

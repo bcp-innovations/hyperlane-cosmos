@@ -12,7 +12,7 @@ import (
 var _ HyperlaneInterchainSecurityModule = &MerkleRootMultisigISM{}
 
 func (m *MerkleRootMultisigISM) GetId() (util.HexAddress, error) {
-	return util.DecodeHexAddress(m.Id)
+	return m.Id, nil
 }
 
 func (m *MerkleRootMultisigISM) ModuleType() uint8 {

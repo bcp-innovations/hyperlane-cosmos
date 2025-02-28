@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/collections"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
@@ -27,6 +28,17 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 			panic(err)
 		}
 	}
+
+	for _, storageLocation := range data.ValidatorStorageLocations {
+		validatorBytes, err := util.DecodeEthHex(storageLocation.ValidatorAddress)
+		if err != nil {
+			panic(err)
+		}
+
+		if err = k.storageLocations.Set(ctx, collections.Join3(storageLocation.MailboxId.Bytes(), validatorBytes, storageLocation.Index), storageLocation.StorageLocation); err != nil {
+			panic(err)
+		}
+	}
 }
 
 func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
@@ -48,6 +60,8 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 	if err != nil {
 		panic(err)
 	}
+
+	// TODO add export for storage locations
 
 	return &types.GenesisState{
 		Isms: ismsAny,

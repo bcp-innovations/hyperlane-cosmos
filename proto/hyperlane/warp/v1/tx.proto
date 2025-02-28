@@ -29,9 +29,16 @@ service Msg {
   rpc EnrollRemoteRouter(MsgEnrollRemoteRouter)
       returns (MsgEnrollRemoteRouterResponse);
 
+  // SetRemoteRouter ...
+  rpc SetRemoteRouter(MsgSetRemoteRouter) returns (MsgSetRemoteRouterResponse);
+
   // UnrollRemoteRouter ...
   rpc UnrollRemoteRouter(MsgUnrollRemoteRouter)
       returns (MsgUnrollRemoteRouterResponse);
+
+  // SetInterchainSecurityModule ...
+  rpc SetInterchainSecurityModule(MsgSetInterchainSecurityModule)
+      returns (MsgSetInterchainSecurityModuleResponse);
 
   // RemoteTransfer ...
   rpc RemoteTransfer(MsgRemoteTransfer) returns (MsgRemoteTransferResponse);
@@ -62,7 +69,8 @@ message MsgCreateSyntheticToken {
 
   string origin_mailbox = 2;
 
-  TokenMetadata metadata = 4;
+  // TODO: check if we need this
+  // TokenMetadata metadata = 3;
 }
 
 // MsgCreateSyntheticTokenResponse ...

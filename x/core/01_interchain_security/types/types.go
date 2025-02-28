@@ -6,7 +6,7 @@ import (
 	"slices"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	proto "github.com/cosmos/gogoproto/proto"
+	"github.com/cosmos/gogoproto/proto"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -20,9 +20,7 @@ type HyperlaneInterchainSecurityModule interface {
 
 var (
 	IsmsKey             = []byte{SubModuleId, 0}
-	IsmsSequenceKey     = []byte{SubModuleId, 1}
 	StorageLocationsKey = []byte{SubModuleId, 2}
-	RouterKey           = []byte{SubModuleId, 3}
 )
 
 const (
@@ -30,6 +28,7 @@ const (
 	SubModuleId   uint8 = 1
 )
 
+// Constants defined by the Hyperlane spec
 const (
 	INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED uint8 = iota
 	INTERCHAIN_SECURITY_MODULE_TPYE_ROUTING

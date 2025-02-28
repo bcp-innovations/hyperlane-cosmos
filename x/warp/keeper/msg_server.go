@@ -35,25 +35,20 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 
-	if err = ValidateTokenMetadata(msg.Metadata); err != nil {
-		return nil, err
-	}
-
 	tokenId, err := ms.k.coreKeeper.AppRouter().GetNextSequence(ctx, uint8(types.HYP_TOKEN_TYPE_SYNTHETIC))
 	if err != nil {
 		return nil, err
 	}
 
 	newToken := types.HypToken{
-		Id:            tokenId.Bytes(),
+		Id:            tokenId.String(),
 		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
-		Metadata:      msg.Metadata,
 	}
 
-	if err = ms.k.HypTokens.Set(ctx, newToken.Id, newToken); err != nil {
+	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
 		return nil, err
 	}
 
@@ -90,15 +85,14 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	}
 
 	newToken := types.HypToken{
-		Id:            tokenId.Bytes(),
+		Id:            tokenId.String(),
 		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_COLLATERAL,
 		OriginMailbox: mailboxId.Bytes(),
 		OriginDenom:   msg.OriginDenom,
-		Metadata:      nil,
 	}
 
-	if err = ms.k.HypTokens.Set(ctx, newToken.Id, newToken); err != nil {
+	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
 		return nil, err
 	}
 	return &types.MsgCreateCollateralTokenResponse{Id: tokenId.String()}, nil
@@ -114,7 +108,7 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
 	}
@@ -136,7 +130,7 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 		token.IsmId = ismAddress.String()
 	}
 
-	err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), token)
+	err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), token)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +144,7 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
 	}
@@ -167,7 +161,7 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("invalid receiver contract")
 	}
 
-	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.Bytes(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
+	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
 		return nil, err
 	}
 
@@ -180,7 +174,7 @@ func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnroll
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
 	}
@@ -189,12 +183,12 @@ func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnroll
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
-	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.Bytes(), msg.ReceiverDomain))
+	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.GetInternalId(), msg.ReceiverDomain))
 	if err != nil || !exists {
 		return nil, fmt.Errorf("failed to find remote router for domain %v", msg.ReceiverDomain)
 	}
 
-	if err = ms.k.EnrolledRouters.Remove(ctx, collections.Join(tokenId.Bytes(), msg.ReceiverDomain)); err != nil {
+	if err = ms.k.EnrolledRouters.Remove(ctx, collections.Join(tokenId.GetInternalId(), msg.ReceiverDomain)); err != nil {
 		return nil, err
 	}
 
@@ -209,7 +203,7 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
 	}
