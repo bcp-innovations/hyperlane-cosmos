@@ -6,19 +6,15 @@ import (
 	"fmt"
 	"strconv"
 
-	"cosmossdk.io/math"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"cosmossdk.io/math"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ types.QueryServer = queryServer{}
@@ -114,7 +110,7 @@ func (qs queryServer) QuoteRemoteTransfer(ctx context.Context, request *types.Qu
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	token, err := qs.k.HypTokens.Get(ctx, tokenId.Bytes())
+	token, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +120,7 @@ func (qs queryServer) QuoteRemoteTransfer(ctx context.Context, request *types.Qu
 		return nil, err
 	}
 
-	remoteRouter, err := qs.k.EnrolledRouters.Get(ctx, collections.Join(tokenId.Bytes(), uint32(destinationDomain)))
+	remoteRouter, err := qs.k.EnrolledRouters.Get(ctx, collections.Join(tokenId.GetInternalId(), uint32(destinationDomain)))
 	if err != nil {
 		return nil, fmt.Errorf("failed to get remote router for destination domain %v", request.DestinationDomain)
 	}
