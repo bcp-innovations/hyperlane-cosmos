@@ -42,13 +42,13 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mai
 	return nil, nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, _, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
 	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
 	if err != nil {
 		return sdk.NewCoins(), err
 	}
 
-	return i.QuoteGasPayment(ctx, util.NewZeroAddress(), hookId, message.Destination, metadata.GasLimit)
+	return i.QuoteGasPayment(ctx, mailboxId, hookId, message.Destination, metadata.GasLimit)
 }
 
 func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
@@ -124,7 +124,16 @@ func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, 
 
 	amount := (destinationCost.Mul(destinationGasConfig.GasOracle.TokenExchangeRate)).Quo(types.TokenExchangeRateScale)
 
-	return sdk.NewCoins(sdk.Coin{Denom: igp.Denom, Amount: amount}), nil
+	coin := sdk.Coin{
+		Denom:  igp.Denom,
+		Amount: amount,
+	}
+
+	if err = coin.Validate(); err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	return sdk.NewCoins(coin), nil
 }
 
 func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee math.Int) error {
