@@ -37,7 +37,7 @@ func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAdd
 		return nil, errors.Wrapf(types.ErrHookDoesNotExistOrIsNotRegistered, "%s", hookId.String())
 	}
 
-	return maxFee, nil
+	return sdk.NewCoins(), nil
 }
 
 func (i NoopHookHandler) QuoteDispatch(_ context.Context, _, _ util.HexAddress, _ []byte, _ util.HyperlaneMessage) (sdk.Coins, error) {

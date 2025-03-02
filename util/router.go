@@ -24,6 +24,7 @@ type InterchainSecurityModule interface {
 
 type PostDispatchModule interface {
 	Exists(ctx context.Context, hookId HexAddress) (bool, error)
+	// PostDispatch returns the charged coins.
 	PostDispatch(ctx context.Context, mailboxId, hookId HexAddress, metadata []byte, message HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error)
 	QuoteDispatch(ctx context.Context, mailboxId, hookId HexAddress, metadata []byte, message HyperlaneMessage) (sdk.Coins, error)
 	HookType() uint8
