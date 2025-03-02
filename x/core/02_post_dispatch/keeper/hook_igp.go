@@ -53,12 +53,16 @@ func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId ut
 // It uses the IGP's  DestinationGasConfig to determine the required payment and
 // returns the remaining fees to pay gas for following hooks.
 func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee sdk.Coins) (sdk.Coins, error) {
-	requiredPayment, err := i.QuoteGasPayment(ctx, util.NewZeroAddress(), hookId, destinationDomain, gasLimit)
+	if maxFee.Empty() {
+		return sdk.NewCoins(), fmt.Errorf("maxFee is required")
+	}
+
+	requiredPayment, err := i.QuoteGasPayment(ctx, hookId, destinationDomain, gasLimit)
 	if err != nil {
 		return sdk.NewCoins(), err
 	}
 
-	if requiredPayment.IsAllGTE(maxFee) {
+	if requiredPayment.IsAllGT(maxFee) {
 		return sdk.NewCoins(), fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
 	}
 
@@ -113,16 +117,16 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	return nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, _, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
 	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
 	if err != nil {
 		return sdk.NewCoins(), err
 	}
 
-	return i.QuoteGasPayment(ctx, mailboxId, hookId, message.Destination, metadata.GasLimit)
+	return i.QuoteGasPayment(ctx, hookId, message.Destination, metadata.GasLimit)
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, _, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (sdk.Coins, error) {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return sdk.NewCoins(), fmt.Errorf("igp does not exist: %s", hookId.String())

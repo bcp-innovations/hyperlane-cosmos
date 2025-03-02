@@ -190,6 +190,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	It("CreateMailbox (valid) with NoopISM and required IGP", func() {
 		// Arrange
 		igpId := createIgp(s, creator.Address)
+		noopHookId := createNoopHook(s, creator.Address)
 		ismId := createNoopIsm(s, creator.Address)
 
 		// Act
@@ -197,17 +198,19 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Owner:        creator.Address,
 			DefaultIsm:   ismId.String(),
 			RequiredHook: igpId.String(),
+			DefaultHook:  noopHookId.String(),
 		})
 
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), "", igpId.String())
+		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), noopHookId.String())
 	})
 
 	It("CreateMailbox (valid) with MultisigISM and required IGP", func() {
 		// Arrange
 		igpId := createIgp(s, creator.Address)
+		noopHookId := createNoopHook(s, creator.Address)
 		ismId := createMultisigIsm(s, creator.Address)
 
 		// Act
@@ -215,30 +218,33 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Owner:        creator.Address,
 			DefaultIsm:   ismId.String(),
 			RequiredHook: igpId.String(),
+			DefaultHook:  noopHookId.String(),
 		})
 
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), "", igpId.String())
+		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), noopHookId.String())
 	})
 
 	It("CreateMailbox (valid) with NoopISM and optional IGP", func() {
 		// Arrange
 		igpId := createIgp(s, creator.Address)
+		noopId := createNoopHook(s, creator.Address)
 		ismId := createNoopIsm(s, creator.Address)
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Owner:       creator.Address,
-			DefaultIsm:  ismId.String(),
-			DefaultHook: igpId.String(),
+			Owner:        creator.Address,
+			DefaultIsm:   ismId.String(),
+			RequiredHook: igpId.String(),
+			DefaultHook:  noopId.String(),
 		})
 
 		// Assert
 		Expect(err).To(BeNil())
 
-		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), "")
+		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), noopId.String())
 	})
 
 	// DispatchMessage
@@ -433,7 +439,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
 			CustomIgp:   igpId.String(),
 			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
+			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1250000)),
 		})
 
 		// Assert
@@ -623,6 +629,22 @@ func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return igpId
 }
 
+func createNoopHook(s *i.KeeperTestSuite, creator string) util.HexAddress {
+	res, err := s.RunTx(&pdTypes.MsgCreateNoopHook{
+		Owner: creator,
+	})
+	Expect(err).To(BeNil())
+
+	var response pdTypes.MsgCreateNoopHookResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+
+	noopHookId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	return noopHookId
+}
+
 // TODO fix
 func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsRequiredHook bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
 	var ismId util.HexAddress
@@ -634,6 +656,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsR
 	}
 
 	igpId := createIgp(s, creator)
+	noopId := createNoopHook(s, creator)
 
 	err := setDestinationGasConfig(s, creator, igpId.String(), destinationDomain)
 	Expect(err).To(BeNil())
@@ -641,12 +664,12 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsR
 	res, err := s.RunTx(&types.MsgCreateMailbox{
 		Owner:        creator,
 		DefaultIsm:   ismId.String(),
-		DefaultHook:  igpId.String(),
+		DefaultHook:  noopId.String(),
 		RequiredHook: igpId.String(),
 	})
 	Expect(err).To(BeNil())
 
-	return verifyNewSingleMailbox(s, res, creator, ismId.String(), igpId.String(), igpId.String()), igpId, ismId
+	return verifyNewSingleMailbox(s, res, creator, ismId.String(), igpId.String(), noopId.String()), igpId, ismId
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
@@ -704,7 +727,7 @@ func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string,
 	return err
 }
 
-func verifyNewSingleMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, ismId, defaultHookId, requiredHookId string) util.HexAddress {
+func verifyNewSingleMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, ismId, requiredHookId, defaultHookId string) util.HexAddress {
 	var response types.MsgCreateMailboxResponse
 	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
