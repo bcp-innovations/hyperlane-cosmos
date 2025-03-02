@@ -156,7 +156,7 @@ func (k Keeper) DispatchMessage(
 		return util.HexAddress{}, err
 	}
 
-	chargedCoins := finalCoins.Add(remainingCoins...)
+	chargedCoins := maxFee.Sub(finalCoins...)
 
 	if chargedCoins.IsAnyGT(maxFee) {
 		return util.HexAddress{}, fmt.Errorf("maxFee exceeded %s > %s", chargedCoins.String(), maxFee.String())
