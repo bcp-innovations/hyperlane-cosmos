@@ -2,10 +2,16 @@ package util
 
 import (
 	"context"
-	"fmt"
 
 	"cosmossdk.io/collections"
 	"github.com/cosmos/cosmos-sdk/types/query"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+)
+
+const (
+	MAX_QUERY_LIMIT = 1000
 )
 
 type Ranger[K any] struct {
@@ -35,7 +41,7 @@ func (r Ranger[K]) RangeValues() (start, end *collections.RangeKey[K], order col
 //
 // The function handles pagination in the following ways:
 // 1. If no pagination is provided, defaults to counting total with default limit
-// 2. Either offset or key-based pagination can be used, but not both
+// 2. key-based pagination can be used, offset is not supported
 // 3. For key-based pagination, decodes the provided key and uses it as start/end boundary
 // 4. In reverse order, results are returned in descending order
 // 5. Returns nextKey in PageResponse if more results exist beyond the current page
@@ -44,10 +50,9 @@ func (r Ranger[K]) RangeValues() (start, end *collections.RangeKey[K], order col
 func GetPaginatedPrefixFromMap[T any, K1 any, K2 any](ctx context.Context, collection collections.Map[collections.Pair[K1, K2], T], pagination *query.PageRequest, prefix K1) ([]T, *query.PageResponse, error) {
 	// Parse basic pagination
 	if pagination == nil {
-		pagination = &query.PageRequest{CountTotal: true}
+		pagination = &query.PageRequest{}
 	}
 
-	offset := pagination.Offset
 	key := pagination.Key
 	limit := pagination.Limit
 	reverse := pagination.Reverse
@@ -56,12 +61,15 @@ func GetPaginatedPrefixFromMap[T any, K1 any, K2 any](ctx context.Context, colle
 		limit = query.DefaultLimit
 	}
 
-	pageResponse := query.PageResponse{}
-
-	// user has to use either offset or key, not both
-	if offset > 0 && key != nil {
-		return nil, nil, fmt.Errorf("invalid request, either offset or key is expected, got both")
+	if limit > MAX_QUERY_LIMIT {
+		return nil, nil, status.Errorf(codes.InvalidArgument, "max limit of %v exceeded", MAX_QUERY_LIMIT)
 	}
+
+	if pagination.Offset != 0 {
+		return nil, nil, status.Error(codes.InvalidArgument, "offset is not supported")
+	}
+
+	pageResponse := query.PageResponse{}
 
 	ordering := collections.OrderAscending
 	start := collections.RangeKeyExact(collections.PairPrefix[K1, K2](prefix))
@@ -76,7 +84,7 @@ func GetPaginatedPrefixFromMap[T any, K1 any, K2 any](ctx context.Context, colle
 		codec := collection.KeyCodec()
 		_, decodedKey, err := codec.Decode(key)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, status.Errorf(codes.Internal, "failed to decode pagination key: %v", err)
 		}
 
 		// if the query is reverse we want to only get the items before the key (key becomes end)
@@ -97,35 +105,46 @@ func GetPaginatedPrefixFromMap[T any, K1 any, K2 any](ctx context.Context, colle
 
 	it, err := collection.Iterate(ctx, rng)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, status.Errorf(codes.Internal, "failed to create iterator: %v", err)
 	}
 
 	defer it.Close()
 
 	data := make([]T, 0, limit)
-	keyValues, err := it.KeyValues()
-	if err != nil {
-		return nil, nil, err
-	}
-	length := uint64(len(keyValues))
+	var keyValues []collections.KeyValue[collections.Pair[K1, K2], T]
 
-	i := uint64(offset)
-	for ; i < limit+offset && i < length; i++ {
-		data = append(data, keyValues[i].Value)
+	index := uint64(0)
+
+	// if the query uses `key` instead of `offset` we can just fetch enough values until the limit is hit
+	for ; index < limit && it.Valid(); index++ {
+		keyValue, err := it.KeyValue()
+		if err != nil {
+			return nil, nil, status.Errorf(codes.Internal, "failed to retrieve item: %v", err)
+		}
+		keyValues = append(keyValues, keyValue)
+		data = append(data, keyValue.Value)
+		it.Next()
 	}
 
-	if i < length {
+	if it.Valid() {
+		var key collections.Pair[K1, K2]
 		// when the query is in reverse we want to pass the chronological last element as the next key
 		// the last element will be at index 0 in that case because the order is descending
 		if reverse {
-			i = 0
+			key = keyValues[0].Key
+		} else {
+			// the current key is the last key that is not in the response, meaning it would be the first key in the next page
+			currentKey, err := it.Key()
+			if err != nil {
+				return nil, nil, status.Errorf(codes.Internal, "failed to retrieve key: %v", err)
+			}
+			key = currentKey
 		}
-		encodedKey := keyValues[i].Key
 		codec := collection.KeyCodec()
-		buffer := make([]byte, codec.Size(encodedKey))
-		_, err := codec.Encode(buffer, encodedKey)
+		buffer := make([]byte, codec.Size(key))
+		_, err := codec.Encode(buffer, key)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, status.Errorf(codes.Internal, "failed to encode next key: %v", err)
 		}
 		pageResponse.NextKey = buffer
 	}
@@ -148,19 +167,17 @@ func GetPaginatedPrefixFromMap[T any, K1 any, K2 any](ctx context.Context, colle
 //
 // The function handles pagination in the following ways:
 // 1. If no pagination is provided, defaults to counting total with default limit
-// 2. Either offset or key-based pagination can be used, but not both
+// 2. key-based pagination can be used, offset is not supported
 // 3. For key-based pagination, uses provided key as start/end boundary
 // 4. In reverse order, results are returned in descending order
 // 5. Returns nextKey in PageResponse if more results exist beyond the current page
 //
 // Note: This is a simpler version of GetPaginatedPrefixFromMap that works with any key type K
 func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collections.Map[K, T], pagination *query.PageRequest) ([]T, *query.PageResponse, error) {
-	// Parse basic pagination
 	if pagination == nil {
-		pagination = &query.PageRequest{CountTotal: true}
+		pagination = &query.PageRequest{}
 	}
 
-	offset := pagination.Offset
 	key := pagination.Key
 	limit := pagination.Limit
 	reverse := pagination.Reverse
@@ -169,12 +186,15 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 		limit = query.DefaultLimit
 	}
 
-	pageResponse := query.PageResponse{}
-
-	// user has to use either offset or key, not both
-	if offset > 0 && key != nil {
-		return nil, nil, fmt.Errorf("invalid request, either offset or key is expected, got both")
+	if limit > MAX_QUERY_LIMIT {
+		return nil, nil, status.Errorf(codes.InvalidArgument, "max limit of %v exceeded", MAX_QUERY_LIMIT)
 	}
+
+	if pagination.Offset != 0 {
+		return nil, nil, status.Error(codes.InvalidArgument, "offset is not supported")
+	}
+
+	pageResponse := query.PageResponse{}
 
 	ordering := collections.OrderAscending
 	var end []byte = nil
@@ -189,35 +209,47 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 
 	it, err := collection.IterateRaw(ctx, key, end, ordering)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, status.Errorf(codes.Internal, "failed to create iterator: %v", err)
 	}
 
 	defer it.Close()
 
 	data := make([]T, 0, limit)
-	keyValues, err := it.KeyValues()
-	if err != nil {
-		return nil, nil, err
-	}
-	length := uint64(len(keyValues))
+	var keyValues []collections.KeyValue[K, T]
 
-	i := uint64(offset)
-	for ; i < limit+offset && i < length; i++ {
-		data = append(data, keyValues[i].Value)
+	index := uint64(0)
+
+	// if the query uses `key` instead of `offset` we can just fetch enough values until the limit is hit
+	for ; index < limit && it.Valid(); index++ {
+		keyValue, err := it.KeyValue()
+		if err != nil {
+			return nil, nil, status.Errorf(codes.Internal, "failed to retrieve item: %v", err)
+		}
+		keyValues = append(keyValues, keyValue)
+		data = append(data, keyValue.Value)
+		it.Next()
 	}
 
-	if i < length {
+	if it.Valid() {
+		var key K
 		// when the query is in reverse we want to pass the chronological last element as the next key
 		// the last element will be at index 0 in that case because the order is descending
 		if reverse {
-			i = 0
+			key = keyValues[0].Key
+		} else {
+			// the current key is the last key that is not in the response, meaning it would be the first key in the next page
+			currentKey, err := it.Key()
+			if err != nil {
+				return nil, nil, status.Errorf(codes.Internal, "failed to retrieve key: %v", err)
+			}
+			key = currentKey
 		}
-		encodedKey := keyValues[i].Key
+
 		codec := collection.KeyCodec()
-		buffer := make([]byte, codec.Size(encodedKey))
-		_, err := codec.Encode(buffer, encodedKey)
+		buffer := make([]byte, codec.Size(key))
+		_, err := codec.Encode(buffer, key)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, status.Errorf(codes.Internal, "failed to encode next key: %v", err)
 		}
 		pageResponse.NextKey = buffer
 	}

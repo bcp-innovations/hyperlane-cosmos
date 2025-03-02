@@ -34,7 +34,7 @@ service Query {
   rpc LatestAnnouncedStorageLocation(QueryLatestAnnouncedStorageLocationRequest)
       returns (QueryLatestAnnouncedStorageLocationResponse) {
     option (google.api.http).get =
-        "/hyperlane/v1/{mailbox_id}/announced_storage_locations/"
+        "/hyperlane/v1/mailboxes/{mailbox_id}/announced_storage_locations/"
         "{validator_address}/latest";
   }
 }
@@ -48,7 +48,7 @@ message QueryIsmsRequest {
 // QueryIsmsResponse ...
 message QueryIsmsResponse {
   repeated google.protobuf.Any isms = 1
-      [ (cosmos_proto.accepts_interface) =
+      [ (cosmos_proto.accepts_interface) =^
             "hyperlane.core.v1.01_interchain_security_module."
             "HyperlaneInterchainSecurityModule" ];
   // pagination defines the pagination in the response.
