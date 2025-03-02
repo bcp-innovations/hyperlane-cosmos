@@ -48,7 +48,7 @@ message QueryIsmsRequest {
 // QueryIsmsResponse ...
 message QueryIsmsResponse {
   repeated google.protobuf.Any isms = 1
-      [ (cosmos_proto.accepts_interface) =^
+      [ (cosmos_proto.accepts_interface) =
             "hyperlane.core.v1.01_interchain_security_module."
             "HyperlaneInterchainSecurityModule" ];
   // pagination defines the pagination in the response.
