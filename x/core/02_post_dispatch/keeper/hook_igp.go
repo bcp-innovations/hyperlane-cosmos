@@ -33,12 +33,7 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mai
 		return nil, err
 	}
 
-	chargedCoins, err := i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, metadata.GasLimit, maxFee)
-	if err != nil {
-		return nil, err
-	}
-
-	return chargedCoins, nil
+	return i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, metadata.GasLimit, maxFee)
 }
 
 func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
