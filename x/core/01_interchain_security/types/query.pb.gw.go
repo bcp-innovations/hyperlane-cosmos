@@ -502,7 +502,7 @@ var (
 
 	pattern_Query_Ism_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"hyperlane", "v1", "isms", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_AnnouncedStorageLocations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"hyperlane", "v1", "mailbox_id", "announced_storage_locations", "validator_address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AnnouncedStorageLocations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"hyperlane", "v1", "mailboxes", "mailbox_id", "announced_storage_locations", "validator_address"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_LatestAnnouncedStorageLocation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"hyperlane", "v1", "mailboxes", "mailbox_id", "announced_storage_locations", "validator_address", "latest"}, "", runtime.AssumeColonVerbOpt(false)))
 )
