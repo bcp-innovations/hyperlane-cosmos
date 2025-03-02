@@ -33,22 +33,7 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mai
 		return nil, err
 	}
 
-	err = i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, metadata.GasLimit, metadata.Value)
-	if err != nil {
-		return nil, err
-	}
-
-	// TODO substract coins
-	return nil, nil
-}
-
-func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
-	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
-	if err != nil {
-		return sdk.NewCoins(), err
-	}
-
-	return i.QuoteGasPayment(ctx, mailboxId, hookId, message.Destination, metadata.GasLimit)
+	return i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, metadata.GasLimit, maxFee)
 }
 
 func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
@@ -57,6 +42,26 @@ func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId ut
 		return false, err
 	}
 	return has, nil
+}
+
+// PayForGas executes an InterchainGasPayment using `QuoteGasPayment` beforehand.
+// It uses the IGP's  DestinationGasConfig to determine the required payment and
+// returns the remaining fees to pay gas for following hooks.
+func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee sdk.Coins) (sdk.Coins, error) {
+	if maxFee.Empty() {
+		return sdk.NewCoins(), fmt.Errorf("maxFee is required")
+	}
+
+	requiredPayment, err := i.QuoteGasPayment(ctx, hookId, destinationDomain, gasLimit)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	if requiredPayment.IsAllGT(maxFee) {
+		return sdk.NewCoins(), fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
+	}
+
+	return requiredPayment, i.PayForGasWithoutQuote(ctx, hookId, sender, messageId, destinationDomain, gasLimit, requiredPayment)
 }
 
 // PayForGasWithoutQuote executes an InterchainGasPayment without using `QuoteGasPayment`.
@@ -107,7 +112,16 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	return nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, _, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, _, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
+	if err != nil {
+		return sdk.NewCoins(), err
+	}
+
+	return i.QuoteGasPayment(ctx, hookId, message.Destination, metadata.GasLimit)
+}
+
+func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (sdk.Coins, error) {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return sdk.NewCoins(), fmt.Errorf("igp does not exist: %s", hookId.String())
@@ -134,22 +148,4 @@ func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, 
 	}
 
 	return sdk.NewCoins(coin), nil
-}
-
-func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee math.Int) error {
-	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
-	if err != nil {
-		return fmt.Errorf("igp does not exist: %s", hookId.String())
-	}
-
-	requiredPayment, err := i.QuoteGasPayment(ctx, util.NewZeroAddress(), hookId, destinationDomain, gasLimit)
-	if err != nil {
-		return err
-	}
-
-	if requiredPayment.AmountOf(igp.Denom).GT(maxFee) {
-		return fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
-	}
-
-	return i.PayForGasWithoutQuote(ctx, hookId, sender, messageId, destinationDomain, gasLimit, requiredPayment)
 }

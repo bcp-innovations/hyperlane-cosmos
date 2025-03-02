@@ -10,6 +10,7 @@ var (
 	igpId    string
 	ismId    string
 	maxFee   string
+	newOwner string
 )
 
 func GetTxCmd() *cobra.Command {
@@ -26,9 +27,7 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateSyntheticToken(),
 		CmdEnrollRemoteRouter(),
 		CmdRemoteTransfer(),
-		CmdSetIsm(),
-		CmdSetRemoteRouter(),
-		CmdSetTokenOwner(),
+		CmdSetToken(),
 		CmdUnrollRemoteRouter(),
 	)
 

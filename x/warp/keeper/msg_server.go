@@ -98,7 +98,11 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	return &types.MsgCreateCollateralTokenResponse{Id: tokenId.String()}, nil
 }
 
-func (ms msgServer) SetTokenOwner(ctx context.Context, msg *types.MsgSetTokenOwner) (*types.MsgSetTokenOwnerResponse, error) {
+func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*types.MsgSetTokenResponse, error) {
+	if msg.NewOwner == "" && msg.IsmId == "" {
+		return nil, fmt.Errorf("new owner or ism id required")
+	}
+
 	tokenId, err := util.DecodeHexAddress(msg.TokenId)
 	if err != nil {
 		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
@@ -113,14 +117,25 @@ func (ms msgServer) SetTokenOwner(ctx context.Context, msg *types.MsgSetTokenOwn
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
-	token.Owner = msg.NewOwner
+	if msg.NewOwner != "" {
+		token.Owner = msg.NewOwner
+	}
+
+	if msg.IsmId != "" {
+		ismAddress, err := util.DecodeHexAddress(msg.IsmId)
+		if err != nil {
+			return nil, fmt.Errorf("invalid ism id: %s", err)
+		}
+
+		token.IsmId = ismAddress.String()
+	}
 
 	err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), token)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.MsgSetTokenOwnerResponse{}, nil
+	return &types.MsgSetTokenResponse{}, nil
 }
 
 func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnrollRemoteRouter) (*types.MsgEnrollRemoteRouterResponse, error) {
@@ -142,15 +157,6 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("invalid remote router")
 	}
 
-	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain))
-	if err != nil {
-		return nil, err
-	}
-
-	if exists {
-		return nil, fmt.Errorf("remote router for domain %v is already enrolled", msg.RemoteRouter.ReceiverDomain)
-	}
-
 	if msg.RemoteRouter.ReceiverContract == "" {
 		return nil, fmt.Errorf("invalid receiver contract")
 	}
@@ -160,41 +166,6 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 	}
 
 	return &types.MsgEnrollRemoteRouterResponse{}, nil
-}
-
-func (ms msgServer) SetRemoteRouter(ctx context.Context, msg *types.MsgSetRemoteRouter) (*types.MsgSetRemoteRouterResponse, error) {
-	tokenId, err := util.DecodeHexAddress(msg.TokenId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
-	}
-
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
-	if err != nil {
-		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
-	}
-
-	if token.Owner != msg.Owner {
-		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
-	}
-
-	if msg.RemoteRouter == nil {
-		return nil, fmt.Errorf("invalid remote router")
-	}
-
-	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain))
-	if err != nil || !exists {
-		return nil, fmt.Errorf("failed to find remote router for domain %v", msg.RemoteRouter.ReceiverDomain)
-	}
-
-	if msg.RemoteRouter.ReceiverContract == "" {
-		return nil, fmt.Errorf("invalid receiver contract")
-	}
-
-	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
-		return nil, err
-	}
-
-	return &types.MsgSetRemoteRouterResponse{}, nil
 }
 
 func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnrollRemoteRouter) (*types.MsgUnrollRemoteRouterResponse, error) {
@@ -257,40 +228,6 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 	return &types.MsgRemoteTransferResponse{
 		MessageId: messageResultId,
 	}, nil
-}
-
-func (ms msgServer) SetInterchainSecurityModule(ctx context.Context, msg *types.MsgSetInterchainSecurityModule) (*types.MsgSetInterchainSecurityModuleResponse, error) {
-	if msg.IsmId == "" {
-		return nil, fmt.Errorf("ism id cannot be empty")
-	}
-
-	tokenId, err := util.DecodeHexAddress(msg.TokenId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
-	}
-
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
-	if err != nil {
-		return nil, err
-	}
-
-	if token.Owner != msg.Owner {
-		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
-	}
-
-	ismAddress, err := util.DecodeHexAddress(msg.IsmId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid ism id: %s", err)
-	}
-
-	token.IsmId = ismAddress.String()
-
-	err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), token)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.MsgSetInterchainSecurityModuleResponse{}, nil
 }
 
 var _ types.MsgServer = msgServer{}

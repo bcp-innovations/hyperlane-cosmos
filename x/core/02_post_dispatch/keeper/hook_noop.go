@@ -31,7 +31,7 @@ func (i NoopHookHandler) SupportsMetadata(_ []byte) bool {
 	return false
 }
 
-func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ []byte, _ util.HyperlaneMessage, _ sdk.Coins) (sdk.Coins, error) {
+func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ []byte, _ util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	has, err := i.k.noopHooks.Has(ctx, hookId.Bytes())
 	if err != nil || !has {
 		return nil, errors.Wrapf(types.ErrHookDoesNotExistOrIsNotRegistered, "%s", hookId.String())

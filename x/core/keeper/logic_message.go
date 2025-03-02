@@ -137,7 +137,7 @@ func (k Keeper) DispatchMessage(
 	if err != nil {
 		return util.HexAddress{}, err
 	}
-	remainingCoins, err := k.PostDispatch(ctx, originMailboxId, requiredHookAddress, metadata, hypMsg, maxFee)
+	chargedCoinsRequired, err := k.PostDispatch(ctx, originMailboxId, requiredHookAddress, metadata, hypMsg, maxFee)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
@@ -150,12 +150,17 @@ func (k Keeper) DispatchMessage(
 		postDispatchHookId = defaultHookAddress
 	}
 
-	finalCoins, err := k.PostDispatch(ctx, originMailboxId, postDispatchHookId, metadata, hypMsg, remainingCoins)
+	remainingCoins, neg := maxFee.SafeSub(chargedCoinsRequired...)
+	if neg {
+		return util.HexAddress{}, fmt.Errorf("remaining coins cannot be negative")
+	}
+
+	chargedCoinsDefault, err := k.PostDispatch(ctx, originMailboxId, postDispatchHookId, metadata, hypMsg, remainingCoins)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
 
-	chargedCoins := finalCoins.Add(remainingCoins...)
+	chargedCoins := chargedCoinsRequired.Add(chargedCoinsDefault...)
 
 	if chargedCoins.IsAnyGT(maxFee) {
 		return util.HexAddress{}, fmt.Errorf("maxFee exceeded %s > %s", chargedCoins.String(), maxFee.String())

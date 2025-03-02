@@ -34,7 +34,7 @@ func NewMailboxCmd() *cobra.Command {
 
 func CmdCreateMailbox() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-mailbox [default-ism-id]",
+		Use:   "create [default-ism-id]",
 		Short: "Create a Hyperlane Mailbox",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -155,7 +155,7 @@ func CmdProcessMessage() *cobra.Command {
 
 func CmdSetMailbox() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-mailbox [mailbox-id]",
+		Use:   "set [mailbox-id]",
 		Short: "Update a Hyperlane Mailbox",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {

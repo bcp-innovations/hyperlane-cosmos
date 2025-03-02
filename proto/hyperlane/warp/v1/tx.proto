@@ -22,23 +22,16 @@ service Msg {
   rpc CreateSyntheticToken(MsgCreateSyntheticToken)
       returns (MsgCreateSyntheticTokenResponse);
 
-  // SetTokenOwner ...
-  rpc SetTokenOwner(MsgSetTokenOwner) returns (MsgSetTokenOwnerResponse);
+  // SetToken ...
+  rpc SetToken(MsgSetToken) returns (MsgSetTokenResponse);
 
   // EnrollRemoteRouter ...
   rpc EnrollRemoteRouter(MsgEnrollRemoteRouter)
       returns (MsgEnrollRemoteRouterResponse);
 
-  // SetRemoteRouter ...
-  rpc SetRemoteRouter(MsgSetRemoteRouter) returns (MsgSetRemoteRouterResponse);
-
   // UnrollRemoteRouter ...
   rpc UnrollRemoteRouter(MsgUnrollRemoteRouter)
       returns (MsgUnrollRemoteRouterResponse);
-
-  // SetInterchainSecurityModule ...
-  rpc SetInterchainSecurityModule(MsgSetInterchainSecurityModule)
-      returns (MsgSetInterchainSecurityModuleResponse);
 
   // RemoteTransfer ...
   rpc RemoteTransfer(MsgRemoteTransfer) returns (MsgRemoteTransferResponse);
@@ -73,19 +66,20 @@ message MsgCreateSyntheticToken {
 // MsgCreateSyntheticTokenResponse ...
 message MsgCreateSyntheticTokenResponse { string id = 1; }
 
-// MsgSetTokenOwner ...
-message MsgSetTokenOwner {
+// MsgSetToken ...
+message MsgSetToken {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgSetTokenOwner";
+  option (amino.name) = "hyperlane/warp/MsgSetToken";
 
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string token_id = 2;
   string new_owner = 3;
+  string ism_id = 4;
 }
 
-// MsgSetTokenOwnerResponse ...
-message MsgSetTokenOwnerResponse {}
+// MsgSetTokenResponse ...
+message MsgSetTokenResponse {}
 
 // MsgEnrollRemoteRouter ...
 message MsgEnrollRemoteRouter {
@@ -102,21 +96,6 @@ message MsgEnrollRemoteRouter {
 // MsgEnrollRemoteRouterResponse ...
 message MsgEnrollRemoteRouterResponse {}
 
-// MsgSetRemoteRouter ...
-message MsgSetRemoteRouter {
-  option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgSetRemoteRouter";
-
-  // owner is the message sender.
-  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string token_id = 2;
-
-  RemoteRouter remote_router = 3;
-}
-
-// MsgSetRemoteRouterResponse ...
-message MsgSetRemoteRouterResponse {}
-
 // MsgUnrollRemoteRouter ...
 message MsgUnrollRemoteRouter {
   option (cosmos.msg.v1.signer) = "owner";
@@ -130,20 +109,6 @@ message MsgUnrollRemoteRouter {
 
 // MsgUnrollRemoteRouterResponse ...
 message MsgUnrollRemoteRouterResponse {}
-
-// MsgSetInterchainSecurityModule ...
-message MsgSetInterchainSecurityModule {
-  option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgSetInterchainSecurityModule";
-
-  // owner is the message sender.
-  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string token_id = 2;
-  string ism_id = 3;
-}
-
-// MsgSetInterchainSecurityModuleResponse ...
-message MsgSetInterchainSecurityModuleResponse {}
 
 // MsgRemoteTransfer ...
 message MsgRemoteTransfer {

@@ -113,17 +113,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		nonExistingIsmId := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0"
 
 		// Act
-		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
+		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
 		})
 		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner.Address,
-			TokenId: getTokenIdFromResponse(res).String(),
-			IsmId:   nonExistingIsmId,
-		})
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("ism with id %s does not exist", nonExistingIsmId)))
@@ -145,19 +139,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgCreateSyntheticToken (valid)", func() {
 		// Arrange
-		mailboxId, _, ismId := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
 		// Act
-		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
+		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
-		})
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner.Address,
-			TokenId: getTokenIdFromResponse(res).String(),
-			IsmId:   ismId.String(),
 		})
 
 		// Assert
@@ -248,20 +235,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgCreateCollateralToken (valid)", func() {
 		// Arrange
-		mailboxId, _, ismId := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
 		// Act
-		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+		_, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId.String(),
 			OriginDenom:   denom,
-		})
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner.Address,
-			TokenId: getTokenIdFromResponse(res).String(),
-			IsmId:   ismId.String(),
 		})
 
 		// Assert
@@ -360,6 +340,54 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(tokens.RemoteRouters).To(HaveLen(0))
 	})
 
+	It("MsgEnrollRemoteRouter (invalid) update with non-owner address", func() {
+		// Arrange
+		remoteRouter := types.RemoteRouter{
+			ReceiverDomain:   1,
+			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			Gas:              math.NewInt(50000),
+		}
+
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId.String(),
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId, err := util.DecodeHexAddress(response.Id)
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
+			Owner:        owner.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: &remoteRouter,
+		})
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
+			Owner:        sender.Address,
+			TokenId:      tokenId.String(),
+			RemoteRouter: nil,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own token with id %s", sender.Address, tokenId.String())))
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
+			Id: tokenId.String(),
+		})
+		Expect(err).To(BeNil())
+		Expect(tokens.RemoteRouters).To(HaveLen(1))
+		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
+	})
+
 	It("MsgEnrollRemoteRouter (invalid) invalid remote router", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
@@ -439,258 +467,6 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 		Expect(tokens.RemoteRouters).To(HaveLen(1))
 		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
-	})
-
-	It("MsgSetRemoteRouter (invalid) invalid Token ID", func() {
-		// Arrange
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
-
-		res, err := s.RunTx(&types.MsgCreateCollateralToken{
-			Owner:         owner.Address,
-			OriginMailbox: mailboxId.String(),
-			OriginDenom:   denom,
-		})
-		Expect(err).To(BeNil())
-
-		var response types.MsgCreateCollateralTokenResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
-		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      tokenId.String(),
-			RemoteRouter: &remoteRouter,
-		})
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgSetRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      tokenId.String() + "test",
-			RemoteRouter: nil,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("invalid token id %s", tokenId.String()+"test")))
-
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
-			Id: tokenId.String(),
-		})
-		Expect(err).To(BeNil())
-		Expect(tokens.RemoteRouters).To(HaveLen(1))
-		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
-	})
-
-	It("MsgSetRemoteRouter (invalid) non-existing Token ID", func() {
-		// Arrange
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-
-		nonExistingTokenId := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
-
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
-
-		res, err := s.RunTx(&types.MsgCreateCollateralToken{
-			Owner:         owner.Address,
-			OriginMailbox: mailboxId.String(),
-			OriginDenom:   denom,
-		})
-		Expect(err).To(BeNil())
-
-		var response types.MsgCreateCollateralTokenResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
-		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      tokenId.String(),
-			RemoteRouter: &remoteRouter,
-		})
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgSetRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      nonExistingTokenId,
-			RemoteRouter: nil,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("token with id %s not found", nonExistingTokenId)))
-
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
-			Id: tokenId.String(),
-		})
-		Expect(err).To(BeNil())
-		Expect(tokens.RemoteRouters).To(HaveLen(1))
-		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
-	})
-
-	It("MsgSetRemoteRouter (invalid) non-owner address", func() {
-		// Arrange
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
-
-		res, err := s.RunTx(&types.MsgCreateCollateralToken{
-			Owner:         owner.Address,
-			OriginMailbox: mailboxId.String(),
-			OriginDenom:   denom,
-		})
-		Expect(err).To(BeNil())
-
-		var response types.MsgCreateCollateralTokenResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
-		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      tokenId.String(),
-			RemoteRouter: &remoteRouter,
-		})
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgSetRemoteRouter{
-			Owner:        sender.Address,
-			TokenId:      tokenId.String(),
-			RemoteRouter: nil,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own token with id %s", sender.Address, tokenId.String())))
-
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
-			Id: tokenId.String(),
-		})
-		Expect(err).To(BeNil())
-		Expect(tokens.RemoteRouters).To(HaveLen(1))
-		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
-	})
-
-	It("MsgSetRemoteRouter (invalid) invalid remote router", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-
-		res, err := s.RunTx(&types.MsgCreateCollateralToken{
-			Owner:         owner.Address,
-			OriginMailbox: mailboxId.String(),
-			OriginDenom:   denom,
-		})
-		Expect(err).To(BeNil())
-
-		var response types.MsgCreateCollateralTokenResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
-		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
-
-		err = s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      tokenId.String(),
-			RemoteRouter: &remoteRouter,
-		})
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgSetRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      tokenId.String(),
-			RemoteRouter: nil,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid remote router"))
-
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
-			Id: tokenId.String(),
-		})
-		Expect(err).To(BeNil())
-		Expect(tokens.RemoteRouters).To(HaveLen(1))
-		Expect(tokens.RemoteRouters[0]).To(Equal(&remoteRouter))
-	})
-
-	It("MsgSetRemoteRouter (valid)", func() {
-		// Arrange
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-		updatedRemoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
-			Gas:              math.NewInt(40000),
-		}
-
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
-
-		res, err := s.RunTx(&types.MsgCreateCollateralToken{
-			Owner:         owner.Address,
-			OriginMailbox: mailboxId.String(),
-			OriginDenom:   denom,
-		})
-		Expect(err).To(BeNil())
-
-		var response types.MsgCreateCollateralTokenResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
-		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
-
-		err = s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      tokenId.String(),
-			RemoteRouter: &remoteRouter,
-		})
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgSetRemoteRouter{
-			Owner:        owner.Address,
-			TokenId:      tokenId.String(),
-			RemoteRouter: &updatedRemoteRouter,
-		})
-
-		// Assert
-		Expect(err).To(BeNil())
-
-		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).RemoteRouters(s.Ctx(), &types.QueryRemoteRoutersRequest{
-			Id: tokenId.String(),
-		})
-		Expect(err).To(BeNil())
-		Expect(tokens.RemoteRouters).To(HaveLen(1))
-		Expect(tokens.RemoteRouters[0]).To(Equal(&updatedRemoteRouter))
 	})
 
 	It("MsgUnrollRemoteRouter (invalid) invalid Token ID", func() {
@@ -1141,14 +917,15 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner.Address,
-			TokenId: tokenId.String(),
-			IsmId:   "",
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:    owner.Address,
+			TokenId:  tokenId.String(),
+			IsmId:    "",
+			NewOwner: "",
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("ism id cannot be empty"))
+		Expect(err.Error()).To(Equal("new owner or ism id required"))
 	})
 
 	It("MsgSetInterchainSecurityModule (invalid) invalid Token ID", func() {
@@ -1171,10 +948,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner.Address,
-			TokenId: tokenId.String() + "test",
-			IsmId:   secondIsmId.String(),
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:    owner.Address,
+			TokenId:  tokenId.String() + "test",
+			IsmId:    secondIsmId.String(),
+			NewOwner: "",
 		})
 
 		// Assert
@@ -1201,10 +979,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   sender.Address,
-			TokenId: tokenId.String(),
-			IsmId:   secondIsmId.String(),
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:    sender.Address,
+			TokenId:  tokenId.String(),
+			IsmId:    secondIsmId.String(),
+			NewOwner: "",
 		})
 
 		// Assert
@@ -1231,10 +1010,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner.Address,
-			TokenId: tokenId.String(),
-			IsmId:   secondIsmId.String() + "test",
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:    owner.Address,
+			TokenId:  tokenId.String(),
+			IsmId:    secondIsmId.String() + "test",
+			NewOwner: "",
 		})
 
 		// Assert
@@ -1261,10 +1041,11 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner.Address,
-			TokenId: tokenId.String(),
-			IsmId:   secondIsmId.String(),
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:    owner.Address,
+			TokenId:  tokenId.String(),
+			IsmId:    secondIsmId.String(),
+			NewOwner: "",
 		})
 
 		// Assert
@@ -1488,12 +1269,6 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 			OriginMailbox: mailboxId.String(),
 		})
 		Expect(err).To(BeNil())
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner,
-			TokenId: getTokenIdFromResponse(res).String(),
-			IsmId:   ismId.String(),
-		})
-		Expect(err).To(BeNil())
 
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
@@ -1505,12 +1280,6 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner,
 			OriginMailbox: mailboxId.String(),
-		})
-		Expect(err).To(BeNil())
-		_, err = s.RunTx(&types.MsgSetInterchainSecurityModule{
-			Owner:   owner,
-			TokenId: getTokenIdFromResponse(res).String(),
-			IsmId:   ismId.String(),
 		})
 		Expect(err).To(BeNil())
 
@@ -1530,10 +1299,11 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		Expect(err).To(BeNil())
 	}
 
-	_, err := s.RunTx(&types.MsgSetInterchainSecurityModule{
-		Owner:   owner,
-		TokenId: tokenId.String(),
-		IsmId:   ismId.String(),
+	_, err := s.RunTx(&types.MsgSetToken{
+		Owner:    owner,
+		TokenId:  tokenId.String(),
+		IsmId:    ismId.String(),
+		NewOwner: "",
 	})
 	Expect(err).To(BeNil())
 
@@ -1556,13 +1326,4 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 	}
 
 	return tokenId, mailboxId, igpId, ismId
-}
-
-func getTokenIdFromResponse(res *sdk.Result) util.HexAddress {
-	var response types.MsgCreateSyntheticTokenResponse
-	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
-	Expect(err).To(BeNil())
-	tokenId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-	return tokenId
 }
