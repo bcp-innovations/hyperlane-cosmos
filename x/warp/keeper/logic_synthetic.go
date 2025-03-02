@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee sdk.Coin) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customHookId string, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -63,8 +63,8 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 	}
 
 	customPostDispatchHookId := util.NewZeroAddress()
-	if customIgpId != "" {
-		customPostDispatchHookId, err = util.DecodeHexAddress(customIgpId)
+	if customHookId != "" {
+		customPostDispatchHookId, err = util.DecodeHexAddress(customHookId)
 		if err != nil {
 			return util.HexAddress{}, err
 		}
@@ -82,11 +82,10 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 
 		warpPayload.Bytes(),
 		util.StandardHookMetadata{
-			Variant:  1,
-			Value:    maxFee.Amount,
-			GasLimit: gas,
-			Address:  senderAcc,
-		}.Bytes(),
+			GasLimit:           gas,
+			Address:            senderAcc,
+			CustomHookMetadata: customHookMetadata,
+		},
 		customPostDispatchHookId,
 	)
 	if err != nil {
@@ -114,26 +113,3 @@ func (k *Keeper) RemoteReceiveSynthetic(ctx context.Context, token types.HypToke
 
 	return nil
 }
-
-// func ValidateTokenMetadata(metadata *types.TokenMetadata) error {
-// 	if metadata == nil {
-// 		return fmt.Errorf("metadata is required")
-// 	}
-
-// 	if metadata.Symbol == "" {
-// 		return fmt.Errorf("token symbol is required")
-// 	}
-
-// 	if metadata.Name == "" {
-// 		return fmt.Errorf("token name is required")
-// 	}
-
-// 	if metadata.Decimals == 0 {
-// 		return fmt.Errorf("token decimals cannot be zero")
-// 	}
-
-// 	if metadata.TotalSupply.IsZero() {
-// 		return fmt.Errorf("token total supply cannot be zero")
-// 	}
-// 	return nil
-// }

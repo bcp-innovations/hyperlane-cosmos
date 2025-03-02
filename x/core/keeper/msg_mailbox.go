@@ -56,6 +56,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 }
 
 // DispatchMessage assumes an Interchain GasPaymaster as a hook, as there are currently no other hooks available
+// TODO: Remove
 func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchMessage) (*types.MsgDispatchMessageResponse, error) {
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
@@ -90,11 +91,10 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 	}
 
 	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, sender, sdk.NewCoins(req.MaxFee), req.Destination, recipient, bodyBytes, util.StandardHookMetadata{
-		Variant:  1,
-		Value:    req.MaxFee.Amount,
-		GasLimit: req.GasLimit,
-		Address:  accSender,
-	}.Bytes(), customIgpId)
+		GasLimit:           req.GasLimit,
+		Address:            accSender,
+		CustomHookMetadata: []byte{},
+	}, customIgpId)
 	if err != nil {
 		return nil, err
 	}

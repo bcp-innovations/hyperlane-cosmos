@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee sdk.Coin) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customHookId string, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -63,10 +63,10 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		return util.HexAddress{}, err
 	}
 
-	igpCustomHookId := util.NewZeroAddress()
-	if customIgpId != "" {
+	customPostDispatchHookId := util.NewZeroAddress()
+	if customHookId != "" {
 
-		igpCustomHookId, err = util.DecodeHexAddress(customIgpId)
+		customPostDispatchHookId, err = util.DecodeHexAddress(customHookId)
 		if err != nil {
 			return util.HexAddress{}, err
 		}
@@ -85,12 +85,11 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		warpPayload.Bytes(), // message body
 
 		util.StandardHookMetadata{
-			Variant:  1,
-			Value:    maxFee.Amount,
-			GasLimit: gas,
-			Address:  senderAcc,
-		}.Bytes(), // metadata for gas payment
-		igpCustomHookId,
+			GasLimit:           gas,
+			Address:            senderAcc,
+			CustomHookMetadata: customHookMetadata,
+		},
+		customPostDispatchHookId,
 	)
 	if err != nil {
 		return util.HexAddress{}, err

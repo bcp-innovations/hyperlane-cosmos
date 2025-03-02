@@ -22,17 +22,7 @@ func (i InterchainGasPaymasterHookHandler) HookType() uint8 {
 	return types.POST_DISPATCH_HOOK_TYPE_INTERCHAIN_GAS_PAYMASTER
 }
 
-func (i InterchainGasPaymasterHookHandler) SupportsMetadata(metadata []byte) bool {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
-	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
-	if err != nil {
-		return nil, err
-	}
-
+func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	return i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, metadata.GasLimit, maxFee)
 }
 
@@ -112,12 +102,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	return nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, _, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
-	metadata, err := util.ParseStandardHookMetadata(rawMetadata)
-	if err != nil {
-		return sdk.NewCoins(), err
-	}
-
+func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, _, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage) (sdk.Coins, error) {
 	return i.QuoteGasPayment(ctx, hookId, message.Destination, metadata.GasLimit)
 }
 

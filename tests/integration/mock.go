@@ -40,7 +40,7 @@ func (n NoopPostDispatchHookHandler) Exists(ctx context.Context, hookId util.Hex
 	return ok, nil
 }
 
-func (n NoopPostDispatchHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+func (n NoopPostDispatchHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	if has, err := n.Exists(ctx, hookId); err != nil || !has {
 		return sdk.Coins{}, err
 	}
@@ -48,14 +48,10 @@ func (n NoopPostDispatchHookHandler) PostDispatch(ctx context.Context, mailboxId
 	return sdk.NewCoins(), nil
 }
 
-func (n NoopPostDispatchHookHandler) QuoteDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (n NoopPostDispatchHookHandler) QuoteDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage) (sdk.Coins, error) {
 	return sdk.NewCoins(), nil
 }
 
 func (n NoopPostDispatchHookHandler) HookType() uint8 {
 	return MOCK_TYPE_NOOP_POST_DISPATCH
-}
-
-func (n NoopPostDispatchHookHandler) SupportsMetadata(metadata []byte) bool {
-	return false
 }

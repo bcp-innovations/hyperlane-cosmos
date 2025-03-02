@@ -208,15 +208,20 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
 	}
 
+	customHookMetadata, err := util.DecodeEthHex(msg.CustomHookMetadata)
+	if err != nil {
+		return nil, fmt.Errorf("invalid custom hook metadata: %s", err)
+	}
+
 	var messageResultId string
 	if token.TokenType == types.HYP_TOKEN_TYPE_COLLATERAL {
-		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
+		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata)
 		if err != nil {
 			return nil, err
 		}
 		messageResultId = result.String()
 	} else if token.TokenType == types.HYP_TOKEN_TYPE_SYNTHETIC {
-		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
+		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata)
 		if err != nil {
 			return nil, err
 		}
