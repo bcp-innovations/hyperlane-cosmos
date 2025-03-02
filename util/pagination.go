@@ -131,7 +131,7 @@ func GetPaginatedPrefixFromMap[T any, K1 any, K2 any](ctx context.Context, colle
 		// when the query is in reverse we want to pass the chronological last element as the next key
 		// the last element will be at index 0 in that case because the order is descending
 		if reverse {
-			key = keyValues[0].Key
+			key = keyValues[len(keyValues)-1].Key
 		} else {
 			// the current key is the last key that is not in the response, meaning it would be the first key in the next page
 			currentKey, err := it.Key()
@@ -235,7 +235,7 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 		// when the query is in reverse we want to pass the chronological last element as the next key
 		// the last element will be at index 0 in that case because the order is descending
 		if reverse {
-			key = keyValues[0].Key
+			key = keyValues[len(keyValues)-1].Key
 		} else {
 			// the current key is the last key that is not in the response, meaning it would be the first key in the next page
 			currentKey, err := it.Key()
