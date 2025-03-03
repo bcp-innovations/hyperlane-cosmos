@@ -50,6 +50,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		DefaultIsm:      req.DefaultIsm,
 		DefaultHook:     req.DefaultHook,
 		RequiredHook:    req.RequiredHook,
+		LocalDomain:     req.LocalDomain,
 	}
 
 	if err = ms.k.Mailboxes.Set(ctx, prefixedId.GetInternalId(), newMailbox); err != nil {
