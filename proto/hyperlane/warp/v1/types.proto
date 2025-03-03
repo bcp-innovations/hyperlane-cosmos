@@ -7,8 +7,13 @@ import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
 
+// Params
+message Params { option (amino.name) = "hyperlane/warp/Params"; }
+
 // GenesisState is the state that must be provided at genesis.
 message GenesisState {
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
   repeated HypToken tokens = 2
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }

@@ -26,9 +26,8 @@ type Keeper struct {
 	authority string
 
 	enabledTokens []int32
-
+	Params        collections.Item[types.Params]
 	// state management
-
 	Schema collections.Schema
 	// <tokenId> -> Token
 	HypTokens collections.Map[uint64, types.HypToken]
@@ -61,6 +60,7 @@ func NewKeeper(
 		enabledTokens:   enabledTokens,
 		HypTokens:       collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.Uint64Key, codec.CollValue[types.HypToken](cdc)),
 		EnrolledRouters: collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
+		Params:          collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		bankKeeper:      bankKeeper,
 		coreKeeper:      coreKeeper,
 	}
