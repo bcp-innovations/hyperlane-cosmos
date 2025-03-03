@@ -30,23 +30,16 @@ TEST CASES - msg_mailbox.go
 * CreateMailbox (invalid) with valid default ISM (Multisig) and invalid default hook
 * CreateMailbox (invalid) with valid default ISM (Noop) and non-existent default hook
 * CreateMailbox (invalid) with valid default ISM (Multisig) and non-existent default hook
-* CreateMailbox (valid) with NoopISM and required IGP
-* CreateMailbox (valid) with MultisigISM and required IGP
-* CreateMailbox (valid) with NoopISM and optional IGP
-* DispatchMessage (invalid) with empty body
-* DispatchMessage (invalid) with invalid body
-* DispatchMessage (invalid) with invalid Mailbox ID
-* DispatchMessage (invalid) with empty sender
-* DispatchMessage (invalid) with invalid sender
-* DispatchMessage (invalid) with empty recipient
-* DispatchMessage (invalid) with invalid recipient
-* DispatchMessage (valid) with optional IGP
-* DispatchMessage (valid) with optional and no specified IGP
-* DispatchMessage (valid) with required IGP
-* ProcessMessage (invalid) with invalid Mailbox ID
+* DispatchMessage (valid) with NoopISM
+* DispatchMessage (valid) with MultisigISM
+* DispatchMessage (valid) with custom hook
+* DispatchMessage (valid)
 * ProcessMessage (invalid) with empty message
 * ProcessMessage (invalid) with invalid non-hex message
-* ProcessMessage (invalid) with invalid metadata
+* ProcessMessage (invalid) with invalid metadata (Noop ISM)
+* SetMailbox (valid) without hooks
+* SetMailbox (valid) without hooks
+* SetMailbox (valid)
 
 */
 
@@ -363,7 +356,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err).To(BeNil())
 	})
 
-	It("SetMailbox (invalid) with non-owner address", func() {
+	It("SetMailbox (valid) without hooks", func() {
 		// Arrange
 		mailboxId, requiredHook, defaultHook, ism := createValidMailbox(s, creator.Address, "noop", 1)
 
