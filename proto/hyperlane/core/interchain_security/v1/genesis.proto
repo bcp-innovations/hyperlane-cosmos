@@ -6,7 +6,7 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_inter
 import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
 
-// GenesisState defines the ibc client submodule's genesis state.
+// GenesisState defines the 01_interchain_security submodule's genesis state.
 message GenesisState {
   // accounts are the accounts present at genesis.
   repeated google.protobuf.Any isms = 1;

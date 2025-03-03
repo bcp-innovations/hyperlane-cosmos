@@ -8,17 +8,17 @@ import (
 
 import "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/client/cli"
 
-// Name returns the IBC channel ICS name.
+// Name returns the Submodule name.
 func Name() string {
 	return types.SubModuleName
 }
 
-// GetTxCmd returns the root tx command for IBC channels.
+// GetTxCmd returns the root tx command.
 func GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
 }
 
-// GetQueryCmd returns the root query command for IBC channels.
+// GetQueryCmd returns the root query command.
 func GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
@@ -28,7 +28,7 @@ func RegisterMsgServer(server grpc.Server, msgServer types.MsgServer) {
 	types.RegisterMsgServer(server, msgServer)
 }
 
-// RegisterQueryService registers the gRPC query service for IBC channels.
+// RegisterQueryService registers the gRPC query service.
 func RegisterQueryService(server grpc.Server, queryServer types.QueryServer) {
 	types.RegisterQueryServer(server, queryServer)
 }
