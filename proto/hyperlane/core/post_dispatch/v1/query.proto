@@ -118,9 +118,11 @@ message QueryMerkleTreeHooks {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-// QueryCountResponse ...
+// QueryMerkleTreeHooksResponse ...
 message QueryMerkleTreeHooksResponse {
-  repeated QueryMerkleTreeHookResponse merkle_tree_hooks = 1;
+  repeated WrappedMerkleTreeHookResponse merkle_tree_hooks = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  ;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -129,6 +131,13 @@ message QueryMerkleTreeHook { string id = 1; }
 
 // QueryMerkleTreeHookResponse
 message QueryMerkleTreeHookResponse {
+  WrappedMerkleTreeHookResponse merkle_tree_hook = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  ;
+}
+
+// WrappedMerkleTreeHookResponse
+message WrappedMerkleTreeHookResponse {
   string id = 1;
   string owner = 2;
   string mailbox_id = 3;
@@ -139,7 +148,7 @@ message QueryMerkleTreeHookResponse {
 // TreeResponse
 message TreeResponse {
   // leafs ...
-  repeated bytes leaf = 1;
+  repeated bytes leafs = 1;
 
   // count ...
   uint32 count = 2;
@@ -148,13 +157,13 @@ message TreeResponse {
   bytes root = 3;
 }
 
-// QueryNoopHook ...
+// QueryNoopHookRequest ...
 message QueryNoopHookRequest { string id = 1; }
 
 // QueryNoopHookResponse ...
 message QueryNoopHookResponse { NoopHook noop_hook = 1; }
 
-// QueryNoopHooks ...
+// QueryNoopHooksRequest ...
 message QueryNoopHooksRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }

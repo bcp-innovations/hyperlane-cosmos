@@ -131,7 +131,7 @@ func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkl
 		return nil, err
 	}
 
-	responses := make([]*types.QueryMerkleTreeHookResponse, len(values))
+	responses := make([]types.WrappedMerkleTreeHookResponse, len(values))
 	for i := 0; i < len(values); i++ {
 		merkleTreeHook := values[i]
 		tree, err := types.TreeFromProto(merkleTreeHook.Tree)
@@ -140,14 +140,15 @@ func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkl
 		}
 
 		root := tree.GetRoot()
-		responses[i] = &types.QueryMerkleTreeHookResponse{
+
+		responses[i] = types.WrappedMerkleTreeHookResponse{
 			Id:        merkleTreeHook.Id.String(),
 			Owner:     merkleTreeHook.Owner,
 			MailboxId: merkleTreeHook.MailboxId,
 			MerkleTree: &types.TreeResponse{
 				Count: merkleTreeHook.Tree.Count,
 				Root:  root[:],
-				Leaf:  merkleTreeHook.Tree.Branch,
+				Leafs: merkleTreeHook.Tree.Branch,
 			},
 		}
 	}
@@ -176,16 +177,16 @@ func (qs queryServer) MerkleTreeHook(ctx context.Context, req *types.QueryMerkle
 
 	root := tree.GetRoot()
 
-	return &types.QueryMerkleTreeHookResponse{
+	return &types.QueryMerkleTreeHookResponse{MerkleTreeHook: types.WrappedMerkleTreeHookResponse{
 		Id:        merkleTreeHook.Id.String(),
 		Owner:     merkleTreeHook.Owner,
 		MailboxId: merkleTreeHook.MailboxId,
 		MerkleTree: &types.TreeResponse{
 			Count: merkleTreeHook.Tree.Count,
 			Root:  root[:],
-			Leaf:  merkleTreeHook.Tree.Branch,
+			Leafs: merkleTreeHook.Tree.Branch,
 		},
-	}, nil
+	}}, nil
 }
 
 //

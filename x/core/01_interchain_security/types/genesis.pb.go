@@ -24,7 +24,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// GenesisState defines the ibc client submodule's genesis state.
+// GenesisState defines the 01_interchain_security submodule's genesis state.
 type GenesisState struct {
 	// accounts are the accounts present at genesis.
 	Isms                      []*types.Any                             `protobuf:"bytes,1,rep,name=isms,proto3" json:"isms,omitempty"`
