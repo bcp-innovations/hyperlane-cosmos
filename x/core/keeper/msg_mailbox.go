@@ -7,7 +7,6 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
 func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailbox) (*types.MsgCreateMailboxResponse, error) {
@@ -58,55 +57,6 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 	}
 
 	return &types.MsgCreateMailboxResponse{Id: prefixedId.String()}, nil
-}
-
-// DispatchMessage assumes an Interchain GasPaymaster as a hook, as there are currently no other hooks available
-// TODO: Remove
-func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchMessage) (*types.MsgDispatchMessageResponse, error) {
-	goCtx := sdk.UnwrapSDKContext(ctx)
-
-	bodyBytes, err := hexutil.Decode(req.Body)
-	if err != nil {
-		return nil, fmt.Errorf("invalid body: %s", err)
-	}
-
-	mailBoxId, err := util.DecodeHexAddress(req.MailboxId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid mailbox id: %s", err)
-	}
-
-	sender, err := util.ParseFromCosmosAcc(req.Sender)
-	if err != nil {
-		return nil, fmt.Errorf("invalid sender: %s", err)
-	}
-
-	accSender, err := sdk.AccAddressFromBech32(req.Sender)
-	if err != nil {
-		return nil, fmt.Errorf("invalid sender: %s", err)
-	}
-
-	recipient, err := util.DecodeHexAddress(req.Recipient)
-	if err != nil {
-		return nil, fmt.Errorf("invalid recipient: %s", err)
-	}
-
-	_, err = util.DecodeHexAddress(req.CustomIgp)
-	if req.CustomIgp != "" && err != nil {
-		return nil, fmt.Errorf("invalid customIgp: %s", err)
-	}
-
-	msgId, err := ms.k.DispatchMessage(goCtx, mailBoxId, sender, sdk.NewCoins(req.MaxFee), req.Destination, recipient, bodyBytes, util.StandardHookMetadata{
-		GasLimit:           req.GasLimit,
-		Address:            accSender,
-		CustomHookMetadata: []byte{},
-	}, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.MsgDispatchMessageResponse{
-		MessageId: msgId.String(),
-	}, nil
 }
 
 func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMessage) (*types.MsgProcessMessageResponse, error) {

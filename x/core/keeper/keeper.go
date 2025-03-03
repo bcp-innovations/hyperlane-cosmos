@@ -90,7 +90,11 @@ func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (
 	if err != nil {
 		return util.HexAddress{}, err
 	}
-	return (*handler).ReceiverIsmId(ctx, recipient)
+	ism, err := (*handler).ReceiverIsmId(ctx, recipient)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+	return *ism, nil
 }
 
 func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
@@ -210,6 +214,14 @@ func (k Keeper) MailboxIdExists(ctx context.Context, mailboxId util.HexAddress) 
 	mailbox, err := k.Mailboxes.Has(ctx, mailboxId.GetInternalId())
 	if err != nil {
 		return false, err
+	}
+	return mailbox, nil
+}
+
+func (k Keeper) GetMailbox(ctx context.Context, mailboxId util.HexAddress) (types.Mailbox, error) {
+	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
+	if err != nil {
+		return types.Mailbox{}, err
 	}
 	return mailbox, nil
 }

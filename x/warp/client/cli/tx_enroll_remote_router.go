@@ -13,6 +13,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
@@ -37,9 +38,14 @@ func CmdEnrollRemoteRouter() *cobra.Command {
 				return errors.New("failed to convert `gas` into math.Int")
 			}
 
+			tokenId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgEnrollRemoteRouter{
 				Owner:   clientCtx.GetFromAddress().String(),
-				TokenId: args[0],
+				TokenId: tokenId,
 				RemoteRouter: &types.RemoteRouter{
 					ReceiverDomain:   uint32(receiverDomain),
 					ReceiverContract: args[2],

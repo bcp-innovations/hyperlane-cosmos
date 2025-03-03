@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -48,19 +47,6 @@ func (qs queryServer) RemoteRouters(ctx context.Context, request *types.QueryRem
 		RemoteRouters: remoteRouters,
 		Pagination:    page,
 	}, nil
-}
-
-func (qs queryServer) Params(ctx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
-	params, err := qs.k.Params.Get(ctx)
-	if err != nil {
-		if errors.Is(err, collections.ErrNotFound) {
-			return &types.QueryParamsResponse{Params: types.Params{}}, nil
-		}
-
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	return &types.QueryParamsResponse{Params: params}, nil
 }
 
 func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBridgedSupplyRequest) (*types.QueryBridgedSupplyResponse, error) {

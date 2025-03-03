@@ -1,11 +1,8 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
-
-	"cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -25,7 +22,6 @@ func NewMailboxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		CmdCreateMailbox(),
-		CmdDispatchMessage(),
 		CmdProcessMessage(),
 		CmdSetMailbox(),
 	)
@@ -70,66 +66,6 @@ func CmdCreateMailbox() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdDispatchMessage() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "dispatch [mailbox-id] [recipient] [destination-domain] [message-body]",
-		Short: "Dispatch a Hyperlane message",
-		Args:  cobra.ExactArgs(4),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			mailboxId := args[0]
-			recipient := args[1]
-
-			destinationDomain, err := strconv.ParseUint(args[2], 10, 32)
-			if err != nil {
-				return err
-			}
-
-			messageBody := args[3]
-
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			gasLimitInt, ok := math.NewIntFromString(gasLimit)
-			if !ok {
-				return errors.New("failed to convert `gasLimit` into math.Int")
-			}
-
-			maxFeeCoin, err := sdk.ParseCoinNormalized(maxFee)
-			if err != nil {
-				return err
-			}
-
-			msg := types.MsgDispatchMessage{
-				MailboxId:   mailboxId,
-				Sender:      clientCtx.GetFromAddress().String(),
-				Destination: uint32(destinationDomain),
-				Recipient:   recipient,
-				Body:        messageBody,
-				CustomIgp:   igpId,
-				GasLimit:    gasLimitInt,
-				MaxFee:      maxFeeCoin,
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	cmd.Flags().StringVar(&igpId, "igp-id", "", "custom InterchainGasPaymaster ID; only used when IGP is not required")
-
-	cmd.Flags().StringVar(&gasLimit, "gas-limit", "50000", "InterchainGasPayment gas limit (default: 50,000)")
-
-	cmd.Flags().StringVar(&maxFee, "max-hyperlane-fee", "0", "maximum Hyperlane InterchainGasPayment")
-	if err := cmd.MarkFlagRequired("max-hyperlane-fee"); err != nil {
-		panic(fmt.Errorf("flag 'max-hyperlane-fee' is required: %w", err))
-	}
 
 	return cmd
 }

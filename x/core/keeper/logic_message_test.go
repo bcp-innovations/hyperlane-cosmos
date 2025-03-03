@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"encoding/hex"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -41,23 +42,30 @@ var _ = Describe("logic_message.go", Ordered, func() {
 
 	It("DispatchMessage (invalid) with non-existing Mailbox ID", func() {
 		// Arrange
-		nonExistingMailboxId := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		nonExistingMailboxId, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
-		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   nonExistingMailboxId,
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
+		hexSender, _ := util.DecodeHexAddress(sender.Address)
+		recipient, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		body, _ := hex.DecodeString("0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b")
+
+		_, err = s.App().HyperlaneKeeper.DispatchMessage(
+			s.Ctx(),
+			nonExistingMailboxId,
+			hexSender,
+			sdk.NewCoins(sdk.NewCoin("acoin", math.NewInt(1000000))),
+			1,
+			recipient,
+			body,
+			util.StandardHookMetadata{
+				GasLimit: math.NewInt(50000),
+				Address:  sender.AccAddress,
+			},
+			nil,
+		)
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId)))

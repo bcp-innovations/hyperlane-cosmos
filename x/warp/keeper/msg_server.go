@@ -22,17 +22,12 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, fmt.Errorf("module disabled synthetic tokens")
 	}
 
-	mailboxId, err := util.DecodeHexAddress(msg.OriginMailbox)
-	if err != nil {
-		return nil, fmt.Errorf("invalid mailbox id: %s", err)
-	}
-
-	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, mailboxId)
+	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, msg.OriginMailbox)
 	if err != nil {
 		return nil, err
 	}
 	if !has {
-		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
+		return nil, fmt.Errorf("failed to find mailbox with id: %s", msg.OriginMailbox.String())
 	}
 
 	tokenId, err := ms.k.coreKeeper.AppRouter().GetNextSequence(ctx, uint8(types.HYP_TOKEN_TYPE_SYNTHETIC))
@@ -44,7 +39,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		Id:            tokenId,
 		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
-		OriginMailbox: mailboxId.Bytes(),
+		OriginMailbox: msg.OriginMailbox,
 		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
 	}
 
@@ -66,17 +61,12 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		return nil, fmt.Errorf("origin denom %s is invalid", msg.OriginDenom)
 	}
 
-	mailboxId, err := util.DecodeHexAddress(msg.OriginMailbox)
-	if err != nil {
-		return nil, fmt.Errorf("invalid mailbox id: %s", err)
-	}
-
-	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, mailboxId)
+	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, msg.OriginMailbox)
 	if err != nil {
 		return nil, err
 	}
 	if !has {
-		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
+		return nil, fmt.Errorf("failed to find mailbox with id: %s", msg.OriginMailbox.String())
 	}
 
 	tokenId, err := ms.k.coreKeeper.AppRouter().GetNextSequence(ctx, uint8(types.HYP_TOKEN_TYPE_COLLATERAL))
@@ -88,7 +78,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		Id:            tokenId,
 		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_COLLATERAL,
-		OriginMailbox: mailboxId.Bytes(),
+		OriginMailbox: msg.OriginMailbox,
 		OriginDenom:   msg.OriginDenom,
 	}
 
@@ -99,15 +89,11 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 }
 
 func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*types.MsgSetTokenResponse, error) {
-	if msg.NewOwner == "" && msg.IsmId == "" {
+	if msg.NewOwner == "" && msg.IsmId == nil {
 		return nil, fmt.Errorf("new owner or ism id required")
 	}
 
-	tokenId, err := util.DecodeHexAddress(msg.TokenId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
-	}
-
+	tokenId := msg.TokenId
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
@@ -121,13 +107,11 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 		token.Owner = msg.NewOwner
 	}
 
-	if msg.IsmId != "" {
-		ismAddress, err := util.DecodeHexAddress(msg.IsmId)
-		if err != nil {
-			return nil, fmt.Errorf("invalid ism id: %s", err)
+	if msg.IsmId != nil {
+		if err := ms.k.coreKeeper.AssertIsmExists(ctx, *msg.IsmId); err != nil {
+			return nil, err
 		}
-
-		token.IsmId = ismAddress.String()
+		token.IsmId = msg.IsmId
 	}
 
 	err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), token)
@@ -139,11 +123,7 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 }
 
 func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnrollRemoteRouter) (*types.MsgEnrollRemoteRouterResponse, error) {
-	tokenId, err := util.DecodeHexAddress(msg.TokenId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
-	}
-
+	tokenId := msg.TokenId
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
@@ -169,11 +149,7 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 }
 
 func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnrollRemoteRouter) (*types.MsgUnrollRemoteRouterResponse, error) {
-	tokenId, err := util.DecodeHexAddress(msg.TokenId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
-	}
-
+	tokenId := msg.TokenId
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("token with id %s not found", tokenId.String())

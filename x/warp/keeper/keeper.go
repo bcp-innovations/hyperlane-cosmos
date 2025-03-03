@@ -9,9 +9,11 @@ import (
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
+	"cosmossdk.io/errors"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
@@ -27,7 +29,6 @@ type Keeper struct {
 
 	// state management
 
-	Params collections.Item[types.Params]
 	Schema collections.Schema
 	// <tokenId> -> Token
 	HypTokens collections.Map[uint64, types.HypToken]
@@ -59,7 +60,6 @@ func NewKeeper(
 		authority:       authority,
 		enabledTokens:   enabledTokens,
 		HypTokens:       collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.Uint64Key, codec.CollValue[types.HypToken](cdc)),
-		Params:          collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		EnrolledRouters: collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
 		bankKeeper:      bankKeeper,
 		coreKeeper:      coreKeeper,
@@ -82,24 +82,27 @@ func (k *Keeper) Exists(ctx context.Context, tokenId util.HexAddress) (bool, err
 	return k.HypTokens.Has(ctx, tokenId.GetInternalId())
 }
 
-func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error) {
+func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (*util.HexAddress, error) {
 	token, err := k.HypTokens.Get(ctx, recipient.GetInternalId())
 	if err != nil {
-		return util.HexAddress{}, nil
+		return nil, errors.Wrapf(types.ErrTokenNotFound, "%v", recipient.String())
 	}
 
-	hexAddress, err := util.DecodeHexAddress(token.IsmId)
-	if err != nil {
-		return util.HexAddress{}, err
+	if token.IsmId == nil {
+		mailbox, err := k.coreKeeper.GetMailbox(ctx, token.OriginMailbox)
+		if err != nil {
+			return nil, err
+		}
+		return &mailbox.DefaultIsm, nil
 	}
 
-	return hexAddress, nil
+	return token.IsmId, nil
 }
 
 func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
 	token, err := k.HypTokens.Get(ctx, message.Recipient.GetInternalId())
 	if err != nil {
-		return nil
+		return err
 	}
 
 	payload, err := types.ParseWarpPayload(message.Body)

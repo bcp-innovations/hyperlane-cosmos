@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -17,6 +18,7 @@ type BankKeeper interface {
 
 type CoreKeeper interface {
 	MailboxIdExists(ctx context.Context, mailboxId util.HexAddress) (bool, error)
+	GetMailbox(ctx context.Context, mailboxId util.HexAddress) (coreTypes.Mailbox, error)
 	AppRouter() *util.Router[util.HyperlaneApp]
 	DispatchMessage(
 		ctx sdk.Context,
@@ -34,4 +36,6 @@ type CoreKeeper interface {
 		postDispatchHookId *util.HexAddress,
 	) (messageId util.HexAddress, error error)
 	QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, overwriteHookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage) (sdk.Coins, error)
+	AssertPostDispatchHookExists(ctx context.Context, id util.HexAddress) error
+	AssertIsmExists(ctx context.Context, id util.HexAddress) error
 }

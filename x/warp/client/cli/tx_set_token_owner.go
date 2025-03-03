@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
@@ -23,11 +24,25 @@ func CmdSetToken() *cobra.Command {
 				return err
 			}
 
+			tokenId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			var ism *util.HexAddress = nil
+			if ismId != "" {
+				parsed, err := util.DecodeHexAddress(ismId)
+				if err != nil {
+					return err
+				}
+				ism = &parsed
+			}
+
 			msg := types.MsgSetToken{
 				Owner:    clientCtx.GetFromAddress().String(),
-				TokenId:  args[0],
+				TokenId:  tokenId,
 				NewOwner: newOwner,
-				IsmId:    ismId,
+				IsmId:    ism,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)

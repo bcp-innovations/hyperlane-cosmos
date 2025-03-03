@@ -13,10 +13,6 @@ import "amino/amino.proto";
 
 // Msg defines the module Msg service.
 service Query {
-  // Params returns the module parameters.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/hyperlane/warp/v1/params";
-  }
 
   // Tokens ...
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
@@ -53,7 +49,7 @@ message QueryTokensRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-// QueryParamsResponse is the response type for the Query/Params RPC method.
+// QueryTokensResponse ...
 message QueryTokensResponse {
   // params defines the parameters of the module.
   repeated WrappedHypToken tokens = 1
@@ -77,7 +73,11 @@ message WrappedHypToken {
   string origin_mailbox = 4;
   string origin_denom = 5;
 
-  string ism_id = 7;
+  string ism_id = 7 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
 }
 
 // QueryBridgedSupplyRequest ...
@@ -116,14 +116,4 @@ message QueryQuoteRemoteTransferResponse {
     (amino.dont_omitempty) = true,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
   ];
-}
-
-// QueryParamsRequest is the request type for the Query/Params RPC method.
-message QueryParamsRequest {}
-
-// QueryParamsResponse is the response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params defines the parameters of the module.
-  Params params = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }

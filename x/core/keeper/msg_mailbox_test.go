@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"encoding/hex"
 	"fmt"
 
 	pdTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
@@ -245,182 +246,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), noopId.String())
 	})
 
-	// DispatchMessage
-	It("DispatchMessage (invalid) with empty body", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid body: empty hex string"))
-
-		verifyDispatch(s, mailboxId, 0)
-	})
-
-	It("DispatchMessage (invalid) with invalid body", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "12345",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid body: hex string without 0x prefix"))
-
-		verifyDispatch(s, mailboxId, 0)
-	})
-
-	It("DispatchMessage (invalid) with invalid Mailbox ID", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String() + "test",
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid mailbox id: invalid hex address length"))
-
-		verifyDispatch(s, mailboxId, 0)
-	})
-
-	It("DispatchMessage (invalid) with empty sender", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      "",
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid sender: empty address string is not allowed"))
-
-		verifyDispatch(s, mailboxId, 0)
-	})
-
-	It("DispatchMessage (invalid) with invalid sender", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      "hyperlane01234567889",
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid sender: decoding bech32 failed: invalid checksum (expected ca6a9q got 567889)"))
-
-		verifyDispatch(s, mailboxId, 0)
-	})
-
-	It("DispatchMessage (invalid) with empty recipient", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid recipient: invalid hex address length"))
-
-		verifyDispatch(s, mailboxId, 0)
-	})
-
-	It("DispatchMessage (invalid) with invalid recipient", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e7gzc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid recipient: encoding/hex: invalid byte: U+0067 'g'"))
-
-		verifyDispatch(s, mailboxId, 0)
-	})
-
 	It("DispatchMessage (valid) with optional IGP", func() {
 		// Arrange
 		mailboxId, igpId, _ := createValidMailbox(s, creator.Address, "noop", false, 1)
@@ -429,16 +254,24 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   igpId.String(),
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1250000)),
-		})
+		hexSender, _ := util.DecodeHexAddress(sender.Address)
+		recipient, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		body, _ := hex.DecodeString("0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b")
+
+		_, err = s.App().HyperlaneKeeper.DispatchMessage(
+			s.Ctx(),
+			mailboxId,
+			hexSender,
+			sdk.NewCoins(sdk.NewCoin("acoin", math.NewInt(1250000))),
+			1,
+			recipient,
+			body,
+			util.StandardHookMetadata{
+				GasLimit: math.NewInt(50000),
+				Address:  sender.AccAddress,
+			},
+			&igpId,
+		)
 
 		// Assert
 		Expect(err).To(BeNil())
@@ -454,16 +287,24 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
+		hexSender, _ := util.DecodeHexAddress(sender.Address)
+		recipient, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		body, _ := hex.DecodeString("0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b")
+
+		_, err = s.App().HyperlaneKeeper.DispatchMessage(
+			s.Ctx(),
+			mailboxId,
+			hexSender,
+			sdk.NewCoins(sdk.NewCoin("acoin", math.NewInt(1000000))),
+			1,
+			recipient,
+			body,
+			util.StandardHookMetadata{
+				GasLimit: math.NewInt(50000),
+				Address:  sender.AccAddress,
+			},
+			nil,
+		)
 
 		// Assert
 		Expect(err).To(BeNil())
@@ -479,16 +320,24 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgDispatchMessage{
-			MailboxId:   mailboxId.String(),
-			Sender:      sender.Address,
-			Destination: 1,
-			Recipient:   "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647",
-			Body:        "0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
-			CustomIgp:   "",
-			GasLimit:    math.NewInt(50000),
-			MaxFee:      sdk.NewCoin("acoin", math.NewInt(1000000)),
-		})
+		hexSender, _ := util.DecodeHexAddress(sender.Address)
+		recipient, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		body, _ := hex.DecodeString("0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b")
+
+		_, err = s.App().HyperlaneKeeper.DispatchMessage(
+			s.Ctx(),
+			mailboxId,
+			hexSender,
+			sdk.NewCoins(sdk.NewCoin("acoin", math.NewInt(1000000))),
+			1,
+			recipient,
+			body,
+			util.StandardHookMetadata{
+				GasLimit: math.NewInt(50000),
+				Address:  sender.AccAddress,
+			},
+			nil,
+		)
 
 		// Assert
 		Expect(err).To(BeNil())

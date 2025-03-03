@@ -13,10 +13,6 @@ import (
 )
 
 var (
-	gasLimit string
-	igpId    string
-	maxFee   string
-
 	// SetMailbox
 	defaultIsm   string
 	defaultHook  string

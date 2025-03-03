@@ -7,7 +7,6 @@ import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
-import "cosmos/base/v1beta1/coin.proto";
 
 // Msg defines the module Msg service.
 service Msg {
@@ -18,9 +17,6 @@ service Msg {
 
   // SetMailbox ...
   rpc SetMailbox(MsgSetMailbox) returns (MsgSetMailboxResponse);
-
-  // DispatchMessage ...
-  rpc DispatchMessage(MsgDispatchMessage) returns (MsgDispatchMessageResponse);
 
   // ProcessMessage ...
   rpc ProcessMessage(MsgProcessMessage) returns (MsgProcessMessageResponse);
@@ -99,41 +95,6 @@ message MsgSetMailbox {
 
 // MsgSetMailboxResponse ...
 message MsgSetMailboxResponse {}
-
-// TODO: Remove
-// MsgDispatchMessage ...
-message MsgDispatchMessage {
-  option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "hyperlane/MsgDispatchMessage";
-
-  // mailbox_id ...
-  string mailbox_id = 1;
-
-  // sender ...
-  string sender = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-
-  // destination ...
-  uint32 destination = 3;
-
-  // recipient ...
-  string recipient = 4;
-
-  // body ...
-  string body = 5;
-
-  // TODO: custom_post_dispatch_hook
-  // igp_id ...
-  string custom_igp = 6;
-
-  // gas_limit ...
-  string gas_limit = 7 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-
-  cosmos.base.v1beta1.Coin max_fee = 8
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-}
 
 // MsgDispatchMessageResponse ...
 message MsgDispatchMessageResponse { string message_id = 1; }

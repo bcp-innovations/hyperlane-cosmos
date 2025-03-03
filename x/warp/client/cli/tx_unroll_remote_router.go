@@ -10,6 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
@@ -24,6 +25,11 @@ func CmdUnrollRemoteRouter() *cobra.Command {
 				return err
 			}
 
+			tokenId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
 			receiverDomain, err := strconv.ParseUint(args[1], 10, 32)
 			if err != nil {
 				return err
@@ -31,7 +37,7 @@ func CmdUnrollRemoteRouter() *cobra.Command {
 
 			msg := types.MsgUnrollRemoteRouter{
 				Owner:          clientCtx.GetFromAddress().String(),
-				TokenId:        args[0],
+				TokenId:        tokenId,
 				ReceiverDomain: uint32(receiverDomain),
 			}
 

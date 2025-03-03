@@ -29,7 +29,7 @@ type PostDispatchModule interface {
 type HyperlaneApp interface {
 	Exists(ctx context.Context, recipient HexAddress) (bool, error)
 	Handle(ctx context.Context, mailboxId HexAddress, message HyperlaneMessage) error
-	ReceiverIsmId(ctx context.Context, recipient HexAddress) (HexAddress, error)
+	ReceiverIsmId(ctx context.Context, recipient HexAddress) (*HexAddress, error)
 }
 
 type Router[T any] struct {

@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
@@ -23,9 +24,14 @@ func CmdCreateSyntheticToken() *cobra.Command {
 				return err
 			}
 
+			mailboxId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgCreateSyntheticToken{
 				Owner:         clientCtx.GetFromAddress().String(),
-				OriginMailbox: args[0],
+				OriginMailbox: mailboxId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)
