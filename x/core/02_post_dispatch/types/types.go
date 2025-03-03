@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	PostDispatchHooksKey             = []byte{SubModuleId, 1}
+	InterchainGasPaymasterKey        = []byte{SubModuleId, 1}
 	InterchainGasPaymasterConfigsKey = []byte{SubModuleId, 3}
 	MerkleTreeHooksKey               = []byte{SubModuleId, 4}
 	NoopHooksKey                     = []byte{SubModuleId, 5}

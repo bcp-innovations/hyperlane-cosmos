@@ -68,8 +68,7 @@ func (k Keeper) SetDestinationGasConfig(ctx context.Context, igpId util.HexAddre
 
 	key := collections.Join(igpId.GetInternalId(), destinationGasConfig.RemoteDomain)
 
-	err = k.IgpDestinationGasConfigs.Set(ctx, key, updatedDestinationGasConfig)
-	if err != nil {
+	if err = k.IgpDestinationGasConfigs.Set(ctx, key, updatedDestinationGasConfig); err != nil {
 		return err
 	}
 	return nil

@@ -46,7 +46,6 @@ message DestinationGasConfig {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  ;
 }
 
 // GasOracle ...
