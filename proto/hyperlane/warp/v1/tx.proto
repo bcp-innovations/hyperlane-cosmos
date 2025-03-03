@@ -40,7 +40,7 @@ service Msg {
 // MsgCreateCollateralToken ...
 message MsgCreateCollateralToken {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgCreateCollateralToken";
+  option (amino.name) = "hyperlane/warp/v1/MsgCreateCollateralToken";
 
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -55,7 +55,7 @@ message MsgCreateCollateralTokenResponse { string id = 1; }
 // MsgCreateSyntheticToken ...
 message MsgCreateSyntheticToken {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgCreateSyntheticToken";
+  option (amino.name) = "hyperlane/warp/v1/MsgCreateSyntheticToken";
 
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -69,7 +69,7 @@ message MsgCreateSyntheticTokenResponse { string id = 1; }
 // MsgSetToken ...
 message MsgSetToken {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgSetToken";
+  option (amino.name) = "hyperlane/warp/v1/MsgSetToken";
 
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -84,7 +84,7 @@ message MsgSetTokenResponse {}
 // MsgEnrollRemoteRouter ...
 message MsgEnrollRemoteRouter {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgEnrollRemoteRouter";
+  option (amino.name) = "hyperlane/warp/v1/MsgEnrollRemoteRouter";
 
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -99,7 +99,7 @@ message MsgEnrollRemoteRouterResponse {}
 // MsgUnrollRemoteRouter ...
 message MsgUnrollRemoteRouter {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/warp/MsgUnrollRemoteRouter";
+  option (amino.name) = "hyperlane/warp/v1/MsgUnrollRemoteRouter";
 
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -113,7 +113,7 @@ message MsgUnrollRemoteRouterResponse {}
 // MsgRemoteTransfer ...
 message MsgRemoteTransfer {
   option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "hyperlane/warp/MsgRemoteTransfer";
+  option (amino.name) = "hyperlane/warp/v1/MsgRemoteTransfer";
 
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 

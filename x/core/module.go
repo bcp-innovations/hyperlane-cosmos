@@ -55,8 +55,8 @@ func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the mailbox module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
-func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	// TODO register
+func (AppModule) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {
+	// this is already handled by the proto annotation
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.
@@ -100,8 +100,6 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
 func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
-	// TODO include submodule
-
 	return cdc.MustMarshalJSON(types.NewGenesisState())
 }
 

@@ -30,7 +30,7 @@ service Msg {
 // MsgCreateMessageIdMultisigIsm ...
 message MsgCreateMessageIdMultisigIsm {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/MsgCreateMessageIdMultisigIsm";
+  option (amino.name) = "hyperlane/v1/MsgCreateMessageIdMultisigIsm";
 
   // creator is the message sender.
   string creator = 1;
@@ -55,7 +55,7 @@ message MsgCreateMessageIdMultisigIsmResponse {
 // MsgCreateMultisigIsm ...
 message MsgCreateMerkleRootMultisigIsm {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/MsgCreateMerkleRootMultisigIsm";
+  option (amino.name) = "hyperlane/v1/MsgCreateMerkleRootMultisigIsm";
 
   // creator is the message sender.
   string creator = 1;
@@ -80,7 +80,7 @@ message MsgCreateMerkleRootMultisigIsmResponse {
 // MsgCreateNoopIsm ...
 message MsgCreateNoopIsm {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/MsgCreateNoopIsm";
+  option (amino.name) = "hyperlane/v1/MsgCreateNoopIsm";
 
   // creator is the message sender.
   string creator = 1;
@@ -98,7 +98,7 @@ message MsgCreateNoopIsmResponse {
 // MsgAnnounceValidator ...
 message MsgAnnounceValidator {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/MsgAnnounceValidator";
+  option (amino.name) = "hyperlane/v1/MsgAnnounceValidator";
 
   // validator ...
   string validator = 1;
