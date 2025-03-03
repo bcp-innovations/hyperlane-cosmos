@@ -185,7 +185,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Validators[0]).To(Equal("0xb05b6a0aa112b61a7aa16c19cac27d970692995e"))
 		Expect(ism.Validators[1]).To(Equal("0xa05b6a0aa112b61a7aa16c19cac27d970692995e"))
 		Expect(ism.Validators[2]).To(Equal("0xd05b6a0aa112b61a7aa16c19cac27d970692995e"))
-		Expect(ism.ModuleType()).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG))
+		Expect(ism.ModuleType()).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG))
 	})
 
 	It("Create (invalid) MerkleRootMultisig ISM with less addresses", func() {
@@ -292,7 +292,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Validators[0]).To(Equal("0xb05b6a0aa112b61a7aa16c19cac27d970692995e"))
 		Expect(ism.Validators[1]).To(Equal("0xa05b6a0aa112b61a7aa16c19cac27d970692995e"))
 		Expect(ism.Validators[2]).To(Equal("0xd05b6a0aa112b61a7aa16c19cac27d970692995e"))
-		Expect(ism.ModuleType()).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG))
+		Expect(ism.ModuleType()).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG))
 	})
 
 	It("AnnounceValidator (invalid) with empty validator", func() {

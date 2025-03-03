@@ -100,7 +100,7 @@ message QueryQuoteGasPaymentRequest {
 }
 
 // QueryQuoteGasPaymentResponse ...
-// TODO: sdk.Coin
+// TODO: sdk.Coins
 message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
 
 // QueryCountRequest ...

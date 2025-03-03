@@ -44,7 +44,6 @@ const (
 	ENCODED_HEX_ADDRESS_LENGTH = 66                            // raw 32 bytes of the address stored as a hex string (0x + 32 bytes hex encoded = 66 bytes)
 )
 
-// Hex Address
 type HexAddress [HEX_ADDRESS_LENGTH]byte
 
 func (h HexAddress) String() string {
@@ -140,19 +139,20 @@ func GenerateHexAddress(moduleSpecifier [module_length]byte, internalType uint32
 // For custom type serialization we prefer readability to storage space
 // In the entire CosmosSDK ecosystem, there is always the string representation used for addresses.
 // We therefore store the 66 (0x + 32 bytes hex encoded = 66 bytes) hex representation of the address.
-func (t HexAddress) Marshal() ([]byte, error) {
-	return []byte(t.String()), nil
+
+func (h HexAddress) Marshal() ([]byte, error) {
+	return []byte(h.String()), nil
 }
 
-func (t *HexAddress) MarshalTo(data []byte) (n int, err error) {
-	n = copy(data, t.String())
+func (h *HexAddress) MarshalTo(data []byte) (n int, err error) {
+	n = copy(data, h.String())
 	if n != ENCODED_HEX_ADDRESS_LENGTH {
 		return n, fmt.Errorf("invalid hex address length: %d", n)
 	}
 	return n, nil
 }
 
-func (t *HexAddress) Unmarshal(data []byte) error {
+func (h *HexAddress) Unmarshal(data []byte) error {
 	if len(data) != ENCODED_HEX_ADDRESS_LENGTH {
 		return errors.New("invalid hex address length")
 	}
@@ -160,31 +160,31 @@ func (t *HexAddress) Unmarshal(data []byte) error {
 	if err != nil {
 		return err
 	}
-	copy(t[:], addr.Bytes())
+	copy(h[:], addr.Bytes())
 	return nil
 }
 
-func (t *HexAddress) Size() int {
+func (h *HexAddress) Size() int {
 	return ENCODED_HEX_ADDRESS_LENGTH
 }
 
-func (t HexAddress) MarshalJSON() ([]byte, error) {
-	return json.Marshal(t.String())
+func (h HexAddress) MarshalJSON() ([]byte, error) {
+	return json.Marshal(h.String())
 }
 
-func (t *HexAddress) UnmarshalJSON(data []byte) error {
+func (h *HexAddress) UnmarshalJSON(data []byte) error {
 	address, err := DecodeHexAddress(string(data))
 	if err != nil {
 		return err
 	}
-	copy(t[:], address.Bytes())
+	copy(h[:], address.Bytes())
 	return nil
 }
 
-func (t HexAddress) Compare(other HexAddress) int {
-	return bytes.Compare(t.Bytes(), other.Bytes())
+func (h HexAddress) Compare(other HexAddress) int {
+	return bytes.Compare(h.Bytes(), other.Bytes())
 }
 
-func (t HexAddress) Equal(other HexAddress) bool {
-	return bytes.Equal(t.Bytes(), other.Bytes())
+func (h HexAddress) Equal(other HexAddress) bool {
+	return bytes.Equal(h.Bytes(), other.Bytes())
 }

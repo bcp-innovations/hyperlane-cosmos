@@ -391,7 +391,7 @@ func (m *QueryQuoteGasPaymentRequest) GetGasLimit() string {
 }
 
 // QueryQuoteGasPaymentResponse ...
-// TODO: sdk.Coin
+// TODO: sdk.Coins
 type QueryQuoteGasPaymentResponse struct {
 	GasPayment string `protobuf:"bytes,1,opt,name=gas_payment,json=gasPayment,proto3" json:"gas_payment,omitempty"`
 }

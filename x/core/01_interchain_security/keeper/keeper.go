@@ -53,9 +53,9 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 	// set the router from the core keeper
 	router := coreKeeper.IsmRouter()
 	// add default modules
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED, k)
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG, k)
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_UNUSED, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG, k)
 }
 
 // Verify checks if the metadata has signed the message correctly.

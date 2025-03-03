@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -46,11 +47,7 @@ func InitSampleChain() *cobra.Command {
 				panic(err)
 			}
 
-			configDir, err := fs.Sub(sampleConfig, "sample_config")
-			if err != nil {
-				panic(err)
-			}
-			if err := os.CopyFS(destPath, configDir); err != nil {
+			if err := copyEmbedToDisk(sampleConfig, "sample_config", destPath); err != nil {
 				panic(err)
 			}
 
@@ -89,4 +86,38 @@ func CheckDirIsDefault(path string) bool {
 	}
 
 	return true
+}
+
+func copyEmbedToDisk(embedFS embed.FS, embedDir, targetDir string) error {
+	err := fs.WalkDir(embedFS, embedDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		relPath, _ := filepath.Rel(embedDir, path)
+		destPath := filepath.Join(targetDir, relPath)
+
+		if d.IsDir() {
+			// Create directory
+			return os.MkdirAll(destPath, os.ModePerm)
+		}
+
+		// Copy file
+		srcFile, err := embedFS.Open(path)
+		if err != nil {
+			return err
+		}
+		defer srcFile.Close()
+
+		destFile, err := os.Create(destPath)
+		if err != nil {
+			return err
+		}
+		defer destFile.Close()
+
+		_, err = io.Copy(destFile, srcFile)
+		return err
+	})
+
+	return err
 }

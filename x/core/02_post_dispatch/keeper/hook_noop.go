@@ -27,7 +27,7 @@ func (i NoopHookHandler) HookType() uint8 {
 	return types.POST_DISPATCH_HOOK_TYPE_UNUSED
 }
 
-func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage, _ sdk.Coins) (sdk.Coins, error) {
 	has, err := i.k.noopHooks.Has(ctx, hookId.Bytes())
 	if err != nil || !has {
 		return nil, errors.Wrapf(types.ErrHookDoesNotExistOrIsNotRegistered, "%s", hookId.String())
