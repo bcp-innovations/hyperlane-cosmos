@@ -25,14 +25,12 @@ type Keeper struct {
 	authority string
 
 	// state management
-	// TODO: use similar hex address factory like the module routers
-	Mailboxes collections.Map[[]byte, types.Mailbox]
+	Mailboxes collections.Map[uint64, types.Mailbox]
 	// first key is the mailbox ID, second key is the message ID
-	Messages collections.KeySet[collections.Pair[[]byte, []byte]]
+	Messages collections.KeySet[collections.Pair[uint64, []byte]]
 	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
 	MailboxesSequence collections.Sequence
 
-	Params collections.Item[types.Params]
 	Schema collections.Schema
 
 	bankKeeper types.BankKeeper
@@ -56,9 +54,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		cdc:               cdc,
 		addressCodec:      addressCodec,
 		authority:         authority,
-		Mailboxes:         collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
-		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.BytesKey, collections.BytesKey)),
-		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		Mailboxes:         collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.Uint64Key, codec.CollValue[types.Mailbox](cdc)),
+		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.Uint64Key, collections.BytesKey)),
 		MailboxesSequence: collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
 		bankKeeper:        bankKeeper,
 
@@ -124,14 +121,10 @@ func (k *Keeper) IsmExists(ctx context.Context, ismId util.HexAddress) (bool, er
 	return (*handler).Exists(ctx, ismId)
 }
 
-func (k *Keeper) AssertIsmExists(ctx context.Context, id string) error {
-	ismId, err := util.DecodeHexAddress(id)
-	if err != nil {
-		return fmt.Errorf("ism id %s is invalid: %s", id, err.Error())
-	}
-	ismExists, err := k.IsmExists(ctx, ismId)
+func (k *Keeper) AssertIsmExists(ctx context.Context, id util.HexAddress) error {
+	ismExists, err := k.IsmExists(ctx, id)
 	if err != nil || !ismExists {
-		return fmt.Errorf("ism with id %s does not exist", ismId.String())
+		return fmt.Errorf("ism with id %s does not exist", id.String())
 	}
 
 	return nil
@@ -158,9 +151,17 @@ func (k *Keeper) PostDispatchHookExists(ctx context.Context, hookId util.HexAddr
 }
 
 func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId, overwriteHookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
-	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
 	if err != nil {
 		return sdk.NewCoins(), fmt.Errorf("failed to find mailbox with id %s", mailboxId.String())
+	}
+
+	// check for valid mailbox state
+	if mailbox.RequiredHook == nil {
+		return sdk.NewCoins(), types.ErrRequiredHookNotSet
+	}
+	if mailbox.DefaultHook == nil {
+		return sdk.NewCoins(), types.ErrDefaultHookNotSet
 	}
 
 	calculateGasPayment := func(hookId util.HexAddress) (sdk.Coins, error) {
@@ -172,22 +173,14 @@ func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId, overwriteHookId u
 		return (*handler).QuoteDispatch(ctx, mailboxId, hookId, metadata, message)
 	}
 
-	requiredHookId, err := util.DecodeHexAddress(mailbox.RequiredHook)
-	if err != nil {
-		return sdk.NewCoins(), err
-	}
-
-	requiredGasPayment, err := calculateGasPayment(requiredHookId)
+	requiredGasPayment, err := calculateGasPayment(*mailbox.RequiredHook)
 	if err != nil {
 		return sdk.NewCoins(), err
 	}
 
 	var defaultHookId util.HexAddress
 	if overwriteHookId.IsZeroAddress() {
-		defaultHookId, err = util.DecodeHexAddress(mailbox.DefaultHook)
-		if err != nil {
-			return sdk.NewCoins(), err
-		}
+		defaultHookId = *mailbox.DefaultHook
 	} else {
 		defaultHookId = overwriteHookId
 	}
@@ -200,25 +193,21 @@ func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId, overwriteHookId u
 	return sdk.Coins.Add(requiredGasPayment, defaultGasPayment...), nil
 }
 
-func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id string) error {
-	hookId, err := util.DecodeHexAddress(id)
-	if err != nil {
-		return fmt.Errorf("hook id %s is invalid: %s", id, err.Error())
-	}
-	hookExists, err := k.PostDispatchHookExists(ctx, hookId)
+func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id util.HexAddress) error {
+	hookExists, err := k.PostDispatchHookExists(ctx, id)
 	if err != nil || !hookExists {
-		return fmt.Errorf("hook with id %s does not exist", hookId.String())
+		return fmt.Errorf("hook with id %s does not exist", id.String())
 	}
 	return nil
 }
 
-func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {
-	params, err := k.Params.Get(ctx)
-	return params.Domain, err
+func (k Keeper) LocalDomain(ctx context.Context, mailboxId util.HexAddress) (uint32, error) {
+	params, err := k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
+	return params.LocalDomain, err
 }
 
 func (k Keeper) MailboxIdExists(ctx context.Context, mailboxId util.HexAddress) (bool, error) {
-	mailbox, err := k.Mailboxes.Has(ctx, mailboxId.Bytes())
+	mailbox, err := k.Mailboxes.Has(ctx, mailboxId.GetInternalId())
 	if err != nil {
 		return false, err
 	}

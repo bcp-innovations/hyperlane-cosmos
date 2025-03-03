@@ -6,7 +6,6 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
 import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
-import "hyperlane/core/v1/types.proto";
 import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
@@ -25,9 +24,6 @@ service Msg {
 
   // ProcessMessage ...
   rpc ProcessMessage(MsgProcessMessage) returns (MsgProcessMessageResponse);
-
-  // UpdateParams updates the module parameters.
-  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
 // MsgCreateMailbox ...
@@ -38,14 +34,28 @@ message MsgCreateMailbox {
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // default_ism ...
-  string default_ism = 2;
+  // local domain
+  uint32 local_domain = 2;
+
+  string default_ism = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // default_hook ...
-  string default_hook = 3;
+  string default_hook = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
 
   // required_hook ...
-  string required_hook = 4;
+  string required_hook = 5 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
 }
 
 // MsgCreateMailboxResponse ...
@@ -60,17 +70,29 @@ message MsgSetMailbox {
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // mailbox_id
-  string mailbox_id = 2;
-
+  string mailbox_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
   // default_ism ...
-  string default_ism = 3;
-
+  string default_ism = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
   // default_hook ...
-  string default_hook = 4;
-
+  string default_hook = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
   // required_hook ...
-  string required_hook = 5;
-
+  string required_hook = 5 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
   // new_owner ...
   string new_owner = 6;
 }
@@ -120,8 +142,11 @@ message MsgProcessMessage {
   option (amino.name) = "hyperlane/MsgProcessMessage";
 
   // mailbox_id ...
-  string mailbox_id = 1;
-
+  string mailbox_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
   // relayer ...
   string relayer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
@@ -134,22 +159,3 @@ message MsgProcessMessage {
 
 // MsgProcessMessageResponse ...
 message MsgProcessMessageResponse {}
-
-// MsgUpdateParams is the Msg/UpdateParams request type.
-message MsgUpdateParams {
-  option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "hyperlane/MsgUpdateParams";
-
-  // authority is the address that controls the module
-  // NOTE: Defaults to the governance module unless overwritten.
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-
-  // params defines the module parameters to update.
-  // NOTE: All parameters must be supplied.
-  Params params = 2
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-}
-
-// MsgUpdateParamsResponse defines the response structure for executing a
-// MsgUpdateParams message.
-message MsgUpdateParamsResponse {}

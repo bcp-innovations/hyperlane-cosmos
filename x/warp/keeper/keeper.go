@@ -30,8 +30,7 @@ type Keeper struct {
 	Params collections.Item[types.Params]
 	Schema collections.Schema
 	// <tokenId> -> Token
-	HypTokens      collections.Map[uint64, types.HypToken]
-	HypTokensCount collections.Sequence
+	HypTokens collections.Map[uint64, types.HypToken]
 	// <tokenId> <domain> -> Router
 	EnrolledRouters collections.Map[collections.Pair[uint64, uint32], types.RemoteRouter]
 
@@ -61,7 +60,6 @@ func NewKeeper(
 		enabledTokens:   enabledTokens,
 		HypTokens:       collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.Uint64Key, codec.CollValue[types.HypToken](cdc)),
 		Params:          collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		HypTokensCount:  collections.NewSequence(sb, types.HypTokensCountKey, "hyptokens_count"),
 		EnrolledRouters: collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
 		bankKeeper:      bankKeeper,
 		coreKeeper:      coreKeeper,

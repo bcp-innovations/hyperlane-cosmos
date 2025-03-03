@@ -3,23 +3,28 @@ package hyperlane.core.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
 
-import "gogoproto/gogo.proto";
-import "amino/amino.proto";
 import "hyperlane/core/v1/types.proto";
 import "hyperlane/core/interchain_security/v1/genesis.proto";
 import "hyperlane/core/post_dispatch/v1/genesis.proto";
 
 // GenesisState is the state that must be provided at genesis.
 message GenesisState {
-  // params defines all the parameters of the module.
-  Params params = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-
   // ism_genesis
   hyperlane.core.interchain_security.v1.GenesisState ism_genesis = 2;
 
   // post_dispatch_genesis
   hyperlane.core.post_dispatch.v1.GenesisState post_dispatch_genesis = 3;
 
-  // TODO: add mailbox state, ism router state
+  repeated Mailbox mailboxes = 4;
+  repeated MailboxMessage messages = 5;
+
+  uint64 ism_sequence = 6;
+  uint64 post_dispatch_sequence = 7;
+  uint64 app_sequence = 8;
+}
+
+// Mailbox message for genesis state
+message MailboxMessage {
+  uint64 mailbox_id = 1;
+  bytes message_id = 2;
 }

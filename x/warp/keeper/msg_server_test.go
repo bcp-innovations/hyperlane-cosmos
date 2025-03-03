@@ -1052,38 +1052,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 	})
 
-	It("MsgRemoteTransfer (invalid) invalid Token ID", func() {
-		// Arrange
-		invalidTokenId := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865defx"
-
-		// Act
-		_, err := s.RunTx(&types.MsgRemoteTransfer{
-			Sender:            sender.Address,
-			TokenId:           invalidTokenId,
-			DestinationDomain: 0,
-			Recipient:         "",
-			Amount:            math.ZeroInt(),
-			IgpId:             "",
-			GasLimit:          math.ZeroInt(),
-			MaxFee:            sdk.NewCoin(denom, math.ZeroInt()),
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("invalid token id %s", invalidTokenId)))
-	})
-
 	It("MsgRemoteTransfer (invalid) non-existing Token ID", func() {
 		// Arrange
-		nonExistingTokenId := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0"
+		nonExistingTokenId, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 
 		// Act
 		_, err := s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
 			TokenId:           nonExistingTokenId,
 			DestinationDomain: 0,
-			Recipient:         "",
+			Recipient:         nonExistingTokenId,
 			Amount:            math.ZeroInt(),
-			IgpId:             "",
+			IgpId:             &nonExistingTokenId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            sdk.NewCoin(denom, math.ZeroInt()),
 		})
@@ -1144,7 +1124,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 
 	res, err := s.RunTx(&coreTypes.MsgCreateMailbox{
 		Owner:      creator,
-		DefaultIsm: ismId.String(),
+		DefaultIsm: ismId,
 	})
 	Expect(err).To(BeNil())
 
@@ -1158,10 +1138,10 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 
 	_, err = s.RunTx(&coreTypes.MsgSetMailbox{
 		Owner:        creator,
-		MailboxId:    mailboxId.String(),
-		DefaultIsm:   ismId.String(),
-		DefaultHook:  igpId.String(),
-		RequiredHook: merkleHook.String(),
+		MailboxId:    mailboxId,
+		DefaultIsm:   &ismId,
+		DefaultHook:  &igpId,
+		RequiredHook: &merkleHook,
 		NewOwner:     creator,
 	})
 	Expect(err).To(BeNil())
@@ -1235,13 +1215,17 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailboxId, err := util.DecodeHexAddress(response.Id)
 	Expect(err).To(BeNil())
 
-	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
+	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
 	Expect(err).To(BeNil())
 	Expect(mailbox.Owner).To(Equal(creator))
-	Expect(mailbox.DefaultIsm).To(Equal(ismId))
+	Expect(mailbox.DefaultIsm.String()).To(Equal(ismId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
-	Expect(mailbox.DefaultHook).To(Equal(igpId))
+	if igpId != "" {
+		Expect(mailbox.DefaultHook.String()).To(Equal(igpId))
+	} else {
+		Expect(mailbox.DefaultHook).To(BeNil())
+	}
 
 	//if igpRequired {
 	//	Expect(mailbox.Igp.Required).To(BeTrue()) TODO

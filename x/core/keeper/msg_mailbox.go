@@ -17,16 +17,16 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 	}
 
 	// Check default is valid if set
-	if req.DefaultHook != "" {
-		if err := ms.k.AssertPostDispatchHookExists(ctx, req.DefaultHook); err != nil {
+	if req.DefaultHook != nil {
+		if err := ms.k.AssertPostDispatchHookExists(ctx, *req.DefaultHook); err != nil {
 			return nil, err
 		}
 	}
 
 	// Check required hook is valid if set.
 	// The "required" means that this hook can not be overridden by the message dispatcher
-	if req.RequiredHook != "" {
-		if err := ms.k.AssertPostDispatchHookExists(ctx, req.RequiredHook); err != nil {
+	if req.RequiredHook != nil {
+		if err := ms.k.AssertPostDispatchHookExists(ctx, *req.RequiredHook); err != nil {
 			return nil, err
 		}
 	}
@@ -36,10 +36,14 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, err
 	}
 
-	prefixedId := util.CreateHexAddress(types.ModuleName, int64(mailboxCount))
+	identifier := [20]byte{}
+	copy(identifier[:], types.ModuleName)
+
+	// generate a new unique id that is compliant with the way the router generates ids
+	prefixedId := util.GenerateHexAddress(identifier, uint32(types.ModuleId), mailboxCount)
 
 	newMailbox := types.Mailbox{
-		Id:              prefixedId.String(),
+		Id:              prefixedId,
 		Owner:           req.Owner,
 		MessageSent:     0,
 		MessageReceived: 0,
@@ -48,7 +52,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		RequiredHook:    req.RequiredHook,
 	}
 
-	if err = ms.k.Mailboxes.Set(ctx, prefixedId.Bytes(), newMailbox); err != nil {
+	if err = ms.k.Mailboxes.Set(ctx, prefixedId.GetInternalId(), newMailbox); err != nil {
 		return nil, err
 	}
 
@@ -84,7 +88,7 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 		return nil, fmt.Errorf("invalid recipient: %s", err)
 	}
 
-	customIgpId, err := util.DecodeHexAddress(req.CustomIgp)
+	_, err = util.DecodeHexAddress(req.CustomIgp)
 	if req.CustomIgp != "" && err != nil {
 		return nil, fmt.Errorf("invalid customIgp: %s", err)
 	}
@@ -94,7 +98,7 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 		Value:    req.MaxFee.Amount,
 		GasLimit: req.GasLimit,
 		Address:  accSender,
-	}.Bytes(), customIgpId)
+	}.Bytes(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -106,11 +110,6 @@ func (ms msgServer) DispatchMessage(ctx context.Context, req *types.MsgDispatchM
 
 func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMessage) (*types.MsgProcessMessageResponse, error) {
 	goCtx := sdk.UnwrapSDKContext(ctx)
-
-	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid mailbox id: %s", err)
-	}
 
 	// Decode and parse message
 	messageBytes, err := util.DecodeEthHex(req.Message)
@@ -128,7 +127,7 @@ func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMes
 		return nil, fmt.Errorf("failed to decode metadata")
 	}
 
-	if err = ms.k.ProcessMessage(goCtx, mailboxId, messageBytes, metadataBytes); err != nil {
+	if err = ms.k.ProcessMessage(goCtx, req.MailboxId, messageBytes, metadataBytes); err != nil {
 		return nil, err
 	}
 
@@ -136,12 +135,8 @@ func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMes
 }
 
 func (ms msgServer) SetMailbox(ctx context.Context, req *types.MsgSetMailbox) (*types.MsgSetMailboxResponse, error) {
-	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
-	if err != nil {
-		return nil, err
-	}
-
-	mailbox, err := ms.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	mailboxId := req.MailboxId
+	mailbox, err := ms.k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find mailbox with id: %v", mailboxId.String())
 	}
@@ -150,20 +145,25 @@ func (ms msgServer) SetMailbox(ctx context.Context, req *types.MsgSetMailbox) (*
 		return nil, fmt.Errorf("%s does not own mailbox with id %s", req.Owner, mailboxId.String())
 	}
 
-	if req.DefaultIsm != "" {
-		if err = ms.k.AssertIsmExists(ctx, req.DefaultIsm); err != nil {
+	if req.DefaultIsm != nil {
+		if err = ms.k.AssertIsmExists(ctx, *req.DefaultIsm); err != nil {
 			return nil, fmt.Errorf("ism with id %s does not exist", req.DefaultIsm)
 		}
 
-		mailbox.DefaultIsm = req.DefaultIsm
+		mailbox.DefaultIsm = *req.DefaultIsm
 	}
 
-	// TODO check if postDispatchHook exists
-	if req.DefaultHook != "" {
+	if req.DefaultHook != nil {
+		if err := ms.k.AssertPostDispatchHookExists(ctx, *req.DefaultHook); err != nil {
+			return nil, err
+		}
 		mailbox.DefaultHook = req.DefaultHook
 	}
 
-	if req.RequiredHook != "" {
+	if req.RequiredHook != nil {
+		if err := ms.k.AssertPostDispatchHookExists(ctx, *req.RequiredHook); err != nil {
+			return nil, err
+		}
 		mailbox.RequiredHook = req.RequiredHook
 	}
 
@@ -171,7 +171,7 @@ func (ms msgServer) SetMailbox(ctx context.Context, req *types.MsgSetMailbox) (*
 		mailbox.Owner = req.NewOwner
 	}
 
-	if err = ms.k.Mailboxes.Set(ctx, mailboxId.Bytes(), mailbox); err != nil {
+	if err = ms.k.Mailboxes.Set(ctx, mailboxId.GetInternalId(), mailbox); err != nil {
 		return nil, err
 	}
 

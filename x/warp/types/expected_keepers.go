@@ -16,7 +16,6 @@ type BankKeeper interface {
 }
 
 type CoreKeeper interface {
-	LocalDomain(ctx context.Context) (uint32, error)
 	MailboxIdExists(ctx context.Context, mailboxId util.HexAddress) (bool, error)
 	AppRouter() *util.Router[util.HyperlaneApp]
 	DispatchMessage(
@@ -32,7 +31,7 @@ type CoreKeeper interface {
 		body []byte,
 		// Custom metadata for postDispatch Hook
 		metadata []byte,
-		postDispatchHookId util.HexAddress,
+		postDispatchHookId *util.HexAddress,
 	) (messageId util.HexAddress, error error)
 	QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, overwriteHookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error)
 }

@@ -47,7 +47,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) non-enrolled router (Collateral)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 
 		amount := math.NewInt(100)
 		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
@@ -62,11 +62,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: 2,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			IgpId:             &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -78,7 +78,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) empty cosmos sender (Collateral)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -98,11 +98,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            "",
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			IgpId:             &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -114,7 +114,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) invalid cosmos sender (Collateral)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -134,11 +134,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            "Test123!",
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			IgpId:             &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -148,79 +148,9 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
 	})
 
-	It("MsgRemoteTransfer (invalid) empty recipient (Collateral)", func() {
-		// Arrange
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-
-		amount := math.NewInt(100)
-		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
-
-		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
-
-		// Act
-		_, err = s.RunTx(&types.MsgRemoteTransfer{
-			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
-			DestinationDomain: remoteRouter.ReceiverDomain,
-			Recipient:         "",
-			Amount:            amount,
-			IgpId:             igpId.String(),
-			GasLimit:          math.ZeroInt(),
-			MaxFee:            maxFee,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("recipient cannot be empty"))
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
-	})
-
-	It("MsgRemoteTransfer (invalid) invalid recipient (Collateral)", func() {
-		// Arrange
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-
-		amount := math.NewInt(100)
-		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
-
-		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
-
-		// Act
-		_, err = s.RunTx(&types.MsgRemoteTransfer{
-			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
-			DestinationDomain: remoteRouter.ReceiverDomain,
-			Recipient:         "1234gnx",
-			Amount:            amount,
-			IgpId:             igpId.String(),
-			GasLimit:          math.ZeroInt(),
-			MaxFee:            maxFee,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid recipient address"))
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
-	})
-
 	It("MsgRemoteTransfer (invalid) no enrolled router (Collateral)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -240,11 +170,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: 2,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			IgpId:             &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -256,7 +186,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) receiver contract (Collateral)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865de",
@@ -276,11 +206,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			IgpId:             &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -292,7 +222,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) insufficient funds (Collateral)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -309,11 +239,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		// Act
 		_, err := s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: 1,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			IgpId:             &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -361,7 +291,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		}
 
 		_, err = s.RunTx(&coreTypes.MsgProcessMessage{
-			MailboxId: mailboxId.String(),
+			MailboxId: mailboxId,
 			Relayer:   sender.Address,
 			Metadata:  "",
 			Message:   message.String(),
@@ -374,7 +304,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 
 	It("MsgRemoteTransfer && MsgRemoteReceiveCollateral (valid) (Collateral)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -392,11 +322,11 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			IgpId:             &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -426,7 +356,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		senderBalance = s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
 
 		_, err = s.RunTx(&coreTypes.MsgProcessMessage{
-			MailboxId: mailboxId.String(),
+			MailboxId: mailboxId,
 			Relayer:   sender.Address,
 			Metadata:  "",
 			Message:   message.String(),

@@ -8,13 +8,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 /*
-
 SPEC: HexAddress
 
 The HexAddress mimics an evm-compatible address for a smart contract.
@@ -27,11 +27,25 @@ Structure
 - The HexAddress has 32 bytes and is used for external communication
 - For internal usage and storage an uint64 is totally sufficient
 
+Encoding:
+- 0:20 bytes are the module identifier
+- 20:24 bytes is the module type. This is used to identify the correct module implementation for this type in the router. See `util./router.go`
+- 24:32 bytes is the internal id. Can be used for internal collection storage.
 */
+const (
+	HEX_ADDRESS_LENGTH = 32
+	module_length      = 20
+	type_length        = 4
+	id_length          = 8
+
+	module_offset              = 0
+	type_offset                = module_offset + module_length // 20
+	id_offset                  = type_offset + type_length     // 24
+	ENCODED_HEX_ADDRESS_LENGTH = 66                            // raw 32 bytes of the address stored as a hex string (0x + 32 bytes hex encoded = 66 bytes)
+)
 
 // Hex Address
-
-type HexAddress [32]byte
+type HexAddress [HEX_ADDRESS_LENGTH]byte
 
 func (h HexAddress) String() string {
 	return fmt.Sprintf("0x%s", hex.EncodeToString(h[:]))
@@ -42,16 +56,16 @@ func (h HexAddress) Bytes() []byte {
 }
 
 func (h HexAddress) IsZeroAddress() bool {
-	emptyByteVar := make([]byte, 32)
+	emptyByteVar := make([]byte, HEX_ADDRESS_LENGTH)
 	return bytes.Equal(h[:], emptyByteVar)
 }
 
 func (h HexAddress) GetInternalId() uint64 {
-	return binary.BigEndian.Uint64(h[24:32])
+	return binary.BigEndian.Uint64(h[id_offset : id_offset+id_length])
 }
 
 func (h HexAddress) GetType() uint32 {
-	return binary.BigEndian.Uint32(h[20:24])
+	return binary.BigEndian.Uint32(h[type_offset : type_offset+type_length])
 }
 
 func NewZeroAddress() HexAddress {
@@ -61,7 +75,8 @@ func NewZeroAddress() HexAddress {
 func DecodeHexAddress(s string) (HexAddress, error) {
 	s = strings.TrimPrefix(s, "0x")
 
-	if len(s) != 64 {
+	// hex encodes two characters per byte
+	if len(s) != HEX_ADDRESS_LENGTH*2 {
 		return HexAddress{}, errors.New("invalid hex address length")
 	}
 
@@ -87,8 +102,8 @@ func EncodeEthHex(b []byte) string {
 	return fmt.Sprintf("0x%s", hex.EncodeToString(b))
 }
 
-func CreateHexAddress(identifier string, id int64) HexAddress {
-	idBytes := make([]byte, 8)
+func CreateMockHexAddress(identifier string, id int64) HexAddress {
+	idBytes := make([]byte, id_length)
 	binary.BigEndian.PutUint64(idBytes, uint64(id))
 	message := append([]byte(identifier), idBytes...)
 	return sha256.Sum256(message)
@@ -97,17 +112,27 @@ func CreateHexAddress(identifier string, id int64) HexAddress {
 func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
 	bech32, err := sdk.AccAddressFromBech32(cosmosAcc)
 	if err != nil {
-		return [32]byte{}, err
+		return [HEX_ADDRESS_LENGTH]byte{}, err
 	}
 
-	if len(bech32) > 32 {
+	if len(bech32) > HEX_ADDRESS_LENGTH {
 		return HexAddress{}, errors.New("invalid length")
 	}
 
-	hexAddressBytes := make([]byte, 32)
-	copy(hexAddressBytes[32-len(bech32):], bech32)
+	hexAddressBytes := make([]byte, HEX_ADDRESS_LENGTH)
+	copy(hexAddressBytes[HEX_ADDRESS_LENGTH-len(bech32):], bech32)
 
 	return HexAddress(hexAddressBytes), nil
+}
+
+func GenerateHexAddress(moduleSpecifier [module_length]byte, internalType uint32, internalId uint64) HexAddress {
+	internalTypeBytes := make([]byte, type_length)
+	binary.BigEndian.PutUint32(internalTypeBytes, internalType)
+
+	internalIdBytes := make([]byte, id_length)
+	binary.BigEndian.PutUint64(internalIdBytes, internalId)
+
+	return HexAddress(slices.Concat(moduleSpecifier[:], internalTypeBytes, internalIdBytes))
 }
 
 // Custom Proto Type Implementation below
@@ -115,23 +140,20 @@ func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
 // For custom type serialization we prefer readability to storage space
 // In the entire CosmosSDK ecosystem, there is always the string representation used for addresses.
 // We therefore store the 66 (0x + 32 bytes hex encoded = 66 bytes) hex representation of the address.
-
-const HEX_ADDRESS_LENGTH = 66
-
 func (t HexAddress) Marshal() ([]byte, error) {
 	return []byte(t.String()), nil
 }
 
 func (t *HexAddress) MarshalTo(data []byte) (n int, err error) {
 	n = copy(data, t.String())
-	if n != HEX_ADDRESS_LENGTH {
+	if n != ENCODED_HEX_ADDRESS_LENGTH {
 		return n, fmt.Errorf("invalid hex address length: %d", n)
 	}
 	return n, nil
 }
 
 func (t *HexAddress) Unmarshal(data []byte) error {
-	if len(data) != HEX_ADDRESS_LENGTH {
+	if len(data) != ENCODED_HEX_ADDRESS_LENGTH {
 		return errors.New("invalid hex address length")
 	}
 	addr, err := DecodeHexAddress(string(data))
@@ -143,7 +165,7 @@ func (t *HexAddress) Unmarshal(data []byte) error {
 }
 
 func (t *HexAddress) Size() int {
-	return HEX_ADDRESS_LENGTH
+	return ENCODED_HEX_ADDRESS_LENGTH
 }
 
 func (t HexAddress) MarshalJSON() ([]byte, error) {

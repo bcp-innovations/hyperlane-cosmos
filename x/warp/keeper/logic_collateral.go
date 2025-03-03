@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee sdk.Coin) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient util.HexAddress, amount math.Int, customIgpId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -25,25 +25,11 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 
 	token.CollateralBalance = token.CollateralBalance.Add(amount)
 
-	tokenId, err := util.DecodeHexAddress(token.Id)
-	if err != nil {
+	if err = k.HypTokens.Set(ctx, token.Id.GetInternalId(), token); err != nil {
 		return util.HexAddress{}, err
 	}
 
-	if err = k.HypTokens.Set(ctx, tokenId.GetInternalId(), token); err != nil {
-		return util.HexAddress{}, err
-	}
-
-	if externalRecipient == "" {
-		return util.HexAddress{}, fmt.Errorf("recipient cannot be empty")
-	}
-
-	recipient, err := util.DecodeEthHex(externalRecipient)
-	if err != nil {
-		return util.HexAddress{}, fmt.Errorf("invalid recipient address")
-	}
-
-	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(tokenId.GetInternalId(), destinationDomain))
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(token.Id.GetInternalId(), destinationDomain))
 	if err != nil {
 		return util.HexAddress{}, fmt.Errorf("no enrolled router found for destination domain %d", destinationDomain)
 	}
@@ -58,25 +44,16 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		gas = gasLimit
 	}
 
-	warpPayload, err := types.NewWarpPayload(recipient, *amount.BigInt())
+	warpPayload, err := types.NewWarpPayload(externalRecipient.Bytes(), *amount.BigInt())
 	if err != nil {
 		return util.HexAddress{}, err
-	}
-
-	igpCustomHookId := util.NewZeroAddress()
-	if customIgpId != "" {
-
-		igpCustomHookId, err = util.DecodeHexAddress(customIgpId)
-		if err != nil {
-			return util.HexAddress{}, err
-		}
 	}
 
 	// Token destinationDomain, recipientAddress
 	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
-		tokenId, // sender
+		token.Id, // sender
 		sdk.NewCoins(maxFee),
 
 		remoteRouter.ReceiverDomain,
@@ -90,7 +67,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 			GasLimit: gas,
 			Address:  senderAcc,
 		}.Bytes(), // metadata for gas payment
-		igpCustomHookId,
+		customIgpId,
 	)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -109,12 +86,7 @@ func (k *Keeper) RemoteReceiveCollateral(ctx context.Context, token types.HypTok
 		return types.ErrNotEnoughCollateral
 	}
 
-	tokenId, err := util.DecodeHexAddress(token.Id)
-	if err != nil {
-		return err
-	}
-
-	if err := k.HypTokens.Set(ctx, tokenId.GetInternalId(), token); err != nil {
+	if err := k.HypTokens.Set(ctx, token.Id.GetInternalId(), token); err != nil {
 		return err
 	}
 

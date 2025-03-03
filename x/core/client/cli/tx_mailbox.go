@@ -13,6 +13,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
 
@@ -34,18 +35,29 @@ func NewMailboxCmd() *cobra.Command {
 
 func CmdCreateMailbox() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [default-ism-id]",
+		Use:   "create [default-ism-id] [local-domain]",
 		Short: "Create a Hyperlane Mailbox",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
+			defaultIsm, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return fmt.Errorf("failed to parse default ism: %v", err)
+			}
+
+			localDomain, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return fmt.Errorf("failed to parse local domain: %v", err)
+			}
+
 			msg := types.MsgCreateMailbox{
-				Owner:      clientCtx.GetFromAddress().String(),
-				DefaultIsm: args[0],
+				Owner:       clientCtx.GetFromAddress().String(),
+				DefaultIsm:  defaultIsm,
+				LocalDomain: uint32(localDomain),
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)
@@ -128,7 +140,10 @@ func CmdProcessMessage() *cobra.Command {
 		Short: "Process a Hyperlane message",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			mailboxId := args[0]
+			mailboxId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return fmt.Errorf("failed to parse mailbox id: %v", err)
+			}
 			metadata := args[1]
 			message := args[2]
 
@@ -153,6 +168,17 @@ func CmdProcessMessage() *cobra.Command {
 	return cmd
 }
 
+func parseNullableAddress(address string) (*util.HexAddress, error) {
+	if address != "" {
+		parsed, err := util.DecodeHexAddress(address)
+		if err != nil {
+			return nil, err
+		}
+		return &parsed, nil
+	}
+	return nil, nil
+}
+
 func CmdSetMailbox() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set [mailbox-id]",
@@ -164,12 +190,32 @@ func CmdSetMailbox() *cobra.Command {
 				return err
 			}
 
+			mailboxId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			defaultIsmId, err := parseNullableAddress(defaultIsm)
+			if err != nil {
+				return err
+			}
+
+			defaultHookId, err := parseNullableAddress(defaultHook)
+			if err != nil {
+				return err
+			}
+
+			requiredHookId, err := parseNullableAddress(requiredHook)
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgSetMailbox{
 				Owner:        clientCtx.GetFromAddress().String(),
-				MailboxId:    args[0],
-				DefaultIsm:   defaultIsm,
-				DefaultHook:  defaultHook,
-				RequiredHook: requiredHook,
+				MailboxId:    mailboxId,
+				DefaultIsm:   defaultIsmId,
+				DefaultHook:  defaultHookId,
+				RequiredHook: requiredHookId,
 				NewOwner:     newOwner,
 			}
 

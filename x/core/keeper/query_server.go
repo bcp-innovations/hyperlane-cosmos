@@ -2,14 +2,11 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"cosmossdk.io/collections"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
@@ -31,12 +28,12 @@ func (qs queryServer) Delivered(ctx context.Context, req *types.QueryDeliveredRe
 		return nil, err
 	}
 
-	mailboxId, err := util.DecodeEthHex(req.Id)
+	mailboxId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	delivered, err := qs.k.Messages.Has(ctx, collections.Join(mailboxId, messageId))
+	delivered, err := qs.k.Messages.Has(ctx, collections.Join(mailboxId.GetInternalId(), messageId))
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +73,7 @@ func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxReques
 		return nil, err
 	}
 
-	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	mailbox, err := qs.k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
 	if err != nil {
 		return nil, fmt.Errorf("failed to find mailbox with id: %v", mailboxId.String())
 	}
@@ -103,18 +100,4 @@ func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDr
 	return &types.QueryVerifyDryRunResponse{
 		Verified: verified,
 	}, err
-}
-
-// Params defines the handler for the Query/Params RPC method.
-func (qs queryServer) Params(ctx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
-	params, err := qs.k.Params.Get(ctx)
-	if err != nil {
-		if errors.Is(err, collections.ErrNotFound) {
-			return &types.QueryParamsResponse{Params: types.Params{}}, nil
-		}
-
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	return &types.QueryParamsResponse{Params: params}, nil
 }

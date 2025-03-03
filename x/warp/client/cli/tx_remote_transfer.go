@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
@@ -22,14 +23,20 @@ func CmdRemoteTransfer() *cobra.Command {
 		Short: "Send Hyperlane Token",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			tokenId := args[0]
+			tokenId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
 
 			destinationDomain, err := strconv.ParseUint(args[1], 10, 32)
 			if err != nil {
 				return err
 			}
 
-			recipient := args[2]
+			recipient, err := util.DecodeHexAddress(args[2])
+			if err != nil {
+				return err
+			}
 
 			argAmount, ok := math.NewIntFromString(args[3])
 			if !ok {
@@ -51,13 +58,22 @@ func CmdRemoteTransfer() *cobra.Command {
 				return err
 			}
 
+			var parsedIgpId *util.HexAddress = nil
+			if igpId != "" {
+				parsed, err := util.DecodeHexAddress(igpId)
+				if err != nil {
+					return err
+				}
+				parsedIgpId = &parsed
+			}
+
 			msg := types.MsgRemoteTransfer{
 				TokenId:           tokenId,
 				DestinationDomain: uint32(destinationDomain),
 				Sender:            clientCtx.GetFromAddress().String(),
 				Recipient:         recipient,
 				Amount:            argAmount,
-				IgpId:             igpId,
+				IgpId:             parsedIgpId,
 				GasLimit:          gasLimitInt,
 				MaxFee:            maxFeeCoin,
 			}

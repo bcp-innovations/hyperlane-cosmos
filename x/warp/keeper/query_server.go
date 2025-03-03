@@ -168,7 +168,7 @@ func (qs queryServer) Token(ctx context.Context, request *types.QueryTokenReques
 
 func parseTokenResponse(get types.HypToken) *types.WrappedHypToken {
 	return &types.WrappedHypToken{
-		Id:        get.Id,
+		Id:        get.Id.String(),
 		Owner:     get.Owner,
 		TokenType: get.TokenType,
 

@@ -11,11 +11,6 @@ import "gogoproto/gogo.proto";
 
 // Msg defines the module Msg service.
 service Query {
-  // Params returns the module parameters.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/params";
-  }
-
   // Mailboxes ...
   rpc Mailboxes(QueryMailboxesRequest) returns (QueryMailboxesResponse) {
     option (google.api.http).get = "/hyperlane/v1/mailboxes";
@@ -32,8 +27,11 @@ service Query {
         "/hyperlane/v1/mailboxes/{id}/delivered/{message_id}";
   }
 
-  // RecipientIsm ...
-  // TODO: add comment why this is global and not mailbox dependend
+  // RecipientIsm returns the recipient ISM ID for a registered application.
+  //
+  // The recipient is globally unique as every application ID registered on the
+  // core module is unique. This means that one application cannot be registered
+  // to two mailboxes, resulting in a mailbox-independent lookup.
   rpc RecipientIsm(RecipientIsmRequest) returns (RecipientIsmResponse) {
     option (google.api.http).get = "/hyperlane/v1/recipient_ism/{recipient}";
   }
@@ -82,16 +80,6 @@ message RecipientIsmRequest { string recipient = 1; }
 
 // RecipientIsmResponse ...
 message RecipientIsmResponse { string ism_id = 1; }
-
-// QueryParamsRequest is the request type for the Query/Params RPC method.
-message QueryParamsRequest {}
-
-// QueryParamsResponse is the response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params defines the parameters of the module.
-  Params params = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-}
 
 // QueryVerifyDryRunRequest ...
 message QueryVerifyDryRunRequest {
