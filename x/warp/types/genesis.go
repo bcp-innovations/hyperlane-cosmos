@@ -7,9 +7,7 @@ func NewGenesisState() *GenesisState {
 
 // Validate performs basic genesis state validation returning an error upon any
 func (gs *GenesisState) Validate() error {
-	//if err := gs.Params.Validate(); err != nil {
-	//	return err
-	//}
+	// nothing to validate
 
 	return nil
 }

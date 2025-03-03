@@ -11,14 +11,14 @@ for dir in $proto_dirs; do
     # gogo proto files SHOULD ONLY be generated if this is false
     # we don't want gogo proto to run for proto files which are natively built for google.golang.org/protobuf
     if grep -q "option go_package" "$file" && grep -H -o -c 'option go_package.*github.com/bcp-innovations/hyperlane-cosmos/api' "$file" | grep -q ':0$'; then
-      buf generate --template buf.gen.gogo.yaml $file
+      buf generate --template buf.gen.gogo.yaml "$file"
     fi
   done
 done
 
 echo "--> Generating pulsar proto code"
 module_list=$(find . -name "*module.proto" -not -path "./hyperlane/core/_*" | tr '\n' ','  | sed 's/,$//')
-buf generate --template buf.gen.pulsar.yaml --path $module_list
+buf generate --template buf.gen.pulsar.yaml --path "$module_list"
 
 cd ..
 

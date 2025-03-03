@@ -12,6 +12,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgCreateMessageIdMultisigIsm{},
 		&MsgCreateMerkleRootMultisigIsm{},
 		&MsgCreateNoopIsm{},
+		&MsgAnnounceValidator{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 

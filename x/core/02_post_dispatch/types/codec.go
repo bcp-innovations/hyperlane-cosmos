@@ -10,13 +10,12 @@ import (
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateIgp{},
+		&MsgSetIgpOwner{},
+		&MsgSetDestinationGasConfig{},
+		&MsgPayForGas{},
+		&MsgClaim{},
+		&MsgCreateMerkleTreeHook{},
+		&MsgCreateNoopHook{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
-
-	//registry.RegisterInterface(
-	//	"hyperlane.core._interchain_security.HyperlaneInterchainSecurityModule",
-	//	(*HyperlaneInterchainSecurityModule)(nil),
-	//	&NoopISM{},
-	//	&MerkleRootMultisigISM{},
-	//)
 }

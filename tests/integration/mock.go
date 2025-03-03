@@ -36,12 +36,12 @@ func (n NoopPostDispatchHookHandler) CreateHook(ctx context.Context) (util.HexAd
 	return sequence, nil
 }
 
-func (n NoopPostDispatchHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
+func (n NoopPostDispatchHookHandler) Exists(_ context.Context, hookId util.HexAddress) (bool, error) {
 	_, ok := n.hooks[hookId]
 	return ok, nil
 }
 
-func (n NoopPostDispatchHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+func (n NoopPostDispatchHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage, _ sdk.Coins) (sdk.Coins, error) {
 	if has, err := n.Exists(ctx, hookId); err != nil || !has {
 		return sdk.Coins{}, err
 	}
@@ -49,7 +49,7 @@ func (n NoopPostDispatchHookHandler) PostDispatch(ctx context.Context, mailboxId
 	return sdk.NewCoins(), nil
 }
 
-func (n NoopPostDispatchHookHandler) QuoteDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (n NoopPostDispatchHookHandler) QuoteDispatch(_ context.Context, _, _ util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage) (sdk.Coins, error) {
 	return sdk.NewCoins(), nil
 }
 

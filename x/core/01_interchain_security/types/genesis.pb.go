@@ -5,7 +5,6 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_bcp_innovations_hyperlane_cosmos_util "github.com/bcp-innovations/hyperlane-cosmos/util"
 	types "github.com/cosmos/cosmos-sdk/codec/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -25,11 +24,11 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// GenesisState defines the ibc client submodule's genesis state.
+// GenesisState defines the 01_interchain_security submodule's genesis state.
 type GenesisState struct {
 	// accounts are the accounts present at genesis.
-	Isms                      []*types.Any                `protobuf:"bytes,1,rep,name=isms,proto3" json:"isms,omitempty"`
-	ValidatorStorageLocations []*ValidatorStorageLocation `protobuf:"bytes,2,rep,name=validator_storage_locations,json=validatorStorageLocations,proto3" json:"validator_storage_locations,omitempty"`
+	Isms                      []*types.Any                             `protobuf:"bytes,1,rep,name=isms,proto3" json:"isms,omitempty"`
+	ValidatorStorageLocations []ValidatorStorageLocationGenesisWrapper `protobuf:"bytes,2,rep,name=validator_storage_locations,json=validatorStorageLocations,proto3" json:"validator_storage_locations"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -72,34 +71,36 @@ func (m *GenesisState) GetIsms() []*types.Any {
 	return nil
 }
 
-func (m *GenesisState) GetValidatorStorageLocations() []*ValidatorStorageLocation {
+func (m *GenesisState) GetValidatorStorageLocations() []ValidatorStorageLocationGenesisWrapper {
 	if m != nil {
 		return m.ValidatorStorageLocations
 	}
 	return nil
 }
 
-// GenesisStorageLocation stores the information for
+// ValidatorStorageLocationGenesisWrapper stores the information for
 // validator, mailbox and storage-location which validators have announced
-type ValidatorStorageLocation struct {
-	MailboxId        github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=mailbox_id,json=mailboxId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"mailbox_id"`
-	ValidatorAddress string                                                      `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
-	Index            uint64                                                      `protobuf:"varint,3,opt,name=index,proto3" json:"index,omitempty"`
-	StorageLocation  string                                                      `protobuf:"bytes,4,opt,name=storage_location,json=storageLocation,proto3" json:"storage_location,omitempty"`
+type ValidatorStorageLocationGenesisWrapper struct {
+	MailboxId        uint64 `protobuf:"varint,1,opt,name=mailbox_id,json=mailboxId,proto3" json:"mailbox_id,omitempty"`
+	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
+	Index            uint64 `protobuf:"varint,3,opt,name=index,proto3" json:"index,omitempty"`
+	StorageLocation  string `protobuf:"bytes,4,opt,name=storage_location,json=storageLocation,proto3" json:"storage_location,omitempty"`
 }
 
-func (m *ValidatorStorageLocation) Reset()         { *m = ValidatorStorageLocation{} }
-func (m *ValidatorStorageLocation) String() string { return proto.CompactTextString(m) }
-func (*ValidatorStorageLocation) ProtoMessage()    {}
-func (*ValidatorStorageLocation) Descriptor() ([]byte, []int) {
+func (m *ValidatorStorageLocationGenesisWrapper) Reset() {
+	*m = ValidatorStorageLocationGenesisWrapper{}
+}
+func (m *ValidatorStorageLocationGenesisWrapper) String() string { return proto.CompactTextString(m) }
+func (*ValidatorStorageLocationGenesisWrapper) ProtoMessage()    {}
+func (*ValidatorStorageLocationGenesisWrapper) Descriptor() ([]byte, []int) {
 	return fileDescriptor_908eb45c3c27ef24, []int{1}
 }
-func (m *ValidatorStorageLocation) XXX_Unmarshal(b []byte) error {
+func (m *ValidatorStorageLocationGenesisWrapper) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ValidatorStorageLocation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ValidatorStorageLocationGenesisWrapper) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ValidatorStorageLocation.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ValidatorStorageLocationGenesisWrapper.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -109,33 +110,40 @@ func (m *ValidatorStorageLocation) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *ValidatorStorageLocation) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ValidatorStorageLocation.Merge(m, src)
+func (m *ValidatorStorageLocationGenesisWrapper) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ValidatorStorageLocationGenesisWrapper.Merge(m, src)
 }
-func (m *ValidatorStorageLocation) XXX_Size() int {
+func (m *ValidatorStorageLocationGenesisWrapper) XXX_Size() int {
 	return m.Size()
 }
-func (m *ValidatorStorageLocation) XXX_DiscardUnknown() {
-	xxx_messageInfo_ValidatorStorageLocation.DiscardUnknown(m)
+func (m *ValidatorStorageLocationGenesisWrapper) XXX_DiscardUnknown() {
+	xxx_messageInfo_ValidatorStorageLocationGenesisWrapper.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ValidatorStorageLocation proto.InternalMessageInfo
+var xxx_messageInfo_ValidatorStorageLocationGenesisWrapper proto.InternalMessageInfo
 
-func (m *ValidatorStorageLocation) GetValidatorAddress() string {
+func (m *ValidatorStorageLocationGenesisWrapper) GetMailboxId() uint64 {
+	if m != nil {
+		return m.MailboxId
+	}
+	return 0
+}
+
+func (m *ValidatorStorageLocationGenesisWrapper) GetValidatorAddress() string {
 	if m != nil {
 		return m.ValidatorAddress
 	}
 	return ""
 }
 
-func (m *ValidatorStorageLocation) GetIndex() uint64 {
+func (m *ValidatorStorageLocationGenesisWrapper) GetIndex() uint64 {
 	if m != nil {
 		return m.Index
 	}
 	return 0
 }
 
-func (m *ValidatorStorageLocation) GetStorageLocation() string {
+func (m *ValidatorStorageLocationGenesisWrapper) GetStorageLocation() string {
 	if m != nil {
 		return m.StorageLocation
 	}
@@ -144,7 +152,7 @@ func (m *ValidatorStorageLocation) GetStorageLocation() string {
 
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "hyperlane.core.interchain_security.v1.GenesisState")
-	proto.RegisterType((*ValidatorStorageLocation)(nil), "hyperlane.core.interchain_security.v1.ValidatorStorageLocation")
+	proto.RegisterType((*ValidatorStorageLocationGenesisWrapper)(nil), "hyperlane.core.interchain_security.v1.ValidatorStorageLocationGenesisWrapper")
 }
 
 func init() {
@@ -152,33 +160,32 @@ func init() {
 }
 
 var fileDescriptor_908eb45c3c27ef24 = []byte{
-	// 404 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0x4f, 0x8b, 0xd3, 0x40,
-	0x18, 0xc6, 0x33, 0xbb, 0x55, 0xd8, 0x51, 0x70, 0x0d, 0x3d, 0x64, 0x57, 0xc8, 0x96, 0x05, 0x21,
-	0x22, 0x9d, 0xb1, 0xf6, 0xe8, 0x41, 0x5a, 0x0f, 0x2a, 0x08, 0x42, 0x0a, 0x1e, 0xbc, 0x84, 0x49,
-	0x32, 0xa6, 0x03, 0xc9, 0xbc, 0x61, 0x66, 0x12, 0x92, 0x93, 0x5f, 0xc1, 0xaf, 0xe3, 0x37, 0xe8,
-	0xb1, 0x47, 0xf1, 0x50, 0xa4, 0xbd, 0xfa, 0x21, 0xa4, 0x99, 0xb6, 0xa2, 0xb4, 0xa0, 0xb7, 0x77,
-	0xe6, 0x99, 0xe7, 0xf7, 0xfe, 0x99, 0x17, 0x8f, 0xe7, 0x6d, 0xc9, 0x55, 0xce, 0x24, 0xa7, 0x09,
-	0x28, 0x4e, 0x85, 0x34, 0x5c, 0x25, 0x73, 0x26, 0x64, 0xa4, 0x79, 0x52, 0x29, 0x61, 0x5a, 0x5a,
-	0x8f, 0x68, 0xc6, 0x25, 0xd7, 0x42, 0x93, 0x52, 0x81, 0x01, 0xf7, 0xf1, 0xc1, 0x44, 0xb6, 0x26,
-	0x72, 0xc4, 0x44, 0xea, 0xd1, 0xf5, 0x55, 0x06, 0x90, 0xe5, 0x9c, 0x76, 0xa6, 0xb8, 0xfa, 0x44,
-	0x99, 0x6c, 0x2d, 0xe1, 0xba, 0x9f, 0x41, 0x06, 0x5d, 0x48, 0xb7, 0x91, 0xbd, 0xbd, 0xfd, 0x8a,
-	0xf0, 0xfd, 0xd7, 0x36, 0xd3, 0xcc, 0x30, 0xc3, 0xdd, 0x00, 0xf7, 0x84, 0x2e, 0xb4, 0x87, 0x06,
-	0xe7, 0xc1, 0xbd, 0xe7, 0x7d, 0x62, 0x81, 0x64, 0x0f, 0x24, 0x13, 0xd9, 0x86, 0xdd, 0x0b, 0xf7,
-	0x33, 0x7e, 0x54, 0xb3, 0x5c, 0xa4, 0xcc, 0x80, 0x8a, 0xb4, 0x01, 0xc5, 0x32, 0x1e, 0xe5, 0x90,
-	0x30, 0x23, 0x40, 0x6a, 0xef, 0xac, 0x03, 0xbc, 0x24, 0xff, 0x54, 0x38, 0xf9, 0xb0, 0x27, 0xcd,
-	0x2c, 0xe8, 0xdd, 0x8e, 0x13, 0x5e, 0xd5, 0x27, 0x14, 0x7d, 0xfb, 0x13, 0x61, 0xef, 0x94, 0xcf,
-	0x8d, 0x31, 0x2e, 0x98, 0xc8, 0x63, 0x68, 0x22, 0x91, 0x7a, 0x68, 0x80, 0x82, 0x8b, 0xe9, 0xab,
-	0xc5, 0xea, 0xc6, 0xf9, 0xbe, 0xba, 0x79, 0x91, 0x09, 0x33, 0xaf, 0x62, 0x92, 0x40, 0x41, 0xe3,
-	0xa4, 0x1c, 0x0a, 0x29, 0xa1, 0xb6, 0x50, 0x7a, 0x28, 0x77, 0x98, 0x80, 0x2e, 0x40, 0xd3, 0xca,
-	0x88, 0x9c, 0xbc, 0xe1, 0xcd, 0x24, 0x4d, 0x15, 0xd7, 0x3a, 0xbc, 0xd8, 0x61, 0xdf, 0xa6, 0xee,
-	0x53, 0xfc, 0xf0, 0xf7, 0x04, 0x98, 0xd5, 0xbd, 0xb3, 0x6d, 0xaa, 0xf0, 0xf2, 0x20, 0xec, 0x7c,
-	0x6e, 0x1f, 0xdf, 0x11, 0x32, 0xe5, 0x8d, 0x77, 0x3e, 0x40, 0x41, 0x2f, 0xb4, 0x07, 0xf7, 0x09,
-	0xbe, 0xfc, 0x7b, 0x74, 0x5e, 0xaf, 0x23, 0x3c, 0xd0, 0x7f, 0x76, 0x34, 0x15, 0x8b, 0xb5, 0x8f,
-	0x96, 0x6b, 0x1f, 0xfd, 0x58, 0xfb, 0xe8, 0xcb, 0xc6, 0x77, 0x96, 0x1b, 0xdf, 0xf9, 0xb6, 0xf1,
-	0x9d, 0x8f, 0xef, 0xff, 0xa7, 0x9f, 0xc6, 0x6e, 0xdd, 0xb3, 0x51, 0x74, 0x6c, 0xf1, 0x4c, 0x5b,
-	0x72, 0x1d, 0xdf, 0xed, 0xbe, 0x7b, 0xfc, 0x2b, 0x00, 0x00, 0xff, 0xff, 0x31, 0x5f, 0x46, 0x53,
-	0xab, 0x02, 0x00, 0x00,
+	// 391 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xd1, 0xca, 0xd3, 0x30,
+	0x14, 0xc7, 0x1b, 0xbf, 0x2a, 0x2c, 0x0a, 0xce, 0xb2, 0x8b, 0x6e, 0x62, 0x1d, 0x03, 0xa5, 0x22,
+	0x4b, 0x9c, 0x7b, 0x82, 0xed, 0x46, 0x04, 0x45, 0xe8, 0x40, 0xc1, 0x9b, 0x92, 0xb6, 0xb1, 0x0b,
+	0xb4, 0x39, 0x25, 0xc9, 0xca, 0xfa, 0x16, 0x82, 0xcf, 0xe2, 0x3b, 0xec, 0x4a, 0x76, 0xe9, 0x95,
+	0xc8, 0xf6, 0x22, 0xb2, 0x66, 0x9b, 0x28, 0xfb, 0x60, 0x77, 0x27, 0x27, 0xe7, 0xff, 0xcb, 0xf9,
+	0x9f, 0x1c, 0x3c, 0x5d, 0x36, 0x15, 0x57, 0x05, 0x93, 0x9c, 0xa6, 0xa0, 0x38, 0x15, 0xd2, 0x70,
+	0x95, 0x2e, 0x99, 0x90, 0xb1, 0xe6, 0xe9, 0x4a, 0x09, 0xd3, 0xd0, 0x7a, 0x42, 0x73, 0x2e, 0xb9,
+	0x16, 0x9a, 0x54, 0x0a, 0x0c, 0x78, 0xcf, 0xce, 0x22, 0x72, 0x10, 0x91, 0x0b, 0x22, 0x52, 0x4f,
+	0x06, 0xfd, 0x1c, 0x20, 0x2f, 0x38, 0x6d, 0x45, 0xc9, 0xea, 0x0b, 0x65, 0xb2, 0xb1, 0x84, 0x41,
+	0x2f, 0x87, 0x1c, 0xda, 0x90, 0x1e, 0x22, 0x9b, 0x1d, 0xfd, 0x40, 0xf8, 0xc1, 0x1b, 0xfb, 0xd2,
+	0xc2, 0x30, 0xc3, 0xbd, 0x10, 0xbb, 0x42, 0x97, 0xda, 0x47, 0xc3, 0x9b, 0xf0, 0xfe, 0xeb, 0x1e,
+	0xb1, 0x40, 0x72, 0x02, 0x92, 0x99, 0x6c, 0xa2, 0xb6, 0xc2, 0xfb, 0x86, 0xf0, 0xe3, 0x9a, 0x15,
+	0x22, 0x63, 0x06, 0x54, 0xac, 0x0d, 0x28, 0x96, 0xf3, 0xb8, 0x80, 0x94, 0x19, 0x01, 0x52, 0xfb,
+	0x77, 0x5a, 0xc2, 0x7b, 0x72, 0x55, 0xe7, 0xe4, 0xe3, 0x89, 0xb4, 0xb0, 0xa0, 0x77, 0x47, 0xce,
+	0xb1, 0xb9, 0x4f, 0x8a, 0x55, 0x15, 0x57, 0x73, 0x77, 0xf3, 0xeb, 0xa9, 0x13, 0xf5, 0xeb, 0x5b,
+	0xaa, 0xf5, 0xe8, 0x3b, 0xc2, 0xcf, 0xaf, 0x63, 0x79, 0x4f, 0x30, 0x2e, 0x99, 0x28, 0x12, 0x58,
+	0xc7, 0x22, 0xf3, 0xd1, 0x10, 0x85, 0x6e, 0xd4, 0x39, 0x66, 0xde, 0x66, 0xde, 0x4b, 0xfc, 0xe8,
+	0xaf, 0x3d, 0x96, 0x65, 0x8a, 0xeb, 0x83, 0x29, 0x14, 0x76, 0xa2, 0xee, 0xf9, 0x62, 0x66, 0xf3,
+	0x5e, 0x0f, 0xdf, 0x15, 0x32, 0xe3, 0x6b, 0xff, 0xa6, 0xc5, 0xd8, 0x83, 0xf7, 0x02, 0x77, 0xff,
+	0x9f, 0x8b, 0xef, 0xb6, 0x84, 0x87, 0xfa, 0xdf, 0xd6, 0xe6, 0x62, 0xb3, 0x0b, 0xd0, 0x76, 0x17,
+	0xa0, 0xdf, 0xbb, 0x00, 0x7d, 0xdd, 0x07, 0xce, 0x76, 0x1f, 0x38, 0x3f, 0xf7, 0x81, 0xf3, 0xf9,
+	0x43, 0x2e, 0xcc, 0x72, 0x95, 0x90, 0x14, 0x4a, 0x9a, 0xa4, 0xd5, 0x58, 0x48, 0x09, 0xb5, 0x75,
+	0x4b, 0xcf, 0xb3, 0x1d, 0xa7, 0xa0, 0x4b, 0xd0, 0x74, 0x6d, 0x77, 0xea, 0xd5, 0x24, 0xbe, 0xb4,
+	0x56, 0xa6, 0xa9, 0xb8, 0x4e, 0xee, 0xb5, 0x9f, 0x39, 0xfd, 0x13, 0x00, 0x00, 0xff, 0xff, 0xde,
+	0x8b, 0x58, 0xfd, 0x89, 0x02, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -232,7 +239,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *ValidatorStorageLocation) Marshal() (dAtA []byte, err error) {
+func (m *ValidatorStorageLocationGenesisWrapper) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -242,12 +249,12 @@ func (m *ValidatorStorageLocation) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ValidatorStorageLocation) MarshalTo(dAtA []byte) (int, error) {
+func (m *ValidatorStorageLocationGenesisWrapper) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ValidatorStorageLocation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ValidatorStorageLocationGenesisWrapper) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -271,16 +278,11 @@ func (m *ValidatorStorageLocation) MarshalToSizedBuffer(dAtA []byte) (int, error
 		i--
 		dAtA[i] = 0x12
 	}
-	{
-		size := m.MailboxId.Size()
-		i -= size
-		if _, err := m.MailboxId.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	if m.MailboxId != 0 {
+		i = encodeVarintGenesis(dAtA, i, uint64(m.MailboxId))
+		i--
+		dAtA[i] = 0x8
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -316,14 +318,15 @@ func (m *GenesisState) Size() (n int) {
 	return n
 }
 
-func (m *ValidatorStorageLocation) Size() (n int) {
+func (m *ValidatorStorageLocationGenesisWrapper) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.MailboxId.Size()
-	n += 1 + l + sovGenesis(uint64(l))
+	if m.MailboxId != 0 {
+		n += 1 + sovGenesis(uint64(m.MailboxId))
+	}
 	l = len(m.ValidatorAddress)
 	if l > 0 {
 		n += 1 + l + sovGenesis(uint64(l))
@@ -436,7 +439,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ValidatorStorageLocations = append(m.ValidatorStorageLocations, &ValidatorStorageLocation{})
+			m.ValidatorStorageLocations = append(m.ValidatorStorageLocations, ValidatorStorageLocationGenesisWrapper{})
 			if err := m.ValidatorStorageLocations[len(m.ValidatorStorageLocations)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -462,7 +465,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ValidatorStorageLocation) Unmarshal(dAtA []byte) error {
+func (m *ValidatorStorageLocationGenesisWrapper) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -485,17 +488,17 @@ func (m *ValidatorStorageLocation) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ValidatorStorageLocation: wiretype end group for non-group")
+			return fmt.Errorf("proto: ValidatorStorageLocationGenesisWrapper: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ValidatorStorageLocation: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ValidatorStorageLocationGenesisWrapper: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MailboxId", wireType)
 			}
-			var stringLen uint64
+			m.MailboxId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGenesis
@@ -505,26 +508,11 @@ func (m *ValidatorStorageLocation) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.MailboxId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.MailboxId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddress", wireType)

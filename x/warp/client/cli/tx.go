@@ -6,11 +6,12 @@ import (
 )
 
 var (
-	gasLimit     string
-	customHookId string
-	ismId        string
-	maxFee       string
-	newOwner     string
+	gasLimit           string
+	customHookId       string
+	customHookMetadata string
+	ismId              string
+	maxFee             string
+	newOwner           string
 )
 
 func GetTxCmd() *cobra.Command {

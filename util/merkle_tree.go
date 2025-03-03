@@ -112,7 +112,7 @@ func (tree *MerkleTree) Insert(node [32]byte) error {
 
 // rootWithCtx calculates and returns tree's current root given array of zero hashes
 func (tree *MerkleTree) rootWithCtx(zeroes [TreeDepth][32]byte) [32]byte {
-	var current [32]byte = [32]byte{} // zero initialized 32 byte long hash
+	current := [32]byte{} // zero initialized 32 byte long hash
 	index := tree.Count
 
 	for i := uint64(0); i < TreeDepth; i++ {

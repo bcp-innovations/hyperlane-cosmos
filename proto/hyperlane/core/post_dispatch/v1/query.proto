@@ -8,6 +8,7 @@ import "google/api/annotations.proto";
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "hyperlane/core/post_dispatch/v1/types.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 // Msg defines the module Msg service.
 service Query {
@@ -30,10 +31,10 @@ service Query {
   }
 
   // QuoteGasPayment ...
-  // TODO: move to /hyperlane/v1/igps/{id}/quote_gas_payment
   rpc QuoteGasPayment(QueryQuoteGasPaymentRequest)
       returns (QueryQuoteGasPaymentResponse) {
-    option (google.api.http).get = "/hyperlane/v1/quote_gas_payment";
+    option (google.api.http).get =
+        "/hyperlane/v1/igps/{igp_id}/quote_gas_payment";
   }
 
   // MerkleTreeHook ...
@@ -48,9 +49,13 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks/{id}";
   }
 
-  // MerkleTreeHook ...
-  // TODO: add get all query & pagination
-  rpc NoopHook(QueryNoopHook) returns (QueryNoopHookResponse) {
+  // NoopHooks ...
+  rpc NoopHooks(QueryNoopHooksRequest) returns (QueryNoopHooksResponse) {
+    option (google.api.http).get = "/hyperlane/v1/noop_hooks";
+  }
+
+  // NoopHook ...
+  rpc NoopHook(QueryNoopHookRequest) returns (QueryNoopHookResponse) {
     option (google.api.http).get = "/hyperlane/v1/noop_hooks/{id}";
   }
 }
@@ -100,48 +105,72 @@ message QueryQuoteGasPaymentRequest {
 }
 
 // QueryQuoteGasPaymentResponse ...
-// TODO: sdk.Coin
-message QueryQuoteGasPaymentResponse { string gas_payment = 1; }
+message QueryQuoteGasPaymentResponse {
+  repeated cosmos.base.v1beta1.Coin gas_payment = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
 
 // QueryCountRequest ...
 message QueryMerkleTreeHooks {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-// QueryCountResponse ...
+// QueryMerkleTreeHooksResponse ...
 message QueryMerkleTreeHooksResponse {
-  repeated QueryMerkleTreeHookResponse merkle_tree_hooks = 1;
+  repeated WrappedMerkleTreeHookResponse merkle_tree_hooks = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  ;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-// QueryCountRequest ...
+// QueryMerkleTreeHook ...
 message QueryMerkleTreeHook { string id = 1; }
 
-// QueryCountResponse ...
-// TODO: same for get all
-/**
-{
-  merkle_tree_hook: {
-    id: string;
-    owner: string;
-    mailbox_id: string;
-    tree: {
-      leafs: string[];
-      count: number;
-      root: string;
-    }
-  }
-}
-
-*/
+// QueryMerkleTreeHookResponse
 message QueryMerkleTreeHookResponse {
-  bytes root = 1;
-  uint32 count = 2;
-  MerkleTreeHook merkle_tree_hook = 3;
+  WrappedMerkleTreeHookResponse merkle_tree_hook = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  ;
 }
 
-// QueryCountRequest ...
-message QueryNoopHook { string id = 1; }
+// WrappedMerkleTreeHookResponse
+message WrappedMerkleTreeHookResponse {
+  string id = 1;
+  string owner = 2;
+  string mailbox_id = 3;
 
-// QueryCountResponse ...
+  TreeResponse merkle_tree = 4;
+}
+
+// TreeResponse
+message TreeResponse {
+  // leafs ...
+  repeated bytes leafs = 1;
+
+  // count ...
+  uint32 count = 2;
+
+  // root ...
+  bytes root = 3;
+}
+
+// QueryNoopHookRequest ...
+message QueryNoopHookRequest { string id = 1; }
+
+// QueryNoopHookResponse ...
 message QueryNoopHookResponse { NoopHook noop_hook = 1; }
+
+// QueryNoopHooksRequest ...
+message QueryNoopHooksRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryNoopHooksResponse ...
+message QueryNoopHooksResponse {
+  repeated NoopHook noop_hooks = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

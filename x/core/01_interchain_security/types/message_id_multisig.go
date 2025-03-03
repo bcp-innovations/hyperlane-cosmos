@@ -15,7 +15,7 @@ func (m *MessageIdMultisigISM) GetId() (util.HexAddress, error) {
 }
 
 func (m *MessageIdMultisigISM) ModuleType() uint8 {
-	return INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG
+	return INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG
 }
 
 func (m *MessageIdMultisigISM) Verify(_ context.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {

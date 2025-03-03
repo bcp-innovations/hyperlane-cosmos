@@ -14,7 +14,7 @@ ldflags += -X github.com/cosmos/cosmos-sdk/version.Name=hyperlane \
 
 ldflags := $(strip $(ldflags))
 
-BUILD_FLAGS := -ldflags '$(ldflags)' -trimpath -buildvcs=false
+BUILD_FLAGS := -ldflags '$(ldflags)' -trimpath -tags 'ledger' -buildvcs=false
 
 all: proto-all format lint test build-simapp
 

@@ -13,7 +13,7 @@ message MessageIdMultisigISM {
       "hyperlane.core.v1.01_interchain_security."
       "HyperlaneInterchainSecurityModule";
 
-  // XXX ...
+  // id ...
   string id = 1 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",

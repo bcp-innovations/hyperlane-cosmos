@@ -50,17 +50,13 @@ func NewAppModule(cdc codec.Codec, keeper *keeper2.Keeper) AppModule {
 	}
 }
 
-func NewAppModuleBasic(m AppModule) module.AppModuleBasic {
-	return module.CoreAppModuleBasicAdaptor(m.Name(), m)
-}
-
 // Name returns the mailbox module's name.
 func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the mailbox module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
-func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	// TODO register
+func (AppModule) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {
+	// this is already handled by the proto annotation
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.
@@ -104,8 +100,6 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
 func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
-	// TODO include submodule
-
 	return cdc.MustMarshalJSON(types.NewGenesisState())
 }
 
@@ -133,8 +127,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	pdkeeper.InitGenesis(ctx, am.keeper.PostDispatchKeeper, genesisState.PostDispatchGenesis)
 }
 
-// ExportGenesis returns the exported genesis state as raw bytes for the circuit
-// module.
+// ExportGenesis returns the exported genesis
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	gs, err := am.keeper.ExportGenesis(ctx)
 	if err != nil {

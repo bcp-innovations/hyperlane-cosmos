@@ -42,16 +42,14 @@ func NewAppModule(cdc codec.Codec, keeper keeper2.Keeper) AppModule {
 	}
 }
 
-func NewAppModuleBasic(m AppModule) module.AppModuleBasic {
-	return module.CoreAppModuleBasicAdaptor(m.Name(), m)
-}
-
 // Name returns the warp module's name.
 func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the warp module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
-func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModule) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {
+	// already handled by the proto annotation
+}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the warp module.
 func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwruntime.ServeMux) {

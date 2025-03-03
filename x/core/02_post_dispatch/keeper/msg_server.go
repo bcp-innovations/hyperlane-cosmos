@@ -36,20 +36,19 @@ func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 	merkleTreeHook := types.MerkleTreeHook{
-		InternalId: nextId.GetInternalId(),
-		Id:         nextId.String(),
-		MailboxId:  mailboxId.String(),
-		Owner:      msg.Owner,
-		Tree:       types.ProtoFromTree(util.NewTree(util.ZeroHashes, 0)),
+		Id:        nextId,
+		MailboxId: mailboxId.String(),
+		Owner:     msg.Owner,
+		Tree:      types.ProtoFromTree(util.NewTree(util.ZeroHashes, 0)),
 	}
 
-	err = ms.k.merkleTreeHooks.Set(ctx, merkleTreeHook.InternalId, merkleTreeHook)
+	err = ms.k.merkleTreeHooks.Set(ctx, merkleTreeHook.Id.GetInternalId(), merkleTreeHook)
 	if err != nil {
 		return nil, err
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateMerkleTreeHook{
-		Id:        merkleTreeHook.Id,
+		Id:        merkleTreeHook.Id.String(),
 		MailboxId: merkleTreeHook.MailboxId,
 		Owner:     merkleTreeHook.Owner,
 	})
@@ -65,17 +64,17 @@ func (ms msgServer) CreateNoopHook(ctx context.Context, msg *types.MsgCreateNoop
 		return nil, err
 	}
 	noopHook := types.NoopHook{
-		Id:    nextId.String(),
+		Id:    nextId,
 		Owner: msg.Owner,
 	}
 
-	err = ms.k.noopHooks.Set(ctx, nextId.Bytes(), noopHook)
+	err = ms.k.noopHooks.Set(ctx, nextId.GetInternalId(), noopHook)
 	if err != nil {
 		return nil, err
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateNoopHook{
-		Id:    noopHook.Id,
+		Id:    noopHook.String(),
 		Owner: noopHook.Owner,
 	})
 

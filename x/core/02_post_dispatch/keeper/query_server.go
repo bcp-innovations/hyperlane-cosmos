@@ -25,44 +25,6 @@ type queryServer struct {
 	k *Keeper
 }
 
-func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
-	if len(req.IgpId) == 0 {
-		return nil, errors.New("parameter 'igp_id' is required")
-	}
-
-	igpId, err := util.DecodeHexAddress(req.IgpId)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(req.DestinationDomain) == 0 {
-		return nil, errors.New("parameter 'destination_domain' is required")
-	}
-
-	destinationDomain, err := strconv.ParseUint(req.DestinationDomain, 10, 32)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(req.GasLimit) == 0 {
-		return nil, errors.New("parameter 'gas_limit' is required")
-	}
-
-	gasLimit, ok := math.NewIntFromString(req.GasLimit)
-	if !ok {
-		return nil, fmt.Errorf("failed to convert gasLimit to math.Int")
-	}
-
-	igpHandler := InterchainGasPaymasterHookHandler{*qs.k}
-
-	payment, err := igpHandler.QuoteGasPayment(ctx, igpId, uint32(destinationDomain), gasLimit)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.QueryQuoteGasPaymentResponse{GasPayment: payment.String()}, nil
-}
-
 //
 // Interchain Gas Paymaster
 
@@ -122,6 +84,44 @@ func (qs queryServer) DestinationGasConfigs(ctx context.Context, req *types.Quer
 	}, nil
 }
 
+func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuoteGasPaymentRequest) (*types.QueryQuoteGasPaymentResponse, error) {
+	if len(req.IgpId) == 0 {
+		return nil, errors.New("parameter 'igp_id' is required")
+	}
+
+	igpId, err := util.DecodeHexAddress(req.IgpId)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(req.DestinationDomain) == 0 {
+		return nil, errors.New("parameter 'destination_domain' is required")
+	}
+
+	destinationDomain, err := strconv.ParseUint(req.DestinationDomain, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(req.GasLimit) == 0 {
+		return nil, errors.New("parameter 'gas_limit' is required")
+	}
+
+	gasLimit, ok := math.NewIntFromString(req.GasLimit)
+	if !ok {
+		return nil, errors.New("failed to convert gasLimit to math.Int")
+	}
+
+	igpHandler := InterchainGasPaymasterHookHandler{*qs.k}
+
+	payment, err := igpHandler.QuoteGasPayment(ctx, igpId, uint32(destinationDomain), gasLimit)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryQuoteGasPaymentResponse{GasPayment: payment}, nil
+}
+
 //
 // Merkle Tree Hook
 
@@ -131,7 +131,7 @@ func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkl
 		return nil, err
 	}
 
-	responses := make([]*types.QueryMerkleTreeHookResponse, len(values))
+	responses := make([]types.WrappedMerkleTreeHookResponse, len(values))
 	for i := 0; i < len(values); i++ {
 		merkleTreeHook := values[i]
 		tree, err := types.TreeFromProto(merkleTreeHook.Tree)
@@ -140,10 +140,16 @@ func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkl
 		}
 
 		root := tree.GetRoot()
-		responses[i] = &types.QueryMerkleTreeHookResponse{
-			Root:           root[:],
-			Count:          tree.Count,
-			MerkleTreeHook: &merkleTreeHook,
+
+		responses[i] = types.WrappedMerkleTreeHookResponse{
+			Id:        merkleTreeHook.Id.String(),
+			Owner:     merkleTreeHook.Owner,
+			MailboxId: merkleTreeHook.MailboxId,
+			MerkleTree: &types.TreeResponse{
+				Count: merkleTreeHook.Tree.Count,
+				Root:  root[:],
+				Leafs: merkleTreeHook.Tree.Branch,
+			},
 		}
 	}
 
@@ -171,28 +177,45 @@ func (qs queryServer) MerkleTreeHook(ctx context.Context, req *types.QueryMerkle
 
 	root := tree.GetRoot()
 
-	return &types.QueryMerkleTreeHookResponse{
-		Root:           root[:],
-		Count:          tree.Count,
-		MerkleTreeHook: &merkleTreeHook,
-	}, nil
+	return &types.QueryMerkleTreeHookResponse{MerkleTreeHook: types.WrappedMerkleTreeHookResponse{
+		Id:        merkleTreeHook.Id.String(),
+		Owner:     merkleTreeHook.Owner,
+		MailboxId: merkleTreeHook.MailboxId,
+		MerkleTree: &types.TreeResponse{
+			Count: merkleTreeHook.Tree.Count,
+			Root:  root[:],
+			Leafs: merkleTreeHook.Tree.Branch,
+		},
+	}}, nil
 }
 
 //
 // Noop Hook
 
-func (qs queryServer) NoopHook(ctx context.Context, req *types.QueryNoopHook) (*types.QueryNoopHookResponse, error) {
+func (qs queryServer) NoopHook(ctx context.Context, req *types.QueryNoopHookRequest) (*types.QueryNoopHookResponse, error) {
 	hookId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	noopHook, err := qs.k.noopHooks.Get(ctx, hookId.Bytes())
+	noopHook, err := qs.k.noopHooks.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.QueryNoopHookResponse{
 		NoopHook: &noopHook,
+	}, nil
+}
+
+func (qs queryServer) NoopHooks(ctx context.Context, req *types.QueryNoopHooksRequest) (*types.QueryNoopHooksResponse, error) {
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.noopHooks, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryNoopHooksResponse{
+		NoopHooks:  values,
+		Pagination: pagination,
 	}, nil
 }

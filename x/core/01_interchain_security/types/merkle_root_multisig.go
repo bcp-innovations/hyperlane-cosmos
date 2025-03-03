@@ -16,7 +16,7 @@ func (m *MerkleRootMultisigISM) GetId() (util.HexAddress, error) {
 }
 
 func (m *MerkleRootMultisigISM) ModuleType() uint8 {
-	return INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG
+	return INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG
 }
 
 func (m *MerkleRootMultisigISM) Verify(_ context.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {

@@ -16,7 +16,7 @@ type NoopHookHandler struct {
 var _ util.PostDispatchModule = NoopHookHandler{}
 
 func (i NoopHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
-	has, err := i.k.noopHooks.Has(ctx, hookId.Bytes())
+	has, err := i.k.noopHooks.Has(ctx, hookId.GetInternalId())
 	if err != nil || !has {
 		return false, errors.Wrapf(types.ErrHookDoesNotExistOrIsNotRegistered, "%s", hookId.String())
 	}
@@ -27,8 +27,8 @@ func (i NoopHookHandler) HookType() uint8 {
 	return types.POST_DISPATCH_HOOK_TYPE_UNUSED
 }
 
-func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
-	has, err := i.k.noopHooks.Has(ctx, hookId.Bytes())
+func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage, _ sdk.Coins) (sdk.Coins, error) {
+	has, err := i.k.noopHooks.Has(ctx, hookId.GetInternalId())
 	if err != nil || !has {
 		return nil, errors.Wrapf(types.ErrHookDoesNotExistOrIsNotRegistered, "%s", hookId.String())
 	}

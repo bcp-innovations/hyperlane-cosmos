@@ -11,7 +11,7 @@ import (
 
 // GetEthSigningHash hashes a message according to EIP-191.
 //
-// The data is a UTF-8 encoded string and will enveloped as follows:
+// The data is a UTF-8 encoded string and will envelop as follows:
 // `"\x19Ethereum Signed Message:\n" + message.length + message` and hashed
 // using keccak256.
 func GetEthSigningHash(msg []byte) [32]byte {

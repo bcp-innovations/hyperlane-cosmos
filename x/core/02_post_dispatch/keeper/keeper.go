@@ -14,7 +14,7 @@ type Keeper struct {
 
 	merkleTreeHooks collections.Map[uint64, types.MerkleTreeHook]
 
-	noopHooks collections.Map[[]byte, types.NoopHook]
+	noopHooks collections.Map[uint64, types.NoopHook]
 
 	schema collections.Schema
 
@@ -30,7 +30,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ba
 		IgpDestinationGasConfigs: collections.NewMap(sb, types.InterchainGasPaymasterConfigsKey, "interchain_gas_paymaster_configs", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
 
 		merkleTreeHooks: collections.NewMap(sb, types.MerkleTreeHooksKey, "merkle_tree_hooks_key", collections.Uint64Key, codec.CollValue[types.MerkleTreeHook](cdc)),
-		noopHooks:       collections.NewMap(sb, types.NoopHooksKey, "noop_hooks_key", collections.BytesKey, codec.CollValue[types.NoopHook](cdc)),
+		noopHooks:       collections.NewMap(sb, types.NoopHooksKey, "noop_hooks_key", collections.Uint64Key, codec.CollValue[types.NoopHook](cdc)),
 
 		bankKeeper: bankKeeper,
 	}

@@ -68,15 +68,15 @@ func CmdRemoteTransfer() *cobra.Command {
 			}
 
 			msg := types.MsgRemoteTransfer{
-				TokenId:           tokenId,
-				DestinationDomain: uint32(destinationDomain),
-				Sender:            clientCtx.GetFromAddress().String(),
-				Recipient:         recipient,
-				Amount:            argAmount,
-				CustomHookId:      parsedHookId,
-				GasLimit:          gasLimitInt,
-				MaxFee:            maxFeeCoin,
-				// TODO: Add customHookMetadata
+				TokenId:            tokenId,
+				DestinationDomain:  uint32(destinationDomain),
+				Sender:             clientCtx.GetFromAddress().String(),
+				Recipient:          recipient,
+				Amount:             argAmount,
+				CustomHookId:       parsedHookId,
+				GasLimit:           gasLimitInt,
+				MaxFee:             maxFeeCoin,
+				CustomHookMetadata: customHookMetadata,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
@@ -86,6 +86,7 @@ func CmdRemoteTransfer() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().StringVar(&customHookId, "custom-hook-id", "", "custom DefaultHookId")
+	cmd.Flags().StringVar(&customHookMetadata, "custom-hook-metadata", "", "custom hook metadata")
 
 	cmd.Flags().StringVar(&gasLimit, "gas-limit", "0", "Overwrite InterchainGasPayment gas limit")
 

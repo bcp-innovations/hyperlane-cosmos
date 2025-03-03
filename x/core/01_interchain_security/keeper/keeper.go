@@ -18,7 +18,7 @@ import (
 type Keeper struct {
 	isms collections.Map[uint64, types.HyperlaneInterchainSecurityModule]
 	// Key: Mailbox ID, Validator address, Storage Location index
-	storageLocations collections.Map[collections.Triple[[]byte, []byte, uint64], string]
+	storageLocations collections.Map[collections.Triple[uint64, []byte, uint64], string]
 	schema           collections.Schema
 
 	coreKeeper types.CoreKeeper
@@ -29,7 +29,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService) Ke
 
 	k := Keeper{
 		isms:             collections.NewMap(sb, types.IsmsKey, "isms", collections.Uint64Key, codec.CollInterfaceValue[types.HyperlaneInterchainSecurityModule](cdc)),
-		storageLocations: collections.NewMap(sb, types.StorageLocationsKey, "storage_locations", collections.TripleKeyCodec(collections.BytesKey, collections.BytesKey, collections.Uint64Key), collections.StringValue),
+		storageLocations: collections.NewMap(sb, types.StorageLocationsKey, "storage_locations", collections.TripleKeyCodec(collections.Uint64Key, collections.BytesKey, collections.Uint64Key), collections.StringValue),
 		coreKeeper:       nil,
 	}
 
@@ -53,9 +53,9 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 	// set the router from the core keeper
 	router := coreKeeper.IsmRouter()
 	// add default modules
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED, k)
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG, k)
-	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_UNUSED, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG, k)
 }
 
 // Verify checks if the metadata has signed the message correctly.

@@ -3,20 +3,18 @@ package types
 // NewGenesisState creates a new genesis state with default values.
 func NewGenesisState() *GenesisState {
 	return &GenesisState{
-		// Params: DefaultParams(),
+		IsmGenesis:           nil, // TODO add
+		PostDispatchGenesis:  nil, // TODO add
+		Mailboxes:            nil,
+		Messages:             nil,
+		IsmSequence:          0,
+		PostDispatchSequence: 0,
+		AppSequence:          0,
 	}
 }
 
 // Validate performs basic genesis state validation returning an error upon any
 func (gs *GenesisState) Validate() error {
-	// if err := gs.Params.Validate(); err != nil {
-	// 	return err
-	// }
-
-	// if gs.Params.Domain == 0 {
-	// 	return fmt.Errorf("local domain cannot be 0")
-	// }
-
 	// TODO validate
 
 	return nil

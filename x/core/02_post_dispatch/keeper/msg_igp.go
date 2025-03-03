@@ -32,14 +32,13 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 	}
 
 	newIgp := types.InterchainGasPaymaster{
-		InternalId:    nextId.GetInternalId(),
-		Id:            nextId.String(),
+		Id:            nextId,
 		Owner:         req.Owner,
 		Denom:         req.Denom,
 		ClaimableFees: sdk.NewCoins(),
 	}
 
-	if err = ms.k.Igps.Set(ctx, newIgp.InternalId, newIgp); err != nil {
+	if err = ms.k.Igps.Set(ctx, newIgp.Id.GetInternalId(), newIgp); err != nil {
 		return nil, err
 	}
 
