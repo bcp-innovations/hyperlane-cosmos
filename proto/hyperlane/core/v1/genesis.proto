@@ -10,17 +10,17 @@ import "hyperlane/core/post_dispatch/v1/genesis.proto";
 // GenesisState is the state that must be provided at genesis.
 message GenesisState {
   // ism_genesis
-  hyperlane.core.interchain_security.v1.GenesisState ism_genesis = 2;
+  hyperlane.core.interchain_security.v1.GenesisState ism_genesis = 1;
 
   // post_dispatch_genesis
-  hyperlane.core.post_dispatch.v1.GenesisState post_dispatch_genesis = 3;
+  hyperlane.core.post_dispatch.v1.GenesisState post_dispatch_genesis = 2;
 
-  repeated Mailbox mailboxes = 4;
-  repeated MailboxMessage messages = 5;
+  repeated Mailbox mailboxes = 3;
+  repeated MailboxMessage messages = 4;
 
-  uint64 ism_sequence = 6;
-  uint64 post_dispatch_sequence = 7;
-  uint64 app_sequence = 8;
+  uint64 ism_sequence = 5;
+  uint64 post_dispatch_sequence = 6;
+  uint64 app_sequence = 7;
 }
 
 // Mailbox message for genesis state

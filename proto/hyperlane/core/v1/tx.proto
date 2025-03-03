@@ -96,9 +96,6 @@ message MsgSetMailbox {
 // MsgSetMailboxResponse ...
 message MsgSetMailboxResponse {}
 
-// MsgDispatchMessageResponse ...
-message MsgDispatchMessageResponse { string message_id = 1; }
-
 // MsgProcessMessage ...
 message MsgProcessMessage {
   option (cosmos.msg.v1.signer) = "relayer";
