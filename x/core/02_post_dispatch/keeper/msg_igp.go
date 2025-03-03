@@ -61,8 +61,7 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 		return nil, fmt.Errorf("%s does not own igp with id %s", req.Owner, igpId.String())
 	}
 
-	// TODO: Verfiy NewOwner
-
+	// Any arbitrary string is allowed for a new owner.
 	igp.Owner = req.NewOwner
 
 	if err = ms.k.Igps.Set(ctx, igpId.GetInternalId(), igp); err != nil {
