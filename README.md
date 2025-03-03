@@ -16,11 +16,11 @@ Interchain Security Modules (ISMs) that are implemented in the submodules.
 transfers between chains already connected via Hyperlane. These tokens leverage 
 modular security through specific ISMs.
 
-_Both modules can be imported into an Cosmos SDK chain using [dependency injection](https://docs.cosmos.network/main/build/building-modules/depinject)._
+_Both modules can be imported into an CosmosSDK-based chain using [dependency injection](https://docs.cosmos.network/main/build/building-modules/depinject)._
 
 ## Building from source
 
-To run all build tools docker is required.
+To run all build tools, docker is required. 
 
 ```
 make all
@@ -31,3 +31,5 @@ To run the test suite:
 ```
 make test
 ```
+
+More information can be found in the [Contributing](https://github.com/bcp-innovations/hyperlane-cosmos/blob/main/CONTRIBUTING.md).

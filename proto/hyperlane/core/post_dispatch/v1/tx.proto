@@ -41,7 +41,7 @@ service Msg {
 // MsgCreateIgp ...
 message MsgCreateIgp {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/MsgCreateInterchainGasPaymaster";
+  option (amino.name) = "hyperlane/v1/MsgCreateInterchainGasPaymaster";
 
   // owner is the message sender.
   string owner = 1;
@@ -56,7 +56,7 @@ message MsgCreateIgpResponse { string id = 1; }
 // MsgSetIgpOwner ...
 message MsgSetIgpOwner {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/MsgSetIgpOwner";
+  option (amino.name) = "hyperlane/v1/MsgSetIgpOwner";
 
   // owner is the message sender.
   string owner = 1;
@@ -74,7 +74,7 @@ message MsgSetIgpOwnerResponse {}
 // MsgSetDestinationGasConfig ...
 message MsgSetDestinationGasConfig {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/MsgSetDestinationGasConfig";
+  option (amino.name) = "hyperlane/v1/MsgSetDestinationGasConfig";
 
   // owner ...
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -92,7 +92,7 @@ message MsgSetDestinationGasConfigResponse {}
 // MsgPayForGas ...
 message MsgPayForGas {
   option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "hyperlane/MsgPayForGas";
+  option (amino.name) = "hyperlane/v1/MsgPayForGas";
 
   // sender ...
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -123,7 +123,7 @@ message MsgPayForGasResponse {}
 // MsgClaim ...
 message MsgClaim {
   option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "hyperlane/MsgClaim";
+  option (amino.name) = "hyperlane/v1/MsgClaim";
 
   // sender ...
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -138,7 +138,7 @@ message MsgClaimResponse {}
 // MsgMerkleTreeHook ...
 message MsgCreateMerkleTreeHook {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/MsgCreateMerkleTreeHook";
+  option (amino.name) = "hyperlane/v1/MsgCreateMerkleTreeHook";
 
   // sender ...
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -152,7 +152,7 @@ message MsgCreateMerkleTreeHookResponse { string id = 1; }
 // MsgMerkleTreeHook ...
 message MsgCreateNoopHook {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/MsgCreateMerkleTreeHook";
+  option (amino.name) = "hyperlane/v1/MsgCreateMerkleTreeHook";
 
   // sender ...
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];

@@ -118,7 +118,7 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 }
 
 func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.MsgCreateMessageIdMultisigIsm) (*types.MsgCreateMessageIdMultisigIsmResponse, error) {
-	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG)
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG)
 	if err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
@@ -142,7 +142,7 @@ func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.Ms
 }
 
 func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.MsgCreateMerkleRootMultisigIsm) (*types.MsgCreateMerkleRootMultisigIsmResponse, error) {
-	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG)
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG)
 	if err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
@@ -166,7 +166,7 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 }
 
 func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIsm) (*types.MsgCreateNoopIsmResponse, error) {
-	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED)
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_UNUSED)
 	if err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}

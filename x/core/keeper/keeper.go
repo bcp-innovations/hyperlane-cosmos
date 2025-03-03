@@ -86,7 +86,7 @@ func (k Keeper) AppRouter() *util.Router[util.HyperlaneApp] {
 }
 
 func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error) {
-	handler, err := k.appRouter.GetModule(ctx, recipient)
+	handler, err := k.appRouter.GetModule(recipient)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
@@ -94,7 +94,7 @@ func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (
 }
 
 func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
-	handler, err := k.appRouter.GetModule(ctx, message.Recipient)
+	handler, err := k.appRouter.GetModule(message.Recipient)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (k Keeper) IsmRouter() *util.Router[util.InterchainSecurityModule] {
 }
 
 func (k *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
-	handler, err := k.ismRouter.GetModule(ctx, ismId)
+	handler, err := k.ismRouter.GetModule(ismId)
 	if err != nil {
 		return false, err
 	}
@@ -114,7 +114,7 @@ func (k *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []b
 }
 
 func (k *Keeper) IsmExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
-	handler, err := k.ismRouter.GetModule(ctx, ismId)
+	handler, err := k.ismRouter.GetModule(ismId)
 	if err != nil {
 		return false, err
 	}
@@ -135,7 +135,7 @@ func (k Keeper) PostDispatchRouter() *util.Router[util.PostDispatchModule] {
 }
 
 func (k *Keeper) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
-	handler, err := k.postDispatchRouter.GetModule(ctx, hookId)
+	handler, err := k.postDispatchRouter.GetModule(hookId)
 	if err != nil {
 		return sdk.NewCoins(), err
 	}
@@ -143,7 +143,7 @@ func (k *Keeper) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAdd
 }
 
 func (k *Keeper) PostDispatchHookExists(ctx context.Context, hookId util.HexAddress) (bool, error) {
-	handler, err := k.postDispatchRouter.GetModule(ctx, hookId)
+	handler, err := k.postDispatchRouter.GetModule(hookId)
 	if err != nil {
 		return false, err
 	}
@@ -165,7 +165,7 @@ func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId, overwriteHookId u
 	}
 
 	calculateGasPayment := func(hookId util.HexAddress) (sdk.Coins, error) {
-		handler, err := k.postDispatchRouter.GetModule(ctx, hookId)
+		handler, err := k.postDispatchRouter.GetModule(hookId)
 		if err != nil {
 			return sdk.NewCoins(), err
 		}
@@ -202,8 +202,11 @@ func (k *Keeper) AssertPostDispatchHookExists(ctx context.Context, id util.HexAd
 }
 
 func (k Keeper) LocalDomain(ctx context.Context, mailboxId util.HexAddress) (uint32, error) {
-	params, err := k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
-	return params.LocalDomain, err
+	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
+	if err != nil {
+		return 0, err
+	}
+	return mailbox.LocalDomain, err
 }
 
 func (k Keeper) MailboxIdExists(ctx context.Context, mailboxId util.HexAddress) (bool, error) {

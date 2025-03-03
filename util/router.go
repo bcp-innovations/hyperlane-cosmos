@@ -64,7 +64,7 @@ func (r *Router[T]) RegisterModule(moduleId uint8, module T) {
 	r.modules[id] = module
 }
 
-func (r *Router[T]) GetModule(ctx context.Context, id HexAddress) (*T, error) {
+func (r *Router[T]) GetModule(id HexAddress) (*T, error) {
 	// the first byte of the id are the module id
 	moduleId := id.GetType()
 	module, ok := r.modules[moduleId]
