@@ -26,6 +26,11 @@ func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, _, 
 	return i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, metadata.GasLimit, maxFee)
 }
 
+// QuoteDispatch returns the required Interchain Gas Payment for a certain message.
+func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, _, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage) (sdk.Coins, error) {
+	return i.QuoteGasPayment(ctx, hookId, message.Destination, metadata.GasLimit)
+}
+
 func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId util.HexAddress) (bool, error) {
 	has, err := i.k.Igps.Has(ctx, hookId.GetInternalId())
 	if err != nil {
@@ -34,9 +39,7 @@ func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId ut
 	return has, nil
 }
 
-// PayForGas executes an InterchainGasPayment using `QuoteGasPayment` beforehand.
-// It uses the IGP's  DestinationGasConfig to determine the required payment and
-// returns the remaining fees to pay gas for following hooks.
+// PayForGas executes an InterchainGasPayment using `QuoteGasPayment` beforehand and returns the charged fees.
 func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee sdk.Coins) (sdk.Coins, error) {
 	if maxFee.Empty() {
 		return sdk.NewCoins(), fmt.Errorf("maxFee is required")
@@ -102,10 +105,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	return nil
 }
 
-func (i InterchainGasPaymasterHookHandler) QuoteDispatch(ctx context.Context, _, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage) (sdk.Coins, error) {
-	return i.QuoteGasPayment(ctx, hookId, message.Destination, metadata.GasLimit)
-}
-
+// QuoteGasPayment uses the IGP's  DestinationGasConfig to determine the required payment.
 func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, hookId util.HexAddress, destinationDomain uint32, gasLimit math.Int) (sdk.Coins, error) {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
