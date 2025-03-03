@@ -81,14 +81,14 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 	}
 
 	// Check if validator already exists.
-	exists, err := m.k.storageLocations.Has(ctx, collections.Join3(mailboxId.Bytes(), validatorAddress, uint64(0)))
+	exists, err := m.k.storageLocations.Has(ctx, collections.Join3(mailboxId.GetInternalId(), validatorAddress, uint64(0)))
 	if err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	var storageLocationIndex uint64 = 0
 	if exists {
-		rng := collections.NewSuperPrefixedTripleRange[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
+		rng := collections.NewSuperPrefixedTripleRange[uint64, []byte, uint64](mailboxId.GetInternalId(), validatorAddress)
 
 		iter, err := m.k.storageLocations.Iterate(ctx, rng)
 		if err != nil {
@@ -110,7 +110,7 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 		storageLocationIndex = uint64(len(storageLocations))
 	}
 
-	if err = m.k.storageLocations.Set(ctx, collections.Join3(mailboxId.Bytes(), validatorAddress, storageLocationIndex), req.StorageLocation); err != nil {
+	if err = m.k.storageLocations.Set(ctx, collections.Join3(mailboxId.GetInternalId(), validatorAddress, storageLocationIndex), req.StorageLocation); err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 

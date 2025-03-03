@@ -6,6 +6,8 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -391,9 +393,8 @@ func (m *QueryQuoteGasPaymentRequest) GetGasLimit() string {
 }
 
 // QueryQuoteGasPaymentResponse ...
-// TODO: sdk.Coin
 type QueryQuoteGasPaymentResponse struct {
-	GasPayment string `protobuf:"bytes,1,opt,name=gas_payment,json=gasPayment,proto3" json:"gas_payment,omitempty"`
+	GasPayment github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=gas_payment,json=gasPayment,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"gas_payment"`
 }
 
 func (m *QueryQuoteGasPaymentResponse) Reset()         { *m = QueryQuoteGasPaymentResponse{} }
@@ -429,11 +430,11 @@ func (m *QueryQuoteGasPaymentResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryQuoteGasPaymentResponse proto.InternalMessageInfo
 
-func (m *QueryQuoteGasPaymentResponse) GetGasPayment() string {
+func (m *QueryQuoteGasPaymentResponse) GetGasPayment() github_com_cosmos_cosmos_sdk_types.Coins {
 	if m != nil {
 		return m.GasPayment
 	}
-	return ""
+	return nil
 }
 
 // QueryCountRequest ...
@@ -534,7 +535,7 @@ func (m *QueryMerkleTreeHooksResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
-// QueryCountRequest ...
+// QueryMerkleTreeHook ...
 type QueryMerkleTreeHook struct {
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
@@ -579,23 +580,12 @@ func (m *QueryMerkleTreeHook) GetId() string {
 	return ""
 }
 
-// *
-// {
-// merkle_tree_hook: {
-// id: string;
-// owner: string;
-// mailbox_id: string;
-// tree: {
-// leafs: string[];
-// count: number;
-// root: string;
-// }
-// }
-// }
+// QueryMerkleTreeHookResponse
 type QueryMerkleTreeHookResponse struct {
-	Root           []byte          `protobuf:"bytes,1,opt,name=root,proto3" json:"root,omitempty"`
-	Count          uint32          `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
-	MerkleTreeHook *MerkleTreeHook `protobuf:"bytes,3,opt,name=merkle_tree_hook,json=merkleTreeHook,proto3" json:"merkle_tree_hook,omitempty"`
+	Id         string        `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Owner      string        `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	MailboxId  string        `protobuf:"bytes,3,opt,name=mailbox_id,json=mailboxId,proto3" json:"mailbox_id,omitempty"`
+	MerkleTree *TreeResponse `protobuf:"bytes,4,opt,name=merkle_tree,json=merkleTree,proto3" json:"merkle_tree,omitempty"`
 }
 
 func (m *QueryMerkleTreeHookResponse) Reset()         { *m = QueryMerkleTreeHookResponse{} }
@@ -631,44 +621,56 @@ func (m *QueryMerkleTreeHookResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryMerkleTreeHookResponse proto.InternalMessageInfo
 
-func (m *QueryMerkleTreeHookResponse) GetRoot() []byte {
+func (m *QueryMerkleTreeHookResponse) GetId() string {
 	if m != nil {
-		return m.Root
+		return m.Id
+	}
+	return ""
+}
+
+func (m *QueryMerkleTreeHookResponse) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *QueryMerkleTreeHookResponse) GetMailboxId() string {
+	if m != nil {
+		return m.MailboxId
+	}
+	return ""
+}
+
+func (m *QueryMerkleTreeHookResponse) GetMerkleTree() *TreeResponse {
+	if m != nil {
+		return m.MerkleTree
 	}
 	return nil
 }
 
-func (m *QueryMerkleTreeHookResponse) GetCount() uint32 {
-	if m != nil {
-		return m.Count
-	}
-	return 0
+// TreeResponse
+type TreeResponse struct {
+	// leafs ...
+	Leaf [][]byte `protobuf:"bytes,1,rep,name=leaf,proto3" json:"leaf,omitempty"`
+	// count ...
+	Count uint32 `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+	// root ...
+	Root []byte `protobuf:"bytes,3,opt,name=root,proto3" json:"root,omitempty"`
 }
 
-func (m *QueryMerkleTreeHookResponse) GetMerkleTreeHook() *MerkleTreeHook {
-	if m != nil {
-		return m.MerkleTreeHook
-	}
-	return nil
-}
-
-// QueryCountRequest ...
-type QueryNoopHook struct {
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *QueryNoopHook) Reset()         { *m = QueryNoopHook{} }
-func (m *QueryNoopHook) String() string { return proto.CompactTextString(m) }
-func (*QueryNoopHook) ProtoMessage()    {}
-func (*QueryNoopHook) Descriptor() ([]byte, []int) {
+func (m *TreeResponse) Reset()         { *m = TreeResponse{} }
+func (m *TreeResponse) String() string { return proto.CompactTextString(m) }
+func (*TreeResponse) ProtoMessage()    {}
+func (*TreeResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_32e5ceb03adb8f60, []int{12}
 }
-func (m *QueryNoopHook) XXX_Unmarshal(b []byte) error {
+func (m *TreeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryNoopHook) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *TreeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryNoopHook.Marshal(b, m, deterministic)
+		return xxx_messageInfo_TreeResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -678,26 +680,85 @@ func (m *QueryNoopHook) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *QueryNoopHook) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryNoopHook.Merge(m, src)
+func (m *TreeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TreeResponse.Merge(m, src)
 }
-func (m *QueryNoopHook) XXX_Size() int {
+func (m *TreeResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryNoopHook) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryNoopHook.DiscardUnknown(m)
+func (m *TreeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_TreeResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryNoopHook proto.InternalMessageInfo
+var xxx_messageInfo_TreeResponse proto.InternalMessageInfo
 
-func (m *QueryNoopHook) GetId() string {
+func (m *TreeResponse) GetLeaf() [][]byte {
+	if m != nil {
+		return m.Leaf
+	}
+	return nil
+}
+
+func (m *TreeResponse) GetCount() uint32 {
+	if m != nil {
+		return m.Count
+	}
+	return 0
+}
+
+func (m *TreeResponse) GetRoot() []byte {
+	if m != nil {
+		return m.Root
+	}
+	return nil
+}
+
+// QueryNoopHook ...
+type QueryNoopHookRequest struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryNoopHookRequest) Reset()         { *m = QueryNoopHookRequest{} }
+func (m *QueryNoopHookRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryNoopHookRequest) ProtoMessage()    {}
+func (*QueryNoopHookRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{13}
+}
+func (m *QueryNoopHookRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryNoopHookRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryNoopHookRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryNoopHookRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryNoopHookRequest.Merge(m, src)
+}
+func (m *QueryNoopHookRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryNoopHookRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryNoopHookRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryNoopHookRequest proto.InternalMessageInfo
+
+func (m *QueryNoopHookRequest) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-// QueryCountResponse ...
+// QueryNoopHookResponse ...
 type QueryNoopHookResponse struct {
 	NoopHook *NoopHook `protobuf:"bytes,1,opt,name=noop_hook,json=noopHook,proto3" json:"noop_hook,omitempty"`
 }
@@ -706,7 +767,7 @@ func (m *QueryNoopHookResponse) Reset()         { *m = QueryNoopHookResponse{} }
 func (m *QueryNoopHookResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryNoopHookResponse) ProtoMessage()    {}
 func (*QueryNoopHookResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_32e5ceb03adb8f60, []int{13}
+	return fileDescriptor_32e5ceb03adb8f60, []int{14}
 }
 func (m *QueryNoopHookResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -742,6 +803,104 @@ func (m *QueryNoopHookResponse) GetNoopHook() *NoopHook {
 	return nil
 }
 
+// QueryNoopHooks ...
+type QueryNoopHooksRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryNoopHooksRequest) Reset()         { *m = QueryNoopHooksRequest{} }
+func (m *QueryNoopHooksRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryNoopHooksRequest) ProtoMessage()    {}
+func (*QueryNoopHooksRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{15}
+}
+func (m *QueryNoopHooksRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryNoopHooksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryNoopHooksRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryNoopHooksRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryNoopHooksRequest.Merge(m, src)
+}
+func (m *QueryNoopHooksRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryNoopHooksRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryNoopHooksRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryNoopHooksRequest proto.InternalMessageInfo
+
+func (m *QueryNoopHooksRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+// QueryNoopHooksResponse ...
+type QueryNoopHooksResponse struct {
+	NoopHooks  []NoopHook          `protobuf:"bytes,1,rep,name=noop_hooks,json=noopHooks,proto3" json:"noop_hooks"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryNoopHooksResponse) Reset()         { *m = QueryNoopHooksResponse{} }
+func (m *QueryNoopHooksResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryNoopHooksResponse) ProtoMessage()    {}
+func (*QueryNoopHooksResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{16}
+}
+func (m *QueryNoopHooksResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryNoopHooksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryNoopHooksResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryNoopHooksResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryNoopHooksResponse.Merge(m, src)
+}
+func (m *QueryNoopHooksResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryNoopHooksResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryNoopHooksResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryNoopHooksResponse proto.InternalMessageInfo
+
+func (m *QueryNoopHooksResponse) GetNoopHooks() []NoopHook {
+	if m != nil {
+		return m.NoopHooks
+	}
+	return nil
+}
+
+func (m *QueryNoopHooksResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryIgpsRequest)(nil), "hyperlane.core.post_dispatch.v1.QueryIgpsRequest")
 	proto.RegisterType((*QueryIgpsResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryIgpsResponse")
@@ -755,8 +914,11 @@ func init() {
 	proto.RegisterType((*QueryMerkleTreeHooksResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryMerkleTreeHooksResponse")
 	proto.RegisterType((*QueryMerkleTreeHook)(nil), "hyperlane.core.post_dispatch.v1.QueryMerkleTreeHook")
 	proto.RegisterType((*QueryMerkleTreeHookResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryMerkleTreeHookResponse")
-	proto.RegisterType((*QueryNoopHook)(nil), "hyperlane.core.post_dispatch.v1.QueryNoopHook")
+	proto.RegisterType((*TreeResponse)(nil), "hyperlane.core.post_dispatch.v1.TreeResponse")
+	proto.RegisterType((*QueryNoopHookRequest)(nil), "hyperlane.core.post_dispatch.v1.QueryNoopHookRequest")
 	proto.RegisterType((*QueryNoopHookResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryNoopHookResponse")
+	proto.RegisterType((*QueryNoopHooksRequest)(nil), "hyperlane.core.post_dispatch.v1.QueryNoopHooksRequest")
+	proto.RegisterType((*QueryNoopHooksResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryNoopHooksResponse")
 }
 
 func init() {
@@ -764,67 +926,77 @@ func init() {
 }
 
 var fileDescriptor_32e5ceb03adb8f60 = []byte{
-	// 953 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xc7, 0x33, 0x4e, 0x52, 0xc5, 0x2f, 0x34, 0x69, 0x86, 0x44, 0x0d, 0x6e, 0xb1, 0x9b, 0x15,
-	0xfd, 0x41, 0x21, 0x3b, 0xb5, 0xa1, 0xf4, 0x02, 0x42, 0x4a, 0xab, 0x06, 0x4b, 0x80, 0x5a, 0xab,
-	0x42, 0xa2, 0x07, 0xac, 0xf1, 0x7a, 0x58, 0x8f, 0x9a, 0xdd, 0x99, 0xec, 0xac, 0x2d, 0xa2, 0x0a,
-	0x09, 0x71, 0x43, 0x5c, 0x90, 0x38, 0x71, 0xe5, 0xc4, 0xb1, 0x42, 0x48, 0x1c, 0xf8, 0x07, 0x7a,
-	0x2c, 0xe2, 0x02, 0x12, 0x42, 0x28, 0x41, 0xe2, 0xdf, 0xa8, 0x76, 0x66, 0xbc, 0xf6, 0x3a, 0xeb,
-	0xda, 0xf9, 0x71, 0xb1, 0xd6, 0x3b, 0x6f, 0xde, 0xfb, 0x7c, 0xdf, 0xdb, 0xfd, 0xee, 0xc0, 0x1b,
-	0x9d, 0x3d, 0xc9, 0xa2, 0x1d, 0x1a, 0x32, 0xe2, 0x89, 0x88, 0x11, 0x29, 0x54, 0xdc, 0x6c, 0x73,
-	0x25, 0x69, 0xec, 0x75, 0x48, 0xaf, 0x4a, 0x76, 0xbb, 0x2c, 0xda, 0x73, 0x65, 0x24, 0x62, 0x81,
-	0x2b, 0x69, 0xb0, 0x9b, 0x04, 0xbb, 0x99, 0x60, 0xb7, 0x57, 0x2d, 0x5d, 0xf7, 0x84, 0x0a, 0x84,
-	0x22, 0x2d, 0xaa, 0x98, 0xd9, 0x49, 0x7a, 0xd5, 0x16, 0x8b, 0x69, 0x95, 0x48, 0xea, 0xf3, 0x90,
-	0xc6, 0x5c, 0x84, 0x26, 0x59, 0xe9, 0xa2, 0x2f, 0x84, 0xbf, 0xc3, 0x08, 0x95, 0x9c, 0xd0, 0x30,
-	0x14, 0xb1, 0x5e, 0x54, 0x76, 0x75, 0x85, 0x06, 0x3c, 0x14, 0x44, 0xff, 0xda, 0x5b, 0xab, 0xbe,
-	0xf0, 0x85, 0xbe, 0x24, 0xc9, 0x95, 0xbd, 0x3b, 0x51, 0x40, 0xbc, 0x27, 0x99, 0xcd, 0xea, 0x3c,
-	0x84, 0x73, 0xf7, 0x13, 0xaa, 0xba, 0x2f, 0x55, 0x83, 0xed, 0x76, 0x99, 0x8a, 0xf1, 0x5d, 0x80,
-	0x01, 0xdb, 0x3a, 0xba, 0x84, 0xae, 0x2d, 0xd6, 0xae, 0xb8, 0x46, 0x88, 0x9b, 0x08, 0x71, 0x4d,
-	0x0b, 0xac, 0x10, 0xf7, 0x1e, 0xf5, 0x99, 0xdd, 0xdb, 0x18, 0xda, 0xe9, 0xfc, 0x82, 0x60, 0x65,
-	0x28, 0xb9, 0x92, 0x22, 0x54, 0x0c, 0x7f, 0x02, 0x73, 0xdc, 0x97, 0x6a, 0x1d, 0x5d, 0x9a, 0xbd,
-	0xb6, 0x58, 0xbb, 0xe5, 0x4e, 0xe8, 0xa0, 0x5b, 0x0f, 0x63, 0x16, 0x79, 0x1d, 0xca, 0xc3, 0x6d,
-	0xaa, 0xee, 0xd1, 0xbd, 0x80, 0xaa, 0x98, 0x45, 0x5b, 0xc5, 0xa7, 0xff, 0x54, 0x66, 0x7e, 0xfa,
-	0xff, 0xc9, 0x75, 0xd4, 0xd0, 0xf9, 0xf0, 0x76, 0x86, 0xba, 0xa0, 0xa9, 0xaf, 0x4e, 0xa4, 0x36,
-	0x50, 0x19, 0xec, 0x0d, 0x58, 0xee, 0x53, 0xf7, 0x3b, 0xb2, 0x04, 0x05, 0xde, 0xd6, 0x9d, 0x28,
-	0x36, 0x0a, 0xbc, 0xed, 0x74, 0x06, 0x5d, 0x4b, 0x75, 0x3d, 0x80, 0x59, 0xee, 0x4b, 0xdb, 0xae,
-	0xd3, 0x90, 0x95, 0xa4, 0x73, 0x1e, 0xc3, 0x86, 0xae, 0x74, 0x87, 0xa9, 0xd8, 0x02, 0x6e, 0x53,
-	0x75, 0x5b, 0x84, 0x9f, 0x73, 0x5f, 0x8d, 0xc1, 0x1b, 0x19, 0x60, 0xe1, 0xd8, 0x03, 0xfc, 0x1b,
-	0x81, 0xf3, 0xa2, 0xea, 0x56, 0x79, 0x00, 0xe7, 0xdb, 0x83, 0x80, 0xa6, 0x4f, 0x55, 0xd3, 0x33,
-	0x21, 0x76, 0xc8, 0x37, 0x27, 0x76, 0x23, 0xaf, 0x40, 0x63, 0xad, 0x9d, 0x57, 0xf6, 0xf4, 0x06,
-	0xfd, 0x15, 0x82, 0x0b, 0x5a, 0xde, 0xfd, 0xae, 0x88, 0x99, 0x1d, 0x03, 0x0b, 0xe3, 0x7e, 0x5b,
-	0xd7, 0xe0, 0x0c, 0xf7, 0x65, 0x33, 0x6d, 0xed, 0x3c, 0xf7, 0x65, 0xbd, 0x8d, 0x37, 0x01, 0x0f,
-	0xcb, 0x6d, 0x8b, 0x80, 0x72, 0xc3, 0x51, 0x6c, 0xac, 0x0c, 0xad, 0xdc, 0xd1, 0x0b, 0xf8, 0x02,
-	0x14, 0x93, 0x8e, 0xec, 0xf0, 0x80, 0xc7, 0xeb, 0xb3, 0x3a, 0x6a, 0xc1, 0xa7, 0xea, 0xc3, 0xe4,
-	0xbf, 0xf3, 0x3e, 0x5c, 0xcc, 0x27, 0xb0, 0xad, 0xad, 0xc0, 0x62, 0xb2, 0x59, 0x9a, 0xdb, 0x96,
-	0x03, 0xfc, 0x34, 0xd0, 0xf9, 0x0c, 0x56, 0x75, 0x82, 0x8f, 0x58, 0xf4, 0x68, 0x87, 0x3d, 0x88,
-	0x18, 0xfb, 0x40, 0x88, 0x47, 0xea, 0xd4, 0xde, 0xe1, 0xdf, 0x91, 0x25, 0x1c, 0x29, 0x90, 0x12,
-	0x76, 0x60, 0x25, 0xd0, 0x4b, 0xcd, 0x38, 0x62, 0xac, 0xd9, 0x49, 0x16, 0xed, 0xd8, 0xdf, 0x9d,
-	0x38, 0xf6, 0x9c, 0xcc, 0xe9, 0xa4, 0x96, 0x83, 0x11, 0x49, 0xa7, 0x36, 0xf7, 0xcb, 0xf0, 0x72,
-	0x4e, 0xe1, 0x43, 0x2f, 0xf9, 0x8f, 0xfd, 0xc7, 0x23, 0x1f, 0x10, 0x63, 0x98, 0x8b, 0x84, 0x30,
-	0x43, 0x79, 0xa9, 0xa1, 0xaf, 0xf1, 0x2a, 0xcc, 0x7b, 0xa2, 0x1b, 0xc6, 0x1a, 0xef, 0x6c, 0xc3,
-	0xfc, 0xc1, 0x9f, 0xc2, 0xb9, 0xd1, 0x1e, 0xe9, 0x27, 0x61, 0xb1, 0x46, 0x26, 0xb6, 0x68, 0xa4,
-	0xf8, 0x52, 0xb6, 0x2b, 0x4e, 0x05, 0xce, 0x6a, 0xc6, 0x8f, 0x85, 0x90, 0xb9, 0x2a, 0x9a, 0xb0,
-	0x96, 0x09, 0x48, 0xf1, 0xef, 0x42, 0x31, 0x14, 0x42, 0x1a, 0x1a, 0xf3, 0x80, 0xbc, 0x3e, 0x91,
-	0x26, 0xcd, 0xb2, 0x10, 0xda, 0xab, 0xda, 0x6f, 0x45, 0x98, 0xd7, 0x15, 0xf0, 0x37, 0x08, 0xe6,
-	0x12, 0xab, 0xc7, 0xd5, 0xe9, 0x06, 0x3f, 0xf4, 0xcd, 0x29, 0xd5, 0x8e, 0xb2, 0xc5, 0x28, 0x70,
-	0x4a, 0x5f, 0xff, 0xf1, 0xdf, 0xf7, 0x85, 0x55, 0x8c, 0xc9, 0xe0, 0x8b, 0xd7, 0xab, 0x12, 0xfd,
-	0x35, 0xf8, 0x16, 0xc1, 0x6c, 0xdd, 0x97, 0xf8, 0xc6, 0xd4, 0x79, 0xfb, 0x24, 0xd5, 0x23, 0xec,
-	0xb0, 0x20, 0x15, 0x0d, 0xf2, 0x0a, 0x3e, 0x7f, 0x18, 0x84, 0x3c, 0xe6, 0xed, 0x2f, 0xf1, 0x5f,
-	0x08, 0xd6, 0x72, 0x3d, 0x14, 0x6f, 0x4d, 0x57, 0xed, 0x45, 0xf6, 0x5f, 0xba, 0x7d, 0xa2, 0x1c,
-	0x56, 0xc3, 0x2d, 0xad, 0xa1, 0x8a, 0xc9, 0x18, 0x0d, 0x64, 0x8c, 0xc5, 0xe3, 0x5f, 0x51, 0xf2,
-	0xbd, 0xcc, 0xd8, 0x17, 0x9e, 0xf2, 0xcd, 0xcf, 0xf7, 0xdd, 0xd2, 0x7b, 0xc7, 0xdc, 0x6d, 0x95,
-	0x5c, 0xd5, 0x4a, 0x36, 0x70, 0x25, 0xab, 0x64, 0x37, 0x09, 0x6f, 0x0e, 0xb9, 0x29, 0x7e, 0x82,
-	0x60, 0x79, 0xd4, 0x37, 0x6f, 0x1e, 0xc7, 0xb3, 0xd4, 0xb4, 0xc8, 0x63, 0x4c, 0x74, 0x1c, 0xf2,
-	0x21, 0x63, 0xc5, 0x3f, 0x23, 0x58, 0x1a, 0xb1, 0xad, 0xb7, 0x8f, 0x53, 0xba, 0x74, 0x22, 0x6f,
-	0x76, 0xde, 0xd4, 0xbc, 0x57, 0xf0, 0x6b, 0x13, 0x78, 0xcd, 0xd3, 0xff, 0x03, 0x82, 0x85, 0xd4,
-	0x9f, 0xdc, 0xe9, 0x0a, 0xf7, 0xe3, 0x4b, 0xef, 0x1c, 0x2d, 0x3e, 0x45, 0xbc, 0xac, 0x11, 0x2b,
-	0xf8, 0xd5, 0x2c, 0x62, 0x6a, 0x79, 0x86, 0x6d, 0xcb, 0x7b, 0xba, 0x5f, 0x46, 0xcf, 0xf6, 0xcb,
-	0xe8, 0xdf, 0xfd, 0x32, 0xfa, 0xee, 0xa0, 0x3c, 0xf3, 0xec, 0xa0, 0x3c, 0xf3, 0xe7, 0x41, 0x79,
-	0xe6, 0x61, 0xdd, 0xe7, 0x71, 0xa7, 0xdb, 0x72, 0x3d, 0x11, 0x90, 0x96, 0x27, 0x37, 0x79, 0x18,
-	0x8a, 0x9e, 0x39, 0x91, 0x0f, 0x52, 0x6e, 0xda, 0xe3, 0xfd, 0x17, 0xe6, 0xa8, 0x7d, 0xa3, 0xd6,
-	0xcc, 0x9e, 0xb6, 0xf5, 0x51, 0xbb, 0x75, 0x46, 0x9f, 0xb5, 0xdf, 0x7a, 0x1e, 0x00, 0x00, 0xff,
-	0xff, 0x9b, 0xd3, 0xe8, 0x92, 0x5b, 0x0c, 0x00, 0x00,
+	// 1113 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x57, 0xcf, 0x6f, 0x1b, 0x45,
+	0x14, 0xce, 0xe4, 0x47, 0x15, 0xbf, 0x84, 0x86, 0x0c, 0x09, 0x4d, 0xb7, 0xad, 0x9d, 0xac, 0x68,
+	0x1a, 0x0a, 0xde, 0xad, 0x03, 0x69, 0x2e, 0x70, 0x49, 0xaa, 0x06, 0x4b, 0xa5, 0x6a, 0x4d, 0xc5,
+	0xa1, 0x07, 0xac, 0xf1, 0xee, 0x74, 0x3d, 0x8a, 0x77, 0x67, 0xb3, 0xb3, 0x36, 0x8d, 0xaa, 0x4a,
+	0x88, 0x1b, 0xe2, 0x02, 0xe2, 0x8e, 0x38, 0x22, 0x4e, 0x55, 0x85, 0xf8, 0x0f, 0x90, 0x7a, 0x2c,
+	0xe2, 0x02, 0x12, 0x02, 0x94, 0x20, 0x71, 0xe6, 0x3f, 0x40, 0x3b, 0x3b, 0x6b, 0xaf, 0xed, 0x75,
+	0xed, 0xa4, 0xbe, 0xd8, 0xb3, 0x3b, 0xf3, 0xde, 0xfb, 0xbe, 0x37, 0x6f, 0xdf, 0x37, 0x03, 0x6f,
+	0xd5, 0x0f, 0x7d, 0x1a, 0x34, 0x88, 0x47, 0x4d, 0x8b, 0x07, 0xd4, 0xf4, 0xb9, 0x08, 0xab, 0x36,
+	0x13, 0x3e, 0x09, 0xad, 0xba, 0xd9, 0x2a, 0x99, 0x07, 0x4d, 0x1a, 0x1c, 0x1a, 0x7e, 0xc0, 0x43,
+	0x8e, 0x0b, 0xed, 0xc5, 0x46, 0xb4, 0xd8, 0xe8, 0x5a, 0x6c, 0xb4, 0x4a, 0xda, 0x55, 0x8b, 0x0b,
+	0x97, 0x0b, 0xb3, 0x46, 0x04, 0x8d, 0x2d, 0xcd, 0x56, 0xa9, 0x46, 0x43, 0x52, 0x32, 0x7d, 0xe2,
+	0x30, 0x8f, 0x84, 0x8c, 0x7b, 0xb1, 0x33, 0xed, 0xa2, 0xc3, 0xb9, 0xd3, 0xa0, 0x26, 0xf1, 0x99,
+	0x49, 0x3c, 0x8f, 0x87, 0x72, 0x52, 0xa8, 0xd9, 0x45, 0xe2, 0x32, 0x8f, 0x9b, 0xf2, 0x57, 0xbd,
+	0x5a, 0x72, 0xb8, 0xc3, 0xe5, 0xd0, 0x8c, 0x46, 0xea, 0xed, 0x50, 0x02, 0xe1, 0xa1, 0x4f, 0x13,
+	0xaf, 0xf9, 0x34, 0xbe, 0x04, 0x99, 0xc5, 0x99, 0xc2, 0xa4, 0xdf, 0x87, 0x57, 0xef, 0x46, 0xa8,
+	0xcb, 0x8e, 0x2f, 0x2a, 0xf4, 0xa0, 0x49, 0x45, 0x88, 0x6f, 0x02, 0x74, 0xb0, 0xaf, 0xa0, 0x55,
+	0xb4, 0x31, 0xb7, 0xb9, 0x6e, 0xc4, 0x8e, 0x8c, 0xc8, 0x91, 0x11, 0xa7, 0x48, 0xb9, 0x33, 0xee,
+	0x10, 0x87, 0x2a, 0xdb, 0x4a, 0xca, 0x52, 0xff, 0x11, 0xc1, 0x62, 0xca, 0xb9, 0xf0, 0xb9, 0x27,
+	0x28, 0xfe, 0x18, 0xa6, 0x99, 0xe3, 0x8b, 0x15, 0xb4, 0x3a, 0xb5, 0x31, 0xb7, 0xb9, 0x6d, 0x0c,
+	0xc9, 0xb0, 0x51, 0xf6, 0x42, 0x1a, 0x58, 0x75, 0xc2, 0xbc, 0x3d, 0x22, 0xee, 0x90, 0x43, 0x97,
+	0x88, 0x90, 0x06, 0x3b, 0xb9, 0x67, 0x7f, 0x16, 0x26, 0xbe, 0xff, 0xf7, 0xc9, 0x55, 0x54, 0x91,
+	0xfe, 0xf0, 0x5e, 0x17, 0xea, 0x49, 0x89, 0xfa, 0xca, 0x50, 0xd4, 0x31, 0xa8, 0x2e, 0xd8, 0x6b,
+	0xb0, 0x90, 0xa0, 0x4e, 0x32, 0x72, 0x16, 0x26, 0x99, 0x2d, 0x33, 0x91, 0xab, 0x4c, 0x32, 0x5b,
+	0xaf, 0x77, 0xb2, 0xd6, 0xe6, 0x75, 0x0f, 0xa6, 0x98, 0xe3, 0xab, 0x74, 0x8d, 0x83, 0x56, 0xe4,
+	0x4e, 0x7f, 0x04, 0x6b, 0x32, 0xd2, 0x0d, 0x2a, 0x42, 0x05, 0x70, 0x8f, 0x88, 0x5d, 0xee, 0x3d,
+	0x60, 0x8e, 0x18, 0x00, 0xaf, 0x67, 0x03, 0x27, 0x4f, 0xbd, 0x81, 0x7f, 0x20, 0xd0, 0x5f, 0x14,
+	0x5d, 0x31, 0x77, 0xe1, 0x9c, 0xdd, 0x59, 0x50, 0x75, 0x88, 0xa8, 0x5a, 0xf1, 0x12, 0xb5, 0xc9,
+	0x5b, 0x43, 0xb3, 0x91, 0x15, 0xa0, 0xb2, 0x6c, 0x67, 0x85, 0x1d, 0xdf, 0x46, 0x7f, 0x86, 0xe0,
+	0x82, 0xa4, 0x77, 0xb7, 0xc9, 0x43, 0xaa, 0xb6, 0x81, 0x7a, 0x61, 0x92, 0xd6, 0x65, 0x38, 0xc3,
+	0x1c, 0xbf, 0xda, 0x4e, 0xed, 0x0c, 0x73, 0xfc, 0xb2, 0x8d, 0x8b, 0x80, 0xd3, 0x74, 0x6d, 0xee,
+	0x12, 0x16, 0xe3, 0xc8, 0x55, 0x16, 0x53, 0x33, 0x37, 0xe4, 0x04, 0xbe, 0x00, 0xb9, 0x28, 0x23,
+	0x0d, 0xe6, 0xb2, 0x70, 0x65, 0x4a, 0xae, 0x9a, 0x75, 0x88, 0xb8, 0x15, 0x3d, 0xeb, 0x5f, 0x23,
+	0xb8, 0x98, 0x0d, 0x41, 0xe5, 0xf6, 0x00, 0xe6, 0x22, 0x6b, 0x3f, 0x7e, 0xad, 0xf2, 0x79, 0xbe,
+	0x8b, 0x6d, 0xc2, 0x73, 0x97, 0x33, 0x6f, 0x67, 0x2b, 0xaa, 0x9f, 0x1f, 0xfe, 0x2a, 0x6c, 0x38,
+	0x2c, 0xac, 0x37, 0x6b, 0x86, 0xc5, 0x5d, 0x53, 0xb5, 0x80, 0xf8, 0xaf, 0x28, 0xec, 0x7d, 0xd5,
+	0x21, 0x22, 0x03, 0x11, 0xd7, 0x1a, 0x38, 0xed, 0xd0, 0xfa, 0x27, 0xb0, 0x24, 0x21, 0x7d, 0x48,
+	0x83, 0xfd, 0x06, 0xbd, 0x17, 0x50, 0xfa, 0x01, 0xe7, 0xfb, 0x62, 0x6c, 0x6d, 0xe1, 0x97, 0x84,
+	0x73, 0x4f, 0x80, 0x36, 0xe7, 0x3a, 0x2c, 0xba, 0x72, 0xaa, 0x1a, 0x06, 0x94, 0x56, 0xeb, 0xd1,
+	0xa4, 0x62, 0xfe, 0xde, 0xd0, 0x4a, 0xca, 0xf0, 0xdc, 0xde, 0xfc, 0x05, 0xb7, 0x87, 0xd2, 0xd8,
+	0x4a, 0xe9, 0x32, 0xbc, 0x96, 0x11, 0xb8, 0xaf, 0x6f, 0x3c, 0x4d, 0x2a, 0x2e, 0x1b, 0x60, 0xdf,
+	0x87, 0xbc, 0x04, 0x33, 0xfc, 0x53, 0x8f, 0x06, 0xaa, 0xba, 0xe2, 0x07, 0x7c, 0x09, 0xc0, 0x25,
+	0xac, 0x51, 0xe3, 0x0f, 0xa3, 0xda, 0x8c, 0x4b, 0x2a, 0xa7, 0xde, 0x94, 0x6d, 0x7c, 0x1b, 0xe6,
+	0x52, 0xe9, 0x5b, 0x99, 0x96, 0xac, 0x8a, 0x43, 0x13, 0x17, 0x81, 0xe9, 0x70, 0xeb, 0x64, 0x4a,
+	0xbf, 0x05, 0xf3, 0xe9, 0x39, 0x8c, 0x61, 0xba, 0x41, 0xc9, 0x03, 0xb9, 0x23, 0xf3, 0x15, 0x39,
+	0x8e, 0x80, 0x5a, 0xbc, 0xe9, 0x85, 0x12, 0xe8, 0x2b, 0x95, 0xf8, 0x21, 0x5a, 0x19, 0x70, 0x1e,
+	0x57, 0xfd, 0x7c, 0x45, 0x8e, 0xf5, 0x75, 0x55, 0x5d, 0xb7, 0x39, 0xf7, 0x63, 0xee, 0xd9, 0x2d,
+	0xb6, 0x0a, 0xcb, 0x3d, 0xeb, 0x54, 0xf8, 0x9b, 0x90, 0xf3, 0x38, 0xf7, 0x65, 0x59, 0xa8, 0x2a,
+	0x7c, 0x73, 0x28, 0xb9, 0xb6, 0x97, 0x59, 0x4f, 0x8d, 0xfa, 0x02, 0x8c, 0x5d, 0xfe, 0x7e, 0x42,
+	0xf0, 0x7a, 0x6f, 0x04, 0xc5, 0xe1, 0x23, 0x80, 0x36, 0x87, 0xa4, 0xb4, 0x47, 0x27, 0x91, 0x16,
+	0x89, 0x5c, 0xc2, 0x67, 0x7c, 0xc5, 0xbc, 0xf9, 0x1f, 0xc0, 0x8c, 0x04, 0x8e, 0xbf, 0x40, 0x30,
+	0x1d, 0x89, 0x37, 0x2e, 0x8d, 0xf6, 0xdd, 0xa5, 0x4e, 0x11, 0xda, 0xe6, 0x49, 0x4c, 0x62, 0x14,
+	0xba, 0xf6, 0xf9, 0xaf, 0xff, 0x7c, 0x33, 0xb9, 0x84, 0xb1, 0xd9, 0x39, 0xe3, 0xb4, 0x4a, 0xa6,
+	0xd4, 0xf7, 0x2f, 0x11, 0x4c, 0x95, 0x1d, 0x1f, 0x5f, 0x1b, 0xd9, 0x6f, 0x82, 0xa4, 0x74, 0x02,
+	0x0b, 0x05, 0xa4, 0x20, 0x81, 0x9c, 0xc7, 0xe7, 0xfa, 0x81, 0x98, 0x8f, 0x98, 0xfd, 0x18, 0xff,
+	0x8e, 0x60, 0x39, 0x53, 0x15, 0xf1, 0xce, 0x68, 0xd1, 0x5e, 0x24, 0xe8, 0xda, 0xee, 0x4b, 0xf9,
+	0x50, 0x1c, 0xb6, 0x25, 0x87, 0x12, 0x36, 0x07, 0x70, 0x30, 0x07, 0x88, 0x36, 0xfe, 0x19, 0x45,
+	0x27, 0xa0, 0x2e, 0x3d, 0xc2, 0x23, 0x36, 0xde, 0x6c, 0x25, 0xd5, 0xde, 0x3f, 0xa5, 0xb5, 0x62,
+	0xb2, 0x25, 0x99, 0x98, 0xb8, 0x98, 0xc9, 0x44, 0x4a, 0xf4, 0x63, 0xf3, 0x20, 0x32, 0xae, 0xa6,
+	0xc4, 0x12, 0x3f, 0x41, 0xb0, 0xd0, 0x2b, 0x62, 0x5b, 0xa7, 0x11, 0x10, 0x31, 0x2a, 0x81, 0x01,
+	0x8a, 0xa6, 0x5f, 0x91, 0x04, 0xd6, 0x70, 0xa1, 0x9b, 0x40, 0x9f, 0xca, 0xe1, 0xa7, 0x08, 0xce,
+	0xf6, 0x68, 0xc8, 0xbb, 0xa7, 0x09, 0xad, 0xbd, 0x94, 0x50, 0xea, 0x6f, 0x4b, 0xbc, 0xeb, 0xf8,
+	0x8d, 0x21, 0x78, 0xe3, 0x6f, 0xe1, 0x5b, 0x04, 0xb9, 0x76, 0x8f, 0xc3, 0xd7, 0x47, 0x8b, 0xdc,
+	0xdb, 0x76, 0xb5, 0xed, 0x13, 0xdb, 0x29, 0xb0, 0xab, 0x12, 0xac, 0x86, 0x57, 0xba, 0xc1, 0x76,
+	0x1a, 0x2c, 0xfe, 0x0e, 0xc1, 0x6c, 0x62, 0x37, 0x6a, 0x05, 0xf4, 0xe8, 0x93, 0x76, 0xfd, 0xa4,
+	0x66, 0x0a, 0xdd, 0x65, 0x89, 0xae, 0x80, 0x2f, 0x0d, 0x42, 0x27, 0x73, 0xb8, 0x63, 0x3d, 0x3b,
+	0xca, 0xa3, 0xe7, 0x47, 0x79, 0xf4, 0xf7, 0x51, 0x1e, 0x7d, 0x75, 0x9c, 0x9f, 0x78, 0x7e, 0x9c,
+	0x9f, 0xf8, 0xed, 0x38, 0x3f, 0x71, 0xbf, 0x9c, 0x3a, 0xc9, 0xd5, 0x2c, 0xbf, 0xc8, 0x3c, 0x8f,
+	0xb7, 0xe2, 0x9b, 0x63, 0xc7, 0x65, 0x51, 0x9d, 0xf1, 0x1e, 0xc6, 0x57, 0xc2, 0x6b, 0x9b, 0xd5,
+	0xee, 0x5b, 0xa1, 0x3c, 0xf0, 0xd5, 0xce, 0xc8, 0x3b, 0xdf, 0x3b, 0xff, 0x07, 0x00, 0x00, 0xff,
+	0xff, 0x85, 0x72, 0x41, 0xf9, 0x03, 0x0f, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -846,15 +1018,15 @@ type QueryClient interface {
 	// DestinationGasConfigs ...
 	DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error)
 	// QuoteGasPayment ...
-	// TODO: move to /hyperlane/v1/igps/{id}/quote_gas_payment
 	QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error)
 	// MerkleTreeHook ...
 	MerkleTreeHooks(ctx context.Context, in *QueryMerkleTreeHooks, opts ...grpc.CallOption) (*QueryMerkleTreeHooksResponse, error)
 	// MerkleTreeHook ...
 	MerkleTreeHook(ctx context.Context, in *QueryMerkleTreeHook, opts ...grpc.CallOption) (*QueryMerkleTreeHookResponse, error)
-	// MerkleTreeHook ...
-	// TODO: add get all query & pagination
-	NoopHook(ctx context.Context, in *QueryNoopHook, opts ...grpc.CallOption) (*QueryNoopHookResponse, error)
+	// NoopHooks ...
+	NoopHooks(ctx context.Context, in *QueryNoopHooksRequest, opts ...grpc.CallOption) (*QueryNoopHooksResponse, error)
+	// NoopHook ...
+	NoopHook(ctx context.Context, in *QueryNoopHookRequest, opts ...grpc.CallOption) (*QueryNoopHookResponse, error)
 }
 
 type queryClient struct {
@@ -919,7 +1091,16 @@ func (c *queryClient) MerkleTreeHook(ctx context.Context, in *QueryMerkleTreeHoo
 	return out, nil
 }
 
-func (c *queryClient) NoopHook(ctx context.Context, in *QueryNoopHook, opts ...grpc.CallOption) (*QueryNoopHookResponse, error) {
+func (c *queryClient) NoopHooks(ctx context.Context, in *QueryNoopHooksRequest, opts ...grpc.CallOption) (*QueryNoopHooksResponse, error) {
+	out := new(QueryNoopHooksResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.post_dispatch.v1.Query/NoopHooks", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) NoopHook(ctx context.Context, in *QueryNoopHookRequest, opts ...grpc.CallOption) (*QueryNoopHookResponse, error) {
 	out := new(QueryNoopHookResponse)
 	err := c.cc.Invoke(ctx, "/hyperlane.core.post_dispatch.v1.Query/NoopHook", in, out, opts...)
 	if err != nil {
@@ -937,15 +1118,15 @@ type QueryServer interface {
 	// DestinationGasConfigs ...
 	DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error)
 	// QuoteGasPayment ...
-	// TODO: move to /hyperlane/v1/igps/{id}/quote_gas_payment
 	QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error)
 	// MerkleTreeHook ...
 	MerkleTreeHooks(context.Context, *QueryMerkleTreeHooks) (*QueryMerkleTreeHooksResponse, error)
 	// MerkleTreeHook ...
 	MerkleTreeHook(context.Context, *QueryMerkleTreeHook) (*QueryMerkleTreeHookResponse, error)
-	// MerkleTreeHook ...
-	// TODO: add get all query & pagination
-	NoopHook(context.Context, *QueryNoopHook) (*QueryNoopHookResponse, error)
+	// NoopHooks ...
+	NoopHooks(context.Context, *QueryNoopHooksRequest) (*QueryNoopHooksResponse, error)
+	// NoopHook ...
+	NoopHook(context.Context, *QueryNoopHookRequest) (*QueryNoopHookResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -970,7 +1151,10 @@ func (*UnimplementedQueryServer) MerkleTreeHooks(ctx context.Context, req *Query
 func (*UnimplementedQueryServer) MerkleTreeHook(ctx context.Context, req *QueryMerkleTreeHook) (*QueryMerkleTreeHookResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MerkleTreeHook not implemented")
 }
-func (*UnimplementedQueryServer) NoopHook(ctx context.Context, req *QueryNoopHook) (*QueryNoopHookResponse, error) {
+func (*UnimplementedQueryServer) NoopHooks(ctx context.Context, req *QueryNoopHooksRequest) (*QueryNoopHooksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NoopHooks not implemented")
+}
+func (*UnimplementedQueryServer) NoopHook(ctx context.Context, req *QueryNoopHookRequest) (*QueryNoopHookResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NoopHook not implemented")
 }
 
@@ -1086,8 +1270,26 @@ func _Query_MerkleTreeHook_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_NoopHooks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryNoopHooksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).NoopHooks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.post_dispatch.v1.Query/NoopHooks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).NoopHooks(ctx, req.(*QueryNoopHooksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_NoopHook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryNoopHook)
+	in := new(QueryNoopHookRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1099,7 +1301,7 @@ func _Query_NoopHook_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/hyperlane.core.post_dispatch.v1.Query/NoopHook",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).NoopHook(ctx, req.(*QueryNoopHook))
+		return srv.(QueryServer).NoopHook(ctx, req.(*QueryNoopHookRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1132,6 +1334,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MerkleTreeHook",
 			Handler:    _Query_MerkleTreeHook_Handler,
+		},
+		{
+			MethodName: "NoopHooks",
+			Handler:    _Query_NoopHooks_Handler,
 		},
 		{
 			MethodName: "NoopHook",
@@ -1445,11 +1651,18 @@ func (m *QueryQuoteGasPaymentResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	var l int
 	_ = l
 	if len(m.GasPayment) > 0 {
-		i -= len(m.GasPayment)
-		copy(dAtA[i:], m.GasPayment)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.GasPayment)))
-		i--
-		dAtA[i] = 0xa
+		for iNdEx := len(m.GasPayment) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.GasPayment[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -1588,9 +1801,9 @@ func (m *QueryMerkleTreeHookResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	_ = i
 	var l int
 	_ = l
-	if m.MerkleTreeHook != nil {
+	if m.MerkleTree != nil {
 		{
-			size, err := m.MerkleTreeHook.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.MerkleTree.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1598,24 +1811,33 @@ func (m *QueryMerkleTreeHookResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
 		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.MailboxId) > 0 {
+		i -= len(m.MailboxId)
+		copy(dAtA[i:], m.MailboxId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.MailboxId)))
+		i--
 		dAtA[i] = 0x1a
 	}
-	if m.Count != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Count))
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Owner)))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x12
 	}
-	if len(m.Root) > 0 {
-		i -= len(m.Root)
-		copy(dAtA[i:], m.Root)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Root)))
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryNoopHook) Marshal() (dAtA []byte, err error) {
+func (m *TreeResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1625,12 +1847,56 @@ func (m *QueryNoopHook) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryNoopHook) MarshalTo(dAtA []byte) (int, error) {
+func (m *TreeResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryNoopHook) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *TreeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Root) > 0 {
+		i -= len(m.Root)
+		copy(dAtA[i:], m.Root)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Root)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Count != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Count))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Leaf) > 0 {
+		for iNdEx := len(m.Leaf) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Leaf[iNdEx])
+			copy(dAtA[i:], m.Leaf[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Leaf[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryNoopHookRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryNoopHookRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryNoopHookRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1676,6 +1942,90 @@ func (m *QueryNoopHookResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryNoopHooksRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryNoopHooksRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryNoopHooksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryNoopHooksResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryNoopHooksResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryNoopHooksResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.NoopHooks) > 0 {
+		for iNdEx := len(m.NoopHooks) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.NoopHooks[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -1810,9 +2160,11 @@ func (m *QueryQuoteGasPaymentResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.GasPayment)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
+	if len(m.GasPayment) > 0 {
+		for _, e := range m.GasPayment {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
 	return n
 }
@@ -1868,21 +2220,48 @@ func (m *QueryMerkleTreeHookResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Root)
+	l = len(m.Id)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.Count != 0 {
-		n += 1 + sovQuery(uint64(m.Count))
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.MerkleTreeHook != nil {
-		l = m.MerkleTreeHook.Size()
+	l = len(m.MailboxId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.MerkleTree != nil {
+		l = m.MerkleTree.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
 
-func (m *QueryNoopHook) Size() (n int) {
+func (m *TreeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Leaf) > 0 {
+		for _, b := range m.Leaf {
+			l = len(b)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Count != 0 {
+		n += 1 + sovQuery(uint64(m.Count))
+	}
+	l = len(m.Root)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryNoopHookRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1903,6 +2282,38 @@ func (m *QueryNoopHookResponse) Size() (n int) {
 	_ = l
 	if m.NoopHook != nil {
 		l = m.NoopHook.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryNoopHooksRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryNoopHooksResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.NoopHooks) > 0 {
+		for _, e := range m.NoopHooks {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -2702,7 +3113,7 @@ func (m *QueryQuoteGasPaymentResponse) Unmarshal(dAtA []byte) error {
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field GasPayment", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -2712,23 +3123,25 @@ func (m *QueryQuoteGasPaymentResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.GasPayment = string(dAtA[iNdEx:postIndex])
+			m.GasPayment = append(m.GasPayment, types.Coin{})
+			if err := m.GasPayment[len(m.GasPayment)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3070,6 +3483,239 @@ func (m *QueryMerkleTreeHookResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MailboxId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MailboxId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MerkleTree", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MerkleTree == nil {
+				m.MerkleTree = &TreeResponse{}
+			}
+			if err := m.MerkleTree.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TreeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TreeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TreeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Leaf", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Leaf = append(m.Leaf, make([]byte, postIndex-iNdEx))
+			copy(m.Leaf[len(m.Leaf)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Count", wireType)
+			}
+			m.Count = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Count |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Root", wireType)
 			}
 			var byteLen int
@@ -3102,61 +3748,6 @@ func (m *QueryMerkleTreeHookResponse) Unmarshal(dAtA []byte) error {
 				m.Root = []byte{}
 			}
 			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Count", wireType)
-			}
-			m.Count = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Count |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MerkleTreeHook", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.MerkleTreeHook == nil {
-				m.MerkleTreeHook = &MerkleTreeHook{}
-			}
-			if err := m.MerkleTreeHook.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -3178,7 +3769,7 @@ func (m *QueryMerkleTreeHookResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryNoopHook) Unmarshal(dAtA []byte) error {
+func (m *QueryNoopHookRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3201,10 +3792,10 @@ func (m *QueryNoopHook) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryNoopHook: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryNoopHookRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryNoopHook: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryNoopHookRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3322,6 +3913,212 @@ func (m *QueryNoopHookResponse) Unmarshal(dAtA []byte) error {
 				m.NoopHook = &NoopHook{}
 			}
 			if err := m.NoopHook.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryNoopHooksRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryNoopHooksRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryNoopHooksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryNoopHooksResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryNoopHooksResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryNoopHooksResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NoopHooks", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NoopHooks = append(m.NoopHooks, NoopHook{})
+			if err := m.NoopHooks[len(m.NoopHooks)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

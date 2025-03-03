@@ -36,7 +36,7 @@ func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.
 		return nil, err
 	}
 
-	rng := collections.NewSuperPrefixedTripleRange[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
+	rng := collections.NewSuperPrefixedTripleRange[uint64, []byte, uint64](mailboxId.GetInternalId(), validatorAddress)
 
 	iter, err := qs.k.storageLocations.Iterate(ctx, rng)
 	if err != nil {
@@ -64,7 +64,7 @@ func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *t
 		return nil, err
 	}
 	// encode the prefix key so we can set the order by ourselves
-	key := collections.TripleSuperPrefix[[]byte, []byte, uint64](mailboxId.Bytes(), validatorAddress)
+	key := collections.TripleSuperPrefix[uint64, []byte, uint64](mailboxId.GetInternalId(), validatorAddress)
 	codec := qs.k.storageLocations.KeyCodec()
 	start := make([]byte, codec.Size(key))
 	_, err = codec.Encode(start, key)

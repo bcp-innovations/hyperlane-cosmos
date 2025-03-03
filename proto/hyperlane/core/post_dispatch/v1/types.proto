@@ -9,23 +9,22 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 // InterchainGasPaymaster ...
-// TODO: remove internal_id
 message InterchainGasPaymaster {
-
   // id ...
-  uint64 internal_id = 1;
-
-  // id is the hyperlane hex address
-  string id = 2;
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // owner ...
-  string owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // denom ...
-  string denom = 4;
+  string denom = 3;
 
   // claimable_fees ...
-  repeated cosmos.base.v1beta1.Coin claimable_fees = 5 [
+  repeated cosmos.base.v1beta1.Coin claimable_fees = 4 [
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
@@ -34,7 +33,6 @@ message InterchainGasPaymaster {
 
 // DestinationGasConfig ...
 message DestinationGasConfig {
-
   // remote_domain ...
   uint32 remote_domain = 1;
 
@@ -50,7 +48,6 @@ message DestinationGasConfig {
 
 // GasOracle ...
 message GasOracle {
-
   // token_exchange_rate ...
   string token_exchange_rate = 1 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -66,26 +63,24 @@ message GasOracle {
 
 // MerkleTreeHook ...
 message MerkleTreeHook {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
-  // id ...
-  uint64 internal_id = 1;
-
-  // id is the hyperlane hex address
-  string id = 2;
-
-  string mailbox_id = 3;
+  string mailbox_id = 2;
 
   // owner ...
-  string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // tree ...
-  Tree tree = 5;
+  Tree tree = 4;
 }
 
 // Tree represents an incremental merkle tree.
 // Contains current branch and the number of inserted leaves in the tree.
 message Tree {
-
   // branch ...
   repeated bytes branch = 1;
 
@@ -95,8 +90,13 @@ message Tree {
 
 // NoopHook ...
 message NoopHook {
-  string id = 1;
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // owner ...
-  string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }

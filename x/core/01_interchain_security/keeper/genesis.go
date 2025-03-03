@@ -35,7 +35,7 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 			panic(err)
 		}
 
-		if err = k.storageLocations.Set(ctx, collections.Join3(storageLocation.MailboxId.Bytes(), validatorBytes, storageLocation.Index), storageLocation.StorageLocation); err != nil {
+		if err = k.storageLocations.Set(ctx, collections.Join3(storageLocation.MailboxId, validatorBytes, storageLocation.Index), storageLocation.StorageLocation); err != nil {
 			panic(err)
 		}
 	}
@@ -61,9 +61,29 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 		panic(err)
 	}
 
-	// TODO add export for storage locations
+	iterStorageLocations, err := k.storageLocations.Iterate(ctx, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	storageLocations, err := iterStorageLocations.KeyValues()
+	if err != nil {
+		panic(err)
+	}
+
+	wrappedLocations := make([]types.ValidatorStorageLocationGenesisWrapper, len(storageLocations))
+	for i := range storageLocations {
+		location := types.ValidatorStorageLocationGenesisWrapper{
+			MailboxId:        storageLocations[i].Key.K1(),
+			ValidatorAddress: util.EncodeEthHex(storageLocations[i].Key.K2()),
+			Index:            storageLocations[i].Key.K3(),
+			StorageLocation:  storageLocations[i].Value,
+		}
+		wrappedLocations[i] = location
+	}
 
 	return &types.GenesisState{
-		Isms: ismsAny,
+		Isms:                      ismsAny,
+		ValidatorStorageLocations: wrappedLocations,
 	}
 }

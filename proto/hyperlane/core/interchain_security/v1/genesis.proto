@@ -11,17 +11,14 @@ message GenesisState {
   // accounts are the accounts present at genesis.
   repeated google.protobuf.Any isms = 1;
 
-  repeated ValidatorStorageLocation validator_storage_locations = 2;
+  repeated ValidatorStorageLocationGenesisWrapper validator_storage_locations =
+      2 [ (gogoproto.nullable) = false ];
 }
 
-// GenesisStorageLocation stores the information for
+// ValidatorStorageLocationGenesisWrapper stores the information for
 // validator, mailbox and storage-location which validators have announced
-message ValidatorStorageLocation {
-  string mailbox_id = 1 [
-    (gogoproto.customtype) =
-        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
-    (gogoproto.nullable) = false
-  ];
+message ValidatorStorageLocationGenesisWrapper {
+  uint64 mailbox_id = 1;
 
   string validator_address = 2;
 

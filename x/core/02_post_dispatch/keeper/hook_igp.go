@@ -87,7 +87,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 
 	igp.ClaimableFees = igp.ClaimableFees.Add(amount...)
 
-	err = i.k.Igps.Set(ctx, igp.InternalId, igp)
+	err = i.k.Igps.Set(ctx, igp.Id.GetInternalId(), igp)
 	if err != nil {
 		return err
 	}
@@ -112,7 +112,7 @@ func (i InterchainGasPaymasterHookHandler) QuoteGasPayment(ctx context.Context, 
 		return sdk.NewCoins(), fmt.Errorf("igp does not exist: %s", hookId.String())
 	}
 
-	destinationGasConfig, err := i.k.IgpDestinationGasConfigs.Get(ctx, collections.Join(igp.InternalId, destinationDomain))
+	destinationGasConfig, err := i.k.IgpDestinationGasConfigs.Get(ctx, collections.Join(igp.Id.GetInternalId(), destinationDomain))
 	if err != nil {
 		return sdk.NewCoins(), fmt.Errorf("remote domain %v is not supported", destinationDomain)
 	}
