@@ -71,7 +71,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: 1,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             &igpId,
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -112,7 +112,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             &igpId,
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -153,7 +153,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             &igpId,
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -194,7 +194,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: 2,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             &igpId,
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -235,7 +235,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             &igpId,
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -270,7 +270,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: 1,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             &igpId,
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -311,7 +311,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             &igpId,
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})

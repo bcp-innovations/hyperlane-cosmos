@@ -27,11 +27,7 @@ func (i NoopHookHandler) HookType() uint8 {
 	return types.POST_DISPATCH_HOOK_TYPE_UNUSED
 }
 
-func (i NoopHookHandler) SupportsMetadata(_ []byte) bool {
-	return false
-}
-
-func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ []byte, _ util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	has, err := i.k.noopHooks.Has(ctx, hookId.Bytes())
 	if err != nil || !has {
 		return nil, errors.Wrapf(types.ErrHookDoesNotExistOrIsNotRegistered, "%s", hookId.String())
@@ -40,6 +36,6 @@ func (i NoopHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAdd
 	return sdk.NewCoins(), nil
 }
 
-func (i NoopHookHandler) QuoteDispatch(_ context.Context, _, _ util.HexAddress, _ []byte, _ util.HyperlaneMessage) (sdk.Coins, error) {
+func (i NoopHookHandler) QuoteDispatch(_ context.Context, _, _ util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage) (sdk.Coins, error) {
 	return sdk.NewCoins(), nil
 }

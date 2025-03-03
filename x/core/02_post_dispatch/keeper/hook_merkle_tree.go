@@ -28,11 +28,7 @@ func (i MerkleTreeHookHandler) HookType() uint8 {
 	return types.POST_DISPATCH_HOOK_TYPE_MERKLE_TREE
 }
 
-func (i MerkleTreeHookHandler) SupportsMetadata(_ []byte) bool {
-	return false
-}
-
-func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, rawMetadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, _ util.StandardHookMetadata, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	merkleTreeHook, err := i.k.merkleTreeHooks.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return nil, err
@@ -70,6 +66,6 @@ func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hook
 	return sdk.NewCoins(), nil
 }
 
-func (i MerkleTreeHookHandler) QuoteDispatch(_ context.Context, _, _ util.HexAddress, _ []byte, _ util.HyperlaneMessage) (sdk.Coins, error) {
+func (i MerkleTreeHookHandler) QuoteDispatch(_ context.Context, _, _ util.HexAddress, _ util.StandardHookMetadata, _ util.HyperlaneMessage) (sdk.Coins, error) {
 	return sdk.NewCoins(), nil
 }

@@ -1058,14 +1058,15 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgRemoteTransfer{
-			Sender:            sender.Address,
-			TokenId:           nonExistingTokenId,
-			DestinationDomain: 0,
-			Recipient:         nonExistingTokenId,
-			Amount:            math.ZeroInt(),
-			IgpId:             &nonExistingTokenId,
-			GasLimit:          math.ZeroInt(),
-			MaxFee:            sdk.NewCoin(denom, math.ZeroInt()),
+			Sender:             sender.Address,
+			TokenId:            nonExistingTokenId,
+			DestinationDomain:  0,
+			Recipient:          nonExistingTokenId,
+			Amount:             math.ZeroInt(),
+			CustomHookId:       &nonExistingTokenId,
+			GasLimit:           math.ZeroInt(),
+			MaxFee:             sdk.NewCoin(denom, math.ZeroInt()),
+			CustomHookMetadata: "",
 		})
 
 		// Assert

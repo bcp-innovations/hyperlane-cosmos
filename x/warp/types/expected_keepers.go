@@ -29,9 +29,9 @@ type CoreKeeper interface {
 		// Recipient address on the destination chain (e.g. smart contract)
 		recipient util.HexAddress,
 		body []byte,
-		// Custom metadata for postDispatch Hook
-		metadata []byte,
+		// Metadata for postDispatch Hook
+		metadata util.StandardHookMetadata,
 		postDispatchHookId *util.HexAddress,
 	) (messageId util.HexAddress, error error)
-	QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, overwriteHookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error)
+	QuoteDispatch(ctx context.Context, mailboxId util.HexAddress, overwriteHookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage) (sdk.Coins, error)
 }

@@ -119,13 +119,12 @@ func (qs queryServer) QuoteRemoteTransfer(ctx context.Context, request *types.Qu
 	}
 
 	metadata := util.StandardHookMetadata{
-		Variant:  uint16(0),
-		Value:    math.NewInt(1),
-		GasLimit: remoteRouter.Gas,
-		Address:  sdk.AccAddress("mocked_addr_________"),
+		GasLimit:           remoteRouter.Gas,
+		Address:            sdk.AccAddress{},
+		CustomHookMetadata: []byte{},
 	}
 
-	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), util.NewZeroAddress(), metadata.Bytes(), util.HyperlaneMessage{Destination: uint32(destinationDomain)})
+	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), util.NewZeroAddress(), metadata, util.HyperlaneMessage{Destination: uint32(destinationDomain)})
 	if err != nil {
 		return nil, err
 	}

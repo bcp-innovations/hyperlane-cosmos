@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, recipient util.HexAddress, amount math.Int, customIgpId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, recipient util.HexAddress, amount math.Int, customHookId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -60,12 +60,11 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 
 		warpPayload.Bytes(),
 		util.StandardHookMetadata{
-			Variant:  1,
-			Value:    maxFee.Amount,
-			GasLimit: gas,
-			Address:  senderAcc,
-		}.Bytes(),
-		customIgpId,
+			GasLimit:           gas,
+			Address:            senderAcc,
+			CustomHookMetadata: customHookMetadata,
+		},
+		customHookId,
 	)
 	if err != nil {
 		return util.HexAddress{}, err

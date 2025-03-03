@@ -115,12 +115,6 @@ func CmdSetIgpOwner() *cobra.Command {
 				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
 			}
 
-			// TODO: Verify newOwner's validity?
-			//_, err = sdk.AccAddressFromBech32(msg.NewOwner)
-			//if err != nil {
-			//	panic(fmt.Errorf("invalid new owner address (%s)", msg.NewOwner))
-			//}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}

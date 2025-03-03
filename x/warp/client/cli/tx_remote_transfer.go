@@ -58,13 +58,13 @@ func CmdRemoteTransfer() *cobra.Command {
 				return err
 			}
 
-			var parsedIgpId *util.HexAddress = nil
-			if igpId != "" {
-				parsed, err := util.DecodeHexAddress(igpId)
+			var parsedHookId *util.HexAddress = nil
+			if customHookId != "" {
+				parsed, err := util.DecodeHexAddress(customHookId)
 				if err != nil {
 					return err
 				}
-				parsedIgpId = &parsed
+				parsedHookId = &parsed
 			}
 
 			msg := types.MsgRemoteTransfer{
@@ -73,9 +73,10 @@ func CmdRemoteTransfer() *cobra.Command {
 				Sender:            clientCtx.GetFromAddress().String(),
 				Recipient:         recipient,
 				Amount:            argAmount,
-				IgpId:             parsedIgpId,
+				CustomHookId:      parsedHookId,
 				GasLimit:          gasLimitInt,
 				MaxFee:            maxFeeCoin,
+				// TODO: Add customHookMetadata
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
@@ -84,7 +85,7 @@ func CmdRemoteTransfer() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().StringVar(&igpId, "igp-id", "", "custom InterchainGasPaymaster ID; only used when IGP is not required")
+	cmd.Flags().StringVar(&customHookId, "custom-hook-id", "", "custom DefaultHookId")
 
 	cmd.Flags().StringVar(&gasLimit, "gas-limit", "0", "Overwrite InterchainGasPayment gas limit")
 

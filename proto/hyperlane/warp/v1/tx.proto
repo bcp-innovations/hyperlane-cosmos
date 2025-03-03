@@ -136,8 +136,8 @@ message MsgRemoteTransfer {
     (amino.dont_omitempty) = true
   ];
 
-  // IGP
-  string igp_id = 6 [
+  // Post Dispatch
+  string custom_hook_id = 6 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = true
@@ -148,6 +148,7 @@ message MsgRemoteTransfer {
   ];
   cosmos.base.v1beta1.Coin max_fee = 8
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  string custom_hook_metadata = 9;
 }
 
 // MsgRemoteTransferResponse ...
