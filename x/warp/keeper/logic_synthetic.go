@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customHookId string, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, recipient util.HexAddress, amount math.Int, customHookId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -28,21 +28,7 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		return util.HexAddress{}, err
 	}
 
-	if externalRecipient == "" {
-		return util.HexAddress{}, fmt.Errorf("recipient cannot be empty")
-	}
-
-	recipient, err := util.DecodeEthHex(externalRecipient)
-	if err != nil {
-		return util.HexAddress{}, fmt.Errorf("invalid recipient address")
-	}
-
-	tokenId, err := util.DecodeHexAddress(token.Id)
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-
-	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(tokenId.GetInternalId(), destinationDomain))
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(token.Id.GetInternalId(), destinationDomain))
 	if err != nil {
 		return util.HexAddress{}, fmt.Errorf("no enrolled router found for destination domain %d", destinationDomain)
 	}
@@ -57,24 +43,16 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		gas = gasLimit
 	}
 
-	warpPayload, err := types.NewWarpPayload(recipient, *amount.BigInt())
+	warpPayload, err := types.NewWarpPayload(recipient.Bytes(), *amount.BigInt())
 	if err != nil {
 		return util.HexAddress{}, err
-	}
-
-	customPostDispatchHookId := util.NewZeroAddress()
-	if customHookId != "" {
-		customPostDispatchHookId, err = util.DecodeHexAddress(customHookId)
-		if err != nil {
-			return util.HexAddress{}, err
-		}
 	}
 
 	// Token destinationDomain, recipientAddress
 	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
-		tokenId,
+		token.Id,
 		sdk.NewCoins(maxFee),
 
 		remoteRouter.ReceiverDomain,
@@ -86,7 +64,7 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 			Address:            senderAcc,
 			CustomHookMetadata: customHookMetadata,
 		},
-		customPostDispatchHookId,
+		customHookId,
 	)
 	if err != nil {
 		return util.HexAddress{}, err

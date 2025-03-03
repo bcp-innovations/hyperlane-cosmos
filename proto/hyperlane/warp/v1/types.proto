@@ -22,7 +22,11 @@ message GenesisState {
 
 // HypToken ...
 message HypToken {
-  string id = 1;
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   HypTokenType token_type = 3;
 

@@ -56,7 +56,7 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 		return nil, errors.Wrapf(types.ErrMailboxDoesNotExist, "failed to find mailbox with id: %s", mailboxId.String())
 	}
 
-	localDomain, err := m.k.coreKeeper.LocalDomain(ctx)
+	localDomain, err := m.k.coreKeeper.LocalDomain(ctx, mailboxId)
 	if err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}

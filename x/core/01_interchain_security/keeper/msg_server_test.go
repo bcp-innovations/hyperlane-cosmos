@@ -302,7 +302,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
@@ -329,7 +329,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
@@ -356,7 +356,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
@@ -425,7 +425,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, true)
@@ -452,7 +452,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
@@ -489,10 +489,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
-		Expect(err).To(BeNil())
-
-		signature := announce(validatorPrivKey, storageLocation, nonExistingMailboxId, localDomain, false)
+		signature := announce(validatorPrivKey, storageLocation, nonExistingMailboxId, 1337, false)
 
 		// Act
 		_, err = s.RunTx(&types.MsgAnnounceValidator{
@@ -515,7 +512,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
@@ -543,7 +540,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
@@ -570,7 +567,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
@@ -599,7 +596,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
@@ -649,9 +646,9 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string) (util.
 
 	res, err := s.RunTx(&types2.MsgCreateMailbox{
 		Owner:        creator,
-		DefaultIsm:   ismId.String(),
-		DefaultHook:  hook.String(),
-		RequiredHook: hook.String(),
+		DefaultIsm:   ismId,
+		DefaultHook:  &hook,
+		RequiredHook: &hook,
 	})
 	Expect(err).To(BeNil())
 
@@ -697,25 +694,25 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, defaultIsm
 	mailboxId, err := util.DecodeHexAddress(response.Id)
 	Expect(err).To(BeNil())
 
-	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
+	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
 	Expect(err).To(BeNil())
 	Expect(mailbox.Owner).To(Equal(creator))
-	Expect(mailbox.DefaultIsm).To(Equal(defaultIsm))
+	Expect(mailbox.DefaultIsm.String()).To(Equal(defaultIsm))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
-	Expect(mailbox.DefaultHook).To(Equal(defaultHook))
-	Expect(mailbox.RequiredHook).To(Equal(requiredHook))
+	Expect(mailbox.DefaultHook.String()).To(Equal(defaultHook))
+	Expect(mailbox.RequiredHook.String()).To(Equal(requiredHook))
 
 	mailboxes, err := keeper2.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &types2.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())
 	Expect(mailboxes.Mailboxes).To(HaveLen(1))
 	Expect(mailboxes.Mailboxes[0].Owner).To(Equal(creator))
 
-	Expect(mailboxes.Mailboxes[0].DefaultIsm).To(Equal(defaultIsm))
+	Expect(mailboxes.Mailboxes[0].DefaultIsm.String()).To(Equal(defaultIsm))
 	Expect(mailboxes.Mailboxes[0].MessageSent).To(Equal(uint32(0)))
 	Expect(mailboxes.Mailboxes[0].MessageReceived).To(Equal(uint32(0)))
-	Expect(mailboxes.Mailboxes[0].DefaultHook).To(Equal(defaultHook))
-	Expect(mailboxes.Mailboxes[0].RequiredHook).To(Equal(requiredHook))
+	Expect(mailboxes.Mailboxes[0].DefaultHook.String()).To(Equal(defaultHook))
+	Expect(mailboxes.Mailboxes[0].RequiredHook.String()).To(Equal(requiredHook))
 
 	return mailboxId
 }

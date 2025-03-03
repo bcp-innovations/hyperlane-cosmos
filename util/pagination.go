@@ -113,10 +113,8 @@ func GetPaginatedPrefixFromMap[T any, K1 any, K2 any](ctx context.Context, colle
 	data := make([]T, 0, limit)
 	var keyValues []collections.KeyValue[collections.Pair[K1, K2], T]
 
-	index := uint64(0)
-
 	// if the query uses `key` instead of `offset` we can just fetch enough values until the limit is hit
-	for ; index < limit && it.Valid(); index++ {
+	for index := uint64(0); index < limit && it.Valid(); index++ {
 		keyValue, err := it.KeyValue()
 		if err != nil {
 			return nil, nil, status.Errorf(codes.Internal, "failed to retrieve item: %v", err)
@@ -128,8 +126,6 @@ func GetPaginatedPrefixFromMap[T any, K1 any, K2 any](ctx context.Context, colle
 
 	if it.Valid() {
 		var key collections.Pair[K1, K2]
-		// when the query is in reverse we want to pass the chronological last element as the next key
-		// the last element will be at index 0 in that case because the order is descending
 		if reverse {
 			key = keyValues[len(keyValues)-1].Key
 		} else {
@@ -217,10 +213,8 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 	data := make([]T, 0, limit)
 	var keyValues []collections.KeyValue[K, T]
 
-	index := uint64(0)
-
 	// if the query uses `key` instead of `offset` we can just fetch enough values until the limit is hit
-	for ; index < limit && it.Valid(); index++ {
+	for index := uint64(0); index < limit && it.Valid(); index++ {
 		keyValue, err := it.KeyValue()
 		if err != nil {
 			return nil, nil, status.Errorf(codes.Internal, "failed to retrieve item: %v", err)
@@ -232,8 +226,6 @@ func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collectio
 
 	if it.Valid() {
 		var key K
-		// when the query is in reverse we want to pass the chronological last element as the next key
-		// the last element will be at index 0 in that case because the order is descending
 		if reverse {
 			key = keyValues[len(keyValues)-1].Key
 		} else {

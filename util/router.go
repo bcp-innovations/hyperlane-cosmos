@@ -2,9 +2,7 @@ package util
 
 import (
 	"context"
-	"encoding/binary"
 	"fmt"
-	"slices"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -12,9 +10,7 @@ import (
 )
 
 const (
-	nameLength       = 20
-	moduleTypeLength = 4
-	sequenceLength   = 8
+	nameLength = 20
 )
 
 type InterchainSecurityModule interface {
@@ -78,13 +74,7 @@ func (r *Router[T]) GetModule(ctx context.Context, id HexAddress) (*T, error) {
 	return &module, nil
 }
 
-// GetNextSequence returns the next sequence number and maps it to the given module id.
-//
-// The is is a 32 byte array encoded as follows:
-// - 0:20 bytes are the module name
-// - 20:24 bytes are the module id
-// - 24:32 bytes are the sequence number
-// - the rest of the bytes are reserved for future use
+// GetNextSequence returns the next sequence number and maps it to the given module id
 func (r *Router[T]) GetNextSequence(ctx context.Context, moduleId uint8) (HexAddress, error) {
 	id := uint32(moduleId)
 	next, err := r.sequence.Next(ctx)
@@ -100,35 +90,10 @@ func (r *Router[T]) GetNextSequence(ctx context.Context, moduleId uint8) (HexAdd
 	return address, nil
 }
 
-/*
-TODO: refactor hex addresses, settle on one type
-SPEC: HexAddress
+func (r *Router[T]) GetInternalSequence(ctx context.Context) (uint64, error) {
+	return r.sequence.Peek(ctx)
+}
 
-The HexAddress mimics an evm-compatible address for a smart contract.
-Due to the nature of cosmos, addresses must be created differently.
-
-Requirements:
-- HexAddresses must be unique across all cosmos modules interacting with Hyperlane
-
-Structure
-- The HexAddress has 32 bytes and is used for external communication
-- For internal usage and storage an uint64 is totally sufficient
-
-HexAddress: <module-specifier (20 byte)> <type (4 byte)> <internal-id (8 byte)>
-
-The struct provides functions to encode and decode the information stored within the address.
-
-To ensure global uniqueness, the HexAddressFactory should be used. It is initialized once per Keeper
-and keeps global track of all registered module specifiers.
-
-*/
-// Hex Address Factory
-func GenerateHexAddress(moduleSpecifier [20]byte, internalType uint32, internalId uint64) HexAddress {
-	internalTypeBytes := make([]byte, 4)
-	binary.BigEndian.PutUint32(internalTypeBytes, internalType)
-
-	internalIdBytes := make([]byte, 8)
-	binary.BigEndian.PutUint64(internalIdBytes, internalId)
-
-	return HexAddress(slices.Concat(moduleSpecifier[:], internalTypeBytes, internalIdBytes))
+func (r *Router[T]) SetInternalSequence(ctx context.Context, value uint64) error {
+	return r.sequence.Set(ctx, value)
 }

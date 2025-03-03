@@ -67,22 +67,19 @@ var _ = Describe("logic_message.go", Ordered, func() {
 
 	It("ProcessMessage (invalid) with non-existing Mailbox ID", func() {
 		// Arrange
-		nonExistingMailboxId := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		nonExistingMailboxId, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		createValidMailbox(s, creator.Address, "noop", true, 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
-		senderHex := util.CreateHexAddress("test", 0)
-		recipientHex := util.CreateHexAddress("test", 0)
-
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
-		Expect(err).To(BeNil())
+		senderHex := util.CreateMockHexAddress("test", 0)
+		recipientHex := util.CreateMockHexAddress("test", 0)
 
 		hypMsg := util.HyperlaneMessage{
 			Version:     3,
 			Nonce:       0,
-			Origin:      localDomain,
+			Origin:      1337,
 			Sender:      senderHex,
 			Destination: 1,
 			Recipient:   recipientHex,
@@ -108,10 +105,10 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
-		senderHex := util.CreateHexAddress("test", 0)
-		recipientHex := util.CreateHexAddress("test", 0)
+		senderHex := util.CreateMockHexAddress("test", 0)
+		recipientHex := util.CreateMockHexAddress("test", 0)
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		hypMsg := util.HyperlaneMessage{
@@ -126,7 +123,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgProcessMessage{
-			MailboxId: mailboxId.String(),
+			MailboxId: mailboxId,
 			Relayer:   sender.Address,
 			Metadata:  "",
 			Message:   hypMsg.String()[:util.BodyOffset-1],
@@ -143,10 +140,10 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
-		senderHex := util.CreateHexAddress("test", 0)
-		recipientHex := util.CreateHexAddress("test", 0)
+		senderHex := util.CreateMockHexAddress("test", 0)
+		recipientHex := util.CreateMockHexAddress("test", 0)
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		hypMsg := util.HyperlaneMessage{
@@ -160,7 +157,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		}
 
 		_, err = s.RunTx(&types.MsgProcessMessage{
-			MailboxId: mailboxId.String(),
+			MailboxId: mailboxId,
 			Relayer:   sender.Address,
 			Metadata:  "",
 			Message:   hypMsg.String(),
@@ -172,7 +169,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgProcessMessage{
-			MailboxId: mailboxId.String(),
+			MailboxId: mailboxId,
 			Relayer:   sender.Address,
 			Metadata:  "",
 			Message:   hypMsg.String(),
@@ -190,10 +187,10 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
-		senderHex := util.CreateHexAddress("test", 0)
-		recipientHex := util.CreateHexAddress("test", 0)
+		senderHex := util.CreateMockHexAddress("test", 0)
+		recipientHex := util.CreateMockHexAddress("test", 0)
 
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx())
+		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
 		Expect(err).To(BeNil())
 
 		hypMsg := util.HyperlaneMessage{
@@ -208,7 +205,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgProcessMessage{
-			MailboxId: mailboxId.String(),
+			MailboxId: mailboxId,
 			Relayer:   sender.Address,
 			Metadata:  "",
 			Message:   hypMsg.String(),

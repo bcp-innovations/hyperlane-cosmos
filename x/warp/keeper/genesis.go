@@ -12,16 +12,11 @@ func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) erro
 		return err
 	}
 
-	// TODO:
-	// for _, token := range data.Tokens {
-	// 	if err := k.HypTokens.Set(ctx, token.Id, token); err != nil {
-	// 		return err
-	// 	}
-	// }
-
-	// if err := k.HypTokensCount.Set(ctx, uint64(len(data.Tokens))); err != nil {
-	// 	return err
-	// }
+	for _, token := range data.Tokens {
+		if err := k.HypTokens.Set(ctx, token.Id.GetInternalId(), token); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
@@ -33,15 +28,14 @@ func (k *Keeper) ExportGenesis(ctx context.Context) (*types.GenesisState, error)
 		return nil, err
 	}
 
-	var tokens []types.HypToken
-	// TODO:
-	// if err := k.HypTokens.Walk(ctx, nil, func(key uint64, value types.HypToken) (stop bool, err error) {
-	// 	tokens = append(tokens, value)
-
-	// 	return false, nil
-	// }); err != nil {
-	// 	return nil, err
-	// }
+	token, err := k.HypTokens.Iterate(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	tokens, err := token.Values()
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.GenesisState{
 		Params: params,

@@ -4,13 +4,16 @@ package hyperlane.core.v1;
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
 
 import "cosmos_proto/cosmos.proto";
-import "amino/amino.proto";
+import "gogoproto/gogo.proto";
 
 // Mailbox ...
 message Mailbox {
 
-  // id ...
-  string id = 1;
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // owner ...
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -22,19 +25,26 @@ message Mailbox {
   uint32 message_received = 4;
 
   // default_ism ...
-  string default_ism = 5;
+  string default_ism = 5 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // default_hook
-  string default_hook = 8;
+  string default_hook = 8 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
 
   // required_hook
-  string required_hook = 9;
-}
+  string required_hook = 9 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
 
-// Params defines the parameters of the module.
-message Params {
-  option (amino.name) = "hyperlane/mailbox/Params";
-
-  // domain ...
-  uint32 domain = 1;
+  // domain
+  uint32 local_domain = 10;
 }

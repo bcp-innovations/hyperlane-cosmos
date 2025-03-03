@@ -168,12 +168,20 @@
       ]
     },
     "hyperlane": {
-      "params": {
-        "domain": 0
-      },
       "ism_genesis": {
         "isms": []
-      }
+      },
+      "post_dispatch_genesis": {
+        "igps": [],
+        "igp_gas_configs": [],
+        "merkle_tree_hooks": [],
+        "noop_hooks": []
+      },
+      "mailboxes": [],
+      "messages": [],
+      "ism_sequence": "0",
+      "post_dispatch_sequence": "0",
+      "app_sequence": "0"
     },
     "runtime": null,
     "staking": {

@@ -47,7 +47,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) non-enrolled router (Synthetic)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 
 		amount := math.NewInt(100)
 		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
@@ -67,11 +67,11 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: 1,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			CustomHookId:      igpId.String(),
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -83,7 +83,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) empty cosmos sender (Synthetic)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -108,11 +108,11 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            "",
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			CustomHookId:      igpId.String(),
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -124,7 +124,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) invalid cosmos sender (Synthetic)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -149,11 +149,11 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            "Test123!",
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			CustomHookId:      igpId.String(),
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -163,89 +163,9 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom).Amount).To(Equal(senderBalance.Amount))
 	})
 
-	It("MsgRemoteTransfer (invalid) empty recipient (Synthetic)", func() {
-		// Arrange
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-
-		amount := math.NewInt(100)
-		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
-
-		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
-
-		syntheticDenom := "hyperlane/" + tokenId.String()
-
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
-		Expect(err).To(BeNil())
-
-		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
-		Expect(err).To(BeNil())
-
-		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom)
-
-		// Act
-		_, err = s.RunTx(&types.MsgRemoteTransfer{
-			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
-			DestinationDomain: remoteRouter.ReceiverDomain,
-			Recipient:         "",
-			Amount:            amount,
-			CustomHookId:      igpId.String(),
-			GasLimit:          math.ZeroInt(),
-			MaxFee:            maxFee,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("recipient cannot be empty"))
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom).Amount).To(Equal(senderBalance.Amount))
-	})
-
-	It("MsgRemoteTransfer (invalid) invalid recipient (Synthetic)", func() {
-		// Arrange
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
-			Gas:              math.NewInt(50000),
-		}
-
-		amount := math.NewInt(100)
-		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
-
-		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
-
-		syntheticDenom := "hyperlane/" + tokenId.String()
-
-		err := s.MintBaseCoins(sender.Address, math.NewInt(maxFee.Amount.Int64()).Uint64())
-		Expect(err).To(BeNil())
-
-		err = s.MintCoins(sender.Address, sdk.NewCoins(sdk.NewInt64Coin(syntheticDenom, amount.Int64())))
-		Expect(err).To(BeNil())
-
-		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom)
-
-		// Act
-		_, err = s.RunTx(&types.MsgRemoteTransfer{
-			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
-			DestinationDomain: remoteRouter.ReceiverDomain,
-			Recipient:         "1234gnx",
-			Amount:            amount,
-			CustomHookId:      igpId.String(),
-			GasLimit:          math.ZeroInt(),
-			MaxFee:            maxFee,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid recipient address"))
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom).Amount).To(Equal(senderBalance.Amount))
-	})
-
 	It("MsgRemoteTransfer (invalid) no enrolled router (Synthetic)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -270,11 +190,11 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: 2,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			CustomHookId:      igpId.String(),
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -286,7 +206,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) receiver contract (Synthetic)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865de",
@@ -311,11 +231,11 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			CustomHookId:      igpId.String(),
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -327,7 +247,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 
 	It("MsgRemoteTransfer (invalid) insufficient funds (Synthetic)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -346,11 +266,11 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		// Act
 		_, err := s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: 1,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			CustomHookId:      igpId.String(),
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -362,7 +282,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 
 	It("MsgRemoteTransfer && MsgRemoteReceiveSynthetic (valid) (Synthetic)", func() {
 		// Arrange
-		receiverAddress := "0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647"
+		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
 			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
@@ -387,11 +307,11 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		// Act
 		_, err = s.RunTx(&types.MsgRemoteTransfer{
 			Sender:            sender.Address,
-			TokenId:           tokenId.String(),
+			TokenId:           tokenId,
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			CustomHookId:      igpId.String(),
+			CustomHookId:      &igpId,
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -421,7 +341,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		senderBalance = s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom)
 
 		_, err = s.RunTx(&coreTypes.MsgProcessMessage{
-			MailboxId: mailboxId.String(),
+			MailboxId: mailboxId,
 			Relayer:   sender.Address,
 			Metadata:  "",
 			Message:   message.String(),

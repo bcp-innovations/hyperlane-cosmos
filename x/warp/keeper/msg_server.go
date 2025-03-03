@@ -41,7 +41,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 	}
 
 	newToken := types.HypToken{
-		Id:            tokenId.String(),
+		Id:            tokenId,
 		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
 		OriginMailbox: mailboxId.Bytes(),
@@ -85,7 +85,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	}
 
 	newToken := types.HypToken{
-		Id:            tokenId.String(),
+		Id:            tokenId,
 		Owner:         msg.Owner,
 		TokenType:     types.HYP_TOKEN_TYPE_COLLATERAL,
 		OriginMailbox: mailboxId.Bytes(),
@@ -198,14 +198,9 @@ func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnroll
 func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTransfer) (*types.MsgRemoteTransferResponse, error) {
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
-	tokenId, err := util.DecodeHexAddress(msg.TokenId)
+	token, err := ms.k.HypTokens.Get(ctx, msg.TokenId.GetInternalId())
 	if err != nil {
-		return nil, fmt.Errorf("invalid token id %s", msg.TokenId)
-	}
-
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
-	if err != nil {
-		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
+		return nil, fmt.Errorf("failed to find token with id: %s", msg.TokenId.String())
 	}
 
 	customHookMetadata, err := util.DecodeEthHex(msg.CustomHookMetadata)

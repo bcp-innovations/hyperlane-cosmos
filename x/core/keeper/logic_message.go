@@ -18,19 +18,19 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 	}
 
 	// Check if mailbox exists and increment counter
-	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
+	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
 	if err != nil {
 		return fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
 	mailbox.MessageReceived++
 
-	err = k.Mailboxes.Set(ctx, mailboxId.Bytes(), mailbox)
+	err = k.Mailboxes.Set(ctx, mailboxId.GetInternalId(), mailbox)
 	if err != nil {
 		return err
 	}
 
 	// Check replay protection
-	key := collections.Join(mailboxId.Bytes(), message.Id().Bytes())
+	key := collections.Join(mailboxId.GetInternalId(), message.Id().Bytes())
 	received, err := k.Messages.Has(ctx, key)
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 	ismId, err := k.ReceiverIsmId(ctx, message.Recipient)
 	if err != nil {
 		if errors.IsOf(err, types.ErrNoReceiverISM) {
-			ismId, _ = util.DecodeHexAddress(mailbox.DefaultIsm)
+			ismId = mailbox.DefaultIsm
 		} else {
 			return err
 		}
@@ -92,22 +92,25 @@ func (k Keeper) DispatchMessage(
 	body []byte,
 	// Custom metadata for postDispatch Hook
 	metadata util.StandardHookMetadata,
-	postDispatchHookId util.HexAddress,
+	postDispatchHookId *util.HexAddress,
 ) (messageId util.HexAddress, error error) {
-	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())
+	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.GetInternalId())
 	if err != nil {
 		return util.HexAddress{}, fmt.Errorf("failed to find mailbox with id: %v", originMailboxId.String())
 	}
 
-	localDomain, err := k.LocalDomain(ctx)
-	if err != nil {
-		return util.HexAddress{}, err
+	// check for valid mailbox state
+	if mailbox.RequiredHook == nil {
+		return util.HexAddress{}, types.ErrRequiredHookNotSet
+	}
+	if mailbox.DefaultHook == nil {
+		return util.HexAddress{}, types.ErrDefaultHookNotSet
 	}
 
 	hypMsg := util.HyperlaneMessage{
 		Version:     3,
 		Nonce:       mailbox.MessageSent,
-		Origin:      localDomain,
+		Origin:      mailbox.LocalDomain,
 		Sender:      sender,
 		Destination: destinationDomain,
 		Recipient:   recipient,
@@ -115,12 +118,12 @@ func (k Keeper) DispatchMessage(
 	}
 	mailbox.MessageSent++
 
-	err = k.Messages.Set(ctx, collections.Join(originMailboxId.Bytes(), hypMsg.Id().Bytes()))
+	err = k.Messages.Set(ctx, collections.Join(originMailboxId.GetInternalId(), hypMsg.Id().Bytes()))
 	if err != nil {
 		return util.HexAddress{}, err
 	}
 
-	err = k.Mailboxes.Set(ctx, originMailboxId.Bytes(), mailbox)
+	err = k.Mailboxes.Set(ctx, originMailboxId.GetInternalId(), mailbox)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
@@ -133,21 +136,13 @@ func (k Keeper) DispatchMessage(
 		Message:         hypMsg.String(),
 	})
 
-	requiredHookAddress, err := util.DecodeHexAddress(mailbox.RequiredHook)
-	if err != nil {
-		return util.HexAddress{}, err
-	}
-	chargedCoinsRequired, err := k.PostDispatch(ctx, originMailboxId, requiredHookAddress, metadata, hypMsg, maxFee)
+	chargedCoinsRequired, err := k.PostDispatch(ctx, originMailboxId, *mailbox.RequiredHook, metadata, hypMsg, maxFee)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
 
-	if postDispatchHookId.IsZeroAddress() {
-		defaultHookAddress, err := util.DecodeHexAddress(mailbox.DefaultHook)
-		if err != nil {
-			return util.HexAddress{}, err
-		}
-		postDispatchHookId = defaultHookAddress
+	if postDispatchHookId == nil {
+		postDispatchHookId = mailbox.DefaultHook
 	}
 
 	remainingCoins, neg := maxFee.SafeSub(chargedCoinsRequired...)
@@ -155,7 +150,10 @@ func (k Keeper) DispatchMessage(
 		return util.HexAddress{}, fmt.Errorf("remaining coins cannot be negative")
 	}
 
-	chargedCoinsDefault, err := k.PostDispatch(ctx, originMailboxId, postDispatchHookId, metadata, hypMsg, remainingCoins)
+	if postDispatchHookId == nil {
+		return util.HexAddress{}, types.ErrDefaultHookNotSet
+	}
+	chargedCoinsDefault, err := k.PostDispatch(ctx, originMailboxId, *postDispatchHookId, metadata, hypMsg, remainingCoins)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
