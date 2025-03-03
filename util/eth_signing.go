@@ -2,6 +2,7 @@ package util
 
 import (
 	"crypto/ecdsa"
+	"errors"
 	"fmt"
 	"slices"
 
@@ -27,11 +28,14 @@ func GetEthSigningHash(msg []byte) [32]byte {
 //
 // Signatures follows EIP-155 with a recovery id of 27 or 28
 func RecoverEthSignature(hash []byte, sig []byte) (*ecdsa.PublicKey, error) {
+	if len(sig) != 65 {
+		return nil, errors.New("invalid signature")
+	}
+
 	// Sub 27 of the recovery id according to this - https://eips.ethereum.org/EIPS/eip-155
-	// TODO fix
 	sig[64] -= 27
 
-	recoveredPubKey, err := crypto.SigToPub(hash[:], sig)
+	recoveredPubKey, err := crypto.SigToPub(hash[:], sig[:])
 	if err != nil {
 		return nil, err
 	}

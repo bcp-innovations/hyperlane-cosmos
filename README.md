@@ -20,13 +20,13 @@ _Both modules can be imported into an Cosmos SDK chain using [dependency injecti
 
 ## Building from source
 
-To run all build tools a docker is required.
+To run all build tools docker is required.
 
 ```
 make all
 ```
 
-To run the test suite, do
+To run the test suite:
 
 ```
 make test
