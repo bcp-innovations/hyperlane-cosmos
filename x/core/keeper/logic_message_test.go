@@ -43,7 +43,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 	It("DispatchMessage (invalid) with non-existing Mailbox ID", func() {
 		// Arrange
 		nonExistingMailboxId, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -76,7 +76,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 	It("ProcessMessage (invalid) with non-existing Mailbox ID", func() {
 		// Arrange
 		nonExistingMailboxId, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
-		createValidMailbox(s, creator.Address, "noop", true, 1)
+		createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -108,7 +108,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 
 	It("ProcessMessage (invalid) with invalid hex message", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -143,7 +143,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 
 	PIt("ProcessMessage (invalid) already processed message (replay protection)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -190,7 +190,7 @@ var _ = Describe("logic_message.go", Ordered, func() {
 	// TODO rework test, once warp is refactored to use router
 	PIt("ProcessMessage (invalid) with invalid message: non-registered recipient", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())

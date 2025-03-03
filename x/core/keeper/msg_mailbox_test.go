@@ -24,13 +24,12 @@ import (
 
 TEST CASES - msg_mailbox.go
 
-* CreateMailbox (invalid) without default ISM and without IGP
-* CreateMailbox (invalid) with invalid default ISM and without IGP
-* CreateMailbox (invalid) with non-existing default ISM and without IGP
-* CreateMailbox (invalid) with valid default ISM (Noop) and invalid IGP
-* CreateMailbox (invalid) with valid default ISM (Multisig) and invalid IGP
-* CreateMailbox (invalid) with valid default ISM (Noop) and non-existent IGP
-* CreateMailbox (invalid) with valid default ISM (Multisig) and non-existent IGP
+* CreateMailbox (invalid) with invalid default ISM and without hooks
+* CreateMailbox (invalid) with non-existing default ISM and without hooks
+* CreateMailbox (invalid) with valid default ISM (Noop) and invalid default hook
+* CreateMailbox (invalid) with valid default ISM (Multisig) and invalid default hook
+* CreateMailbox (invalid) with valid default ISM (Noop) and non-existent default hook
+* CreateMailbox (invalid) with valid default ISM (Multisig) and non-existent default hook
 * CreateMailbox (valid) with NoopISM and required IGP
 * CreateMailbox (valid) with MultisigISM and required IGP
 * CreateMailbox (valid) with NoopISM and optional IGP
@@ -65,22 +64,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 	})
 
 	// CreateMailbox
-	// invalid ISM
-	It("CreateMailbox (invalid) without default ISM and without IGP", func() {
-		// Arrange
-		defaultIsm := util.NewZeroAddress()
-
-		// Act
-		_, err := s.RunTx(&types.MsgCreateMailbox{
-			Owner:      creator.Address,
-			DefaultIsm: defaultIsm,
-		})
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("ism with id %s does not exist", defaultIsm.String())))
-		verifyInvalidMailboxCreation(s)
-	})
-
-	It("CreateMailbox (invalid) with invalid default ISM and without IGP", func() {
+	It("CreateMailbox (invalid) with invalid default ISM and without hooks", func() {
 		// Arrange
 		defaultIsm, _ := util.DecodeHexAddress("0x004b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0")
 
@@ -96,7 +80,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyInvalidMailboxCreation(s)
 	})
 
-	It("CreateMailbox (invalid) with non-existing default ISM and without IGP", func() {
+	It("CreateMailbox (invalid) with non-existing default ISM and without hooks", func() {
 		// Arrange
 		defaultIsm, _ := util.DecodeHexAddress("0x004b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0")
 
@@ -112,8 +96,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyInvalidMailboxCreation(s)
 	})
 
-	// invalid IGP
-	It("CreateMailbox (invalid) with valid default ISM (Noop) and invalid IGP", func() {
+	It("CreateMailbox (invalid) with valid default ISM (Noop) and invalid default hook", func() {
 		// Arrange
 		ismId := createNoopIsm(s, creator.Address)
 		igpId, _ := util.DecodeHexAddress("0x004b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0")
@@ -131,7 +114,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyInvalidMailboxCreation(s)
 	})
 
-	It("CreateMailbox (invalid) with valid default ISM (Multisig) and invalid IGP", func() {
+	It("CreateMailbox (invalid) with valid default ISM (Multisig) and invalid default hook", func() {
 		// Arrange
 		ismId := createMultisigIsm(s, creator.Address)
 		igpId, _ := util.DecodeHexAddress("0x004b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0")
@@ -149,7 +132,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyInvalidMailboxCreation(s)
 	})
 
-	It("CreateMailbox (invalid) with valid default ISM (Noop) and non-existent IGP", func() {
+	It("CreateMailbox (invalid) with valid default ISM (Noop) and non-existent default hook", func() {
 		// Arrange
 		ismId := createNoopIsm(s, creator.Address)
 		igpId, _ := util.DecodeHexAddress("0x004b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591b38e865def0")
@@ -167,7 +150,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyInvalidMailboxCreation(s)
 	})
 
-	It("CreateMailbox (invalid) with valid default ISM (Multisig) and non-existent IGP", func() {
+	It("CreateMailbox (invalid) with valid default ISM (Multisig) and non-existent default hook", func() {
 		// Arrange
 		ismId := createMultisigIsm(s, creator.Address)
 		igpId, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
@@ -185,8 +168,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyInvalidMailboxCreation(s)
 	})
 
-	// Mailbox valid cases
-	It("CreateMailbox (valid) with NoopISM and required IGP", func() {
+	It("CreateMailbox (valid) with NoopISM", func() {
 		// Arrange
 		igpId := createIgp(s, creator.Address)
 		noopHookId := createNoopHook(s, creator.Address)
@@ -206,7 +188,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), noopHookId.String())
 	})
 
-	It("CreateMailbox (valid) with MultisigISM and required IGP", func() {
+	It("CreateMailbox (valid) with MultisigISM", func() {
 		// Arrange
 		igpId := createIgp(s, creator.Address)
 		noopHookId := createNoopHook(s, creator.Address)
@@ -226,29 +208,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), noopHookId.String())
 	})
 
-	It("CreateMailbox (valid) with NoopISM and optional IGP", func() {
+	It("DispatchMessage (valid) with custom hook", func() {
 		// Arrange
-		igpId := createIgp(s, creator.Address)
-		noopId := createNoopHook(s, creator.Address)
-		ismId := createNoopIsm(s, creator.Address)
-
-		// Act
-		res, err := s.RunTx(&types.MsgCreateMailbox{
-			Owner:        creator.Address,
-			DefaultIsm:   ismId,
-			RequiredHook: &igpId,
-			DefaultHook:  &noopId,
-		})
-
-		// Assert
-		Expect(err).To(BeNil())
-
-		verifyNewSingleMailbox(s, res, creator.Address, ismId.String(), igpId.String(), noopId.String())
-	})
-
-	It("DispatchMessage (valid) with optional IGP", func() {
-		// Arrange
-		mailboxId, igpId, _ := createValidMailbox(s, creator.Address, "noop", false, 1)
+		mailboxId, igpId, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -279,42 +241,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		verifyDispatch(s, mailboxId, 1)
 	})
 
-	It("DispatchMessage (valid) with optional and no specified IGP", func() {
+	It("DispatchMessage (valid)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", false, 1)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		// Act
-		hexSender, _ := util.DecodeHexAddress(sender.Address)
-		recipient, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
-		body, _ := hex.DecodeString("0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b")
-
-		_, err = s.App().HyperlaneKeeper.DispatchMessage(
-			s.Ctx(),
-			mailboxId,
-			hexSender,
-			sdk.NewCoins(sdk.NewCoin("acoin", math.NewInt(1000000))),
-			1,
-			recipient,
-			body,
-			util.StandardHookMetadata{
-				GasLimit: math.NewInt(50000),
-				Address:  sender.AccAddress,
-			},
-			nil,
-		)
-
-		// Assert
-		Expect(err).To(BeNil())
-
-		verifyDispatch(s, mailboxId, 1)
-	})
-
-	It("DispatchMessage (valid) with required IGP", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -347,7 +276,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("ProcessMessage (invalid) with empty message", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -366,7 +295,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("ProcessMessage (invalid) with invalid non-hex message", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -385,7 +314,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	It("ProcessMessage (invalid) with invalid metadata (Noop ISM)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -404,11 +333,12 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 	PIt("ProcessMessage (valid) (Noop ISM)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
+		// TODO: Create token to use as recipient
 		recipient := util.CreateMockHexAddress("recipient", 0)
 
 		message := util.HyperlaneMessage{
@@ -431,6 +361,94 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
+	})
+
+	It("SetMailbox (invalid) with non-owner address", func() {
+		// Arrange
+		mailboxId, requiredHook, defaultHook, ism := createValidMailbox(s, creator.Address, "noop", 1)
+
+		noopIsmId := createNoopIsm(s, sender.Address)
+		defaultHookId := createIgp(s, creator.Address)
+		requiredHookId := createIgp(s, creator.Address)
+		newOwner := "new_owner"
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetMailbox{
+			Owner:        sender.Address,
+			MailboxId:    mailboxId,
+			DefaultIsm:   &noopIsmId,
+			DefaultHook:  &defaultHookId,
+			RequiredHook: &requiredHookId,
+			NewOwner:     newOwner,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own mailbox with id %s", sender.Address, mailboxId.String())))
+
+		mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
+		Expect(err).To(BeNil())
+		Expect(mailbox.DefaultIsm).To(Equal(ism))
+		Expect(mailbox.DefaultHook).To(Equal(&defaultHook))
+		Expect(mailbox.RequiredHook).To(Equal(&requiredHook))
+		Expect(mailbox.Owner).To(Equal(creator.Address))
+	})
+
+	It("SetMailbox (valid) without hooks", func() {
+		// Arrange
+		mailboxId, requiredHook, defaultHook, _ := createValidMailbox(s, creator.Address, "noop", 1)
+
+		noopIsmId := createNoopIsm(s, sender.Address)
+		newOwner := "new_owner"
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetMailbox{
+			Owner:        creator.Address,
+			MailboxId:    mailboxId,
+			DefaultIsm:   &noopIsmId,
+			DefaultHook:  nil,
+			RequiredHook: nil,
+			NewOwner:     newOwner,
+		})
+
+		// Assert
+		Expect(err).NotTo(HaveOccurred())
+
+		mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
+		Expect(err).To(BeNil())
+		Expect(mailbox.DefaultIsm).To(Equal(noopIsmId))
+		Expect(mailbox.DefaultHook).To(Equal(&defaultHook))
+		Expect(mailbox.RequiredHook).To(Equal(&requiredHook))
+		Expect(mailbox.Owner).To(Equal(newOwner))
+	})
+
+	It("SetMailbox (valid)", func() {
+		// Arrange
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
+
+		noopIsmId := createNoopIsm(s, sender.Address)
+		defaultHookId := createIgp(s, creator.Address)
+		requiredHookId := createIgp(s, creator.Address)
+		newOwner := "new_owner"
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetMailbox{
+			Owner:        creator.Address,
+			MailboxId:    mailboxId,
+			DefaultIsm:   &noopIsmId,
+			DefaultHook:  &defaultHookId,
+			RequiredHook: &requiredHookId,
+			NewOwner:     newOwner,
+		})
+
+		// Assert
+		Expect(err).NotTo(HaveOccurred())
+
+		mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
+		Expect(err).To(BeNil())
+		Expect(mailbox.DefaultIsm).To(Equal(noopIsmId))
+		Expect(mailbox.DefaultHook).To(Equal(&defaultHookId))
+		Expect(mailbox.RequiredHook).To(Equal(&requiredHookId))
+		Expect(mailbox.Owner).To(Equal(newOwner))
 	})
 
 	// TODO: ProcessMessage (valid) (Multisig ISM)
@@ -470,8 +488,7 @@ func createNoopHook(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return noopHookId
 }
 
-// TODO fix
-func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsRequiredHook bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
+func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress, util.HexAddress) {
 	var ismId util.HexAddress
 	switch ism {
 	case "noop":
@@ -494,7 +511,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpIsR
 	})
 	Expect(err).To(BeNil())
 
-	return verifyNewSingleMailbox(s, res, creator, ismId.String(), igpId.String(), noopId.String()), igpId, ismId
+	return verifyNewSingleMailbox(s, res, creator, ismId.String(), igpId.String(), noopId.String()), igpId, noopId, ismId
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
