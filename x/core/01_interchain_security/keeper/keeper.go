@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-// ISM Keeper is used to handle all core implementations of Isms and implements the
+// Keeper is used to handle all core implementations of Isms and implements the
 // Go HyperlaneInterchainSecurityModule. Every core ISM does not require any outside keeper
 // and can therefore all be handled by the same handler. If an ISM needs to access state
 // in the future, one needs to provide another IsmHandler which holds the keeper and can access state.
@@ -59,8 +59,8 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 }
 
 // Verify checks if the metadata has signed the message correctly.
-func (h *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
-	ism, err := h.isms.Get(ctx, ismId.GetInternalId())
+func (k *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
+	ism, err := k.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
 		return false, err
 	}
@@ -69,6 +69,6 @@ func (h *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []b
 }
 
 // Exists checks if the given ISM id does exist.
-func (h *Keeper) Exists(ctx context.Context, ismId util.HexAddress) (bool, error) {
-	return h.isms.Has(ctx, ismId.GetInternalId())
+func (k *Keeper) Exists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+	return k.isms.Has(ctx, ismId.GetInternalId())
 }

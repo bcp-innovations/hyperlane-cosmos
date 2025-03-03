@@ -3,7 +3,6 @@ package keeper
 import (
 	"bytes"
 	"context"
-	"fmt"
 
 	"cosmossdk.io/errors"
 
@@ -31,35 +30,35 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 // The Relayer uses this information to fetch the signatures for messages.
 func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounceValidator) (*types.MsgAnnounceValidatorResponse, error) {
 	if req.Validator == "" {
-		return nil, fmt.Errorf("validator cannot be empty")
+		return nil, errors.Wrap(types.ErrInvalidAnnounce, "validator cannot be empty")
 	}
 
 	if req.StorageLocation == "" {
-		return nil, fmt.Errorf("storage location cannot be empty")
+		return nil, errors.Wrap(types.ErrInvalidAnnounce, "storage location cannot be empty")
 	}
 
 	if req.Signature == "" {
-		return nil, fmt.Errorf("signature cannot be empty")
+		return nil, errors.Wrap(types.ErrInvalidAnnounce, "signature cannot be empty")
 	}
 
 	sig, err := util.DecodeEthHex(req.Signature)
 	if err != nil {
-		return nil, fmt.Errorf("invalid signature")
+		return nil, errors.Wrap(types.ErrInvalidAnnounce, "invalid signature")
 	}
 
 	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
 	if err != nil {
-		return nil, fmt.Errorf("invalid mailbox id")
+		return nil, errors.Wrap(types.ErrMailboxDoesNotExist, "invalid mailbox id")
 	}
 
 	found, err := m.k.coreKeeper.MailboxIdExists(ctx, mailboxId)
 	if err != nil || !found {
-		return nil, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
+		return nil, errors.Wrapf(types.ErrMailboxDoesNotExist, "failed to find mailbox with id: %s", mailboxId.String())
 	}
 
 	localDomain, err := m.k.coreKeeper.LocalDomain(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	announcementDigest := types.GetAnnouncementDigest(req.StorageLocation, localDomain, mailboxId.Bytes())
@@ -67,24 +66,24 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 
 	recoveredPubKey, err := util.RecoverEthSignature(ethSigningHash[:], sig)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrInvalidSignature, err.Error())
 	}
 
 	validatorAddress, err := util.DecodeEthHex(req.Validator)
 	if err != nil {
-		return nil, fmt.Errorf("invalid validator address")
+		return nil, errors.Wrap(types.ErrInvalidAnnounce, "invalid validator address")
 	}
 
 	recoveredAddress := crypto.PubkeyToAddress(*recoveredPubKey)
 
 	if !bytes.Equal(recoveredAddress[:], validatorAddress) {
-		return nil, fmt.Errorf("validator %s doesn't match signature. recovered address: %s", util.EncodeEthHex(validatorAddress), util.EncodeEthHex(recoveredAddress[:]))
+		return nil, errors.Wrapf(types.ErrInvalidSignature, "validator %s doesn't match signature. recovered address: %s", util.EncodeEthHex(validatorAddress), util.EncodeEthHex(recoveredAddress[:]))
 	}
 
 	// Check if validator already exists.
 	exists, err := m.k.storageLocations.Has(ctx, collections.Join3(mailboxId.Bytes(), validatorAddress, uint64(0)))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	var storageLocationIndex uint64 = 0
@@ -93,26 +92,26 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 
 		iter, err := m.k.storageLocations.Iterate(ctx, rng)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 		}
 
 		storageLocations, err := iter.Values()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 		}
 
 		// It is assumed that a validator announces a reasonable amount of storage locations.
 		// Otherwise, one would need to store the hash in a separate lookup table which adds more complexity.
 		for _, location := range storageLocations {
 			if location == req.StorageLocation {
-				return nil, fmt.Errorf("validator %s already announced storage location %s", req.Validator, req.StorageLocation)
+				return nil, errors.Wrapf(types.ErrInvalidAnnounce, "validator %s already announced storage location %s", req.Validator, req.StorageLocation)
 			}
 		}
 		storageLocationIndex = uint64(len(storageLocations))
 	}
 
 	if err = m.k.storageLocations.Set(ctx, collections.Join3(mailboxId.Bytes(), validatorAddress, storageLocationIndex), req.StorageLocation); err != nil {
-		return nil, err
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	return &types.MsgAnnounceValidatorResponse{}, nil

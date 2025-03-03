@@ -74,18 +74,14 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
 
-		queryServer := keeper.NewQueryServerImpl(&s.App().HyperlaneKeeper.IsmKeeper)
-		ism, err := queryServer.Ism(s.Ctx(), &types.QueryIsmRequest{Id: response.Id.String()})
-		Expect(err).To(BeNil())
-		Expect(ism.Ism.TypeUrl).To(Equal("/hyperlane.core.interchain_security.v1.NoopISM"))
-		var noopIsm types.NoopISM
-		err = proto.Unmarshal(ism.Ism.Value, &noopIsm)
-		Expect(err).To(BeNil())
-		Expect(noopIsm.Owner).To(Equal(creator.Address))
-		Expect(noopIsm.Id.String()).To(Equal(response.Id.String()))
+		var ism types.NoopISM
+		typeUrl := queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.NoopISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
 	})
 
-	It("Create (invalid) MessageIdMultisig ISM with less address", func() {
+	It("Create (invalid) MessageIdMultisig ISM with less addresses", func() {
 		// Arrange
 
 		// Act
@@ -178,16 +174,21 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateMessageIdMultisigIsmResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		// ismId, err := util.DecodeHexAddress(response.Id)
-		// Expect(err).To(BeNil())
 
-		// ism, err := keeper.NewQueryServerImpl(&s.App().IsmKeeper).Ism(s.Ctx(), &types.QueryIsmRequest{Id: ismId.String()})
-		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.MerkleRootMultisigISM{}))
-		// Expect(ism).To(Equal(creator.Address))
-		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG))
+		var ism types.MessageIdMultisigISM
+		typeURL := queryISM(&ism, s, response.Id.String())
+
+		Expect(typeURL).To(Equal("/hyperlane.core.interchain_security.v1.MessageIdMultisigISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Threshold).To(Equal(uint32(2)))
+		Expect(ism.Validators).To(HaveLen(3))
+		Expect(ism.Validators[0]).To(Equal("0xb05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.Validators[1]).To(Equal("0xa05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.Validators[2]).To(Equal("0xd05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.ModuleType()).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MESSAGE_ID_MULTISIG))
 	})
 
-	It("Create (invalid) MerkleRootMultisig ISM with less address", func() {
+	It("Create (invalid) MerkleRootMultisig ISM with less addresses", func() {
 		// Arrange
 
 		// Act
@@ -280,18 +281,23 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateMerkleRootMultisigIsmResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		// ismId, err := util.DecodeHexAddress(response.Id)
-		// Expect(err).To(BeNil())
 
-		// ism, err := keeper.NewQueryServerImpl(&s.App().IsmKeeper).Ism(s.Ctx(), &types.QueryIsmRequest{Id: ismId.String()})
-		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.MerkleRootMultisigISM{}))
-		// Expect(ism).To(Equal(creator.Address))
-		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG))
+		var ism types.MerkleRootMultisigISM
+		typeURL := queryISM(&ism, s, response.Id.String())
+
+		Expect(typeURL).To(Equal("/hyperlane.core.interchain_security.v1.MerkleRootMultisigISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Threshold).To(Equal(uint32(2)))
+		Expect(ism.Validators).To(HaveLen(3))
+		Expect(ism.Validators[0]).To(Equal("0xb05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.Validators[1]).To(Equal("0xa05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.Validators[2]).To(Equal("0xd05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.ModuleType()).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG))
 	})
 
 	It("AnnounceValidator (invalid) with empty validator", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
 		storageLocation := "aws://key.pub"
@@ -311,13 +317,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("validator cannot be empty"))
+		Expect(err.Error()).To(Equal("validator cannot be empty: invalid announce"))
 		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid validator", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		invalidValidatorAddress := "0x0b1caf89d1edb9ee161093test94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -338,13 +344,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("invalid validator address"))
+		Expect(err.Error()).To(Equal("invalid validator address: invalid announce"))
 		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with empty storage location", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -365,13 +371,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("storage location cannot be empty"))
+		Expect(err.Error()).To(Equal("storage location cannot be empty: invalid announce"))
 		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with empty signature", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		storageLocation := "aws://key.pub"
@@ -386,13 +392,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("signature cannot be empty"))
+		Expect(err.Error()).To(Equal("signature cannot be empty: invalid announce"))
 		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid signature", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		storageLocation := "aws://key.pub"
@@ -407,13 +413,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("invalid signature"))
+		Expect(err.Error()).To(Equal("invalid signature: invalid announce"))
 		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid signature recovery id", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -434,13 +440,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("invalid signature recovery id"))
+		Expect(err.Error()).To(Equal("invalid signature recovery id: invalid signature"))
 		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) same storage location for validator (replay protection)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -470,7 +476,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("validator %s already announced storage location %s", validatorAddress, storageLocation)))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("validator %s already announced storage location %s: invalid announce", validatorAddress, storageLocation)))
 		validateAnnouncement(s, mailboxId.String(), validatorAddress, []string{storageLocation})
 	})
 
@@ -498,12 +504,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId.String())))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s: mailbox does not exist", nonExistingMailboxId.String())))
 	})
 
 	It("AnnounceValidator (invalid) for invalid Mailbox ID", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -524,13 +530,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("invalid mailbox id"))
+		Expect(err.Error()).To(Equal("invalid mailbox id: mailbox does not exist"))
 		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) for non-matching signature validator pair", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		correctValidatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		wrongValidatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db392"
@@ -552,13 +558,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("validator %s doesn't match signature. recovered address: %s", wrongValidatorAddress, correctValidatorAddress)))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("validator %s doesn't match signature. recovered address: %s: invalid signature", wrongValidatorAddress, correctValidatorAddress)))
 		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (valid)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -587,7 +593,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("AnnounceValidator (valid) add another storage location", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop", true, 1)
+		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
 
 		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
 		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
@@ -628,7 +634,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	})
 })
 
-func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
+func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string) (util.HexAddress, util.HexAddress, util.HexAddress) {
 	var ismId util.HexAddress
 	switch ism {
 	case "noop":
@@ -637,43 +643,19 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 		ismId = createMultisigIsm(s, creator)
 	}
 
-	igpId := createIgp(s, creator)
-
-	err := setDestinationGasConfig(s, creator, igpId.String(), destinationDomain)
+	noopPostDispatchMock := i.CreateNoopDispatchHookHandler(s.App().HyperlaneKeeper.PostDispatchRouter())
+	hook, err := noopPostDispatchMock.CreateHook(s.Ctx())
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&types2.MsgCreateMailbox{
-		Owner:      creator,
-		DefaultIsm: ismId.String(),
-		// TODO fix
-		//Igp: &types.InterchainGasPaymaster{
-		//	Id:       igpId,
-		//	Required: false,
-		//},
+		Owner:        creator,
+		DefaultIsm:   ismId.String(),
+		DefaultHook:  hook.String(),
+		RequiredHook: hook.String(),
 	})
-	_ = ismId
-	_ = igpId
 	Expect(err).To(BeNil())
 
-	return verifyNewMailbox(s, res, creator, igpId.String(), ismId.String(), igpRequired), igpId, ismId
-}
-
-func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	//res, err := s.RunTx(&types2.MsgCreateIgp{
-	//	Owner: creator,
-	//	Denom: "acoin",
-	//})
-	//Expect(err).To(BeNil())
-	//
-	//var response types2.MsgCreateIgpResponse
-	//err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
-	//Expect(err).To(BeNil())
-	//
-	//igpId, err := util.DecodeHexAddress(response.Id)
-	//Expect(err).To(BeNil())
-	//
-	//return igpId
-	return util.HexAddress{} // TODO fix
+	return verifyNewMailbox(s, res, creator, ismId.String(), hook.String(), hook.String()), hook, ismId
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
@@ -708,25 +690,7 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return response.Id
 }
 
-func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {
-	//_, err := s.RunTx(&types2.MsgSetDestinationGasConfig{
-	//	Owner: creator,
-	//	IgpId: igpId,
-	//	DestinationGasConfig: &types2.DestinationGasConfig{
-	//		RemoteDomain: 1,
-	//		GasOracle: &types2.GasOracle{
-	//			TokenExchangeRate: math.NewInt(1e10),
-	//			GasPrice:          math.NewInt(1),
-	//		},
-	//		GasOverhead: math.NewInt(200000),
-	//	},
-	//})
-	//
-	//return err
-	return nil // TODO fix test
-}
-
-func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ismId string, igpRequired bool) util.HexAddress {
+func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, defaultIsm, defaultHook, requiredHook string) util.HexAddress {
 	var response types2.MsgCreateMailboxResponse
 	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
@@ -736,21 +700,22 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
 	Expect(mailbox.Owner).To(Equal(creator))
-	// Expect(mailbox.Igp.Id).To(Equal(igpId)) // TODO
-	Expect(mailbox.DefaultIsm).To(Equal(ismId))
+	Expect(mailbox.DefaultIsm).To(Equal(defaultIsm))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
-
-	//if igpRequired { // TODO
-	//	Expect(mailbox.Igp.Required).To(BeTrue())
-	//} else {
-	//	Expect(mailbox.Igp.Required).To(BeFalse())
-	//}
+	Expect(mailbox.DefaultHook).To(Equal(defaultHook))
+	Expect(mailbox.RequiredHook).To(Equal(requiredHook))
 
 	mailboxes, err := keeper2.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &types2.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())
 	Expect(mailboxes.Mailboxes).To(HaveLen(1))
 	Expect(mailboxes.Mailboxes[0].Owner).To(Equal(creator))
+
+	Expect(mailboxes.Mailboxes[0].DefaultIsm).To(Equal(defaultIsm))
+	Expect(mailboxes.Mailboxes[0].MessageSent).To(Equal(uint32(0)))
+	Expect(mailboxes.Mailboxes[0].MessageReceived).To(Equal(uint32(0)))
+	Expect(mailboxes.Mailboxes[0].DefaultHook).To(Equal(defaultHook))
+	Expect(mailboxes.Mailboxes[0].RequiredHook).To(Equal(requiredHook))
 
 	return mailboxId
 }

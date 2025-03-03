@@ -32,6 +32,7 @@ func (n NoopPostDispatchHookHandler) CreateHook(ctx context.Context) (util.HexAd
 	if err != nil {
 		return util.HexAddress{}, err
 	}
+	n.hooks[sequence] = struct{}{}
 	return sequence, nil
 }
 
