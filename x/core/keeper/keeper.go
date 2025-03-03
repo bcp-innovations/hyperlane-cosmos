@@ -141,7 +141,7 @@ func (k Keeper) PostDispatchRouter() *util.Router[util.PostDispatchModule] {
 	return k.postDispatchRouter
 }
 
-func (k *Keeper) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata []byte, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
+func (k *Keeper) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
 	handler, err := k.postDispatchRouter.GetModule(ctx, hookId)
 	if err != nil {
 		return sdk.NewCoins(), err
@@ -157,7 +157,7 @@ func (k *Keeper) PostDispatchHookExists(ctx context.Context, hookId util.HexAddr
 	return (*handler).Exists(ctx, hookId)
 }
 
-func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId, overwriteHookId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (sdk.Coins, error) {
+func (k *Keeper) QuoteDispatch(ctx context.Context, mailboxId, overwriteHookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage) (sdk.Coins, error) {
 	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
 		return sdk.NewCoins(), fmt.Errorf("failed to find mailbox with id %s", mailboxId.String())

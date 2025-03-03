@@ -71,7 +71,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: 1,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -112,7 +112,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -153,7 +153,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -193,7 +193,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         "",
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -233,7 +233,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         "1234gnx",
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -274,7 +274,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: 2,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -315,7 +315,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -350,7 +350,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: 1,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
@@ -391,7 +391,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 			DestinationDomain: remoteRouter.ReceiverDomain,
 			Recipient:         receiverAddress,
 			Amount:            amount,
-			IgpId:             igpId.String(),
+			CustomHookId:      igpId.String(),
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})

@@ -91,7 +91,7 @@ func (k Keeper) DispatchMessage(
 	recipient util.HexAddress,
 	body []byte,
 	// Custom metadata for postDispatch Hook
-	metadata []byte,
+	metadata util.StandardHookMetadata,
 	postDispatchHookId util.HexAddress,
 ) (messageId util.HexAddress, error error) {
 	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())

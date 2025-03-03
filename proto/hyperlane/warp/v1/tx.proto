@@ -126,14 +126,15 @@ message MsgRemoteTransfer {
     (amino.dont_omitempty) = true
   ];
 
-  // IGP
-  string igp_id = 6;
+  // Post Dispatch
+  string custom_hook_id = 6;
   string gas_limit = 7 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin max_fee = 8
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  string custom_hook_metadata = 9;
 }
 
 // MsgRemoteTransferResponse ...
