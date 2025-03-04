@@ -1,7 +1,6 @@
 package types
 
 import (
-	"bytes"
 	"testing"
 )
 
@@ -17,7 +16,6 @@ func TestIsZeroPadded(t *testing.T) {
 		{[]byte{}, false},
 	} {
 		t.Run(string(p.bz), func(t *testing.T) {
-			t.Log(bytes.HasPrefix(p.bz, make([]byte, 0, 12)))
 			if isZeroPadded(p.bz) != p.ok {
 				t.Fail()
 			}
