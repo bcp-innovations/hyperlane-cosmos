@@ -31,6 +31,8 @@ func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, 
 		validatorAddresses[strings.ToLower(address)] = true
 	}
 
+	signedValidators := make(map[string]bool)
+
 	for i := 0; i < len(signatures) && validSignatures < threshold; i++ {
 		recoveredPubkey, err := util.RecoverEthSignature(digest[:], signatures[i])
 		if err != nil {
@@ -39,8 +41,11 @@ func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, 
 
 		addressBytes := crypto.PubkeyToAddress(*recoveredPubkey)
 		address := util.EncodeEthHex(addressBytes[:])
-		if validatorAddresses[address] {
+
+		// Ensure that the validator has not signed already
+		if validatorAddresses[address] && !signedValidators[address] {
 			validSignatures++
+			signedValidators[address] = true
 		}
 	}
 
