@@ -16,6 +16,9 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# AI tools
+repomix*
+
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
