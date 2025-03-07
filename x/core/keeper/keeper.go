@@ -20,15 +20,16 @@ type Keeper struct {
 	cdc          codec.BinaryCodec
 	addressCodec address.Codec
 
-	// authority is the address capable of executing a MsgUpdateParams and other authority-gated message.
-	// typically, this should be the x/gov module account.
+	// authority is the address capable of executing a MsgUpdateParams and other authority-gated messages.
+	// Typically this should be the x/gov module account.
 	authority string
 
-	// state management
+	// Mailboxes is a map of mailbox IDs to mailboxes
 	Mailboxes collections.Map[uint64, types.Mailbox]
-	// first key is the mailbox ID, second key is the message ID
+	// Messages is a set of tuples. The first key is the mailbox ID, second key is the message ID.
 	Messages collections.KeySet[collections.Pair[uint64, []byte]]
-	// Key is the Receiver address (util.HexAddress) and value is the util.HexAddress of the ISM
+	// MailboxesSequence is a monotonically increasing number of mailboxes. The
+	// internal ID for a mailbox is the sequence number when it was created.
 	MailboxesSequence collections.Sequence
 
 	Schema collections.Schema

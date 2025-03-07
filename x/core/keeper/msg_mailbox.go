@@ -15,7 +15,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, err
 	}
 
-	// Check default is valid if set
+	// Check default hook is valid if set
 	if req.DefaultHook != nil {
 		if err := ms.k.AssertPostDispatchHookExists(ctx, *req.DefaultHook); err != nil {
 			return nil, err

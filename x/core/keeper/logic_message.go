@@ -141,15 +141,14 @@ func (k Keeper) DispatchMessage(
 		return util.HexAddress{}, err
 	}
 
-	if postDispatchHookId == nil {
-		postDispatchHookId = mailbox.DefaultHook
-	}
-
 	remainingCoins, neg := maxFee.SafeSub(chargedCoinsRequired...)
 	if neg {
 		return util.HexAddress{}, fmt.Errorf("remaining coins cannot be negative")
 	}
 
+	if postDispatchHookId == nil {
+		postDispatchHookId = mailbox.DefaultHook
+	}
 	if postDispatchHookId == nil {
 		return util.HexAddress{}, types.ErrDefaultHookNotSet
 	}
