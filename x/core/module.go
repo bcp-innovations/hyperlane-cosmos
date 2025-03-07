@@ -103,7 +103,7 @@ func (AppModule) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.NewGenesisState())
 }
 
-// ValidateGenesis performs genesis state validation for the circuit module.
+// ValidateGenesis performs genesis state validation for the core module.
 func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig, bz json.RawMessage) error {
 	var data types.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
@@ -113,7 +113,7 @@ func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig,
 	return data.Validate()
 }
 
-// InitGenesis performs genesis initialization for the mailbox module.
+// InitGenesis performs genesis initialization for the core module.
 // It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {
 	var genesisState types.GenesisState

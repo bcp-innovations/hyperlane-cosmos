@@ -11,13 +11,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-// Keeper is used to handle all core implementations of Isms and implements the
+// Keeper is used to handle all core implementations of ISMs and implements the
 // Go HyperlaneInterchainSecurityModule. Every core ISM does not require any outside keeper
 // and can therefore all be handled by the same handler. If an ISM needs to access state
 // in the future, one needs to provide another IsmHandler which holds the keeper and can access state.
 type Keeper struct {
+	// isms is a map from internal ISM ID to the ISM.
 	isms collections.Map[uint64, types.HyperlaneInterchainSecurityModule]
-	// Key: Mailbox ID, Validator address, Storage Location index
+	// storageLocations is a map from a key composed of a (mailbox ID, validator
+	// address, and storage location index) to the storage location. A storage location
+	// is a string that that describes where a validator persists their signatures.
 	storageLocations collections.Map[collections.Triple[uint64, []byte, uint64], string]
 	schema           collections.Schema
 
