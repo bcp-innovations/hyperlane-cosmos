@@ -10,8 +10,6 @@ import (
 	"fmt"
 	"slices"
 	"strings"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 /*
@@ -86,42 +84,11 @@ func DecodeHexAddress(s string) (HexAddress, error) {
 	return HexAddress(b), nil
 }
 
-func DecodeEthHex(s string) ([]byte, error) {
-	s = strings.TrimPrefix(s, "0x")
-
-	b, err := hex.DecodeString(s)
-	if err != nil {
-		return nil, err
-	}
-
-	return b, nil
-}
-
-func EncodeEthHex(b []byte) string {
-	return fmt.Sprintf("0x%s", hex.EncodeToString(b))
-}
-
 func CreateMockHexAddress(identifier string, id int64) HexAddress {
 	idBytes := make([]byte, id_length)
 	binary.BigEndian.PutUint64(idBytes, uint64(id))
 	message := append([]byte(identifier), idBytes...)
 	return sha256.Sum256(message)
-}
-
-func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
-	bech32, err := sdk.AccAddressFromBech32(cosmosAcc)
-	if err != nil {
-		return [HEX_ADDRESS_LENGTH]byte{}, err
-	}
-
-	if len(bech32) > HEX_ADDRESS_LENGTH {
-		return HexAddress{}, errors.New("invalid length")
-	}
-
-	hexAddressBytes := make([]byte, HEX_ADDRESS_LENGTH)
-	copy(hexAddressBytes[HEX_ADDRESS_LENGTH-len(bech32):], bech32)
-
-	return HexAddress(hexAddressBytes), nil
 }
 
 func GenerateHexAddress(moduleSpecifier [module_length]byte, internalType uint32, internalId uint64) HexAddress {
@@ -173,7 +140,12 @@ func (h HexAddress) MarshalJSON() ([]byte, error) {
 }
 
 func (h *HexAddress) UnmarshalJSON(data []byte) error {
-	address, err := DecodeHexAddress(string(data))
+	var decodedString string
+	err := json.Unmarshal(data, &decodedString)
+	if err != nil {
+		return err
+	}
+	address, err := DecodeHexAddress(decodedString)
 	if err != nil {
 		return err
 	}

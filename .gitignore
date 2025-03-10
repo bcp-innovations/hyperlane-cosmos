@@ -30,3 +30,4 @@ debug_container.dot
 /scripts/hypertools/build/
 /build/
 /release/
+/scripts/ethers/node_modules/

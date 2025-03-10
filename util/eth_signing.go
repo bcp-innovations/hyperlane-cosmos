@@ -2,9 +2,11 @@ package util
 
 import (
 	"crypto/ecdsa"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -41,4 +43,19 @@ func RecoverEthSignature(hash []byte, sig []byte) (*ecdsa.PublicKey, error) {
 	}
 
 	return recoveredPubKey, nil
+}
+
+func DecodeEthHex(s string) ([]byte, error) {
+	s = strings.TrimPrefix(s, "0x")
+
+	b, err := hex.DecodeString(s)
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
+func EncodeEthHex(b []byte) string {
+	return fmt.Sprintf("0x%s", hex.EncodeToString(b))
 }
