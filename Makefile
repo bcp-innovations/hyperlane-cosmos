@@ -38,7 +38,7 @@ release-simapp:
 
 test:
 	@echo "--> Running tests"
-	@go test -cover -mod=readonly ./x/...
+	@go test -cover -mod=readonly ./x/... ./util/...
 
 
 .PHONY: build-simapp release-simapp test

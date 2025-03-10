@@ -19,6 +19,8 @@ const (
 	BodyOffset        = 77
 )
 
+// HyperlaneMessage implements the Hyperlane message spec defined here
+// https://docs.hyperlane.xyz/docs/reference/libraries/message
 type HyperlaneMessage struct {
 	Version     uint8
 	Nonce       uint32
@@ -29,6 +31,7 @@ type HyperlaneMessage struct {
 	Body        []byte
 }
 
+// ParseHyperlaneMessage converts a raw byte slice to HyperlaneMessage struct.
 func ParseHyperlaneMessage(raw []byte) (HyperlaneMessage, error) {
 	message := HyperlaneMessage{}
 
@@ -47,6 +50,8 @@ func ParseHyperlaneMessage(raw []byte) (HyperlaneMessage, error) {
 	return message, nil
 }
 
+// Id returns the Keccak256 hash of the raw message bytes which
+// corresponds the id of a message according to the Hyperlane spec.
 func (msg HyperlaneMessage) Id() HexAddress {
 	return HexAddress(crypto.Keccak256(msg.Bytes()))
 }
@@ -72,6 +77,7 @@ func (msg HyperlaneMessage) Bytes() []byte {
 	)
 }
 
+// String returns the hex-encoded hyperlane bytes prefixed with "0x"
 func (msg HyperlaneMessage) String() string {
 	return fmt.Sprintf("0x%s", hex.EncodeToString(msg.Bytes()))
 }

@@ -84,21 +84,6 @@ func DecodeHexAddress(s string) (HexAddress, error) {
 	return HexAddress(b), nil
 }
 
-func DecodeEthHex(s string) ([]byte, error) {
-	s = strings.TrimPrefix(s, "0x")
-
-	b, err := hex.DecodeString(s)
-	if err != nil {
-		return nil, err
-	}
-
-	return b, nil
-}
-
-func EncodeEthHex(b []byte) string {
-	return fmt.Sprintf("0x%s", hex.EncodeToString(b))
-}
-
 func CreateMockHexAddress(identifier string, id int64) HexAddress {
 	idBytes := make([]byte, id_length)
 	binary.BigEndian.PutUint64(idBytes, uint64(id))
@@ -155,7 +140,12 @@ func (h HexAddress) MarshalJSON() ([]byte, error) {
 }
 
 func (h *HexAddress) UnmarshalJSON(data []byte) error {
-	address, err := DecodeHexAddress(string(data))
+	var decodedString string
+	err := json.Unmarshal(data, &decodedString)
+	if err != nil {
+		return err
+	}
+	address, err := DecodeHexAddress(decodedString)
 	if err != nil {
 		return err
 	}

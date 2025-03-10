@@ -9,14 +9,15 @@ import (
 
 /*
 
-TEST CASES - hex_address.go
+TEST CASES - hyperlane_message.go
 
-*
+* Decode (valid) Empty Hyperlane Message
+* Decode (valid) Hyperlane Warp Message
+* Decode (invalid) Hyperlane Warp Message (too short)
 
 */
 
 var _ = Describe("hyperlane_message.go", Ordered, func() {
-
 	BeforeEach(func() {
 	})
 
