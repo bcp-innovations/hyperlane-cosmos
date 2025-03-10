@@ -12,6 +12,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// RemoteTransferSynthetic handles the transfer of synthetic tokens to a remote chain.
+// It burns the specified amount of tokens, then dispatches a message to the destination
+// with the required gas limit, fee, and custom metadata.
 func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, recipient util.HexAddress, amount math.Int, customHookId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
@@ -73,6 +76,8 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 	return dispatchMsg, nil
 }
 
+// RemoteReceiveSynthetic handles the receipt of synthetic tokens from a remote chain.
+// It mints the synthetic token and transfers it to the recipient's account.
 func (k *Keeper) RemoteReceiveSynthetic(ctx context.Context, token types.HypToken, payload types.WarpPayload) error {
 	account := payload.GetCosmosAccount()
 

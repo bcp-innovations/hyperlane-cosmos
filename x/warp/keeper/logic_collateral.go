@@ -12,6 +12,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// RemoteTransferCollateral handles the transfer of collateral token to a remote chain.
+// It withdraws the collateral from the sender, updates the token balance, and dispatches a message to the destination.
 func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient util.HexAddress, amount math.Int, customHookId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
@@ -75,6 +77,8 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 	return dispatchMsg, nil
 }
 
+// RemoteReceiveCollateral handles the receipt of collateral from a remote chain.
+// It updates the token balance, verifies there is enough collateral, and transfers the funds to the recipient's account.
 func (k *Keeper) RemoteReceiveCollateral(ctx context.Context, token types.HypToken, payload types.WarpPayload) error {
 	account := sdk.AccAddress(payload.Recipient()[12:32])
 

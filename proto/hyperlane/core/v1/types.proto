@@ -32,19 +32,19 @@ message Mailbox {
   ];
 
   // default_hook
-  string default_hook = 8 [
+  string default_hook = 6 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = true
   ];
 
   // required_hook
-  string required_hook = 9 [
+  string required_hook = 7 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = true
   ];
 
   // domain
-  uint32 local_domain = 10;
+  uint32 local_domain = 8;
 }
