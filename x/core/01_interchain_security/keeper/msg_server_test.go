@@ -171,7 +171,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("validator addresses are not sorted correctly in ascending order"))
+		Expect(err.Error()).To(Equal("validator addresses are not sorted correctly in ascending order: invalid multisig configuration"))
 	})
 
 	It("Create (valid) MessageIdMultisig ISM", func() {
@@ -296,7 +296,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("validator addresses are not sorted correctly in ascending order"))
+		Expect(err.Error()).To(Equal("validator addresses are not sorted correctly in ascending order: invalid multisig configuration"))
 	})
 
 	It("Create (valid) MerkleRootMultisig ISM", func() {
