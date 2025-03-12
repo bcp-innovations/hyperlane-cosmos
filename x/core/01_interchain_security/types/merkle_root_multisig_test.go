@@ -18,6 +18,7 @@ TEST CASES - msg_server.go
 * Test (invalid) empty message
 * Test (invalid) multi-sig signature for wrong validator
 * Test (invalid) multi-sig signature with wrong threshold
+* Test (invalid) duplicated signature
 
 */
 
