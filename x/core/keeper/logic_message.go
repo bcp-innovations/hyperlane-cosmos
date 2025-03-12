@@ -22,11 +22,6 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 	if err != nil {
 		return fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
 	}
-
-	if message.Destination != mailbox.LocalDomain {
-		return fmt.Errorf("message destination %v does not match local domain %v", message.Destination, mailbox.LocalDomain)
-	}
-
 	mailbox.MessageReceived++
 
 	err = k.Mailboxes.Set(ctx, mailboxId.GetInternalId(), mailbox)
