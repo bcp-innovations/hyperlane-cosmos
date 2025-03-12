@@ -27,11 +27,13 @@ TEST CASES - msg_server.go
 * Create (invalid) MessageIdMultisig ISM with invalid threshold
 * Create (invalid) MessageIdMultisig ISM with duplicate validator addresses
 * Create (invalid) MessageIdMultisig ISM with invalid validator addresses
+* Create (invalid) MessageIdMultisig ISM with unsorted validator addresses
 * Create (valid) MessageIdMultisig ISM
 * Create (invalid) MerkleRootMultisig ISM with less addresses
 * Create (invalid) MerkleRootMultisig ISM with invalid threshold
 * Create (invalid) MerkleRootMultisig ISM with duplicate validator addresses
 * Create (invalid) MerkleRootMultisig ISM with invalid validator addresses
+* Create (invalid) MerkleRootMultisig ISM with unsorted validator addresses
 * Create (valid) MerkleRootMultisig ISM
 * AnnounceValidator (invalid) with empty validator
 * AnnounceValidator (invalid) with invalid validator
@@ -128,12 +130,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("Create (invalid) MessageIdMultisig ISM with invalid validator address", func() {
 		// Arrange
-		validValidatorAddress := "0xb05b6a0aa112b61a7aa16c19cac27d970692995e"
+		validValidatorAddress := "0xa04b6a0aa112b61a7aa16c19cac27d970692995e"
 		invalidAddress := []string{
-			// one character less
-			"0xb05b6a0aa112b61a7aa16c19cac27d970692995",
 			// one character more
 			"0xa05b6a0aa112b61a7aa16c19cac27d970692995ef",
+			// one character less
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995",
 			// invalid character included (`t`)
 			"0xd05b6a0aa112b61a7aa16c19cac27d970692995t",
 		}
@@ -154,6 +156,24 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		}
 	})
 
+	It("Create (invalid) MessageIdMultisig ISM with unsorted validator addresses", func() {
+		// Arrange
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMessageIdMultisigIsm{
+			Creator: creator.Address,
+			Validators: []string{
+				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
+			},
+			Threshold: 2,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("validator addresses are not sorted correctly in ascending order"))
+	})
+
 	It("Create (valid) MessageIdMultisig ISM", func() {
 		// Arrange
 
@@ -161,8 +181,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		res, err := s.RunTx(&types.MsgCreateMessageIdMultisigIsm{
 			Creator: creator.Address,
 			Validators: []string{
-				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
 				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
 				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
 			},
 			Threshold: 2,
@@ -182,8 +202,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Owner).To(Equal(creator.Address))
 		Expect(ism.Threshold).To(Equal(uint32(2)))
 		Expect(ism.Validators).To(HaveLen(3))
-		Expect(ism.Validators[0]).To(Equal("0xb05b6a0aa112b61a7aa16c19cac27d970692995e"))
-		Expect(ism.Validators[1]).To(Equal("0xa05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.Validators[0]).To(Equal("0xa05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.Validators[1]).To(Equal("0xb05b6a0aa112b61a7aa16c19cac27d970692995e"))
 		Expect(ism.Validators[2]).To(Equal("0xd05b6a0aa112b61a7aa16c19cac27d970692995e"))
 		Expect(ism.ModuleType()).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG))
 	})
@@ -235,12 +255,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("Create (invalid) MerkleRootMultisig ISM with invalid validator address", func() {
 		// Arrange
-		validValidatorAddress := "0xb05b6a0aa112b61a7aa16c19cac27d970692995e"
+		validValidatorAddress := "0xa04b6a0aa112b61a7aa16c19cac27d970692995e"
 		invalidAddress := []string{
-			// one character less
-			"0xb05b6a0aa112b61a7aa16c19cac27d970692995",
 			// one character more
 			"0xa05b6a0aa112b61a7aa16c19cac27d970692995ef",
+			// one character less
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995",
 			// invalid character included (`t`)
 			"0xd05b6a0aa112b61a7aa16c19cac27d970692995t",
 		}
@@ -261,6 +281,24 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		}
 	})
 
+	It("Create (invalid) MerkleRootMultisig ISM with unsorted validator addresses", func() {
+		// Arrange
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
+			Creator: creator.Address,
+			Validators: []string{
+				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
+			},
+			Threshold: 2,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("validator addresses are not sorted correctly in ascending order"))
+	})
+
 	It("Create (valid) MerkleRootMultisig ISM", func() {
 		// Arrange
 
@@ -268,8 +306,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		res, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
 			Creator: creator.Address,
 			Validators: []string{
-				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
 				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
 				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
 			},
 			Threshold: 2,
@@ -289,8 +327,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Owner).To(Equal(creator.Address))
 		Expect(ism.Threshold).To(Equal(uint32(2)))
 		Expect(ism.Validators).To(HaveLen(3))
-		Expect(ism.Validators[0]).To(Equal("0xb05b6a0aa112b61a7aa16c19cac27d970692995e"))
-		Expect(ism.Validators[1]).To(Equal("0xa05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.Validators[0]).To(Equal("0xa05b6a0aa112b61a7aa16c19cac27d970692995e"))
+		Expect(ism.Validators[1]).To(Equal("0xb05b6a0aa112b61a7aa16c19cac27d970692995e"))
 		Expect(ism.Validators[2]).To(Equal("0xd05b6a0aa112b61a7aa16c19cac27d970692995e"))
 		Expect(ism.ModuleType()).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG))
 	})
