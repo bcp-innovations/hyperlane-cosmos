@@ -498,6 +498,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, destin
 
 	res, err := s.RunTx(&types.MsgCreateMailbox{
 		Owner:        creator,
+		LocalDomain:  1,
 		DefaultIsm:   ismId,
 		DefaultHook:  &noopId,
 		RequiredHook: &igpId,

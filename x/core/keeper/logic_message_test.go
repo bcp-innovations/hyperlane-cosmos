@@ -106,6 +106,38 @@ var _ = Describe("logic_message.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId)))
 	})
 
+	It("ProcessMessage (invalid) with wrong destination domain", func() {
+		// Arrange
+		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
+
+		err := s.MintBaseCoins(sender.Address, 1_000_000)
+		Expect(err).To(BeNil())
+
+		senderHex := util.CreateMockHexAddress("test", 0)
+		recipientHex := util.CreateMockHexAddress("test", 0)
+
+		hypMsg := util.HyperlaneMessage{
+			Version:     3,
+			Nonce:       0,
+			Origin:      1337,
+			Sender:      senderHex,
+			Destination: 2,
+			Recipient:   recipientHex,
+			Body:        []byte("test123"),
+		}
+
+		// Act
+		_, err = s.RunTx(&types.MsgProcessMessage{
+			MailboxId: mailboxId,
+			Relayer:   sender.Address,
+			Metadata:  "",
+			Message:   hypMsg.String(),
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("message destination %v does not match local domain %v", 2, 1)))
+	})
+
 	It("ProcessMessage (invalid) with invalid hex message", func() {
 		// Arrange
 		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
@@ -170,9 +202,6 @@ var _ = Describe("logic_message.go", Ordered, func() {
 			Metadata:  "",
 			Message:   hypMsg.String(),
 		})
-
-		println(recipientHex.String())
-
 		Expect(err).To(BeNil())
 
 		// Act
