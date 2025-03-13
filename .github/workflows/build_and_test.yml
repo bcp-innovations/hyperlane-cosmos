@@ -2,11 +2,7 @@ name: Build and Test
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   go-build-and-test:
@@ -36,3 +32,12 @@ jobs:
 
       - name: Build simapp
         run: make build-simapp
+
+      - name: Check for uncommitted changes
+        run: |
+          CHANGES=$(git status --porcelain)
+          if [[ -n "$CHANGES" ]]; then
+            echo "Error: Uncommitted changes detected after running build and tests:"
+            echo "$CHANGES"
+            exit 1
+          fi
