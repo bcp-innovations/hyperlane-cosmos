@@ -1,0 +1,38 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  go-build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.11'
+
+      - name: Install dependencies
+        run: |
+          go mod download
+
+      - name: Run linters
+        run: make lint
+
+      - name: Run format check
+        run: make format
+
+      - name: Run tests
+        run: make test
+
+      - name: Build simapp
+        run: make build-simapp
