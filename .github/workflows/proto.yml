@@ -2,6 +2,8 @@ name: Protobuf Checks
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "proto/**"
       - "**/**.proto"
