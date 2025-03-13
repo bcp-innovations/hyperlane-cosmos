@@ -52,9 +52,9 @@ func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hook
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
-		MessageId: message.Id().String(),
-		Index:     count,
-		MailboxId: mailboxId.String(),
+		MessageId:        message.Id().String(),
+		Index:            count,
+		MerkleTreeHookId: merkleTreeHook.Id.String(),
 	})
 
 	merkleTreeHook.Tree = types.ProtoFromTree(tree)
