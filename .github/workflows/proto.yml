@@ -1,0 +1,29 @@
+name: Proto
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  protobuf-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        run: sudo systemctl start docker
+
+      - name: Run protobuf generation
+        run: make proto-gen
+
+      - name: Run protobuf format check
+        run: make proto-format
+
+      - name: Run protobuf lint
+        run: make proto-lint
