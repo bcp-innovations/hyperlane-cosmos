@@ -25,7 +25,7 @@ func (m *MerkleRootMultisigISM) Verify(_ context.Context, rawMetadata []byte, me
 		return false, err
 	}
 
-	if metadata.SignedIndex > metadata.MessageIndex {
+	if metadata.MessageIndex > metadata.SignedIndex {
 		return false, fmt.Errorf("invalid signed index")
 	}
 
