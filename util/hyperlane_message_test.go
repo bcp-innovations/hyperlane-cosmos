@@ -2,7 +2,6 @@ package util_test
 
 import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -33,7 +32,7 @@ var _ = Describe("hyperlane_message.go", Ordered, func() {
 		// Arrange
 
 		// Act
-		message, err := util.ParseHyperlaneMessage(hexutil.MustDecode(validWarpMessage))
+		message, err := util.ParseHyperlaneMessage(MustDecodeHex(validWarpMessage))
 
 		// Assert
 		Expect(err).To(BeNil())
@@ -59,7 +58,7 @@ var _ = Describe("hyperlane_message.go", Ordered, func() {
 			"000000000000000000000000000000000000000000000000000000000000000b" // WarpPayload: amount
 
 		// Act
-		message, err := util.ParseHyperlaneMessage(hexutil.MustDecode(rawMessage))
+		message, err := util.ParseHyperlaneMessage(MustDecodeHex(rawMessage))
 
 		// Assert
 		Expect(err).To(BeNil())
@@ -83,7 +82,7 @@ var _ = Describe("hyperlane_message.go", Ordered, func() {
 		tooShortMessage := validWarpMessage[:len(validWarpMessage)-2]
 
 		// Act
-		message, err := util.ParseHyperlaneMessage(hexutil.MustDecode(tooShortMessage))
+		message, err := util.ParseHyperlaneMessage(MustDecodeHex(tooShortMessage))
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid hyperlane message"))
