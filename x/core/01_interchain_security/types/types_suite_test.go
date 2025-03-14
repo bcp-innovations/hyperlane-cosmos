@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/crypto"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
@@ -32,4 +34,17 @@ func bytesFromHexString(hexString string) []byte {
 	bytes, err := hex.DecodeString(hexString)
 	Expect(err).To(BeNil())
 	return bytes
+}
+
+func signDigest(digest []byte, privateKeyHex string) []byte {
+	privateKey, err := crypto.HexToECDSA(privateKeyHex)
+	Expect(err).To(BeNil())
+
+	signature, err := crypto.Sign(digest, privateKey)
+	Expect(err).To(BeNil())
+	Expect(len(signature)).To(Equal(65))
+
+	signature[64] += 27
+
+	return signature
 }

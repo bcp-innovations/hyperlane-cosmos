@@ -17,6 +17,7 @@ type msgServer struct {
 	k Keeper
 }
 
+// CreateSyntheticToken ...
 func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCreateSyntheticToken) (*types.MsgCreateSyntheticTokenResponse, error) {
 	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
 		return nil, fmt.Errorf("module disabled synthetic tokens")
@@ -88,6 +89,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	return &types.MsgCreateCollateralTokenResponse{Id: tokenId.String()}, nil
 }
 
+// SetToken allows the owner of a token to change its ownership or update its ISM ID.
 func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*types.MsgSetTokenResponse, error) {
 	if msg.NewOwner == "" && msg.IsmId == nil {
 		return nil, fmt.Errorf("new owner or ism id required")
@@ -122,6 +124,7 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 	return &types.MsgSetTokenResponse{}, nil
 }
 
+// EnrollRemoteRouter enrolls a new remote router for a specific token.
 func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnrollRemoteRouter) (*types.MsgEnrollRemoteRouterResponse, error) {
 	tokenId := msg.TokenId
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
@@ -148,6 +151,7 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 	return &types.MsgEnrollRemoteRouterResponse{}, nil
 }
 
+// UnrollRemoteRouter removes an existing remote router from a token.
 func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnrollRemoteRouter) (*types.MsgUnrollRemoteRouterResponse, error) {
 	tokenId := msg.TokenId
 	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
@@ -171,6 +175,7 @@ func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnroll
 	return &types.MsgUnrollRemoteRouterResponse{}, nil
 }
 
+// RemoteTransfer handles the transfer of tokens (collateral or synthetic) to a remote chain.
 func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTransfer) (*types.MsgRemoteTransferResponse, error) {
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
