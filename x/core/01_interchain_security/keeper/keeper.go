@@ -20,7 +20,7 @@ type Keeper struct {
 	isms collections.Map[uint64, types.HyperlaneInterchainSecurityModule]
 	// storageLocations is a map from a key composed of a (mailbox ID, validator
 	// address, and storage location index) to the storage location. A storage location
-	// is a string that that describes where a validator persists their signatures.
+	// is a string that describes where a validator persists their signatures.
 	storageLocations collections.Map[collections.Triple[uint64, []byte, uint64], string]
 	schema           collections.Schema
 
