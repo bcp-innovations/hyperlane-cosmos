@@ -4,7 +4,6 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ethereum/go-ethereum/crypto"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -222,19 +221,6 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(verify).To(BeFalse())
 	})
 })
-
-func signDigest(digest []byte, privateKeyHex string) []byte {
-	privateKey, err := crypto.HexToECDSA(privateKeyHex)
-	Expect(err).To(BeNil())
-
-	signature, err := crypto.Sign(digest, privateKey)
-	Expect(err).To(BeNil())
-	Expect(len(signature)).To(Equal(65))
-
-	signature[64] += 27
-
-	return signature
-}
 
 type keypair struct {
 	address    string
