@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"slices"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -25,11 +26,11 @@ func (m *MerkleRootMultisigISM) Verify(_ context.Context, rawMetadata []byte, me
 		return false, err
 	}
 
-	if metadata.SignedIndex > metadata.MessageIndex {
+	if metadata.MessageIndex > metadata.SignedIndex {
 		return false, fmt.Errorf("invalid signed index")
 	}
 
-	digest := metadata.digest(&message)
+	digest := metadata.Digest(&message)
 
 	return VerifyMultisig(m.Validators, m.Threshold, metadata.Signatures, digest)
 }
@@ -56,6 +57,17 @@ type MerkleRootMultisigMetadata struct {
 	Signatures      [][]byte
 }
 
+var (
+	// originMerkleTreeOffset := 0
+	messageIndexOffset = 32
+	messageIdOffset    = 36
+	merkleProofOffset  = 68
+	merkleProofLength  = 32 * 32
+	signedIndexOffset  = 1092
+	signaturesOffset   = 1096
+	signatureLength    = 65
+)
+
 // NewMerkleRootMultisigMetadata validates and creates a new metadata object
 func NewMerkleRootMultisigMetadata(metadata []byte) (MerkleRootMultisigMetadata, error) {
 	/*
@@ -67,14 +79,6 @@ func NewMerkleRootMultisigMetadata(metadata []byte) (MerkleRootMultisigMetadata,
 	 * [1092:1096] Signed checkpoint index (computed from proof and index)
 	 * [1096:????] Validator signatures (length := threshold * 65)
 	 */
-	// originMerkleTreeOffset := 0
-	messageIndexOffset := 32
-	messageIdOffset := 36
-	merkleProofOffset := 68
-	merkleProofLength := 32 * 32
-	signedIndexOffset := 1092
-	signaturesOffset := 1096
-	signatureLength := 65
 
 	if len(metadata) < signaturesOffset {
 		return MerkleRootMultisigMetadata{}, fmt.Errorf("invalid metadata length: got %v, expected at least %v bytes", len(metadata), signaturesOffset)
@@ -90,7 +94,9 @@ func NewMerkleRootMultisigMetadata(metadata []byte) (MerkleRootMultisigMetadata,
 	var signatures [][]byte
 	for i := 0; i < int(signatureCount); i++ {
 		start := signaturesOffset + (i * signatureLength)
-		signatures = append(signatures, metadata[start:start+signatureLength])
+		sig := make([]byte, signatureLength)
+		copy(sig, metadata[start:start+signatureLength])
+		signatures = append(signatures, sig)
 	}
 
 	var merkleTreeHook [32]byte
@@ -117,7 +123,7 @@ func NewMerkleRootMultisigMetadata(metadata []byte) (MerkleRootMultisigMetadata,
 	}, nil
 }
 
-func (m *MerkleRootMultisigMetadata) digest(message *util.HyperlaneMessage) [32]byte {
+func (m *MerkleRootMultisigMetadata) Digest(message *util.HyperlaneMessage) [32]byte {
 	messageId := message.Id()
 	signedRoot := util.BranchRoot(messageId, m.MerkleProof, m.MessageIndex)
 
@@ -127,6 +133,33 @@ func (m *MerkleRootMultisigMetadata) digest(message *util.HyperlaneMessage) [32]
 		signedRoot,
 		m.SignedIndex,
 		m.SignedMessageId,
+	)
+}
+
+func (m *MerkleRootMultisigMetadata) Bytes() []byte {
+	messageIndex := make([]byte, 4)
+	binary.BigEndian.PutUint32(messageIndex, m.MessageIndex)
+
+	var merkleProofBytes []byte
+	for _, proof := range m.MerkleProof {
+		merkleProofBytes = append(merkleProofBytes, proof[:]...)
+	}
+
+	signedIndex := make([]byte, 4)
+	binary.BigEndian.PutUint32(signedIndex, m.SignedIndex)
+
+	var signaturesBytes []byte
+	for _, sig := range m.Signatures {
+		signaturesBytes = append(signaturesBytes, sig...)
+	}
+
+	return slices.Concat(
+		m.MerkleTreeHook[:],
+		messageIndex,
+		m.SignedMessageId[:],
+		merkleProofBytes,
+		signedIndex,
+		signaturesBytes,
 	)
 }
 
