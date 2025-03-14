@@ -1,0 +1,35 @@
+syntax = "proto3";
+package hyperlane.core.post_dispatch.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
+
+import "hyperlane/core/post_dispatch/v1/types.proto";
+import "gogoproto/gogo.proto";
+
+// GenesisState defines the post dispatch submodule's genesis state.
+message GenesisState {
+  repeated InterchainGasPaymaster igps = 1 [ (gogoproto.nullable) = false ];
+  repeated DestinationGasConfigGenesisWrapper igp_gas_configs = 2
+      [ (gogoproto.nullable) = false ];
+  repeated MerkleTreeHook merkle_tree_hooks = 3
+      [ (gogoproto.nullable) = false ];
+  repeated NoopHook noop_hooks = 4 [ (gogoproto.nullable) = false ];
+}
+
+// DestinationGasConfigGenesisWrapper ...
+message DestinationGasConfigGenesisWrapper {
+  // remote_domain ...
+  uint32 remote_domain = 1;
+
+  // gas_oracle ...
+  GasOracle gas_oracle = 2;
+
+  // gas_overhead ...
+  string gas_overhead = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // igp_id is required for the Genesis handling.
+  uint64 igp_id = 4;
+}

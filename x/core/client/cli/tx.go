@@ -3,17 +3,21 @@ package cli
 import (
 	"fmt"
 
+	pdmodule "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 
+	ism "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
 
 var (
-	gasLimit    string
-	igpId       string
-	igpOptional bool
-	maxFee      string
+	// SetMailbox
+	defaultIsm   string
+	defaultHook  string
+	requiredHook string
+	newOwner     string
 )
 
 func GetTxCmd() *cobra.Command {
@@ -26,10 +30,9 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		NewAnnounceCmd(),
-		NewIgpCmd(),
-		NewIsmCmd(),
 		NewMailboxCmd(),
+		ism.GetTxCmd(),
+		pdmodule.GetTxCmd(),
 	)
 
 	return txCmd

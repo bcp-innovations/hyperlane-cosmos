@@ -14,7 +14,7 @@ ldflags += -X github.com/cosmos/cosmos-sdk/version.Name=hyperlane \
 
 ldflags := $(strip $(ldflags))
 
-BUILD_FLAGS := -ldflags '$(ldflags)' -trimpath -buildvcs=false
+BUILD_FLAGS := -ldflags '$(ldflags)' -trimpath -tags 'ledger' -buildvcs=false
 
 all: proto-all format lint test build-simapp
 
@@ -38,7 +38,8 @@ release-simapp:
 
 test:
 	@echo "--> Running tests"
-	@go test -cover -mod=readonly ./x/...
+	@go test -cover -mod=readonly ./x/... ./util/...
+
 
 .PHONY: build-simapp release-simapp test
 
@@ -46,9 +47,9 @@ test:
 ###  Protobuf  ###
 ##################
 
-protoVer=0.14.0
+protoVer=0.15.3
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
-protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+protoImage=$(DOCKER) run --rm -u 0 -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 
 proto-all: proto-format proto-lint proto-gen
 
@@ -58,9 +59,11 @@ proto-gen:
 	@go mod tidy
 
 proto-format:
-	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
+	@echo "--> Running protobuf formatter..."
+	@$(protoImage) find ./proto -name "*.proto" -exec clang-format -i {} \;
 
 proto-lint:
+	@echo "--> Running protobuf linter..."
 	@$(protoImage) buf lint proto/ --error-format=json
 
 .PHONY: proto-all proto-gen proto-format proto-lint
@@ -73,11 +76,11 @@ gofumpt_cmd=mvdan.cc/gofumpt
 golangci_lint_cmd=github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
 
 format:
-	@echo "--> Running formatter"
+	@echo "--> Running Go formatter..."
 	@go run $(gofumpt_cmd) -l -w .
 
 lint:
-	@echo "--> Running linter..."
+	@echo "--> Running Go linter..."
 	@go run $(golangci_lint_cmd) run --exclude-dirs scripts --timeout=10m
 
 .PHONY: format lint

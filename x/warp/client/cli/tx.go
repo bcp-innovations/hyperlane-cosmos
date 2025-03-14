@@ -6,10 +6,12 @@ import (
 )
 
 var (
-	gasLimit string
-	igpId    string
-	ismId    string
-	maxFee   string
+	gasLimit           string
+	customHookId       string
+	customHookMetadata string
+	ismId              string
+	maxFee             string
+	newOwner           string
 )
 
 func GetTxCmd() *cobra.Command {
@@ -24,7 +26,10 @@ func GetTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		CmdCreateCollateralToken(),
 		CmdCreateSyntheticToken(),
+		CmdEnrollRemoteRouter(),
 		CmdRemoteTransfer(),
+		CmdSetToken(),
+		CmdUnrollRemoteRouter(),
 	)
 
 	return txCmd

@@ -4,6 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
+
+	"cosmossdk.io/collections"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
@@ -14,122 +17,187 @@ type msgServer struct {
 	k Keeper
 }
 
+// CreateSyntheticToken ...
 func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCreateSyntheticToken) (*types.MsgCreateSyntheticTokenResponse, error) {
-	next, err := ms.k.HypTokensCount.Next(ctx)
-	if err != nil {
-		return nil, err
+	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
+		return nil, fmt.Errorf("module disabled synthetic tokens")
 	}
 
-	mailboxId, err := util.DecodeHexAddress(msg.OriginMailbox)
-	if err != nil {
-		return nil, err
-	}
-
-	has, err := ms.k.mailboxKeeper.Mailboxes.Has(ctx, mailboxId.Bytes())
+	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, msg.OriginMailbox)
 	if err != nil {
 		return nil, err
 	}
 	if !has {
-		return nil, errors.New("mailbox not found")
+		return nil, fmt.Errorf("failed to find mailbox with id: %s", msg.OriginMailbox.String())
 	}
 
-	receiverContract, err := util.DecodeHexAddress(msg.ReceiverContract)
-	if err != nil {
-		return nil, err
-	}
-
-	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
-
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
+	tokenId, err := ms.k.coreKeeper.AppRouter().GetNextSequence(ctx, uint8(types.HYP_TOKEN_TYPE_SYNTHETIC))
 	if err != nil {
 		return nil, err
 	}
 
 	newToken := types.HypToken{
-		Id:               tokenId.Bytes(),
-		Creator:          msg.Creator,
-		TokenType:        types.HYP_TOKEN_TYPE_SYNTHETIC,
-		OriginMailbox:    mailboxId.Bytes(),
-		OriginDenom:      fmt.Sprintf("hyperlane/%s", tokenId.String()),
-		ReceiverDomain:   msg.ReceiverDomain,
-		ReceiverContract: receiverContract.Bytes(),
+		Id:            tokenId,
+		Owner:         msg.Owner,
+		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
+		OriginMailbox: msg.OriginMailbox,
+		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
 	}
 
-	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), newToken); err != nil {
+	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
 		return nil, err
 	}
-	return &types.MsgCreateSyntheticTokenResponse{}, nil
+
+	return &types.MsgCreateSyntheticTokenResponse{Id: tokenId.String()}, nil
 }
 
+// CreateCollateralToken ...
 func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (*types.MsgCreateCollateralTokenResponse, error) {
-	next, err := ms.k.HypTokensCount.Next(ctx)
-	if err != nil {
-		return nil, err
+	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
+		return nil, fmt.Errorf("module disabled collateral tokens")
 	}
 
-	mailboxId, err := util.DecodeHexAddress(msg.OriginMailbox)
+	err := sdk.ValidateDenom(msg.OriginDenom)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("origin denom %s is invalid", msg.OriginDenom)
 	}
 
-	has, err := ms.k.mailboxKeeper.Mailboxes.Has(ctx, mailboxId.Bytes())
+	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, msg.OriginMailbox)
 	if err != nil {
 		return nil, err
 	}
 	if !has {
-		return nil, errors.New("mailbox not found")
+		return nil, fmt.Errorf("failed to find mailbox with id: %s", msg.OriginMailbox.String())
 	}
 
-	receiverContract, err := util.DecodeHexAddress(msg.ReceiverContract)
-	if err != nil {
-		return nil, err
-	}
-
-	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
-
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
+	tokenId, err := ms.k.coreKeeper.AppRouter().GetNextSequence(ctx, uint8(types.HYP_TOKEN_TYPE_COLLATERAL))
 	if err != nil {
 		return nil, err
 	}
 
 	newToken := types.HypToken{
-		Id:               tokenId.Bytes(),
-		Creator:          msg.Creator,
-		TokenType:        types.HYP_TOKEN_TYPE_COLLATERAL,
-		OriginMailbox:    mailboxId.Bytes(),
-		OriginDenom:      msg.OriginDenom,
-		ReceiverDomain:   msg.ReceiverDomain,
-		ReceiverContract: receiverContract.Bytes(),
+		Id:            tokenId,
+		Owner:         msg.Owner,
+		TokenType:     types.HYP_TOKEN_TYPE_COLLATERAL,
+		OriginMailbox: msg.OriginMailbox,
+		OriginDenom:   msg.OriginDenom,
 	}
 
-	if err = ms.k.HypTokens.Set(ctx, tokenId.Bytes(), newToken); err != nil {
+	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
 		return nil, err
 	}
-	return &types.MsgCreateCollateralTokenResponse{}, nil
+	return &types.MsgCreateCollateralTokenResponse{Id: tokenId.String()}, nil
 }
 
+// SetToken allows the owner of a token to change its ownership or update its ISM ID.
+func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*types.MsgSetTokenResponse, error) {
+	if msg.NewOwner == "" && msg.IsmId == nil {
+		return nil, fmt.Errorf("new owner or ism id required")
+	}
+
+	tokenId := msg.TokenId
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find token with id: %s", tokenId.String())
+	}
+
+	if token.Owner != msg.Owner {
+		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
+	}
+
+	if msg.NewOwner != "" {
+		token.Owner = msg.NewOwner
+	}
+
+	if msg.IsmId != nil {
+		if err := ms.k.coreKeeper.AssertIsmExists(ctx, *msg.IsmId); err != nil {
+			return nil, err
+		}
+		token.IsmId = msg.IsmId
+	}
+
+	err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), token)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgSetTokenResponse{}, nil
+}
+
+// EnrollRemoteRouter enrolls a new remote router for a specific token.
+func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnrollRemoteRouter) (*types.MsgEnrollRemoteRouterResponse, error) {
+	tokenId := msg.TokenId
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	if err != nil {
+		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
+	}
+
+	if token.Owner != msg.Owner {
+		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
+	}
+
+	if msg.RemoteRouter == nil {
+		return nil, fmt.Errorf("invalid remote router")
+	}
+
+	if msg.RemoteRouter.ReceiverContract == "" {
+		return nil, fmt.Errorf("invalid receiver contract")
+	}
+
+	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgEnrollRemoteRouterResponse{}, nil
+}
+
+// UnrollRemoteRouter removes an existing remote router from a token.
+func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnrollRemoteRouter) (*types.MsgUnrollRemoteRouterResponse, error) {
+	tokenId := msg.TokenId
+	token, err := ms.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	if err != nil {
+		return nil, fmt.Errorf("token with id %s not found", tokenId.String())
+	}
+
+	if token.Owner != msg.Owner {
+		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
+	}
+
+	exists, err := ms.k.EnrolledRouters.Has(ctx, collections.Join(tokenId.GetInternalId(), msg.ReceiverDomain))
+	if err != nil || !exists {
+		return nil, fmt.Errorf("failed to find remote router for domain %v", msg.ReceiverDomain)
+	}
+
+	if err = ms.k.EnrolledRouters.Remove(ctx, collections.Join(tokenId.GetInternalId(), msg.ReceiverDomain)); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUnrollRemoteRouterResponse{}, nil
+}
+
+// RemoteTransfer handles the transfer of tokens (collateral or synthetic) to a remote chain.
 func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTransfer) (*types.MsgRemoteTransferResponse, error) {
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
-	tokenId, err := util.DecodeHexAddress(msg.TokenId)
+	token, err := ms.k.HypTokens.Get(ctx, msg.TokenId.GetInternalId())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find token with id: %s", msg.TokenId.String())
 	}
 
-	token, err := ms.k.HypTokens.Get(ctx, tokenId.Bytes())
+	customHookMetadata, err := util.DecodeEthHex(msg.CustomHookMetadata)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid custom hook metadata: %s", err)
 	}
 
 	var messageResultId string
 	if token.TokenType == types.HYP_TOKEN_TYPE_COLLATERAL {
-		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
+		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata)
 		if err != nil {
 			return nil, err
 		}
 		messageResultId = result.String()
 	} else if token.TokenType == types.HYP_TOKEN_TYPE_SYNTHETIC {
-		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
+		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata)
 		if err != nil {
 			return nil, err
 		}

@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"log"
 
+	types2 "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/spf13/cobra"
 )
@@ -52,7 +53,7 @@ func announce(privKey, storageLocation, mailbox string, localDomain uint32) (str
 		return "", err
 	}
 
-	announcementDigest := types.GetAnnouncementDigest(storageLocation, localDomain, mailboxId.Bytes())
+	announcementDigest := types2.GetAnnouncementDigest(storageLocation, localDomain, mailboxId.Bytes())
 	ethDigest := util.GetEthSigningHash(announcementDigest[:])
 
 	privateKey, err := crypto.HexToECDSA(privKey)

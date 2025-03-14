@@ -1,0 +1,120 @@
+syntax = "proto3";
+package hyperlane.core.interchain_security.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types";
+
+import "cosmos/msg/v1/msg.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+// Msg defines the module Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // CreateMessageIdMultisigIsm ...
+  rpc CreateMessageIdMultisigIsm(MsgCreateMessageIdMultisigIsm)
+      returns (MsgCreateMessageIdMultisigIsmResponse);
+
+  // CreateMerkleRootMultisigIsm ...
+  rpc CreateMerkleRootMultisigIsm(MsgCreateMerkleRootMultisigIsm)
+      returns (MsgCreateMerkleRootMultisigIsmResponse);
+
+  // CreateNoopIsm ...
+  rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
+
+  // AnnounceValidator ...
+  rpc AnnounceValidator(MsgAnnounceValidator)
+      returns (MsgAnnounceValidatorResponse);
+}
+
+// MsgCreateMessageIdMultisigIsm ...
+message MsgCreateMessageIdMultisigIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/v1/MsgCreateMessageIdMultisigIsm";
+
+  // creator is the message sender.
+  string creator = 1;
+
+  // validators
+  // these are 20 byte long ethereum style addresses
+  repeated string validators = 2;
+
+  // threshold ...
+  uint32 threshold = 3;
+}
+
+// MsgCreateMessageIdMultisigIsmResponse ...
+message MsgCreateMessageIdMultisigIsmResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgCreateMultisigIsm ...
+message MsgCreateMerkleRootMultisigIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/v1/MsgCreateMerkleRootMultisigIsm";
+
+  // creator is the message sender.
+  string creator = 1;
+
+  // validators
+  // these are 20 byte long ethereum style addresses
+  repeated string validators = 2;
+
+  // threshold ...
+  uint32 threshold = 3;
+}
+
+// MsgCreateMultisigIsmResponse ...
+message MsgCreateMerkleRootMultisigIsmResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgCreateNoopIsm ...
+message MsgCreateNoopIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/v1/MsgCreateNoopIsm";
+
+  // creator is the message sender.
+  string creator = 1;
+}
+
+// MsgCreateNoopIsmResponse ...
+message MsgCreateNoopIsmResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgAnnounceValidator ...
+message MsgAnnounceValidator {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/v1/MsgAnnounceValidator";
+
+  // validator ...
+  string validator = 1;
+
+  // storage_location ...
+  string storage_location = 2;
+
+  // signature ...
+  string signature = 3;
+
+  // mailbox_id ...
+  string mailbox_id = 4;
+
+  // creator ...
+  string creator = 5;
+}
+
+// MsgAnnounceValidatorResponse ...
+message MsgAnnounceValidatorResponse {}

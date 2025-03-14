@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -10,36 +9,34 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
 func CmdCreateSyntheticToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-synthetic-token [origin-mailbox] [receiver-domain] [receiver-contract]",
+		Use:   "create-synthetic-token [origin-mailbox]",
 		Short: "Create a Hyperlane Synthetic Token",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			domain, err := strconv.ParseUint(args[1], 10, 32)
+			mailboxId, err := util.DecodeHexAddress(args[0])
 			if err != nil {
 				return err
 			}
 
 			msg := types.MsgCreateSyntheticToken{
-				Creator:          clientCtx.GetFromAddress().String(),
-				OriginMailbox:    args[0],
-				ReceiverDomain:   uint32(domain),
-				ReceiverContract: args[2],
-				IsmId:            ismId,
+				Owner:         clientCtx.GetFromAddress().String(),
+				OriginMailbox: mailboxId,
 			}
 
-			_, err = sdk.AccAddressFromBech32(msg.Creator)
+			_, err = sdk.AccAddressFromBech32(msg.Owner)
 			if err != nil {
-				panic(fmt.Errorf("invalid creator address (%s)", msg.Creator))
+				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

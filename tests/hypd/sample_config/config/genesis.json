@@ -82,11 +82,6 @@
       "send_enabled": []
     },
     "consensus": null,
-    "delegation": {
-      "params": {
-        "unbonding_delegation_time": 10
-      }
-    },
     "distribution": {
       "delegator_starting_infos": [],
       "delegator_withdraw_infos": [],
@@ -172,42 +167,23 @@
         }
       ]
     },
-    "gov": {
-      "params": {
-        "expedited_min_deposit": [
-          {
-            "amount": "100_000",
-            "denom": "uhyp"
-          }
-        ],
-        "expedited_voting_period": "60s",
-        "max_deposit_period": "300s",
-        "min_deposit": [
-          {
-            "amount": "50_000",
-            "denom": "uhyp"
-          }
-        ],
-        "voting_period": "120s"
-      }
-    },
-    "mint": {
-      "params": {
-        "mint_denom": "uhyp"
-      }
-    },
     "hyperlane": {
-      "params": {
-        "domain": 0
-      }
+      "ism_genesis": {
+        "isms": []
+      },
+      "post_dispatch_genesis": {
+        "igps": [],
+        "igp_gas_configs": [],
+        "merkle_tree_hooks": [],
+        "noop_hooks": []
+      },
+      "mailboxes": [],
+      "messages": [],
+      "ism_sequence": "0",
+      "post_dispatch_sequence": "0",
+      "app_sequence": "0"
     },
     "runtime": null,
-    "slashing": {
-      "params": {
-        "min_signed_per_window": "0.5",
-        "signed_blocks_window": 10
-      }
-    },
     "staking": {
       "delegations": [],
       "exported": false,
@@ -227,8 +203,7 @@
     },
     "warp": {
       "params": {},
-      "tokens": [],
-      "token_count": "0"
+      "tokens": []
     }
   },
   "consensus": {
@@ -243,9 +218,7 @@
         "max_bytes": "1048576"
       },
       "validator": {
-        "pub_key_types": [
-          "ed25519"
-        ]
+        "pub_key_types": ["ed25519"]
       },
       "version": {
         "app": "0"

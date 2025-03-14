@@ -3,18 +3,15 @@ package types
 import (
 	"context"
 
-	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// Event Hooks
-// These can be utilized to communicate between a warp keeper and another
-// keeper which must take particular actions
+//
+// External Keepers
 
-type MailboxHooks interface {
-	Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message HyperlaneMessage) error
+type BankKeeper interface {
+	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	BurnCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
+	MintCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
 }
-
-type MailboxHooksWrapper struct{ MailboxHooks }
-
-// IsOnePerModuleType implements the depinject.OnePerModuleType interface.
-func (MailboxHooksWrapper) IsOnePerModuleType() {}

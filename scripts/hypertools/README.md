@@ -5,7 +5,7 @@ A collection of debug tools for interacting with the Hyperlane protocol.
 ## Building
 
 ```shell
-make build 
+make build
 ```
 
 ## Usage
@@ -21,6 +21,7 @@ make build
 ```shell
 ./build/hypertools decode-message --message 0x0100000003000000011900d177c9802c4c78a03c50d08a25344e053bf782913fe4fe45bb4021289e24000000001900d177c9802c4c78a03c50d08a25344e053bf782913fe4fe45bb4021289e240000000000000000000000009022fae177099ff75c2010db21e05da50bcb109100000000000000000000000000000000000000000000000000000000000003e7
 ```
+
 ```text
 ### Message ###
 Version:        1
@@ -43,7 +44,7 @@ will cover the case when tokens are sent from an EVM chain to a Cosmos chain.
 
 **sender-contract**: is the contract id from the EVM chain. It must match the receiver-contract field in `http://localhost:1317/hyperlane/warp/v1/tokens`
 
-**recipient-contract**: is the TokenId queried from `http://localhost:1317/hyperlane/warp/v1/tokens` 
+**recipient-contract**: is the TokenId queried from `http://localhost:1317/hyperlane/warp/v1/tokens`
 
 **recipient-user**: is the cosmos address of the receiver
 
@@ -54,6 +55,7 @@ will cover the case when tokens are sent from an EVM chain to a Cosmos chain.
 ```shell
 ./build/hypertools warp-transfer --sender-contract 0x1900d177c9802c4c78a03c50d08a25344e053bf782913fe4fe45bb4021289e24 --recipient-contract 0x1900d177c9802c4c78a03c50d08a25344e053bf782913fe4fe45bb4021289e24 --recipient-user kyve1jq304cthpx0lwhpqzrdjrcza559ukyy3zsl2vd --amount 999
 ```
+
 ```text
 0x0100000003000000011900d177c9802c4c78a03c50d08a25344e053bf782913fe4fe45bb4021289e24000000001900d177c9802c4c78a03c50d08a25344e053bf782913fe4fe45bb4021289e240000000000000000000000009022fae177099ff75c2010db21e05da50bcb109100000000000000000000000000000000000000000000000000000000000003e7
 ```
@@ -68,13 +70,14 @@ specify a custom key-set. Otherwise, the default keys will be used.
 ```
 
 **Example**
+
 ```shell
 ./build/hypertools sign --message 0x0100000003000000011900d177c9802c4c78a03c50d08a25344e053bf782913fe4fe45bb4021289e24000000001900d177c9802c4c78a03c50d08a25344e053bf782913fe4fe45bb4021289e240000000000000000000000009022fae177099ff75c2010db21e05da50bcb109100000000000000000000000000000000000000000000000000000000000003e7
 ```
+
 ```text
 0x55c70da3bdbe81055a29d85ab37cb6ff9412fe724f156c3beb5b13bec61b9db0352a5b5323ee2cc651e0da0d87cec1773a43f809743e851ea8f990965aada50b0052510886cd24b7f3938e9ecd83322dd6b40a4dbf1474d583f8d46aafd876a5c77605740dc5ae0f1ddacbfcf43b47e43c05b5a5505c33112639a8da0e9038f40701a13bc383dc7a7d94b9d7998c42c2fcdd5da4a4ef1063176b9d371775278502bd322abfec0ba5d9454c549912837a877d4b785fdc2de83eddd80ac33b9643681b00
 ```
-
 
 ### Announce
 
@@ -85,6 +88,7 @@ Signs a validator announcement digest.
 ```
 
 **Example**
+
 ```shell
 ./build/hypertools announce --private-key fad9c8855b740a0b7ed4c221dbad0f33a83a49cad6b3fe8d5817ac83d38b6a18 --storage-location aws://key.pub2 --mailbox-id 0xe81bf6f262305f49f318d68f33b04866f092ffdb2ecf9c98469b4a8b829f65e4 --local-domain 100
 ```

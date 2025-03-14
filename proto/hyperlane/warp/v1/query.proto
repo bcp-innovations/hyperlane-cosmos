@@ -3,18 +3,16 @@ package hyperlane.warp.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
 
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "hyperlane/warp/v1/types.proto";
 import "google/api/annotations.proto";
-import "amino/amino.proto";
-import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
 
 // Msg defines the module Msg service.
 service Query {
-  // Params returns the module parameters.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/hyperlane/warp/v1/params";
-  }
 
   // Tokens ...
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
@@ -25,40 +23,97 @@ service Query {
   rpc Token(QueryTokenRequest) returns (QueryTokenResponse) {
     option (google.api.http).get = "/hyperlane/v1/tokens/{id}";
   }
+
+  // BridgedSupply ...
+  rpc BridgedSupply(QueryBridgedSupplyRequest)
+      returns (QueryBridgedSupplyResponse) {
+    option (google.api.http).get = "/hyperlane/v1/tokens/{id}/bridged_supply";
+  }
+
+  // RemoteRouters ...
+  rpc RemoteRouters(QueryRemoteRoutersRequest)
+      returns (QueryRemoteRoutersResponse) {
+    option (google.api.http).get = "/hyperlane/v1/tokens/{id}/remote_routers";
+  }
+
+  // QuoteRemoteTransfer ...
+  rpc QuoteRemoteTransfer(QueryQuoteRemoteTransferRequest)
+      returns (QueryQuoteRemoteTransferResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/tokens/{id}/quote_remote_transfer/{destination_domain}";
+  }
 }
 
 // QueryTokensRequest ...
-message QueryTokensRequest {}
+message QueryTokensRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
-// QueryParamsResponse is the response type for the Query/Params RPC method.
+// QueryTokensResponse ...
 message QueryTokensResponse {
   // params defines the parameters of the module.
-  repeated QueryTokenResponse tokens = 1
+  repeated WrappedHypToken tokens = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryTokenRequest ...
 message QueryTokenRequest { string id = 1; }
 
 // QueryTokenResponse ...
-message QueryTokenResponse {
+message QueryTokenResponse { WrappedHypToken token = 1; }
+
+/// HypToken
+message WrappedHypToken {
   string id = 1;
-  string creator = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   HypTokenType token_type = 3;
 
   string origin_mailbox = 4;
   string origin_denom = 5;
 
-  uint32 receiver_domain = 6;
-  string receiver_contract = 7;
+  string ism_id = 7 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
 }
 
-// QueryParamsRequest is the request type for the Query/Params RPC method.
-message QueryParamsRequest {}
+// QueryBridgedSupplyRequest ...
+message QueryBridgedSupplyRequest { string id = 1; }
 
-// QueryParamsResponse is the response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params defines the parameters of the module.
-  Params params = 1
+// QueryBridgedSupplyResponse ...
+message QueryBridgedSupplyResponse {
+  cosmos.base.v1beta1.Coin bridged_supply = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryRemoteRoutersRequest ...
+message QueryRemoteRoutersRequest {
+  string id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryRemoteRoutersResponse ...
+message QueryRemoteRoutersResponse {
+  // Remote Routers ...
+  repeated RemoteRouter remote_routers = 1;
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryQuoteRemoteTransferRequest ...
+message QueryQuoteRemoteTransferRequest {
+  string id = 1;
+  string destination_domain = 2;
+}
+
+// QueryQuoteRemoteTransferResponse ...
+message QueryQuoteRemoteTransferResponse {
+  repeated cosmos.base.v1beta1.Coin gas_payment = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
 }

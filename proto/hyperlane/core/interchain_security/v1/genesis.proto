@@ -1,0 +1,28 @@
+syntax = "proto3";
+package hyperlane.core.interchain_security.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types";
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+
+// GenesisState defines the 01_interchain_security submodule's genesis state.
+message GenesisState {
+  // accounts are the accounts present at genesis.
+  repeated google.protobuf.Any isms = 1;
+
+  repeated ValidatorStorageLocationGenesisWrapper validator_storage_locations =
+      2 [ (gogoproto.nullable) = false ];
+}
+
+// ValidatorStorageLocationGenesisWrapper stores the information for
+// validator, mailbox and storage-location which validators have announced
+message ValidatorStorageLocationGenesisWrapper {
+  uint64 mailbox_id = 1;
+
+  string validator_address = 2;
+
+  uint64 index = 3;
+
+  string storage_location = 4;
+}

@@ -7,6 +7,8 @@ import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
 import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "hyperlane/warp/v1/types.proto";
 
 // Msg defines the module Msg service.
 service Msg {
@@ -20,74 +22,157 @@ service Msg {
   rpc CreateSyntheticToken(MsgCreateSyntheticToken)
       returns (MsgCreateSyntheticTokenResponse);
 
+  // SetToken ...
+  rpc SetToken(MsgSetToken) returns (MsgSetTokenResponse);
+
+  // EnrollRemoteRouter ...
+  rpc EnrollRemoteRouter(MsgEnrollRemoteRouter)
+      returns (MsgEnrollRemoteRouterResponse);
+
+  // UnrollRemoteRouter ...
+  rpc UnrollRemoteRouter(MsgUnrollRemoteRouter)
+      returns (MsgUnrollRemoteRouterResponse);
+
   // RemoteTransfer ...
   rpc RemoteTransfer(MsgRemoteTransfer) returns (MsgRemoteTransferResponse);
 }
 
 // MsgCreateCollateralToken ...
 message MsgCreateCollateralToken {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/warp/MsgCreateCollateralToken";
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/v1/MsgCreateCollateralToken";
 
-  // sender is the message sender.
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  string origin_mailbox = 2;
+  string origin_mailbox = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
   string origin_denom = 3;
-
-  uint32 receiver_domain = 4;
-  string receiver_contract = 5;
-
-  string ism_id = 6;
 }
 
 // MsgCreateCollateralTokenResponse ...
-message MsgCreateCollateralTokenResponse {}
+message MsgCreateCollateralTokenResponse { string id = 1; }
 
 // MsgCreateSyntheticToken ...
 message MsgCreateSyntheticToken {
-  option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) = "hyperlane/warp/MsgCreateSyntheticToken";
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/v1/MsgCreateSyntheticToken";
 
-  // sender is the message sender.
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  string origin_mailbox = 2;
-
-  uint32 receiver_domain = 3;
-  string receiver_contract = 4;
-
-  string ism_id = 5;
+  string origin_mailbox = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // MsgCreateSyntheticTokenResponse ...
-message MsgCreateSyntheticTokenResponse {}
+message MsgCreateSyntheticTokenResponse { string id = 1; }
+
+// MsgSetToken ...
+message MsgSetToken {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/v1/MsgSetToken";
+
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string token_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string new_owner = 3;
+  string ism_id = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
+}
+
+// MsgSetTokenResponse ...
+message MsgSetTokenResponse {}
+
+// MsgEnrollRemoteRouter ...
+message MsgEnrollRemoteRouter {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/v1/MsgEnrollRemoteRouter";
+
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string token_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  RemoteRouter remote_router = 3;
+}
+
+// MsgEnrollRemoteRouterResponse ...
+message MsgEnrollRemoteRouterResponse {}
+
+// MsgUnrollRemoteRouter ...
+message MsgUnrollRemoteRouter {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/v1/MsgUnrollRemoteRouter";
+
+  // owner is the message sender.
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string token_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  uint32 receiver_domain = 3;
+}
+
+// MsgUnrollRemoteRouterResponse ...
+message MsgUnrollRemoteRouterResponse {}
 
 // MsgRemoteTransfer ...
 message MsgRemoteTransfer {
   option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "hyperlane/warp/MsgRemoteTransfer";
+  option (amino.name) = "hyperlane/warp/v1/MsgRemoteTransfer";
 
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string token_id = 2;
-  string recipient = 3;
-  string amount = 4 [
+
+  string token_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  uint32 destination_domain = 3;
+  string recipient = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string amount = 5 [
     (cosmos_proto.scalar) = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
 
-  // IGP
-  string igp_id = 5;
-  string gas_limit = 6 [
+  // Post Dispatch
+  string custom_hook_id = 6 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
+  string gas_limit = 7 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  string max_fee = 7 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
+  cosmos.base.v1beta1.Coin max_fee = 8
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  string custom_hook_metadata = 9;
 }
 
 // MsgRemoteTransferResponse ...

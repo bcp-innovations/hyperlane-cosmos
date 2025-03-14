@@ -1,0 +1,75 @@
+syntax = "proto3";
+package hyperlane.core.interchain_security.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types";
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+// MessageIdMultisigISM ...
+message MessageIdMultisigISM {
+  option (gogoproto.goproto_getters) = false;
+  option (cosmos_proto.implements_interface) =
+      "hyperlane.core.v1.01_interchain_security."
+      "HyperlaneInterchainSecurityModule";
+
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // validators
+  // these are 20 byte long ethereum style addresses
+  repeated string validators = 3;
+
+  // threshold ...
+  uint32 threshold = 4;
+}
+
+// MerkleRootMultisigISM ...
+message MerkleRootMultisigISM {
+  option (gogoproto.goproto_getters) = false;
+  option (cosmos_proto.implements_interface) =
+      "hyperlane.core.v1.01_interchain_security."
+      "HyperlaneInterchainSecurityModule";
+
+  // XXX ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // validators
+  // these are 20 byte long ethereum style addresses
+  repeated string validators = 3;
+
+  // threshold ...
+  uint32 threshold = 4;
+}
+
+// NoopISM ...
+message NoopISM {
+  option (gogoproto.goproto_getters) = false;
+  option (cosmos_proto.implements_interface) =
+      "hyperlane.core.v1.01_interchain_security."
+      "HyperlaneInterchainSecurityModule";
+
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}

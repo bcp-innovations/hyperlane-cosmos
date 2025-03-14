@@ -2,9 +2,12 @@ package keeper
 
 import (
 	"context"
-	"errors"
+	"fmt"
+	"strconv"
 
 	"cosmossdk.io/collections"
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"google.golang.org/grpc/codes"
@@ -24,37 +27,111 @@ type queryServer struct {
 	k Keeper
 }
 
-func (qs queryServer) Params(ctx context.Context, request *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
-	params, err := qs.k.Params.Get(ctx)
+func (qs queryServer) RemoteRouters(ctx context.Context, request *types.QueryRemoteRoutersRequest) (*types.QueryRemoteRoutersResponse, error) {
+	tokenId, err := util.DecodeHexAddress(request.Id)
 	if err != nil {
-		if errors.Is(err, collections.ErrNotFound) {
-			return &types.QueryParamsResponse{Params: types.Params{}}, nil
-		}
-
-		return nil, status.Error(codes.Internal, err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	return &types.QueryParamsResponse{Params: params}, nil
+	routers, page, err := util.GetPaginatedPrefixFromMap(ctx, qs.k.EnrolledRouters, request.Pagination, tokenId.GetInternalId())
+	if err != nil {
+		return &types.QueryRemoteRoutersResponse{}, err
+	}
+
+	remoteRouters := make([]*types.RemoteRouter, len(routers))
+	for i := range routers {
+		remoteRouters[i] = &routers[i]
+	}
+
+	return &types.QueryRemoteRoutersResponse{
+		RemoteRouters: remoteRouters,
+		Pagination:    page,
+	}, nil
 }
 
-func (qs queryServer) Tokens(ctx context.Context, request *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {
-	it, err := qs.k.HypTokens.Iterate(ctx, nil)
+func (qs queryServer) BridgedSupply(ctx context.Context, request *types.QueryBridgedSupplyRequest) (*types.QueryBridgedSupplyResponse, error) {
+	tokenId, err := util.DecodeHexAddress(request.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	token, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, err
 	}
 
-	tokens, err := it.Values()
+	var amount math.Int
+	switch token.TokenType {
+	case types.HYP_TOKEN_TYPE_COLLATERAL:
+		amount = token.CollateralBalance
+	case types.HYP_TOKEN_TYPE_SYNTHETIC:
+		amount = qs.k.bankKeeper.GetSupply(ctx, token.OriginDenom).Amount
+	default:
+		return nil, fmt.Errorf("query doesn't support token type: %s", token.TokenType)
+	}
+
+	bridgedSupply := sdk.Coin{
+		Amount: amount,
+		Denom:  token.OriginDenom,
+	}
+
+	err = bridgedSupply.Validate()
 	if err != nil {
 		return nil, err
 	}
 
-	responseTokens := make([]types.QueryTokenResponse, len(tokens))
-	for i, t := range tokens {
-		responseTokens[i] = parseTokenResponse(t)
+	return &types.QueryBridgedSupplyResponse{BridgedSupply: bridgedSupply}, nil
+}
+
+func (qs queryServer) QuoteRemoteTransfer(ctx context.Context, request *types.QueryQuoteRemoteTransferRequest) (*types.QueryQuoteRemoteTransferResponse, error) {
+	tokenId, err := util.DecodeHexAddress(request.Id)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	token, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	destinationDomain, err := strconv.ParseUint(request.DestinationDomain, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+
+	remoteRouter, err := qs.k.EnrolledRouters.Get(ctx, collections.Join(tokenId.GetInternalId(), uint32(destinationDomain)))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get remote router for destination domain %v", request.DestinationDomain)
+	}
+
+	metadata := util.StandardHookMetadata{
+		GasLimit:           remoteRouter.Gas,
+		Address:            sdk.AccAddress{},
+		CustomHookMetadata: []byte{},
+	}
+
+	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), util.NewZeroAddress(), metadata, util.HyperlaneMessage{Destination: uint32(destinationDomain)})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryQuoteRemoteTransferResponse{GasPayment: requiredPayment}, nil
+}
+
+func (qs queryServer) Tokens(ctx context.Context, req *types.QueryTokensRequest) (*types.QueryTokensResponse, error) {
+	tokens, page, err := util.GetPaginatedFromMap(ctx, qs.k.HypTokens, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	response := make([]types.WrappedHypToken, 0, len(tokens))
+	for _, t := range tokens {
+		response = append(response, *parseTokenResponse(t))
 	}
 
 	return &types.QueryTokensResponse{
-		Tokens: responseTokens,
+		Tokens:     response,
+		Pagination: page,
 	}, nil
 }
 
@@ -64,24 +141,25 @@ func (qs queryServer) Token(ctx context.Context, request *types.QueryTokenReques
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	get, err := qs.k.HypTokens.Get(ctx, tokenId.Bytes())
+	get, err := qs.k.HypTokens.Get(ctx, tokenId.GetInternalId())
 	if err != nil {
 		return nil, err
 	}
 
-	response := parseTokenResponse(get)
-	return &response, nil
+	return &types.QueryTokenResponse{
+		Token: parseTokenResponse(get),
+	}, nil
 }
 
-func parseTokenResponse(get types.HypToken) types.QueryTokenResponse {
-	return types.QueryTokenResponse{
-		Id:        util.HexAddress(get.Id).String(),
-		Creator:   get.Creator,
+func parseTokenResponse(get types.HypToken) *types.WrappedHypToken {
+	return &types.WrappedHypToken{
+		Id:        get.Id.String(),
+		Owner:     get.Owner,
 		TokenType: get.TokenType,
 
-		OriginMailbox:    util.HexAddress(get.OriginMailbox).String(),
-		OriginDenom:      get.OriginDenom,
-		ReceiverDomain:   get.ReceiverDomain,
-		ReceiverContract: util.HexAddress(get.ReceiverContract).String(),
+		OriginMailbox: util.HexAddress(get.OriginMailbox).String(),
+		OriginDenom:   get.OriginDenom,
+
+		IsmId: get.IsmId,
 	}
 }

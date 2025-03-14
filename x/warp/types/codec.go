@@ -10,6 +10,10 @@ import (
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateCollateralToken{},
+		&MsgCreateSyntheticToken{},
+		&MsgSetTokenResponse{},
+		&MsgEnrollRemoteRouter{},
+		&MsgUnrollRemoteRouter{},
 		&MsgRemoteTransfer{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

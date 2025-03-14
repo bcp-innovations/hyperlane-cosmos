@@ -1,0 +1,176 @@
+syntax = "proto3";
+package hyperlane.core.post_dispatch.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "google/api/annotations.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "hyperlane/core/post_dispatch/v1/types.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+// Msg defines the module Msg service.
+service Query {
+
+  // Igps ...
+  rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
+    option (google.api.http).get = "/hyperlane/v1/igps";
+  }
+
+  // Igp ...
+  rpc Igp(QueryIgpRequest) returns (QueryIgpResponse) {
+    option (google.api.http).get = "/hyperlane/v1/igps/{id}";
+  }
+
+  // DestinationGasConfigs ...
+  rpc DestinationGasConfigs(QueryDestinationGasConfigsRequest)
+      returns (QueryDestinationGasConfigsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/igps/{id}/destination_gas_configs";
+  }
+
+  // QuoteGasPayment ...
+  rpc QuoteGasPayment(QueryQuoteGasPaymentRequest)
+      returns (QueryQuoteGasPaymentResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/igps/{igp_id}/quote_gas_payment";
+  }
+
+  // MerkleTreeHook ...
+  rpc MerkleTreeHooks(QueryMerkleTreeHooks)
+      returns (QueryMerkleTreeHooksResponse) {
+    option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks";
+  }
+
+  // MerkleTreeHook ...
+  rpc MerkleTreeHook(QueryMerkleTreeHook)
+      returns (QueryMerkleTreeHookResponse) {
+    option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks/{id}";
+  }
+
+  // NoopHooks ...
+  rpc NoopHooks(QueryNoopHooksRequest) returns (QueryNoopHooksResponse) {
+    option (google.api.http).get = "/hyperlane/v1/noop_hooks";
+  }
+
+  // NoopHook ...
+  rpc NoopHook(QueryNoopHookRequest) returns (QueryNoopHookResponse) {
+    option (google.api.http).get = "/hyperlane/v1/noop_hooks/{id}";
+  }
+}
+
+// QueryIgpsRequest ...
+message QueryIgpsRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryIgpsResponse ...
+message QueryIgpsResponse {
+  repeated InterchainGasPaymaster igps = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryIgpRequest ...
+message QueryIgpRequest { string id = 1; }
+
+// QueryIgpResponse ...
+message QueryIgpResponse {
+  InterchainGasPaymaster igp = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryDestinationGasConfigsRequest ...
+message QueryDestinationGasConfigsRequest {
+  string id = 1;
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryDestinationGasConfigsResponse ...
+message QueryDestinationGasConfigsResponse {
+  repeated DestinationGasConfig destination_gas_configs = 1;
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryQuoteGasPaymentRequest ...
+message QueryQuoteGasPaymentRequest {
+  string igp_id = 1;
+  string destination_domain = 2;
+  string gas_limit = 3;
+}
+
+// QueryQuoteGasPaymentResponse ...
+message QueryQuoteGasPaymentResponse {
+  repeated cosmos.base.v1beta1.Coin gas_payment = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
+  ];
+}
+
+// QueryCountRequest ...
+message QueryMerkleTreeHooks {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryMerkleTreeHooksResponse ...
+message QueryMerkleTreeHooksResponse {
+  repeated WrappedMerkleTreeHookResponse merkle_tree_hooks = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  ;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryMerkleTreeHook ...
+message QueryMerkleTreeHook { string id = 1; }
+
+// QueryMerkleTreeHookResponse
+message QueryMerkleTreeHookResponse {
+  WrappedMerkleTreeHookResponse merkle_tree_hook = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  ;
+}
+
+// WrappedMerkleTreeHookResponse
+message WrappedMerkleTreeHookResponse {
+  string id = 1;
+  string owner = 2;
+  string mailbox_id = 3;
+
+  TreeResponse merkle_tree = 4;
+}
+
+// TreeResponse
+message TreeResponse {
+  // leafs ...
+  repeated bytes leafs = 1;
+
+  // count ...
+  uint32 count = 2;
+
+  // root ...
+  bytes root = 3;
+}
+
+// QueryNoopHookRequest ...
+message QueryNoopHookRequest { string id = 1; }
+
+// QueryNoopHookResponse ...
+message QueryNoopHookResponse { NoopHook noop_hook = 1; }
+
+// QueryNoopHooksRequest ...
+message QueryNoopHooksRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryNoopHooksResponse ...
+message QueryNoopHooksResponse {
+  repeated NoopHook noop_hooks = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

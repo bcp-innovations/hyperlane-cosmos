@@ -1,0 +1,87 @@
+syntax = "proto3";
+package hyperlane.core.interchain_security.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types";
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "google/api/annotations.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the module Msg service.
+service Query {
+  // Isms ...
+  rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
+    option (google.api.http).get = "/hyperlane/v1/isms";
+  }
+
+  // Ism ...
+  rpc Ism(QueryIsmRequest) returns (QueryIsmResponse) {
+    option (google.api.http).get = "/hyperlane/v1/isms/{id}";
+  }
+
+  // AnnouncedStorageLocations ...
+  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
+      returns (QueryAnnouncedStorageLocationsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/mailboxes/{mailbox_id}/announced_storage_locations/"
+        "{validator_address}";
+  }
+
+  // LatestAnnouncedStorageLocation ...
+  rpc LatestAnnouncedStorageLocation(QueryLatestAnnouncedStorageLocationRequest)
+      returns (QueryLatestAnnouncedStorageLocationResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/mailboxes/{mailbox_id}/announced_storage_locations/"
+        "{validator_address}/latest";
+  }
+}
+
+// QueryIsmsRequest ...
+message QueryIsmsRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryIsmsResponse ...
+message QueryIsmsResponse {
+  repeated google.protobuf.Any isms = 1
+      [ (cosmos_proto.accepts_interface) =
+            "hyperlane.core.v1.01_interchain_security_module."
+            "HyperlaneInterchainSecurityModule" ];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryIsmRequest ...
+message QueryIsmRequest { string id = 1; }
+
+// QueryIsmResponse ...
+message QueryIsmResponse {
+  google.protobuf.Any ism = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryAnnouncedStorageLocationsRequest ...
+message QueryAnnouncedStorageLocationsRequest {
+  string mailbox_id = 1;
+  string validator_address = 2;
+}
+
+// QueryAnnouncedStorageLocationsResponse ...
+message QueryAnnouncedStorageLocationsResponse {
+  repeated string storage_locations = 1;
+}
+
+// QueryAnnouncedStorageLocationsRequest ...
+message QueryLatestAnnouncedStorageLocationRequest {
+  string mailbox_id = 1;
+  string validator_address = 2;
+}
+
+// QueryAnnouncedStorageLocationsResponse ...
+message QueryLatestAnnouncedStorageLocationResponse {
+  string storage_location = 1;
+}

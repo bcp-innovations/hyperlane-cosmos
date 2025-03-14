@@ -1,13 +1,21 @@
 package keeper
 
 import (
+	"context"
+	"fmt"
+
+	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee math.Int) (messageId util.HexAddress, err error) {
+// RemoteTransferSynthetic handles the transfer of synthetic tokens to a remote chain.
+// It burns the specified amount of tokens, then dispatches a message to the destination
+// with the required gas limit, fee, and custom metadata.
+func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, recipient util.HexAddress, amount math.Int, customHookId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -23,28 +31,43 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		return util.HexAddress{}, err
 	}
 
-	recipient, err := util.DecodeEthHex(externalRecipient)
+	remoteRouter, err := k.EnrolledRouters.Get(ctx, collections.Join(token.Id.GetInternalId(), destinationDomain))
 	if err != nil {
-		return util.HexAddress{}, err
+		return util.HexAddress{}, fmt.Errorf("no enrolled router found for destination domain %d", destinationDomain)
 	}
 
-	warpPayload, err := types.NewWarpPayload(recipient, *amount.BigInt())
+	receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
+	if err != nil {
+		return util.HexAddress{}, fmt.Errorf("failed to decode receiver contract address %s", remoteRouter.ReceiverContract)
+	}
+
+	gas := remoteRouter.Gas
+	if !gasLimit.IsZero() {
+		gas = gasLimit
+	}
+
+	warpPayload, err := types.NewWarpPayload(recipient.Bytes(), *amount.BigInt())
 	if err != nil {
 		return util.HexAddress{}, err
 	}
 
 	// Token destinationDomain, recipientAddress
-	dispatchMsg, err := k.mailboxKeeper.DispatchMessage(
+	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
-		token.ReceiverDomain,
-		util.HexAddress(token.ReceiverContract),
-		util.HexAddress(token.Id),
+		token.Id,
+		sdk.NewCoins(maxFee),
+
+		remoteRouter.ReceiverDomain,
+		receiverContract,
+
 		warpPayload.Bytes(),
-		cosmosSender,
-		customIgpId,
-		gasLimit,
-		maxFee,
+		util.StandardHookMetadata{
+			GasLimit:           gas,
+			Address:            senderAcc,
+			CustomHookMetadata: customHookMetadata,
+		},
+		customHookId,
 	)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -53,7 +76,9 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 	return dispatchMsg, nil
 }
 
-func (k *Keeper) RemoteReceiveSynthetic(ctx sdk.Context, token types.HypToken, payload types.WarpPayload) error {
+// RemoteReceiveSynthetic handles the receipt of synthetic tokens from a remote chain.
+// It mints the synthetic token and transfers it to the recipient's account.
+func (k *Keeper) RemoteReceiveSynthetic(ctx context.Context, token types.HypToken, payload types.WarpPayload) error {
 	account := payload.GetCosmosAccount()
 
 	shadowToken := sdk.NewCoin(
