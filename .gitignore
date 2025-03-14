@@ -27,7 +27,6 @@ go.work.sum
 debug_container.dot
 
 .idea
-/scripts/hypertools/build/
-/build/
 /release/
-/scripts/ethers/node_modules/
+**/node_modules
+**/build
