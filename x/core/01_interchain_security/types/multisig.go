@@ -14,7 +14,10 @@ type MultisigISM interface {
 	GetThreshold() uint32
 }
 
+// VerifyMultisig validates provided signatures against validators, ensuring that
+// at least 'threshold' number of validators signed the digest.
 func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, digest [32]byte) (bool, error) {
+	// Check if the number of provided signatures meets the threshold requirement
 	if len(signatures) < int(threshold) {
 		return false, fmt.Errorf("threshold can not be reached")
 	}
@@ -22,6 +25,7 @@ func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, 
 	validatorCount := len(validators)
 	validatorIndex := 0
 
+	// It is assumed that the signatures are ordered the same way as the validators.
 	for i := 0; i < int(threshold); i++ {
 		recoveredPubkey, err := util.RecoverEthSignature(digest[:], signatures[i])
 		if err != nil {
@@ -31,18 +35,24 @@ func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, 
 		signerBytes := crypto.PubkeyToAddress(*recoveredPubkey)
 		signer := util.EncodeEthHex(signerBytes[:])
 
+		// Loop through remaining validators to find a match for the recovered signer
 		for validatorIndex < validatorCount && signer != strings.ToLower(validators[validatorIndex]) {
+			// If no match, increment the validator index and continue searching
 			validatorIndex++
 		}
 
+		// If the validator list was iterated without finding a match, the signature is invalid
 		if validatorIndex >= validatorCount {
 			return false, nil
 		}
+
+		// Move to the next validator for the next signature
 		validatorIndex++
 	}
 	return true, nil
 }
 
+// ValidateNewMultisig checks if a new MultisigISM has a valid configuration.
 func ValidateNewMultisig(m MultisigISM) error {
 	if m.GetThreshold() == 0 {
 		return fmt.Errorf("threshold must be greater than zero")
