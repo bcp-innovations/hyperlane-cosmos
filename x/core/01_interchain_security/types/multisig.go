@@ -14,8 +14,8 @@ type MultisigISM interface {
 	GetThreshold() uint32
 }
 
-// VerifyMultisig validates provided signatures against validators, ensuring that
-// at least 'threshold' number of validators signed the digest.
+// VerifyMultisig checks if a message digest is signed by a sufficient number of validators.
+// It recovers public keys from signatures and ensures the threshold is met before returning success.
 func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, digest [32]byte) (bool, error) {
 	// Check if the number of provided signatures meets the threshold requirement
 	if len(signatures) < int(threshold) {
@@ -52,7 +52,7 @@ func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, 
 	return true, nil
 }
 
-// ValidateNewMultisig checks if a new MultisigISM has a valid configuration.
+// ValidateNewMultisig ensures the Multisig ISM configuration is valid.
 func ValidateNewMultisig(m MultisigISM) error {
 	if m.GetThreshold() == 0 {
 		return fmt.Errorf("threshold must be greater than zero")
