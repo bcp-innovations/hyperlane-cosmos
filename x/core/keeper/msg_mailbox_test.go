@@ -512,8 +512,8 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	res, err := s.RunTx(&ismtypes.MsgCreateMerkleRootMultisigIsm{
 		Creator: creator,
 		Validators: []string{
-			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
 			"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
 			"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
 		},
 		Threshold: 2,

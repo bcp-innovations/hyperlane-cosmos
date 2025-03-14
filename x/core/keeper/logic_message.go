@@ -11,7 +11,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMessage []byte, metadata []byte) error {
+// ProcessMessage verifies and processes an incoming message.
+// It checks mailbox existence, prevents replay attacks, verifies through the specified ISM,
+// and forwards the message to the recipient if valid.
+func (k Keeper) ProcessMessage(
+	ctx sdk.Context,
+	mailboxId util.HexAddress,
+	rawMessage []byte,
+	metadata []byte,
+) error {
 	message, err := util.ParseHyperlaneMessage(rawMessage)
 	if err != nil {
 		return err
@@ -47,6 +55,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		return err
 	}
 
+	// Verify message
 	ismId, err := k.ReceiverIsmId(ctx, message.Recipient)
 	if err != nil {
 		if errors.IsOf(err, types.ErrNoReceiverISM) {
@@ -56,7 +65,6 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 		}
 	}
 
-	// New logic
 	verified, err := k.Verify(ctx, ismId, metadata, message)
 	if err != nil {
 		return err
@@ -82,6 +90,9 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxId util.HexAddress, rawMe
 	return nil
 }
 
+// DispatchMessage sends a Hyperlane message to a destination chain.
+// It verifies the mailbox, constructs and emits the message,
+// and calls the required and optional post-dispatch hooks while enforcing max fee limits.
 func (k Keeper) DispatchMessage(
 	ctx sdk.Context,
 	originMailboxId util.HexAddress,
