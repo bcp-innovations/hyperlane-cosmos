@@ -17,6 +17,7 @@ TEST CASES - msg_server.go
 * Test (invalid) empty message
 * Test (invalid) multi-sig signature for wrong validator
 * Test (invalid) multi-sig signature with wrong threshold
+* Test (invalid) duplicated signature
 
 */
 
@@ -27,19 +28,69 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("Test (valid) multi-sig signature", func() {
 		// Arrange
+		var validators []string
+		for _, validator := range PrivateKeys {
+			validators = append(validators, validator.address)
+		}
+
 		merkleRootMultiSig := types.MerkleRootMultisigISM{
 			Id:         util.HexAddress{},
 			Owner:      "",
-			Validators: []string{"0x0c60e7eCd06429052223C78452F791AAb5C5CAc6"},
-			Threshold:  1,
+			Validators: validators,
+			Threshold:  2,
 		}
 
+		message := util.HyperlaneMessage{
+			Version:     0,
+			Nonce:       0,
+			Origin:      0,
+			Sender:      util.HexAddress{},
+			Destination: 0,
+			Recipient:   util.HexAddress{},
+			Body:        nil,
+		}
+
+		metadata := types.MerkleRootMultisigMetadata{
+			MerkleTreeHook:  [32]byte{},
+			MessageIndex:    uint32(0),
+			MerkleProof:     [32][32]byte{},
+			SignedIndex:     uint32(0),
+			SignedMessageId: message.Id(),
+		}
+
+		digest := metadata.Digest(&message)
+
+		var signatures [][]byte
+		for i := range PrivateKeys {
+			sig := signDigest(digest[:], PrivateKeys[i].privateKey)
+			signatures = append(signatures, sig)
+		}
+		metadata.Signatures = signatures
+
 		// Act
-		verify, err := merkleRootMultiSig.Verify(sdk.Context{}, validMetadata, validMessage)
+		verify, err := merkleRootMultiSig.Verify(sdk.Context{}, metadata.Bytes(), message)
 
 		// Assert
 		Expect(err).To(BeNil())
 		Expect(verify).To(BeTrue())
+	})
+
+	It("Test (invalid) unsorted validators", func() {
+		// Arrange
+		var validators []string
+		for i := range PrivateKeys {
+			validators = append(validators, PrivateKeys[len(PrivateKeys)-(i+1)].address)
+		}
+
+		// Act
+		merkleRootMultiSig := types.MerkleRootMultisigISM{
+			Id:         util.HexAddress{},
+			Owner:      "",
+			Validators: validators,
+			Threshold:  2,
+		}
+		// Assert
+		Expect(merkleRootMultiSig.Validate().Error()).To(Equal("validator addresses are not sorted correctly in ascending order"))
 	})
 
 	It("Test (invalid) empty metadata", func() {
@@ -117,7 +168,76 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		verify, err := merkleRootMultiSig.Verify(sdk.Context{}, validMetadata, validMessage)
 
 		// Assert
+		Expect(err.Error()).To(Equal("threshold can not be reached"))
+		Expect(verify).To(BeFalse())
+	})
+
+	It("Test (invalid) duplicated signature", func() {
+		// Arrange
+		var validators []string
+		for _, validator := range PrivateKeys {
+			validators = append(validators, validator.address)
+		}
+
+		merkleRootMultiSig := types.MerkleRootMultisigISM{
+			Id:         util.HexAddress{},
+			Owner:      "",
+			Validators: validators,
+			Threshold:  2,
+		}
+
+		message := util.HyperlaneMessage{
+			Version:     0,
+			Nonce:       0,
+			Origin:      0,
+			Sender:      util.HexAddress{},
+			Destination: 0,
+			Recipient:   util.HexAddress{},
+			Body:        nil,
+		}
+
+		metadata := types.MerkleRootMultisigMetadata{
+			MerkleTreeHook:  [32]byte{},
+			MessageIndex:    uint32(0),
+			MerkleProof:     [32][32]byte{},
+			SignedIndex:     uint32(0),
+			SignedMessageId: message.Id(),
+		}
+
+		digest := metadata.Digest(&message)
+
+		var duplicatedSignatures [][]byte
+		for range PrivateKeys {
+			sig := signDigest(digest[:], PrivateKeys[0].privateKey)
+			duplicatedSignatures = append(duplicatedSignatures, sig)
+		}
+		metadata.Signatures = duplicatedSignatures
+
+		// Act
+		verify, err := merkleRootMultiSig.Verify(sdk.Context{}, metadata.Bytes(), message)
+
+		// Assert
 		Expect(err).To(BeNil())
 		Expect(verify).To(BeFalse())
 	})
 })
+
+type keypair struct {
+	address    string
+	privateKey string
+}
+
+var PrivateKeys = []keypair{
+	{
+		address:    "0x06CE2a5ECDc3a0850978664c44327E80E10aF8Ab",
+		privateKey: "fad9c8855b740a0b7ed4c221dbad0f33a83a49cad6b3fe8d5817ac83d38b6a18",
+	},
+	{
+		address:    "0xdf738d27Da985BDdE29E6a34C0a945ff81Aa21DA",
+		privateKey: "c87509a1c067bbde78beb793e6fa49e3462d7e7bcfbb4e3f79e926fc27ae42c4",
+	},
+	{
+		address:    "0xf17f52151EbEF6C7334FAD080c5704D77216b732",
+		privateKey: "ae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f",
+	},
+}

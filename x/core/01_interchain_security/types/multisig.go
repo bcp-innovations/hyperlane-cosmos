@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -13,43 +14,45 @@ type MultisigISM interface {
 	GetThreshold() uint32
 }
 
+// VerifyMultisig checks if a message digest is signed by a sufficient number of validators.
+// It recovers public keys from signatures and ensures the threshold is met before returning success.
 func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, digest [32]byte) (bool, error) {
-	if threshold == 0 {
-		return false, fmt.Errorf("invalid ism. no threshold present")
-	}
-
-	validSignatures := uint32(0)
-
-	// Early return if we can't possibly meet the threshold
+	// Check if the number of provided signatures meets the threshold requirement
 	if len(signatures) < int(threshold) {
-		return false, nil
+		return false, fmt.Errorf("threshold can not be reached")
 	}
 
-	// Get validator public keys
-	validatorAddresses := make(map[string]bool, len(validators))
-	for _, address := range validators {
-		validatorAddresses[strings.ToLower(address)] = true
-	}
+	validatorCount := len(validators)
+	validatorIndex := 0
 
-	for i := 0; i < len(signatures) && validSignatures < threshold; i++ {
+	// It is assumed that the signatures are ordered the same way as the validators.
+	for i := 0; i < int(threshold); i++ {
 		recoveredPubkey, err := util.RecoverEthSignature(digest[:], signatures[i])
 		if err != nil {
-			continue // Skip invalid signatures
+			return false, fmt.Errorf("failed to recover validator signature: %w", err)
 		}
 
-		addressBytes := crypto.PubkeyToAddress(*recoveredPubkey)
-		address := util.EncodeEthHex(addressBytes[:])
-		if validatorAddresses[address] {
-			validSignatures++
-		}
-	}
+		signerBytes := crypto.PubkeyToAddress(*recoveredPubkey)
+		signer := util.EncodeEthHex(signerBytes[:])
 
-	if validSignatures >= threshold {
-		return true, nil
+		// Loop through remaining validators to find a match for the recovered signer
+		for validatorIndex < validatorCount && signer != strings.ToLower(validators[validatorIndex]) {
+			// If no match, increment the validator index and continue searching
+			validatorIndex++
+		}
+
+		// If the validator list was iterated without finding a match, the signature is invalid
+		if validatorIndex >= validatorCount {
+			return false, nil
+		}
+
+		// Move to the next validator for the next signature
+		validatorIndex++
 	}
-	return false, nil
+	return true, nil
 }
 
+// ValidateNewMultisig ensures the Multisig ISM configuration is valid.
 func ValidateNewMultisig(m MultisigISM) error {
 	if m.GetThreshold() == 0 {
 		return fmt.Errorf("threshold must be greater than zero")
@@ -57,6 +60,11 @@ func ValidateNewMultisig(m MultisigISM) error {
 
 	if len(m.GetValidators()) < int(m.GetThreshold()) {
 		return fmt.Errorf("validator addresses less than threshold")
+	}
+
+	// Ensure that validators are sorted in ascending order
+	if !slices.IsSorted(m.GetValidators()) {
+		return fmt.Errorf("validator addresses are not sorted correctly in ascending order")
 	}
 
 	for _, validatorAddress := range m.GetValidators() {

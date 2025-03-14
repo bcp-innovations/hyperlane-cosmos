@@ -28,6 +28,8 @@ func (i MerkleTreeHookHandler) HookType() uint8 {
 	return types.POST_DISPATCH_HOOK_TYPE_MERKLE_TREE
 }
 
+// PostDispatch inserts a message ID into the Merkle tree of a mailbox.
+// It updates the tree, emits an event, and stores the changes.
 func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hookId util.HexAddress, _ util.StandardHookMetadata, message util.HyperlaneMessage, _ sdk.Coins) (sdk.Coins, error) {
 	merkleTreeHook, err := i.k.merkleTreeHooks.Get(ctx, hookId.GetInternalId())
 	if err != nil {
@@ -52,9 +54,9 @@ func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hook
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
-		MessageId: message.Id().String(),
-		Index:     count,
-		MailboxId: mailboxId.String(),
+		MessageId:        message.Id().String(),
+		Index:            count,
+		MerkleTreeHookId: merkleTreeHook.Id.String(),
 	})
 
 	merkleTreeHook.Tree = types.ProtoFromTree(tree)
