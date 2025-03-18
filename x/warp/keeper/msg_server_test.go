@@ -722,6 +722,22 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
+	It("MsgSetToken (invalid) non-existing Token ID", func() {
+		// Arrange
+		nonExistingTokenId, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetToken{
+			Owner:    owner.Address,
+			TokenId:  nonExistingTokenId,
+			IsmId:    nil,
+			NewOwner: "new_owner",
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find token with id: %s", nonExistingTokenId.String())))
+	})
+
 	It("MsgSetToken (invalid) empty new-owner and ISM ID", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
