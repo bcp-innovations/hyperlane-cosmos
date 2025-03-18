@@ -19,7 +19,7 @@ type msgServer struct {
 
 // CreateSyntheticToken ...
 func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCreateSyntheticToken) (*types.MsgCreateSyntheticTokenResponse, error) {
-	if !slices.Contains(ms.k.EnabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
+	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
 		return nil, fmt.Errorf("module disabled synthetic tokens")
 	}
 
@@ -53,7 +53,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 
 // CreateCollateralToken ...
 func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (*types.MsgCreateCollateralTokenResponse, error) {
-	if !slices.Contains(ms.k.EnabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
+	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
 		return nil, fmt.Errorf("module disabled collateral tokens")
 	}
 

@@ -88,9 +88,9 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
-		s.App().WarpKeeper.EnabledTokens = []int32{
-			int32(types.HYP_TOKEN_TYPE_COLLATERAL),
-		}
+		//s.App().WarpKeeper.EnabledTokens = []int32{
+		//	int32(types.HYP_TOKEN_TYPE_COLLATERAL),
+		//}
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
@@ -157,9 +157,9 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
-		s.App().WarpKeeper.EnabledTokens = []int32{
-			int32(types.HYP_TOKEN_TYPE_SYNTHETIC),
-		}
+		//s.App().WarpKeeper.EnabledTokens = []int32{
+		//	int32(types.HYP_TOKEN_TYPE_SYNTHETIC),
+		//}
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateCollateralToken{
