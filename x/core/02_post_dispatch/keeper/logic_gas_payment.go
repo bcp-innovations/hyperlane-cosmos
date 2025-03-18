@@ -16,7 +16,7 @@ import (
 func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress) error {
 	igp, err := k.Igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
-		return fmt.Errorf("failed to find ism with id: %s", igpId.String())
+		return fmt.Errorf("failed to find igp with id: %s", igpId.String())
 	}
 
 	if sender != igp.Owner {
