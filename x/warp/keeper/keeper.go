@@ -25,7 +25,7 @@ type Keeper struct {
 	// typically, this should be the x/gov module account.
 	authority string
 
-	enabledTokens []int32
+	EnabledTokens []int32
 	Params        collections.Item[types.Params]
 	// state management
 	Schema collections.Schema
@@ -57,7 +57,7 @@ func NewKeeper(
 		cdc:             cdc,
 		addressCodec:    addressCodec,
 		authority:       authority,
-		enabledTokens:   enabledTokens,
+		EnabledTokens:   enabledTokens,
 		HypTokens:       collections.NewMap(sb, types.HypTokenKey, "hyptokens", collections.Uint64Key, codec.CollValue[types.HypToken](cdc)),
 		EnrolledRouters: collections.NewMap(sb, types.EnrolledRoutersKey, "enrolled_routers", collections.PairKeyCodec(collections.Uint64Key, collections.Uint32Key), codec.CollValue[types.RemoteRouter](cdc)),
 		Params:          collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
@@ -110,7 +110,7 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message 
 		return err
 	}
 
-	if util.HexAddress(token.OriginMailbox) != mailboxId {
+	if token.OriginMailbox != mailboxId {
 		return fmt.Errorf("invalid origin mailbox address")
 	}
 
@@ -126,12 +126,12 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message 
 	// Check token type
 	err = nil
 	if token.TokenType == types.HYP_TOKEN_TYPE_COLLATERAL {
-		if !slices.Contains(k.enabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
+		if !slices.Contains(k.EnabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
 			return fmt.Errorf("module disabled collateral tokens")
 		}
 		err = k.RemoteReceiveCollateral(ctx, token, payload)
 	} else if token.TokenType == types.HYP_TOKEN_TYPE_SYNTHETIC {
-		if !slices.Contains(k.enabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
+		if !slices.Contains(k.EnabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
 			return fmt.Errorf("module disabled synthetic tokens")
 		}
 		err = k.RemoteReceiveSynthetic(ctx, token, payload)
