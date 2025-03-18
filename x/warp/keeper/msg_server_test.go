@@ -83,27 +83,14 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId)))
 	})
 
-	// TODO should it be allowed to set invalid ISM ids?
-	PIt("MsgCreateSyntheticToken (invalid) non-existing ISM ID", func() {
+	// TODO
+	PIt("MsgCreateSyntheticToken (invalid) when module disabled synthetic tokens", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
-		nonExistingIsmId := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0"
-
-		// Act
-		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
-			Owner:         owner.Address,
-			OriginMailbox: mailboxId,
-		})
-		Expect(err).To(BeNil())
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("ism with id %s does not exist", nonExistingIsmId)))
-	})
-
-	It("MsgCreateSyntheticToken (valid) with default ISM ID", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		s.App().WarpKeeper.EnabledTokens = []int32{
+			int32(types.HYP_TOKEN_TYPE_COLLATERAL),
+		}
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
@@ -113,6 +100,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens).To(HaveLen(0))
 	})
 
 	It("MsgCreateSyntheticToken (valid)", func() {
@@ -162,26 +153,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	})
 
 	// TODO
-	PIt("MsgCreateCollateralToken (invalid) non-existing ISM ID", func() {
+	PIt("MsgCreateCollateralToken (invalid) when module disabled collateral tokens", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
-		nonExistingIsmId := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0"
-
-		// Act
-		_, err := s.RunTx(&types.MsgCreateCollateralToken{
-			Owner:         owner.Address,
-			OriginMailbox: mailboxId,
-			OriginDenom:   denom,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("ism with id %s does not exist", nonExistingIsmId)))
-	})
-
-	It("MsgCreateCollateralToken (valid) with default ISM ID", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		s.App().WarpKeeper.EnabledTokens = []int32{
+			int32(types.HYP_TOKEN_TYPE_SYNTHETIC),
+		}
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateCollateralToken{
@@ -192,6 +170,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens).To(HaveLen(0))
 	})
 
 	It("MsgCreateCollateralToken (valid)", func() {
@@ -740,7 +722,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(routers.RemoteRouters[0]).To(Equal(&remoteRouter))
 	})
 
-	It("MsgSetInterchainSecurityModule (invalid) empty ISM ID", func() {
+	It("MsgSetToken (invalid) empty new-owner and ISM ID", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
@@ -769,7 +751,37 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("new owner or ism id required"))
 	})
 
-	It("MsgSetInterchainSecurityModule (invalid) non-owner address", func() {
+	It("MsgSetToken (invalid) non-existing ISM ID", func() {
+		// Arrange
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		nonExistingIsm, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId,
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId, err := util.DecodeHexAddress(response.Id)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:    owner.Address,
+			TokenId:  tokenId,
+			IsmId:    &nonExistingIsm,
+			NewOwner: "",
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("ism with id %s does not exist", nonExistingIsm.String())))
+	})
+
+	It("MsgSetToken (invalid) non-owner address", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
@@ -800,9 +812,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own token with id %s", sender.Address, tokenId.String())))
 	})
 
-	It("MsgSetInterchainSecurityModule (valid)", func() {
+	It("MsgSetToken (valid)", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		newOwner := "new_owner"
 
 		secondIsmId := createNoopIsm(s, owner.Address)
 
@@ -824,11 +837,17 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Owner:    owner.Address,
 			TokenId:  tokenId,
 			IsmId:    &secondIsmId,
-			NewOwner: "",
+			NewOwner: newOwner,
 		})
 
 		// Assert
 		Expect(err).To(BeNil())
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens.Tokens).To(HaveLen(1))
+		Expect(tokens.Tokens[0].Owner).To(Equal(newOwner))
+		Expect(tokens.Tokens[0].IsmId.String()).To(Equal(secondIsmId.String()))
 	})
 
 	It("MsgRemoteTransfer (invalid) non-existing Token ID", func() {
@@ -850,6 +869,28 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find token with id: %s", nonExistingTokenId)))
+	})
+
+	It("MsgRemoteTransfer (invalid) invalid CustomHookMetadata", func() {
+		// Arrange
+		tokenId, _, _, _ := createToken(s, nil, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_SYNTHETIC)
+		invalidCustomHookMetadata := "invalid_custom_hook_metadata"
+
+		// Act
+		_, err := s.RunTx(&types.MsgRemoteTransfer{
+			Sender:             sender.Address,
+			TokenId:            tokenId,
+			DestinationDomain:  0,
+			Recipient:          tokenId,
+			Amount:             math.ZeroInt(),
+			CustomHookId:       &tokenId,
+			GasLimit:           math.ZeroInt(),
+			MaxFee:             sdk.NewCoin(denom, math.ZeroInt()),
+			CustomHookMetadata: invalidCustomHookMetadata,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("invalid custom hook metadata"))
 	})
 })
 
@@ -1074,14 +1115,12 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		Id: tokenId.String(),
 	})
 	Expect(err).To(BeNil())
-	if remoteRouter != nil {
 
+	if remoteRouter != nil {
 		Expect(routers.RemoteRouters).To(HaveLen(1))
 		Expect(routers.RemoteRouters[0]).To(Equal(remoteRouter))
-
 	} else {
 		Expect(routers.RemoteRouters).To(HaveLen(0))
 	}
-
 	return tokenId, mailboxId, igpId, ismId
 }
