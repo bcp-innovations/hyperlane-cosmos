@@ -3,8 +3,9 @@ package types_test
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"testing"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 
 	"github.com/ethereum/go-ethereum/crypto"
 
