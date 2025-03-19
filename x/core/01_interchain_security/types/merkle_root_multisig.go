@@ -57,17 +57,6 @@ type MerkleRootMultisigMetadata struct {
 	Signatures      [][]byte
 }
 
-var (
-	// originMerkleTreeOffset := 0
-	messageIndexOffset = 32
-	messageIdOffset    = 36
-	merkleProofOffset  = 68
-	merkleProofLength  = 32 * 32
-	signedIndexOffset  = 1092
-	signaturesOffset   = 1096
-	signatureLength    = 65
-)
-
 // NewMerkleRootMultisigMetadata validates and creates a new metadata object
 func NewMerkleRootMultisigMetadata(metadata []byte) (MerkleRootMultisigMetadata, error) {
 	/*
@@ -79,6 +68,14 @@ func NewMerkleRootMultisigMetadata(metadata []byte) (MerkleRootMultisigMetadata,
 	 * [1092:1096] Signed checkpoint index (computed from proof and index)
 	 * [1096:????] Validator signatures (length := threshold * 65)
 	 */
+	// originMerkleTreeOffset := 0
+	messageIndexOffset := 32
+	messageIdOffset := 36
+	merkleProofOffset := 68
+	merkleProofLength := 32 * 32
+	signedIndexOffset := 1092
+	signaturesOffset := 1096
+	signatureLength := 65
 
 	if len(metadata) < signaturesOffset {
 		return MerkleRootMultisigMetadata{}, fmt.Errorf("invalid metadata length: got %v, expected at least %v bytes", len(metadata), signaturesOffset)
