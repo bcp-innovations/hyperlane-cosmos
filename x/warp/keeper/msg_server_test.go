@@ -24,27 +24,28 @@ import (
 TEST CASES - msg_server.go
 
 * MsgCreateSyntheticToken (invalid) non-existing Mailbox ID
-* MsgCreateSyntheticToken (invalid) non-existing ISM ID
-* MsgCreateSyntheticToken (valid) with default ISM ID
+* MsgCreateSyntheticToken (invalid) when module disabled synthetic tokens
 * MsgCreateSyntheticToken (valid)
 * MsgCreateCollateralToken (invalid) invalid denom
 * MsgCreateCollateralToken (invalid) non-existing Mailbox ID
-* MsgCreateCollateralToken (invalid) non-existing ISM ID
-* MsgCreateCollateralToken (valid) with default ISM ID
+* MsgCreateCollateralToken (invalid) when module disabled collateral tokens
 * MsgCreateCollateralToken (valid)
 * MsgEnrollRemoteRouter (invalid) non-existing Token ID
 * MsgEnrollRemoteRouter (invalid) non-owner address
+* MsgEnrollRemoteRouter (invalid) update with non-owner address
 * MsgEnrollRemoteRouter (invalid) invalid remote router
 * MsgEnrollRemoteRouter (valid)
 * MsgUnrollRemoteRouter (invalid) non-existing Token ID
 * MsgUnrollRemoteRouter (invalid) non-owner address
 * MsgUnrollRemoteRouter (invalid) non-existing remote domain
 * MsgUnrollRemoteRouter (valid)
-* MsgSetInterchainSecurityModule (invalid) empty ISM ID
-* MsgSetInterchainSecurityModule (invalid) non-owner address
-* MsgSetInterchainSecurityModule (invalid) invalid ISM ID
-* MsgSetInterchainSecurityModule (valid)
+* MsgSetToken (invalid) non-existing Token ID
+* MsgSetToken (invalid) empty new-owner and ISM ID
+* MsgSetToken (invalid) non-existing ISM ID
+* MsgSetToken (invalid) non-owner address
+* MsgSetToken (valid)
 * MsgRemoteTransfer (invalid) non-existing Token ID
+* MsgRemoteTransfer (invalid) invalid CustomHookMetadata
 
 */
 
