@@ -163,7 +163,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, syntheticDenom).Amount).To(Equal(senderBalance.Amount))
 	})
 
-	It("MsgRemoteTransfer (invalid) no enrolled router (Synthetic)", func() {
+	It("MsgRemoteTransfer (invalid) no enrolled router for destination (Synthetic)", func() {
 		// Arrange
 		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{

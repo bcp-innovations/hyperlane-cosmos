@@ -38,7 +38,7 @@ release-simapp:
 
 test:
 	@echo "--> Running tests"
-	@go test -cover -mod=readonly ./x/...
+	@go test -cover -mod=readonly ./x/... ./util/...
 
 
 .PHONY: build-simapp release-simapp test
@@ -49,7 +49,7 @@ test:
 
 protoVer=0.15.3
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
-protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+protoImage=$(DOCKER) run --rm -u 0 -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 
 proto-all: proto-format proto-lint proto-gen
 
@@ -60,7 +60,7 @@ proto-gen:
 
 proto-format:
 	@echo "--> Running protobuf formatter..."
-	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
+	@$(protoImage) find ./proto -name "*.proto" -exec clang-format -i {} \;
 
 proto-lint:
 	@echo "--> Running protobuf linter..."

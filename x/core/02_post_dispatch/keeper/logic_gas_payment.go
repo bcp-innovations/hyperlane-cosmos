@@ -11,10 +11,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// Claim transfers claimable fees to the IGP owner's account.
+// It verifies ownership, checks for available fees, processes the transfer, and resets the claimable amount.
 func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress) error {
 	igp, err := k.Igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
-		return fmt.Errorf("failed to find ism with id: %s", igpId.String())
+		return fmt.Errorf("failed to find igp with id: %s", igpId.String())
 	}
 
 	if sender != igp.Owner {
@@ -46,6 +48,8 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 	return nil
 }
 
+// SetDestinationGasConfig updates the gas configuration for a given IGP and remote domain.
+// It verifies ownership, ensures a gas oracle is provided, and stores the updated config.
 func (k Keeper) SetDestinationGasConfig(ctx context.Context, igpId util.HexAddress, owner string, destinationGasConfig *types.DestinationGasConfig) error {
 	igp, err := k.Igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {

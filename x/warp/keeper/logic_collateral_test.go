@@ -24,7 +24,7 @@ TEST CASES - logic_collateral.go
 * MsgRemoteTransfer (invalid) invalid cosmos sender (Collateral)
 * MsgRemoteTransfer (invalid) empty recipient (Collateral)
 * MsgRemoteTransfer (invalid) invalid recipient (Collateral)
-* MsgRemoteTransfer (invalid) no enrolled router (Collateral)
+* MsgRemoteTransfer (invalid) no enrolled router for destination (Collateral)
 * MsgRemoteTransfer (invalid) receiver contract (Collateral)
 * MsgRemoteTransfer (invalid) insufficient funds (Collateral)
 * MsgRemoteTransfer & MsgRemoteReceiveCollateral (invalid) not enough collateral (Collateral)
@@ -148,7 +148,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
 	})
 
-	It("MsgRemoteTransfer (invalid) no enrolled router (Collateral)", func() {
+	It("MsgRemoteTransfer (invalid) no enrolled router for destination (Collateral)", func() {
 		// Arrange
 		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{

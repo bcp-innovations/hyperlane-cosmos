@@ -110,7 +110,7 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message 
 		return err
 	}
 
-	if util.HexAddress(token.OriginMailbox) != mailboxId {
+	if token.OriginMailbox != mailboxId {
 		return fmt.Errorf("invalid origin mailbox address")
 	}
 

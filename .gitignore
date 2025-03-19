@@ -30,6 +30,6 @@ go.work.sum
 debug_container.dot
 
 .idea
-/scripts/hypertools/build/
-/build/
 /release/
+**/node_modules
+**/build

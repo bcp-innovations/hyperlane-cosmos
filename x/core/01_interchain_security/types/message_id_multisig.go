@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"slices"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
@@ -24,7 +25,7 @@ func (m *MessageIdMultisigISM) Verify(_ context.Context, rawMetadata []byte, mes
 		return false, err
 	}
 
-	digest := metadata.digest(&message)
+	digest := metadata.Digest(&message)
 
 	return VerifyMultisig(m.Validators, m.Threshold, metadata.Signatures, digest)
 }
@@ -69,7 +70,7 @@ func NewMessageIdMultisigMetadata(metadata []byte) (MessageIdMultisigMetadata, e
 	}
 
 	signaturesLen := len(metadata) - signaturesOffset
-	signatureCount := uint32(signaturesLen / signaturesOffset)
+	signatureCount := uint32(signaturesLen / signatureLength)
 
 	if signaturesLen%signatureLength != 0 {
 		return MessageIdMultisigMetadata{}, fmt.Errorf("invalid signatures length in metadata")
@@ -78,7 +79,9 @@ func NewMessageIdMultisigMetadata(metadata []byte) (MessageIdMultisigMetadata, e
 	var signatures [][]byte
 	for i := 0; i < int(signatureCount); i++ {
 		start := signaturesOffset + (i * signatureLength)
-		signatures = append(signatures, metadata[start:start+signatureLength])
+		sig := make([]byte, signatureLength)
+		copy(sig, metadata[start:start+signatureLength])
+		signatures = append(signatures, sig)
 	}
 
 	var merkleTreeHook [32]byte
@@ -96,7 +99,24 @@ func NewMessageIdMultisigMetadata(metadata []byte) (MessageIdMultisigMetadata, e
 	}, nil
 }
 
-func (m *MessageIdMultisigMetadata) digest(message *util.HyperlaneMessage) [32]byte {
+func (m *MessageIdMultisigMetadata) Bytes() []byte {
+	merkleIndex := make([]byte, 4)
+	binary.BigEndian.PutUint32(merkleIndex, m.MerkleIndex)
+
+	var signaturesBytes []byte
+	for _, sig := range m.Signatures {
+		signaturesBytes = append(signaturesBytes, sig...)
+	}
+
+	return slices.Concat(
+		m.MerkleTreeHook[:],
+		m.MerkleRoot[:],
+		merkleIndex,
+		signaturesBytes,
+	)
+}
+
+func (m *MessageIdMultisigMetadata) Digest(message *util.HyperlaneMessage) [32]byte {
 	return checkpointDigest(
 		message.Origin,
 		m.MerkleTreeHook,

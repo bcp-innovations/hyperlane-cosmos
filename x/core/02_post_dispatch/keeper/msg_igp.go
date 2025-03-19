@@ -14,7 +14,7 @@ import (
 func (ms msgServer) Claim(ctx context.Context, req *types.MsgClaim) (*types.MsgClaimResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
-		return nil, fmt.Errorf("ism id %s is invalid: %s", req.IgpId, err.Error())
+		return nil, fmt.Errorf("igp id %s is invalid: %s", req.IgpId, err.Error())
 	}
 
 	return &types.MsgClaimResponse{}, ms.k.Claim(ctx, req.Sender, igpId)
@@ -53,7 +53,7 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 
 	igp, err := ms.k.Igps.Get(ctx, igpId.GetInternalId())
 	if err != nil {
-		return nil, fmt.Errorf("failed to find igp with id: %v", igpId.String())
+		return nil, fmt.Errorf("igp does not exist: %v", igpId.String())
 	}
 
 	if igp.Owner != req.Owner {
@@ -74,7 +74,7 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*types.MsgPayForGasResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
-		return nil, fmt.Errorf("ism id %s is invalid: %s", req.IgpId, err.Error())
+		return nil, fmt.Errorf("igp id %s is invalid: %s", req.IgpId, err.Error())
 	}
 
 	handler := InterchainGasPaymasterHookHandler{*ms.k}
@@ -85,7 +85,7 @@ func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*ty
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {
 	igpId, err := util.DecodeHexAddress(req.IgpId)
 	if err != nil {
-		return nil, fmt.Errorf("ism id %s is invalid: %s", req.IgpId, err.Error())
+		return nil, fmt.Errorf("igp id %s is invalid: %s", req.IgpId, err.Error())
 	}
 
 	return &types.MsgSetDestinationGasConfigResponse{}, ms.k.SetDestinationGasConfig(ctx, igpId, req.Owner, req.DestinationGasConfig)

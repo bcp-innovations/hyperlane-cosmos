@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for considering to contribute to this project. We mostly follow 
+Thank you for considering to contribute to this project. We mostly follow
 Cosmos-SDK principles and design architectures.
 
 ## Overview
@@ -25,13 +25,13 @@ Cosmos-SDK principles and design architectures.
 - Write readable and maintainable code. `Premature Optimization Is the Root of All Evil`.
   Concentrate on clean interfaces first and only optimize for performance if it is needed.
 - The keeper directory is structured the following:
-    - `msg_server_*`-files are the entry point for message handling. This file
+  - `msg_server_*`-files are the entry point for message handling. This file
       should be very clean to read and outsource most of the part to the logic files.
       One should immediately understand the flow by just reading the function names
       which are called while handling the message.
-    - `query_server_*`-files are the entry point for query handling. This file
-      should be very clean to read. Most queries can make usa of the pagination
-      provided in `./util`
+  - `query_server_*`-files are the entry point for query handling. This file
+      should be very clean to read. Most queries can make use of the pagination
+      provided in `./util`.
 
 ## Code Structure
 
@@ -50,5 +50,5 @@ Cosmos-SDK principles and design architectures.
 ## Legal
 
 You agree that your contribution is licenced under the given LICENSE and all
-ownership is handed over to the authors named in 
+ownership is handed over to the authors named in
 [LICENSE](https://github.com/bcp-innovations/hyperlane-cosmos/blob/main/LICENSE).

@@ -3,8 +3,6 @@ package keeper_test
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
 	"cosmossdk.io/collections"
@@ -23,13 +21,15 @@ TEST CASES - msg_igp.go
 
 * CreateIgp (invalid) with invalid denom
 * CreateIgp (valid)
+* SetDestinationGasConfig (invalid) for non-existing IGP
+* SetDestinationGasConfig (invalid) with wrong owner
+* SetDestinationGasConfig (invalid) without gas oracle
 * SetDestinationGasConfig (invalid) for invalid IGP
 * SetDestinationGasConfig (valid)
-* PayForGas (invalid) for invalid IGP
-* PayForGas (valid)
-* Claim (invalid) for invalid ISM
-* Claim (valid)
-
+* MsgSetIgpOwner (invalid) for invalid IGP
+* MsgSetIgpOwner (invalid) for non-existing IGP
+* MsgSetIgpOwner (invalid) called by non-owner
+* MsgSetIgpOwner (valid)
 */
 
 var _ = Describe("msg_igp.go", Ordered, func() {
@@ -43,8 +43,98 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		s = i.NewCleanChain()
 		creator = i.GenerateTestValidatorAddress("Creator")
 		gasPayer = i.GenerateTestValidatorAddress("Payer")
+
 		err := s.MintBaseCoins(creator.Address, 1_000_000)
 		Expect(err).To(BeNil())
+
+		err = s.MintBaseCoins(gasPayer.Address, 1_000_000)
+		Expect(err).To(BeNil())
+	})
+
+	// SetDestinationGasConfig
+	It("SetDestinationGasConfig (invalid) for non-existing IGP", func() {
+		// Arrange
+		nonExistingIgp := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0"
+
+		_, err := s.RunTx(&types.MsgCreateIgp{
+			Owner: creator.Address,
+			Denom: denom,
+		})
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
+			Owner: creator.Address,
+			IgpId: nonExistingIgp,
+			DestinationGasConfig: &types.DestinationGasConfig{
+				RemoteDomain: 1,
+				GasOracle: &types.GasOracle{
+					TokenExchangeRate: math.NewInt(1e10),
+					GasPrice:          math.NewInt(1),
+				},
+				GasOverhead: math.NewInt(200000),
+			},
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("igp does not exist: %s", nonExistingIgp)))
+	})
+
+	It("SetDestinationGasConfig (invalid) with wrong owner", func() {
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateIgp{
+			Owner: creator.Address,
+			Denom: denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateIgpResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
+			Owner: gasPayer.Address,
+			IgpId: response.Id,
+			DestinationGasConfig: &types.DestinationGasConfig{
+				RemoteDomain: 1,
+				GasOracle: &types.GasOracle{
+					TokenExchangeRate: math.NewInt(1e10),
+					GasPrice:          math.NewInt(1),
+				},
+				GasOverhead: math.NewInt(200000),
+			},
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to set DestinationGasConfigs: %s is not the owner of igp with id %s", gasPayer.Address, response.Id)))
+	})
+
+	It("SetDestinationGasConfig (invalid) without gas oracle", func() {
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateIgp{
+			Owner: creator.Address,
+			Denom: "denom",
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateIgpResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
+			Owner: creator.Address,
+			IgpId: response.Id,
+			DestinationGasConfig: &types.DestinationGasConfig{
+				RemoteDomain: 1,
+				GasOracle:    nil,
+				GasOverhead:  math.NewInt(200000),
+			},
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("failed to set DestinationGasConfigs: gas Oracle is required"))
 	})
 
 	// IGP creation
@@ -111,7 +201,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("ism id %s is invalid: invalid hex address length", invalidIgp)))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("igp id %s is invalid: invalid hex address length", invalidIgp)))
 	})
 
 	It("SetDestinationGasConfig (valid)", func() {
@@ -160,112 +250,49 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		Expect(destinationGasConfigs[0].GasOverhead).To(Equal(math.NewInt(200000)))
 	})
 
-	// PayForGas
-	It("PayForGas (invalid) for invalid IGP", func() {
+	// MsgSetIgpOwner
+	It("MsgSetIgpOwner (invalid) for invalid IGP", func() {
 		// Arrange
 		invalidIgp := "0x12345"
-
-		res, err := s.RunTx(&types.MsgCreateIgp{
+		_, err := s.RunTx(&types.MsgCreateIgp{
 			Owner: creator.Address,
 			Denom: denom,
 		})
 		Expect(err).To(BeNil())
 
-		var response types.MsgCreateIgpResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
-		Expect(err).To(BeNil())
-		igpId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
-			Owner: creator.Address,
-			IgpId: igpId.String(),
-			DestinationGasConfig: &types.DestinationGasConfig{
-				RemoteDomain: 1,
-				GasOracle: &types.GasOracle{
-					TokenExchangeRate: math.NewInt(1e10),
-					GasPrice:          math.NewInt(1),
-				},
-				GasOverhead: math.NewInt(200000),
-			},
-		})
-		Expect(err).To(BeNil())
-
 		// Act
-		_, err = s.RunTx(&types.MsgPayForGas{
-			Sender:            gasPayer.Address,
-			IgpId:             invalidIgp,
-			MessageId:         "testMessageId",
-			DestinationDomain: 1,
-			GasLimit:          math.NewInt(1),
-			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
+		_, err = s.RunTx(&types.MsgSetIgpOwner{
+			Owner:    creator.Address,
+			NewOwner: creator.Address,
+			IgpId:    invalidIgp,
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("ism id %s is invalid: invalid hex address length", invalidIgp)))
+		Expect(err.Error()).To(Equal("invalid hex address length"))
 	})
 
-	It("PayForGas (valid)", func() {
+	It("MsgSetIgpOwner (invalid) for non-existing IGP", func() {
 		// Arrange
-		gasAmount := math.NewInt(10)
-
-		err := s.MintBaseCoins(gasPayer.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		res, err := s.RunTx(&types.MsgCreateIgp{
+		nonExistingIgp := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0"
+		_, err := s.RunTx(&types.MsgCreateIgp{
 			Owner: creator.Address,
 			Denom: denom,
 		})
 		Expect(err).To(BeNil())
 
-		var response types.MsgCreateIgpResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
-		Expect(err).To(BeNil())
-		igpId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
-			Owner: creator.Address,
-			IgpId: igpId.String(),
-			DestinationGasConfig: &types.DestinationGasConfig{
-				RemoteDomain: 1,
-				GasOracle: &types.GasOracle{
-					TokenExchangeRate: math.NewInt(1e10),
-					GasPrice:          math.NewInt(1),
-				},
-				GasOverhead: math.NewInt(200000),
-			},
-		})
-		Expect(err).To(BeNil())
-
-		gasPayerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), gasPayer.AccAddress, denom)
-
 		// Act
-		_, err = s.RunTx(&types.MsgPayForGas{
-			Sender:            gasPayer.Address,
-			IgpId:             igpId.String(),
-			MessageId:         "messageIdTest",
-			DestinationDomain: 1,
-			GasLimit:          math.NewInt(50000),
-			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
+		_, err = s.RunTx(&types.MsgSetIgpOwner{
+			Owner:    creator.Address,
+			NewOwner: creator.Address,
+			IgpId:    nonExistingIgp,
 		})
 
 		// Assert
-		Expect(err).To(BeNil())
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), gasPayer.AccAddress, denom).Amount).To(Equal(gasPayerBalance.Amount.Sub(gasAmount)))
-
-		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees.AmountOf(denom)).To(Equal(gasAmount))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("igp does not exist: %s", nonExistingIgp)))
 	})
 
-	// Claim
-	It("Claim (invalid) for invalid ISM", func() {
+	It("MsgSetIgpOwner (invalid) called by non-owner", func() {
 		// Arrange
-		gasAmount := math.NewInt(10)
-
-		err := s.MintBaseCoins(gasPayer.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
 		res, err := s.RunTx(&types.MsgCreateIgp{
 			Owner: creator.Address,
 			Denom: denom,
@@ -278,53 +305,19 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		igpId, err := util.DecodeHexAddress(response.Id)
 		Expect(err).To(BeNil())
 
-		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
-			Owner: creator.Address,
-			IgpId: igpId.String(),
-			DestinationGasConfig: &types.DestinationGasConfig{
-				RemoteDomain: 1,
-				GasOracle: &types.GasOracle{
-					TokenExchangeRate: math.NewInt(1e10),
-					GasPrice:          math.NewInt(1),
-				},
-				GasOverhead: math.NewInt(200000),
-			},
-		})
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgPayForGas{
-			Sender:            gasPayer.Address,
-			IgpId:             igpId.String(),
-			MessageId:         "messageIdTest",
-			DestinationDomain: 1,
-			GasLimit:          math.NewInt(50000),
-			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
-		})
-		Expect(err).To(BeNil())
-
-		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
-
-		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees.AmountOf(denom)).To(Equal(gasAmount))
-
 		// Act
-		_, err = s.RunTx(&types.MsgClaim{
-			Sender: creator.Address,
-			IgpId:  igpId.String() + "test",
+		_, err = s.RunTx(&types.MsgSetIgpOwner{
+			Owner:    gasPayer.Address,
+			NewOwner: creator.Address,
+			IgpId:    igpId.String(),
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("ism id %s is invalid: %s", igpId.String()+"test", "invalid hex address length")))
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom).Amount).To(Equal(ownerBalance.Amount))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own igp with id %s", gasPayer.Address, igpId)))
 	})
 
-	It("Claim (valid)", func() {
+	It("MsgSetIgpOwner (valid)", func() {
 		// Arrange
-		gasAmount := math.NewInt(10)
-
-		err := s.MintBaseCoins(gasPayer.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
 		res, err := s.RunTx(&types.MsgCreateIgp{
 			Owner: creator.Address,
 			Denom: denom,
@@ -337,46 +330,19 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		igpId, err := util.DecodeHexAddress(response.Id)
 		Expect(err).To(BeNil())
 
-		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
-			Owner: creator.Address,
-			IgpId: igpId.String(),
-			DestinationGasConfig: &types.DestinationGasConfig{
-				RemoteDomain: 1,
-				GasOracle: &types.GasOracle{
-					TokenExchangeRate: math.NewInt(1e10),
-					GasPrice:          math.NewInt(1),
-				},
-				GasOverhead: math.NewInt(200000),
-			},
-		})
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTx(&types.MsgPayForGas{
-			Sender:            gasPayer.Address,
-			IgpId:             igpId.String(),
-			MessageId:         "messageIdTest",
-			DestinationDomain: 1,
-			GasLimit:          math.NewInt(50000),
-			Amount:            sdk.NewCoin(denom, gasAmount),
-		})
-		Expect(err).To(BeNil())
-
-		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees.AmountOf(denom)).To(Equal(gasAmount))
-
-		ownerBalance := s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom)
-
 		// Act
-		_, err = s.RunTx(&types.MsgClaim{
-			Sender: creator.Address,
-			IgpId:  igpId.String(),
+		_, err = s.RunTx(&types.MsgSetIgpOwner{
+			Owner:    creator.Address,
+			NewOwner: gasPayer.Address,
+			IgpId:    igpId.String(),
 		})
 
 		// Assert
 		Expect(err).To(BeNil())
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), creator.AccAddress, denom).Amount).To(Equal(ownerBalance.Amount.Add(igp.ClaimableFees.AmountOf(denom))))
 
-		igp, _ = s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
-		Expect(igp.ClaimableFees.IsZero()).To(BeTrue())
+		// Check if the owner has been updated
+		igp, err := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
+		Expect(err).To(BeNil())
+		Expect(igp.Owner).To(Equal(gasPayer.Address))
 	})
 })
