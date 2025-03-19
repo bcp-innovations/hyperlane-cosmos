@@ -186,7 +186,7 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 
 	customHookMetadata, err := util.DecodeEthHex(msg.CustomHookMetadata)
 	if err != nil {
-		return nil, fmt.Errorf("invalid custom hook metadata: %s", err)
+		return nil, fmt.Errorf("invalid custom hook metadata")
 	}
 
 	var messageResultId string
