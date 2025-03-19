@@ -3,6 +3,7 @@ package types_test
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/crypto"
@@ -22,6 +23,16 @@ func bytesFromHexString(hexString string) []byte {
 	bytes, err := hex.DecodeString(hexString)
 	Expect(err).To(BeNil())
 	return bytes
+}
+
+func hyperlaneMessageFromHexString(hexString string) util.HyperlaneMessage {
+	bytes, err := hex.DecodeString(hexString)
+	Expect(err).To(BeNil())
+
+	message, err := util.ParseHyperlaneMessage(bytes)
+	Expect(err).To(BeNil())
+
+	return message
 }
 
 func signDigest(digest []byte, privateKeyHex string) []byte {
