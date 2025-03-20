@@ -33,3 +33,60 @@ make test
 ```
 
 More information can be found in the [Contributing](https://github.com/bcp-innovations/hyperlane-cosmos/blob/main/CONTRIBUTING.md).
+
+
+## Deploying a mailbox with hypd
+
+```shell
+export HYPD_FLAGS=--home test --chain-id hyperlane-local --keyring-backend test --from alice --fees 40000uhyp
+```
+
+Create a default ISM:
+```shell
+./hypd tx hyperlane ism create-merkle-root-multisig [publiyKey1,...] [threshold] $HYPD_FLAGS
+```
+https://api.korellia.kyve.network/hyperlane/v1/isms
+
+Create a new mailbox
+```shell
+/hypd tx hyperlane mailbox create [ism-id] [domain] $HYPD_FLAGS
+```
+https://api.korellia.kyve.network/hyperlane/v1/mailboxes
+
+Create a merkle tree hook
+```shell
+./hypd tx hyperlane hooks merkle create [mailbox-id] $HYPD_FLAGS
+```
+https://api.korellia.kyve.network/hyperlane/v1/merkle_tree_hooks
+
+Create an IGP
+```shell
+./hypd tx hyperlane hooks igp create [denom] $HYPD_FLAGS
+```
+https://api.korellia.kyve.network/hyperlane/v1/igps
+
+TODO: set gas config
+https://api.korellia.kyve.network/hyperlane/v1/igps/0x726f757465725f706f73745f6469737061746368000000040000000000000001/destination_gas_configs
+
+
+Update Mailbox
+```shell
+./hypd tx hyperlane mailbox set [mailbox-id] --default-hook [igp-hook-id] --required-hook [merkle-tree-hook-id] $HYPD_FLAGS
+```
+
+## Deploying a collateral token with hpyd
+
+Create collateral token
+```shell
+./hypd tx hyperlane-transfer create-collateral-token [mailbox-id] [denom] $HYPD_FLAGS
+```
+
+Set ISM for collateral token
+```shell
+./hypd tx hyperlane-transfer create-collateral-token [mailbox-id] [denom] $HYPD_FLAGS
+```
+
+Enroll gas router
+```shell
+./hypd tx hyperlane-transfer enroll-remote-router [token-id] [destination-domain] [recipient-contract] [gas-required-on-destination-chain] $HYPD_FLAGS
+```
