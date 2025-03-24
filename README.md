@@ -41,35 +41,46 @@ More information can be found in the [Contributing](https://github.com/bcp-innov
 export HYPD_FLAGS=--home test --chain-id hyperlane-local --keyring-backend test --from alice --fees 40000uhyp
 ```
 
-Create a default ISM:
+Create a default Merkle Root Multi-Sig ISM:
 ```shell
 ./hypd tx hyperlane ism create-merkle-root-multisig [publiyKey1,...] [threshold] $HYPD_FLAGS
 ```
-https://api.korellia.kyve.network/hyperlane/v1/isms
+http://localhost:1317/hyperlane/v1/isms
 
-Create a new mailbox
+Alternatively, one can create a No-Op ISM for testing which will allow every incoming message.
+
+Create a new mailbox. The `ism-id` must be the id of the previously created ISM.
+The domain is used for identifying networks. A list of existing domains can
+be found here https://docs.hyperlane.xyz/docs/reference/domains.
 ```shell
 /hypd tx hyperlane mailbox create [ism-id] [domain] $HYPD_FLAGS
 ```
-https://api.korellia.kyve.network/hyperlane/v1/mailboxes
+http://localhost:1317/hyperlane/v1/mailboxes
 
-Create a merkle tree hook
+Create a merkle tree hook, which is needed if the recipient used the 
+MerkleRootMultisigISM. 
 ```shell
 ./hypd tx hyperlane hooks merkle create [mailbox-id] $HYPD_FLAGS
 ```
-https://api.korellia.kyve.network/hyperlane/v1/merkle_tree_hooks
+http://localhost:1317/hyperlane/v1/merkle_tree_hooks
 
-Create an IGP
+Create an IGP (Interchain-Gas-Paymaster). 
 ```shell
 ./hypd tx hyperlane hooks igp create [denom] $HYPD_FLAGS
 ```
-https://api.korellia.kyve.network/hyperlane/v1/igps
+http://localhost:1317/hyperlane/v1/igps
 
-TODO: set gas config
-https://api.korellia.kyve.network/hyperlane/v1/igps/0x726f757465725f706f73745f6469737061746368000000040000000000000001/destination_gas_configs
+Set the gas config of the IGP. The config is fully compatible to the Hyperlane
+spec and the fee is calculated as follows:
+`fee = (gas + gas_overhead) * gas_price * token_exchange_rate / 1e10` 
+The resulting unit is the denom specified during the creation. 
+```shell
+./hypd tx hyperlane hooks igp set-destination-gas-config [igp-id] [remote-domain] [token-exchange-rate] [gas-price] [gas-overhead] $HYPD_FLAGS
+```
+http://localhost:1317/hyperlane/v1/igps/[igp-id]/destination_gas_configs
 
 
-Update Mailbox
+Update Mailbox with the newly created hooks:
 ```shell
 ./hypd tx hyperlane mailbox set [mailbox-id] --default-hook [igp-hook-id] --required-hook [merkle-tree-hook-id] $HYPD_FLAGS
 ```
@@ -83,10 +94,10 @@ Create collateral token
 
 Set ISM for collateral token
 ```shell
-./hypd tx hyperlane-transfer create-collateral-token [mailbox-id] [denom] $HYPD_FLAGS
+./hypd tx hyperlane-transfer set-token [token-id] --ism-id [ism-id] $HYPD_FLAGS
 ```
 
-Enroll gas router
+Enroll remote router
 ```shell
 ./hypd tx hyperlane-transfer enroll-remote-router [token-id] [destination-domain] [recipient-contract] [gas-required-on-destination-chain] $HYPD_FLAGS
 ```
