@@ -5,8 +5,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/ethereum/go-ethereum/crypto"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 
 type MultisigISM interface {
@@ -58,34 +59,34 @@ func ValidateNewMultisig(m MultisigISM) error {
 		return fmt.Errorf("threshold must be greater than zero")
 	}
 
-	if len(m.GetValidators()) < int(m.GetThreshold()) {
+	validators := m.GetValidators()
+	if len(validators) < int(m.GetThreshold()) {
 		return fmt.Errorf("validator addresses less than threshold")
 	}
 
-	// Ensure that validators are sorted in ascending order
-	if !slices.IsSorted(m.GetValidators()) {
+	// Ensure that validators are sorted in ascending order.
+	if !slices.IsSorted(validators) {
 		return fmt.Errorf("validator addresses are not sorted correctly in ascending order")
 	}
 
-	for _, validatorAddress := range m.GetValidators() {
+	count := map[string]int{}
+	for _, validatorAddress := range validators {
 		bytes, err := util.DecodeEthHex(validatorAddress)
 		if err != nil {
 			return fmt.Errorf("invalid validator address: %s", validatorAddress)
 		}
 
-		// ensure that the address is an eth address with 20 bytes
+		// Ensure that the address is an eth address with 20 bytes.
 		if len(bytes) != 20 {
-			return fmt.Errorf("invalid validator address: must be ethereum address (20 bytes)")
+			return fmt.Errorf("invalid validator address: must be 20 bytes")
+		}
+
+		// Check for duplications.
+		count[validatorAddress]++
+		if count[validatorAddress] > 1 {
+			return fmt.Errorf("duplicate validator address: %v", validatorAddress)
 		}
 	}
 
-	// check for duplications
-	count := map[string]int{}
-	for _, address := range m.GetValidators() {
-		count[address]++
-		if count[address] > 1 {
-			return fmt.Errorf("duplicate validator address: %v", address)
-		}
-	}
 	return nil
 }
