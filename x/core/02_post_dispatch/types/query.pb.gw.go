@@ -272,7 +272,7 @@ var (
 )
 
 func request_Query_MerkleTreeHooks_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryMerkleTreeHooks
+	var protoReq QueryMerkleTreeHooksRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -288,7 +288,7 @@ func request_Query_MerkleTreeHooks_0(ctx context.Context, marshaler runtime.Mars
 }
 
 func local_request_Query_MerkleTreeHooks_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryMerkleTreeHooks
+	var protoReq QueryMerkleTreeHooksRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -304,7 +304,7 @@ func local_request_Query_MerkleTreeHooks_0(ctx context.Context, marshaler runtim
 }
 
 func request_Query_MerkleTreeHook_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryMerkleTreeHook
+	var protoReq QueryMerkleTreeHookRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -331,7 +331,7 @@ func request_Query_MerkleTreeHook_0(ctx context.Context, marshaler runtime.Marsh
 }
 
 func local_request_Query_MerkleTreeHook_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryMerkleTreeHook
+	var protoReq QueryMerkleTreeHookRequest
 	var metadata runtime.ServerMetadata
 
 	var (

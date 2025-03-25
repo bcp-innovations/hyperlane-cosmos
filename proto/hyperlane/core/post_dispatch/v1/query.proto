@@ -37,14 +37,14 @@ service Query {
         "/hyperlane/v1/igps/{igp_id}/quote_gas_payment";
   }
 
-  // MerkleTreeHook ...
-  rpc MerkleTreeHooks(QueryMerkleTreeHooks)
+  // MerkleTreeHooks ...
+  rpc MerkleTreeHooks(QueryMerkleTreeHooksRequest)
       returns (QueryMerkleTreeHooksResponse) {
     option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks";
   }
 
   // MerkleTreeHook ...
-  rpc MerkleTreeHook(QueryMerkleTreeHook)
+  rpc MerkleTreeHook(QueryMerkleTreeHookRequest)
       returns (QueryMerkleTreeHookResponse) {
     option (google.api.http).get = "/hyperlane/v1/merkle_tree_hooks/{id}";
   }
@@ -113,8 +113,8 @@ message QueryQuoteGasPaymentResponse {
   ];
 }
 
-// QueryCountRequest ...
-message QueryMerkleTreeHooks {
+// QueryMerkleTreeHooksRequest ...
+message QueryMerkleTreeHooksRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
@@ -126,8 +126,8 @@ message QueryMerkleTreeHooksResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-// QueryMerkleTreeHook ...
-message QueryMerkleTreeHook { string id = 1; }
+// QueryMerkleTreeHookRequest ...
+message QueryMerkleTreeHookRequest { string id = 1; }
 
 // QueryMerkleTreeHookResponse
 message QueryMerkleTreeHookResponse {
