@@ -43,7 +43,6 @@ TEST CASES - msg_server.go
 * AnnounceValidator (invalid) with invalid signature recovery id
 * AnnounceValidator (invalid) same storage location for validator (replay protection)
 * AnnounceValidator (invalid) for non-existing Mailbox ID
-* AnnounceValidator (invalid) for invalid Mailbox ID
 * AnnounceValidator (invalid) for non-matching signature validator pair
 * AnnounceValidator (valid)
 * AnnounceValidator (valid) add another storage location
@@ -350,7 +349,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       "",
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -377,7 +376,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       invalidValidatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -404,7 +403,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: "",
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -425,7 +424,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       "",
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -446,7 +445,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       "0x0b1caf89d1edb9ee161093b1ec94ca75611dtest",
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -473,7 +472,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -499,7 +498,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 		Expect(err).To(BeNil())
@@ -509,7 +508,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -534,39 +533,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       nonExistingMailboxId.String(),
+			MailboxId:       nonExistingMailboxId,
 			Creator:         creator.Address,
 		})
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s: mailbox does not exist", nonExistingMailboxId.String())))
-	})
-
-	It("AnnounceValidator (invalid) for invalid Mailbox ID", func() {
-		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, creator.Address, "noop")
-
-		validatorAddress := "0x0b1caf89d1edb9ee161093b1ec94ca75611db492"
-		validatorPrivKey := "38430941d3ea0e70f9a16192a833dbbf3541b3170781042067173bfe6cba4508"
-		storageLocation := "aws://key.pub"
-
-		localDomain, err := s.App().HyperlaneKeeper.LocalDomain(s.Ctx(), mailboxId)
-		Expect(err).To(BeNil())
-
-		signature := announce(validatorPrivKey, storageLocation, mailboxId, localDomain, false)
-
-		// Act
-		_, err = s.RunTx(&types.MsgAnnounceValidator{
-			Validator:       validatorAddress,
-			StorageLocation: storageLocation,
-			Signature:       signature,
-			MailboxId:       mailboxId.String() + "test",
-			Creator:         creator.Address,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid mailbox id: mailbox does not exist"))
-		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) for non-matching signature validator pair", func() {
@@ -588,7 +560,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       wrongValidatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -615,7 +587,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -643,7 +615,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 		Expect(err).To(BeNil())
@@ -656,7 +628,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Validator:       validatorAddress,
 			StorageLocation: storageLocation2,
 			Signature:       signature,
-			MailboxId:       mailboxId.String(),
+			MailboxId:       mailboxId,
 			Creator:         creator.Address,
 		})
 
@@ -729,8 +701,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, defaultIsm
 	var response types2.MsgCreateMailboxResponse
 	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
-	mailboxId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
+	mailboxId := response.Id
 
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
 	Expect(err).To(BeNil())
@@ -752,7 +723,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, defaultIsm
 	Expect(mailboxes.Mailboxes[0].DefaultHook.String()).To(Equal(defaultHook))
 	Expect(mailboxes.Mailboxes[0].RequiredHook.String()).To(Equal(requiredHook))
 
-	return mailboxId
+	return *mailboxId
 }
 
 func announce(privKey, storageLocation string, mailboxId util.HexAddress, localDomain uint32, skipRecoveryId bool) string {

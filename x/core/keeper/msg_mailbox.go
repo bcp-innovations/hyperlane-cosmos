@@ -56,7 +56,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, err
 	}
 
-	return &types.MsgCreateMailboxResponse{Id: prefixedId.String()}, nil
+	return &types.MsgCreateMailboxResponse{Id: &prefixedId}, nil
 }
 
 func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMessage) (*types.MsgProcessMessageResponse, error) {

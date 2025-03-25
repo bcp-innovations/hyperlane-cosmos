@@ -7,17 +7,10 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 
 func (ms msgServer) Claim(ctx context.Context, req *types.MsgClaim) (*types.MsgClaimResponse, error) {
-	igpId, err := util.DecodeHexAddress(req.IgpId)
-	if err != nil {
-		return nil, fmt.Errorf("igp id %s is invalid: %s", req.IgpId, err.Error())
-	}
-
-	return &types.MsgClaimResponse{}, ms.k.Claim(ctx, req.Sender, igpId)
+	return &types.MsgClaimResponse{}, ms.k.Claim(ctx, req.Sender, req.IgpId)
 }
 
 func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*types.MsgCreateIgpResponse, error) {
@@ -42,28 +35,23 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 		return nil, err
 	}
 
-	return &types.MsgCreateIgpResponse{Id: nextId.String()}, nil
+	return &types.MsgCreateIgpResponse{Id: nextId}, nil
 }
 
 func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) (*types.MsgSetIgpOwnerResponse, error) {
-	igpId, err := util.DecodeHexAddress(req.IgpId)
+	igp, err := ms.k.Igps.Get(ctx, req.IgpId.GetInternalId())
 	if err != nil {
-		return nil, err
-	}
-
-	igp, err := ms.k.Igps.Get(ctx, igpId.GetInternalId())
-	if err != nil {
-		return nil, fmt.Errorf("igp does not exist: %v", igpId.String())
+		return nil, fmt.Errorf("igp does not exist: %v", req.IgpId.String())
 	}
 
 	if igp.Owner != req.Owner {
-		return nil, fmt.Errorf("%s does not own igp with id %s", req.Owner, igpId.String())
+		return nil, fmt.Errorf("%s does not own igp with id %s", req.Owner, req.IgpId.String())
 	}
 
 	// Any arbitrary string is allowed for a new owner.
 	igp.Owner = req.NewOwner
 
-	if err = ms.k.Igps.Set(ctx, igpId.GetInternalId(), igp); err != nil {
+	if err = ms.k.Igps.Set(ctx, req.IgpId.GetInternalId(), igp); err != nil {
 		return nil, err
 	}
 
@@ -72,21 +60,11 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 
 // PayForGas executes an InterchainGasPayment without for the specified payment amount.
 func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*types.MsgPayForGasResponse, error) {
-	igpId, err := util.DecodeHexAddress(req.IgpId)
-	if err != nil {
-		return nil, fmt.Errorf("igp id %s is invalid: %s", req.IgpId, err.Error())
-	}
-
 	handler := InterchainGasPaymasterHookHandler{*ms.k}
 
-	return &types.MsgPayForGasResponse{}, handler.PayForGasWithoutQuote(ctx, igpId, req.Sender, req.MessageId, req.DestinationDomain, req.GasLimit, sdk.NewCoins(req.Amount))
+	return &types.MsgPayForGasResponse{}, handler.PayForGasWithoutQuote(ctx, req.IgpId, req.Sender, req.MessageId.String(), req.DestinationDomain, req.GasLimit, sdk.NewCoins(req.Amount))
 }
 
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {
-	igpId, err := util.DecodeHexAddress(req.IgpId)
-	if err != nil {
-		return nil, fmt.Errorf("igp id %s is invalid: %s", req.IgpId, err.Error())
-	}
-
-	return &types.MsgSetDestinationGasConfigResponse{}, ms.k.SetDestinationGasConfig(ctx, igpId, req.Owner, req.DestinationGasConfig)
+	return &types.MsgSetDestinationGasConfigResponse{}, ms.k.SetDestinationGasConfig(ctx, req.IgpId, req.Owner, req.DestinationGasConfig)
 }

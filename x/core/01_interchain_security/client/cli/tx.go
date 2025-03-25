@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -42,12 +44,17 @@ func CmdAnnounceValidator() *cobra.Command {
 				return err
 			}
 
+			mailboxId, err := util.DecodeHexAddress(args[3])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgAnnounceValidator{
 				Validator:       args[0],
 				StorageLocation: args[1],
 				// Expected to be Hex encoded
 				Signature: args[2],
-				MailboxId: args[3],
+				MailboxId: mailboxId,
 				Creator:   clientCtx.GetFromAddress().String(),
 			}
 

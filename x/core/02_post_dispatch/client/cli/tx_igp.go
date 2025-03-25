@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
 	"cosmossdk.io/math"
@@ -44,9 +46,14 @@ func CmdClaim() *cobra.Command {
 				return err
 			}
 
+			igpId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgClaim{
 				Sender: clientCtx.GetFromAddress().String(),
-				IgpId:  args[0],
+				IgpId:  igpId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Sender)
@@ -104,9 +111,14 @@ func CmdSetIgpOwner() *cobra.Command {
 				return err
 			}
 
+			igpId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgSetIgpOwner{
 				Owner:    clientCtx.GetFromAddress().String(),
-				IgpId:    args[0],
+				IgpId:    igpId,
 				NewOwner: args[1],
 			}
 
@@ -150,10 +162,20 @@ func CmdPayForGas() *cobra.Command {
 				return err
 			}
 
+			igpId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			messageId, err := util.DecodeHexAddress(args[1])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgPayForGas{
 				Sender:            clientCtx.GetFromAddress().String(),
-				IgpId:             args[0],
-				MessageId:         args[1],
+				IgpId:             igpId,
+				MessageId:         messageId,
 				DestinationDomain: uint32(destinationDomain),
 				GasLimit:          gasLimitInt,
 				Amount:            amount,
@@ -204,9 +226,14 @@ func CmdSetDestinationGasConfig() *cobra.Command {
 				return errors.New("failed to convert `gasOverhead` into math.Int")
 			}
 
+			igpId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgSetDestinationGasConfig{
 				Owner: clientCtx.GetFromAddress().String(),
-				IgpId: args[0],
+				IgpId: igpId,
 				DestinationGasConfig: &types.DestinationGasConfig{
 					RemoteDomain: uint32(remoteDomain),
 					GasOracle: &types.GasOracle{

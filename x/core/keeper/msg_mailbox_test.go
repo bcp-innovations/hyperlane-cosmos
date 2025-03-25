@@ -37,7 +37,7 @@ TEST CASES - msg_mailbox.go
 * ProcessMessage (invalid) with empty message
 * ProcessMessage (invalid) with invalid non-hex message
 * ProcessMessage (invalid) with invalid metadata (Noop ISM)
-* SetMailbox (valid) without hooks
+* SetMailbox (valid) with hooks
 * SetMailbox (valid) without hooks
 * SetMailbox (valid)
 
@@ -356,7 +356,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err).To(BeNil())
 	})
 
-	It("SetMailbox (valid) without hooks", func() {
+	It("SetMailbox (valid) with hooks", func() {
 		// Arrange
 		mailboxId, requiredHook, defaultHook, ism := createValidMailbox(s, creator.Address, "noop", 1)
 
@@ -459,10 +459,7 @@ func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	igpId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-
-	return igpId
+	return response.Id
 }
 
 func createNoopHook(s *i.KeeperTestSuite, creator string) util.HexAddress {
@@ -475,10 +472,7 @@ func createNoopHook(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	noopHookId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-
-	return noopHookId
+	return response.Id
 }
 
 func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress, util.HexAddress) {
@@ -493,7 +487,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, destin
 	igpId := createIgp(s, creator)
 	noopId := createNoopHook(s, creator)
 
-	err := setDestinationGasConfig(s, creator, igpId.String(), destinationDomain)
+	err := setDestinationGasConfig(s, creator, igpId, destinationDomain)
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&types.MsgCreateMailbox{
@@ -540,7 +534,7 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return response.Id
 }
 
-func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {
+func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId util.HexAddress, domain uint32) error {
 	_, err := s.RunTx(&pdTypes.MsgSetDestinationGasConfig{
 		Owner: creator,
 		IgpId: igpId,
@@ -561,8 +555,7 @@ func verifyNewSingleMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, ismI
 	var response types.MsgCreateMailboxResponse
 	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
-	mailboxId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
+	mailboxId := *response.Id
 
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
 	Expect(err).To(BeNil())

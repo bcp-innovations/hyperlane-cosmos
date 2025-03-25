@@ -44,14 +44,20 @@ message MsgCreateIgp {
   option (amino.name) = "hyperlane/v1/MsgCreateInterchainGasPaymaster";
 
   // owner is the message sender.
-  string owner = 1;
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // denom
   string denom = 2;
 }
 
 // MsgCreateIgpResponse ...
-message MsgCreateIgpResponse { string id = 1; }
+message MsgCreateIgpResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
 
 // MsgSetIgpOwner ...
 message MsgSetIgpOwner {
@@ -59,10 +65,14 @@ message MsgSetIgpOwner {
   option (amino.name) = "hyperlane/v1/MsgSetIgpOwner";
 
   // owner is the message sender.
-  string owner = 1;
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // igp_id
-  string igp_id = 2;
+  string igp_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // new_owner
   string new_owner = 3;
@@ -80,7 +90,11 @@ message MsgSetDestinationGasConfig {
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // igp_id ...
-  string igp_id = 2;
+  string igp_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // destination_gas_config ...
   DestinationGasConfig destination_gas_config = 3;
@@ -98,10 +112,18 @@ message MsgPayForGas {
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // igp_id ...
-  string igp_id = 2;
+  string igp_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // message_id ...
-  string message_id = 3;
+  string message_id = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // destination_domain ...
   uint32 destination_domain = 4;
@@ -129,7 +151,11 @@ message MsgClaim {
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // igp_id ...
-  string igp_id = 2;
+  string igp_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // MsgClaimResponse ...
@@ -143,11 +169,21 @@ message MsgCreateMerkleTreeHook {
   // sender ...
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  string mailbox_id = 2;
+  string mailbox_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // MsgCreateMerkleTreeHookResponse ...
-message MsgCreateMerkleTreeHookResponse { string id = 1; }
+message MsgCreateMerkleTreeHookResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
 
 // MsgMerkleTreeHook ...
 message MsgCreateNoopHook {
@@ -159,4 +195,10 @@ message MsgCreateNoopHook {
 }
 
 // MsgCreateMerkleTreeHookResponse ...
-message MsgCreateNoopHookResponse { string id = 1; }
+message MsgCreateNoopHookResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}

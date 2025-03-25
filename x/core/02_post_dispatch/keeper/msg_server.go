@@ -22,12 +22,7 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 }
 
 func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCreateMerkleTreeHook) (*types.MsgCreateMerkleTreeHookResponse, error) {
-	mailboxId, err := util.DecodeHexAddress(msg.MailboxId)
-	if err != nil {
-		return nil, errors.Wrapf(types.ErrMailboxDoesNotExist, "invalid mailbox id %s", msg.MailboxId)
-	}
-
-	if exists, err := ms.k.coreKeeper.MailboxIdExists(ctx, mailboxId); !exists || err != nil {
+	if exists, err := ms.k.coreKeeper.MailboxIdExists(ctx, msg.MailboxId); !exists || err != nil {
 		return nil, errors.Wrapf(types.ErrMailboxDoesNotExist, "%s", msg.MailboxId)
 	}
 
@@ -37,7 +32,7 @@ func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCrea
 	}
 	merkleTreeHook := types.MerkleTreeHook{
 		Id:        nextId,
-		MailboxId: mailboxId.String(),
+		MailboxId: msg.MailboxId.String(),
 		Owner:     msg.Owner,
 		Tree:      types.ProtoFromTree(util.NewTree(util.ZeroHashes, 0)),
 	}
@@ -54,7 +49,7 @@ func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCrea
 	})
 
 	return &types.MsgCreateMerkleTreeHookResponse{
-		Id: nextId.String(),
+		Id: nextId,
 	}, nil
 }
 
@@ -79,6 +74,6 @@ func (ms msgServer) CreateNoopHook(ctx context.Context, msg *types.MsgCreateNoop
 	})
 
 	return &types.MsgCreateNoopHookResponse{
-		Id: nextId.String(),
+		Id: nextId,
 	}, nil
 }

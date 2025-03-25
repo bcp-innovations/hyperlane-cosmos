@@ -3,6 +3,8 @@ package cli
 import (
 	"fmt"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -36,9 +38,14 @@ func CmdCreateMerkle() *cobra.Command {
 				return err
 			}
 
+			mailboxId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgCreateMerkleTreeHook{
 				Owner:     clientCtx.GetFromAddress().String(),
-				MailboxId: args[0],
+				MailboxId: mailboxId,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)

@@ -110,7 +110,11 @@ message MsgAnnounceValidator {
   string signature = 3;
 
   // mailbox_id ...
-  string mailbox_id = 4;
+  string mailbox_id = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // creator ...
   string creator = 5;

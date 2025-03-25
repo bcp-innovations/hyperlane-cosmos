@@ -48,7 +48,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
-	return &types.MsgCreateSyntheticTokenResponse{Id: tokenId.String()}, nil
+	return &types.MsgCreateSyntheticTokenResponse{Id: &tokenId}, nil
 }
 
 // CreateCollateralToken ...
@@ -86,7 +86,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
 		return nil, err
 	}
-	return &types.MsgCreateCollateralTokenResponse{Id: tokenId.String()}, nil
+	return &types.MsgCreateCollateralTokenResponse{Id: &tokenId}, nil
 }
 
 // SetToken allows the owner of a token to change its ownership or update its ISM ID.
@@ -189,25 +189,25 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 		return nil, fmt.Errorf("invalid custom hook metadata")
 	}
 
-	var messageResultId string
+	var messageResultId util.HexAddress
 	if token.TokenType == types.HYP_TOKEN_TYPE_COLLATERAL {
 		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata)
 		if err != nil {
 			return nil, err
 		}
-		messageResultId = result.String()
+		messageResultId = result
 	} else if token.TokenType == types.HYP_TOKEN_TYPE_SYNTHETIC {
 		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata)
 		if err != nil {
 			return nil, err
 		}
-		messageResultId = result.String()
+		messageResultId = result
 	} else {
 		return nil, errors.New("invalid token type")
 	}
 
 	return &types.MsgRemoteTransferResponse{
-		MessageId: messageResultId,
+		MessageId: &messageResultId,
 	}, nil
 }
 

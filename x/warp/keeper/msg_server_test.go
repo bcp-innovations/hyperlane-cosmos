@@ -230,8 +230,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		// Act
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
@@ -270,8 +269,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		_, err = s.RunTx(&types.MsgEnrollRemoteRouter{
 			Owner:        owner.Address,
@@ -312,8 +310,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		err = s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -355,8 +352,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		err = s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -407,8 +403,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		err = s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -493,8 +488,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		err = s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -580,8 +574,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		err = s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -665,8 +658,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		err = s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -753,8 +745,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetToken{
@@ -783,8 +774,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetToken{
@@ -814,8 +804,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetToken{
@@ -846,8 +835,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId := *response.Id
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetToken{
@@ -923,13 +911,10 @@ func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	igpId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-
-	return igpId
+	return response.Id
 }
 
-func createMerkleHook(s *i.KeeperTestSuite, creator string, mailboxId string) util.HexAddress {
+func createMerkleHook(s *i.KeeperTestSuite, creator string, mailboxId util.HexAddress) util.HexAddress {
 	res, err := s.RunTx(&pdTypes.MsgCreateMerkleTreeHook{
 		Owner:     creator,
 		MailboxId: mailboxId,
@@ -940,10 +925,7 @@ func createMerkleHook(s *i.KeeperTestSuite, creator string, mailboxId string) ut
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
-	hookId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
-
-	return hookId
+	return response.Id
 }
 
 func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
@@ -957,7 +939,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 
 	igpId := createIgp(s, creator)
 
-	err := setDestinationGasConfig(s, creator, igpId.String(), destinationDomain)
+	err := setDestinationGasConfig(s, creator, igpId, destinationDomain)
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&coreTypes.MsgCreateMailbox{
@@ -969,10 +951,9 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 	var response coreTypes.MsgCreateMailboxResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
-	mailboxId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
+	mailboxId := *response.Id
 
-	merkleHook := createMerkleHook(s, creator, mailboxId.String())
+	merkleHook := createMerkleHook(s, creator, mailboxId)
 
 	_, err = s.RunTx(&coreTypes.MsgSetMailbox{
 		Owner:        creator,
@@ -1023,7 +1004,7 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return response.Id
 }
 
-func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {
+func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId util.HexAddress, domain uint32) error {
 	_, err := s.RunTx(&pdTypes.MsgSetDestinationGasConfig{
 		Owner: creator,
 		IgpId: igpId,
@@ -1044,8 +1025,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	var response coreTypes.MsgCreateMailboxResponse
 	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
-	mailboxId, err := util.DecodeHexAddress(response.Id)
-	Expect(err).To(BeNil())
+	mailboxId := *response.Id
 
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
 	Expect(err).To(BeNil())
@@ -1089,8 +1069,7 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		var response types.MsgCreateCollateralTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err = util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId = *response.Id
 
 	case 2:
 		res, err := s.RunTx(&types.MsgCreateSyntheticToken{
@@ -1102,8 +1081,7 @@ func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, 
 		var response types.MsgCreateSyntheticTokenResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		tokenId, err = util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		tokenId = *response.Id
 	}
 
 	if remoteRouter != nil {

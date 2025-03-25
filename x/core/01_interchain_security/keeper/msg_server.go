@@ -46,22 +46,17 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 		return nil, errors.Wrap(types.ErrInvalidAnnounce, "invalid signature")
 	}
 
-	mailboxId, err := util.DecodeHexAddress(req.MailboxId)
-	if err != nil {
-		return nil, errors.Wrap(types.ErrMailboxDoesNotExist, "invalid mailbox id")
-	}
-
-	found, err := m.k.coreKeeper.MailboxIdExists(ctx, mailboxId)
+	found, err := m.k.coreKeeper.MailboxIdExists(ctx, req.MailboxId)
 	if err != nil || !found {
-		return nil, errors.Wrapf(types.ErrMailboxDoesNotExist, "failed to find mailbox with id: %s", mailboxId.String())
+		return nil, errors.Wrapf(types.ErrMailboxDoesNotExist, "failed to find mailbox with id: %s", req.MailboxId.String())
 	}
 
-	localDomain, err := m.k.coreKeeper.LocalDomain(ctx, mailboxId)
+	localDomain, err := m.k.coreKeeper.LocalDomain(ctx, req.MailboxId)
 	if err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
-	announcementDigest := types.GetAnnouncementDigest(req.StorageLocation, localDomain, mailboxId.Bytes())
+	announcementDigest := types.GetAnnouncementDigest(req.StorageLocation, localDomain, req.MailboxId.Bytes())
 	ethSigningHash := util.GetEthSigningHash(announcementDigest[:])
 
 	recoveredPubKey, err := util.RecoverEthSignature(ethSigningHash[:], sig)
@@ -81,14 +76,14 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 	}
 
 	// Check if validator already exists.
-	exists, err := m.k.storageLocations.Has(ctx, collections.Join3(mailboxId.GetInternalId(), validatorAddress, uint64(0)))
+	exists, err := m.k.storageLocations.Has(ctx, collections.Join3(req.MailboxId.GetInternalId(), validatorAddress, uint64(0)))
 	if err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	var storageLocationIndex uint64 = 0
 	if exists {
-		rng := collections.NewSuperPrefixedTripleRange[uint64, []byte, uint64](mailboxId.GetInternalId(), validatorAddress)
+		rng := collections.NewSuperPrefixedTripleRange[uint64, []byte, uint64](req.MailboxId.GetInternalId(), validatorAddress)
 
 		iter, err := m.k.storageLocations.Iterate(ctx, rng)
 		if err != nil {
@@ -110,7 +105,7 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 		storageLocationIndex = uint64(len(storageLocations))
 	}
 
-	if err = m.k.storageLocations.Set(ctx, collections.Join3(mailboxId.GetInternalId(), validatorAddress, storageLocationIndex), req.StorageLocation); err != nil {
+	if err = m.k.storageLocations.Set(ctx, collections.Join3(req.MailboxId.GetInternalId(), validatorAddress, storageLocationIndex), req.StorageLocation); err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 

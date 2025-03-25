@@ -19,14 +19,14 @@ import (
 
 TEST CASES - msg_igp.go
 
-* CreateIgp (invalid) with invalid denom
-* CreateIgp (valid)
+
 * SetDestinationGasConfig (invalid) for non-existing IGP
 * SetDestinationGasConfig (invalid) with wrong owner
 * SetDestinationGasConfig (invalid) without gas oracle
-* SetDestinationGasConfig (invalid) for invalid IGP
+* CreateIgp (invalid) with invalid denom
+* CreateIgp (valid)
+* SetDestinationGasConfig (invalid) for non-existing IGP
 * SetDestinationGasConfig (valid)
-* MsgSetIgpOwner (invalid) for invalid IGP
 * MsgSetIgpOwner (invalid) for non-existing IGP
 * MsgSetIgpOwner (invalid) called by non-owner
 * MsgSetIgpOwner (valid)
@@ -54,9 +54,10 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 	// SetDestinationGasConfig
 	It("SetDestinationGasConfig (invalid) for non-existing IGP", func() {
 		// Arrange
-		nonExistingIgp := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0"
+		nonExistingIgp, err := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+		Expect(err).To(BeNil())
 
-		_, err := s.RunTx(&types.MsgCreateIgp{
+		_, err = s.RunTx(&types.MsgCreateIgp{
 			Owner: creator.Address,
 			Denom: denom,
 		})
@@ -166,8 +167,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		var response types.MsgCreateIgpResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		igpId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		igpId := response.Id
 
 		igp, _ := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
 		Expect(igp.Owner).To(Equal(creator.Address))
@@ -176,11 +176,12 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 	})
 
 	// SetDestinationGasConfig
-	It("SetDestinationGasConfig (invalid) for invalid IGP", func() {
+	It("SetDestinationGasConfig (invalid) for non-existing IGP", func() {
 		// Arrange
-		invalidIgp := "0x12345"
+		invalidIgp, err := util.DecodeHexAddress("0x10df2f89cb24ed6078fc3949b4870e94a7e32e40e8d8c6b7bd74ccc2c933d760")
+		Expect(err).To(BeNil())
 
-		_, err := s.RunTx(&types.MsgCreateIgp{
+		_, err = s.RunTx(&types.MsgCreateIgp{
 			Owner: creator.Address,
 			Denom: denom,
 		})
@@ -201,7 +202,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("igp id %s is invalid: invalid hex address length", invalidIgp)))
+		Expect(err.Error()).To(Equal(fmt.Sprintf("igp does not exist: %s", invalidIgp.String())))
 	})
 
 	It("SetDestinationGasConfig (valid)", func() {
@@ -215,13 +216,12 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		var response types.MsgCreateIgpResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		igpId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		igpId := response.Id
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
 			Owner: creator.Address,
-			IgpId: igpId.String(),
+			IgpId: igpId,
 			DestinationGasConfig: &types.DestinationGasConfig{
 				RemoteDomain: 1,
 				GasOracle: &types.GasOracle{
@@ -250,31 +250,11 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		Expect(destinationGasConfigs[0].GasOverhead).To(Equal(math.NewInt(200000)))
 	})
 
-	// MsgSetIgpOwner
-	It("MsgSetIgpOwner (invalid) for invalid IGP", func() {
-		// Arrange
-		invalidIgp := "0x12345"
-		_, err := s.RunTx(&types.MsgCreateIgp{
-			Owner: creator.Address,
-			Denom: denom,
-		})
-		Expect(err).To(BeNil())
-
-		// Act
-		_, err = s.RunTx(&types.MsgSetIgpOwner{
-			Owner:    creator.Address,
-			NewOwner: creator.Address,
-			IgpId:    invalidIgp,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid hex address length"))
-	})
-
 	It("MsgSetIgpOwner (invalid) for non-existing IGP", func() {
 		// Arrange
-		nonExistingIgp := "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0"
-		_, err := s.RunTx(&types.MsgCreateIgp{
+		nonExistingIgp, err := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+		Expect(err).To(BeNil())
+		_, err = s.RunTx(&types.MsgCreateIgp{
 			Owner: creator.Address,
 			Denom: denom,
 		})
@@ -302,14 +282,13 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		var response types.MsgCreateIgpResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		igpId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		igpId := response.Id
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetIgpOwner{
 			Owner:    gasPayer.Address,
 			NewOwner: creator.Address,
-			IgpId:    igpId.String(),
+			IgpId:    igpId,
 		})
 
 		// Assert
@@ -327,14 +306,13 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		var response types.MsgCreateIgpResponse
 		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 		Expect(err).To(BeNil())
-		igpId, err := util.DecodeHexAddress(response.Id)
-		Expect(err).To(BeNil())
+		igpId := response.Id
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetIgpOwner{
 			Owner:    creator.Address,
 			NewOwner: gasPayer.Address,
-			IgpId:    igpId.String(),
+			IgpId:    igpId,
 		})
 
 		// Assert
