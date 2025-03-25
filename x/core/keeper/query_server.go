@@ -41,7 +41,7 @@ func (qs queryServer) Delivered(ctx context.Context, req *types.QueryDeliveredRe
 	return &types.QueryDeliveredResponse{Delivered: delivered}, nil
 }
 
-func (qs queryServer) RecipientIsm(ctx context.Context, req *types.RecipientIsmRequest) (*types.RecipientIsmResponse, error) {
+func (qs queryServer) RecipientIsm(ctx context.Context, req *types.QueryRecipientIsmRequest) (*types.QueryRecipientIsmResponse, error) {
 	recipient, err := util.DecodeHexAddress(req.Recipient)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (qs queryServer) RecipientIsm(ctx context.Context, req *types.RecipientIsmR
 		return nil, err
 	}
 
-	return &types.RecipientIsmResponse{IsmId: get.String()}, nil
+	return &types.QueryRecipientIsmResponse{IsmId: get.String()}, nil
 }
 
 func (qs queryServer) Mailboxes(ctx context.Context, req *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {

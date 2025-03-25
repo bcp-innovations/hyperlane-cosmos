@@ -323,7 +323,7 @@ func (m *QueryAnnouncedStorageLocationsResponse) GetStorageLocations() []string 
 	return nil
 }
 
-// QueryAnnouncedStorageLocationsRequest ...
+// QueryLatestAnnouncedStorageLocationRequest ...
 type QueryLatestAnnouncedStorageLocationRequest struct {
 	MailboxId        string `protobuf:"bytes,1,opt,name=mailbox_id,json=mailboxId,proto3" json:"mailbox_id,omitempty"`
 	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
@@ -380,7 +380,7 @@ func (m *QueryLatestAnnouncedStorageLocationRequest) GetValidatorAddress() strin
 	return ""
 }
 
-// QueryAnnouncedStorageLocationsResponse ...
+// QueryLatestAnnouncedStorageLocationResponse ...
 type QueryLatestAnnouncedStorageLocationResponse struct {
 	StorageLocation string `protobuf:"bytes,1,opt,name=storage_location,json=storageLocation,proto3" json:"storage_location,omitempty"`
 }

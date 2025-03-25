@@ -125,7 +125,7 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 //
 // Merkle Tree Hook
 
-func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkleTreeHooks) (*types.QueryMerkleTreeHooksResponse, error) {
+func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkleTreeHooksRequest) (*types.QueryMerkleTreeHooksResponse, error) {
 	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.merkleTreeHooks, req.Pagination)
 	if err != nil {
 		return nil, err
@@ -159,7 +159,7 @@ func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkl
 	}, nil
 }
 
-func (qs queryServer) MerkleTreeHook(ctx context.Context, req *types.QueryMerkleTreeHook) (*types.QueryMerkleTreeHookResponse, error) {
+func (qs queryServer) MerkleTreeHook(ctx context.Context, req *types.QueryMerkleTreeHookRequest) (*types.QueryMerkleTreeHookResponse, error) {
 	merkleTreeHooksId, err := util.DecodeHexAddress(req.Id)
 	if err != nil {
 		return nil, err
