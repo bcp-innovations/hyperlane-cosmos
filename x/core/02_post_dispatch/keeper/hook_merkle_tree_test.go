@@ -12,7 +12,7 @@ import (
 
 /*
 
-TEST CASES - msg_igp.go
+TEST CASES - hook_merkle_tree_test.go
 
 * MerkleTreeHook PostDispatch Example
 * MerkleTreeHook QuoteDispatch
@@ -22,7 +22,7 @@ TEST CASES - msg_igp.go
 
 */
 
-var _ = Describe("msg_igp.go", Ordered, func() {
+var _ = Describe("hook_merkle_tree_test.go", Ordered, func() {
 	var s *i.KeeperTestSuite
 	var creator i.TestValidatorAddress
 
@@ -84,13 +84,11 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 			Expect(err).To(BeNil())
 			qs := keeper.NewQueryServerImpl(&s.App().HyperlaneKeeper.PostDispatchKeeper)
 			hook, err := qs.MerkleTreeHook(s.Ctx(), &types.QueryMerkleTreeHook{Id: hookId.String()})
-			Expect(err).To(BeNil())
-
-			Expect(hook.MerkleTreeHook.MerkleTree.Count).To(Equal(uint32(k + 1)))
-			Expect(util.HexAddress(hook.MerkleTreeHook.MerkleTree.Root).String()).To(Equal(expectedRoots[k]))
 
 			// Assert
 			Expect(err).To(BeNil())
+			Expect(hook.MerkleTreeHook.MerkleTree.Count).To(Equal(uint32(k + 1)))
+			Expect(util.HexAddress(hook.MerkleTreeHook.MerkleTree.Root).String()).To(Equal(expectedRoots[k]))
 			Expect(fee).To(Equal(sdk.NewCoins()))
 		}
 	})
