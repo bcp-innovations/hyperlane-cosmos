@@ -83,7 +83,7 @@ var _ = Describe("hook_merkle_tree_test.go", Ordered, func() {
 			fee, err := s.App().HyperlaneKeeper.PostDispatch(s.Ctx(), mailboxId, hookId, util.StandardHookMetadata{}, message, sdk.NewCoins())
 			Expect(err).To(BeNil())
 			qs := keeper.NewQueryServerImpl(&s.App().HyperlaneKeeper.PostDispatchKeeper)
-			hook, err := qs.MerkleTreeHook(s.Ctx(), &types.QueryMerkleTreeHook{Id: hookId.String()})
+			hook, err := qs.MerkleTreeHook(s.Ctx(), &types.QueryMerkleTreeHookRequest{Id: hookId.String()})
 
 			// Assert
 			Expect(err).To(BeNil())

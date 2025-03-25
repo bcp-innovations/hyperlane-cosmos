@@ -225,7 +225,7 @@ func (m *QueryTokenResponse) GetToken() *WrappedHypToken {
 	return nil
 }
 
-// / HypToken
+// WrappedHypToken
 type WrappedHypToken struct {
 	Id            string                                                       `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Owner         string                                                       `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`

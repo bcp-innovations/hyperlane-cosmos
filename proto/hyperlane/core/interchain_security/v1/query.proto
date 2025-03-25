@@ -10,7 +10,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 
-// Msg defines the module Msg service.
+// Query defines the module Query service.
 service Query {
   // Isms ...
   rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
@@ -75,13 +75,13 @@ message QueryAnnouncedStorageLocationsResponse {
   repeated string storage_locations = 1;
 }
 
-// QueryAnnouncedStorageLocationsRequest ...
+// QueryLatestAnnouncedStorageLocationRequest ...
 message QueryLatestAnnouncedStorageLocationRequest {
   string mailbox_id = 1;
   string validator_address = 2;
 }
 
-// QueryAnnouncedStorageLocationsResponse ...
+// QueryLatestAnnouncedStorageLocationResponse ...
 message QueryLatestAnnouncedStorageLocationResponse {
   string storage_location = 1;
 }

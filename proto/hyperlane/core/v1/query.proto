@@ -9,7 +9,7 @@ import "google/api/annotations.proto";
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
-// Msg defines the module Msg service.
+// Query defines the module Query service.
 service Query {
   // Mailboxes ...
   rpc Mailboxes(QueryMailboxesRequest) returns (QueryMailboxesResponse) {
@@ -32,7 +32,8 @@ service Query {
   // The recipient is globally unique as every application ID registered on the
   // core module is unique. This means that one application cannot be registered
   // to two mailboxes, resulting in a mailbox-independent lookup.
-  rpc RecipientIsm(RecipientIsmRequest) returns (RecipientIsmResponse) {
+  rpc RecipientIsm(QueryRecipientIsmRequest)
+      returns (QueryRecipientIsmResponse) {
     option (google.api.http).get = "/hyperlane/v1/recipient_ism/{recipient}";
   }
 
@@ -75,11 +76,11 @@ message QueryDeliveredRequest {
 // QueryDeliveredResponse ...
 message QueryDeliveredResponse { bool delivered = 1; }
 
-// RecipientIsmRequest ...
-message RecipientIsmRequest { string recipient = 1; }
+// QueryRecipientIsmRequest ...
+message QueryRecipientIsmRequest { string recipient = 1; }
 
-// RecipientIsmResponse ...
-message RecipientIsmResponse { string ism_id = 1; }
+// QueryRecipientIsmResponse ...
+message QueryRecipientIsmResponse { string ism_id = 1; }
 
 // QueryVerifyDryRunRequest ...
 message QueryVerifyDryRunRequest {
