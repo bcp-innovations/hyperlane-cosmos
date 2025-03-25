@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 	"github.com/cosmos/gogoproto/proto"
@@ -31,22 +32,14 @@ var _ = Describe("msg_server_test.go", Ordered, func() {
 		Expect(err).To(BeNil())
 	})
 
-	It("Create (invalid) Merkle Tree Hook (invalid mailbox)", func() {
-		// Act
-		_, err := s.RunTx(&types.MsgCreateMerkleTreeHook{
-			Owner:     creator.Address,
-			MailboxId: "0x1234",
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal("invalid mailbox id 0x1234: mailbox does not exist"))
-	})
-
 	It("Create (invalid) Merkle Tree Hook (non-existing mailbox)", func() {
 		// Act
-		_, err := s.RunTx(&types.MsgCreateMerkleTreeHook{
+		mailboxId, err := util.DecodeHexAddress("0x68797065726c616e650000000000000000000000000000000000000000000000")
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTx(&types.MsgCreateMerkleTreeHook{
 			Owner:     creator.Address,
-			MailboxId: "0x68797065726c616e650000000000000000000000000000000000000000000000",
+			MailboxId: mailboxId,
 		})
 
 		// Assert
@@ -57,12 +50,11 @@ var _ = Describe("msg_server_test.go", Ordered, func() {
 		// Arrange
 		mailboxId, err := createDummyMailbox(s, creator.Address)
 		Expect(err).To(BeNil())
-		println(mailboxId.String())
 
 		// Act
 		_, err = s.RunTx(&types.MsgCreateMerkleTreeHook{
 			Owner:     creator.Address,
-			MailboxId: mailboxId.String(),
+			MailboxId: mailboxId,
 		})
 
 		// Assert
@@ -91,6 +83,6 @@ var _ = Describe("msg_server_test.go", Ordered, func() {
 		Expect(err).To(BeNil())
 		Expect(hooks.NoopHooks).To(HaveLen(1))
 		Expect(hooks.NoopHooks[0].Owner).To(Equal(creator.Address))
-		Expect(hooks.NoopHooks[0].Id.String()).To(Equal(response.Id))
+		Expect(hooks.NoopHooks[0].Id).To(Equal(response.Id))
 	})
 })

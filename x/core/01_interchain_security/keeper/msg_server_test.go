@@ -723,7 +723,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, defaultIsm
 	Expect(mailboxes.Mailboxes[0].DefaultHook.String()).To(Equal(defaultHook))
 	Expect(mailboxes.Mailboxes[0].RequiredHook.String()).To(Equal(requiredHook))
 
-	return *mailboxId
+	return mailboxId
 }
 
 func announce(privKey, storageLocation string, mailboxId util.HexAddress, localDomain uint32, skipRecoveryId bool) string {

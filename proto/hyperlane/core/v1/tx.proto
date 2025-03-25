@@ -59,7 +59,7 @@ message MsgCreateMailboxResponse {
   string id = 1 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
-    (gogoproto.nullable) = true
+    (gogoproto.nullable) = false
   ];
 }
 

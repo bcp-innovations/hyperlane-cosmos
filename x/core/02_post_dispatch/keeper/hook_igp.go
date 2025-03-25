@@ -23,7 +23,7 @@ func (i InterchainGasPaymasterHookHandler) HookType() uint8 {
 }
 
 func (i InterchainGasPaymasterHookHandler) PostDispatch(ctx context.Context, _, hookId util.HexAddress, metadata util.StandardHookMetadata, message util.HyperlaneMessage, maxFee sdk.Coins) (sdk.Coins, error) {
-	return i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id().String(), message.Destination, metadata.GasLimit, maxFee)
+	return i.PayForGas(ctx, hookId, metadata.Address.String(), message.Id(), message.Destination, metadata.GasLimit, maxFee)
 }
 
 // QuoteDispatch returns the required Interchain Gas Payment for a certain message.
@@ -40,7 +40,7 @@ func (i InterchainGasPaymasterHookHandler) Exists(ctx context.Context, hookId ut
 }
 
 // PayForGas executes an InterchainGasPayment using `QuoteGasPayment` beforehand and returns the charged fees.
-func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, maxFee sdk.Coins) (sdk.Coins, error) {
+func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId util.HexAddress, sender string, messageId util.HexAddress, destinationDomain uint32, gasLimit math.Int, maxFee sdk.Coins) (sdk.Coins, error) {
 	if maxFee.Empty() {
 		return sdk.NewCoins(), fmt.Errorf("maxFee is required")
 	}
@@ -60,7 +60,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId
 // PayForGasWithoutQuote executes an InterchainGasPayment without using `QuoteGasPayment`.
 // This is used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
 // amount for e.g. re-funding a certain message-id as the first payment wasn't enough.
-func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId util.HexAddress, sender string, messageId string, destinationDomain uint32, gasLimit math.Int, amount sdk.Coins) error {
+func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId util.HexAddress, sender string, messageId util.HexAddress, destinationDomain uint32, gasLimit math.Int, amount sdk.Coins) error {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
 	if err != nil {
 		return fmt.Errorf("igp does not exist: %s", hookId.String())
@@ -68,10 +68,6 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 
 	if amount.IsZero() {
 		return fmt.Errorf("amount must be greater than zero")
-	}
-
-	if messageId == "" {
-		return fmt.Errorf("message id cannot be empty")
 	}
 
 	senderAcc, err := sdk.AccAddressFromBech32(sender)
@@ -95,7 +91,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	_ = sdkCtx.EventManager().EmitTypedEvent(&types.GasPayment{
-		MessageId:   messageId,
+		MessageId:   messageId.String(),
 		Destination: destinationDomain,
 		GasAmount:   gasLimit.String(),
 		Payment:     amount.String(),

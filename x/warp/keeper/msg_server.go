@@ -48,7 +48,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
-	return &types.MsgCreateSyntheticTokenResponse{Id: &tokenId}, nil
+	return &types.MsgCreateSyntheticTokenResponse{Id: tokenId}, nil
 }
 
 // CreateCollateralToken ...
@@ -86,7 +86,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
 		return nil, err
 	}
-	return &types.MsgCreateCollateralTokenResponse{Id: &tokenId}, nil
+	return &types.MsgCreateCollateralTokenResponse{Id: tokenId}, nil
 }
 
 // SetToken allows the owner of a token to change its ownership or update its ISM ID.
@@ -207,7 +207,7 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 	}
 
 	return &types.MsgRemoteTransferResponse{
-		MessageId: &messageResultId,
+		MessageId: messageResultId,
 	}, nil
 }
 

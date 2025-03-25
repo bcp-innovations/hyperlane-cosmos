@@ -59,18 +59,13 @@ func createDummyMailbox(s *i.KeeperTestSuite, creator string) (util.HexAddress, 
 		return [32]byte{}, err
 	}
 
-	mailboxId, err := util.DecodeHexAddress(response.Id)
-	if err != nil {
-		return [32]byte{}, err
-	}
-
-	return mailboxId, nil
+	return response.Id, nil
 }
 
 func createDummyMerkleTreeHook(s *i.KeeperTestSuite, creator string, mailboxId util.HexAddress) (util.HexAddress, error) {
 	res, err := s.RunTx(&types.MsgCreateMerkleTreeHook{
 		Owner:     creator,
-		MailboxId: mailboxId.String(),
+		MailboxId: mailboxId,
 	})
 	Expect(err).To(BeNil())
 
@@ -80,10 +75,5 @@ func createDummyMerkleTreeHook(s *i.KeeperTestSuite, creator string, mailboxId u
 		return [32]byte{}, err
 	}
 
-	hookId, err := util.DecodeHexAddress(response.Id)
-	if err != nil {
-		return [32]byte{}, err
-	}
-
-	return hookId, nil
+	return response.Id, nil
 }

@@ -555,7 +555,7 @@ func verifyNewSingleMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, ismI
 	var response types.MsgCreateMailboxResponse
 	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
-	mailboxId := *response.Id
+	mailboxId := response.Id
 
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
 	Expect(err).To(BeNil())

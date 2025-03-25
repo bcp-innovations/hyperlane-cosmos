@@ -58,7 +58,7 @@ message MsgCreateCollateralTokenResponse {
   string id = 1 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
-    (gogoproto.nullable) = true
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -82,7 +82,7 @@ message MsgCreateSyntheticTokenResponse {
   string id = 1 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
-    (gogoproto.nullable) = true
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -192,6 +192,6 @@ message MsgRemoteTransferResponse {
   string message_id = 1 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
-    (gogoproto.nullable) = true
+    (gogoproto.nullable) = false
   ];
 }
