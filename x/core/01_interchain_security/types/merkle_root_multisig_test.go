@@ -68,7 +68,7 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		}
 
 		// Assert
-		Expect(messageIdMultisigIsm.Validate().Error()).To(Equal("invalid validator address: must be ethereum address (20 bytes)"))
+		Expect("invalid validator address: must be 20 bytes").To(Equal(messageIdMultisigIsm.Validate().Error()))
 	})
 
 	It("Validate (invalid) unsorted validators", func() {
