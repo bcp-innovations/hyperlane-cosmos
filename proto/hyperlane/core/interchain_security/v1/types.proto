@@ -10,8 +10,7 @@ import "gogoproto/gogo.proto";
 message MessageIdMultisigISM {
   option (gogoproto.goproto_getters) = false;
   option (cosmos_proto.implements_interface) =
-      "hyperlane.core.v1.01_interchain_security."
-      "HyperlaneInterchainSecurityModule";
+      "hyperlane.core.interchain_security.v1.HyperlaneInterchainSecurityModule";
 
   // id ...
   string id = 1 [
@@ -35,8 +34,7 @@ message MessageIdMultisigISM {
 message MerkleRootMultisigISM {
   option (gogoproto.goproto_getters) = false;
   option (cosmos_proto.implements_interface) =
-      "hyperlane.core.v1.01_interchain_security."
-      "HyperlaneInterchainSecurityModule";
+      "hyperlane.core.interchain_security.v1.HyperlaneInterchainSecurityModule";
 
   // XXX ...
   string id = 1 [
@@ -60,8 +58,7 @@ message MerkleRootMultisigISM {
 message NoopISM {
   option (gogoproto.goproto_getters) = false;
   option (cosmos_proto.implements_interface) =
-      "hyperlane.core.v1.01_interchain_security."
-      "HyperlaneInterchainSecurityModule";
+      "hyperlane.core.interchain_security.v1.HyperlaneInterchainSecurityModule";
 
   // id ...
   string id = 1 [

@@ -1,7 +1,10 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/collections"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
@@ -14,9 +17,24 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 		return
 	}
 
-	isms, err := util.UnpackAnys[types.HyperlaneInterchainSecurityModule](data.Isms)
-	if err != nil {
-		panic(err)
+	isms := make([]types.HyperlaneInterchainSecurityModule, len(data.Isms))
+	for i, rawIsm := range data.Isms {
+		var item types.HyperlaneInterchainSecurityModule
+		// TODO find generic solution with proto unpack any
+		switch rawIsm.TypeUrl {
+		case "/hyperlane.core.interchain_security.v1.NoopISM":
+			item = &types.NoopISM{}
+		case "/hyperlane.core.interchain_security.v1.MessageIdMultisigISM":
+			item = &types.MessageIdMultisigISM{}
+		case "/hyperlane.core.interchain_security.v1.MerkleRootMultisigISM":
+			item = &types.MerkleRootMultisigISM{}
+		default:
+			panic(fmt.Sprintf("unsupported type %s", rawIsm.TypeUrl))
+		}
+		if err := proto.Unmarshal(rawIsm.Value, item); err != nil {
+			panic(err)
+		}
+		isms[i] = item
 	}
 
 	for _, ism := range isms {
@@ -71,9 +89,9 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 		panic(err)
 	}
 
-	wrappedLocations := make([]types.ValidatorStorageLocationGenesisWrapper, len(storageLocations))
+	wrappedLocations := make([]types.GenesisValidatorStorageLocationWrapper, len(storageLocations))
 	for i := range storageLocations {
-		location := types.ValidatorStorageLocationGenesisWrapper{
+		location := types.GenesisValidatorStorageLocationWrapper{
 			MailboxId:        storageLocations[i].Key.K1(),
 			ValidatorAddress: util.EncodeEthHex(storageLocations[i].Key.K2()),
 			Index:            storageLocations[i].Key.K3(),

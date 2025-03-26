@@ -7,6 +7,8 @@ import "hyperlane/core/v1/types.proto";
 import "hyperlane/core/interchain_security/v1/genesis.proto";
 import "hyperlane/core/post_dispatch/v1/genesis.proto";
 
+import "gogoproto/gogo.proto";
+
 // GenesisState is the state that must be provided at genesis.
 message GenesisState {
   // ism_genesis
@@ -15,16 +17,21 @@ message GenesisState {
   // post_dispatch_genesis
   hyperlane.core.post_dispatch.v1.GenesisState post_dispatch_genesis = 2;
 
-  repeated Mailbox mailboxes = 3;
-  repeated MailboxMessage messages = 4;
+  repeated Mailbox mailboxes = 3 [ (gogoproto.nullable) = false ];
+  repeated GenesisMailboxMessageWrapper messages = 4
+      [ (gogoproto.nullable) = false ];
 
   uint64 ism_sequence = 5;
   uint64 post_dispatch_sequence = 6;
   uint64 app_sequence = 7;
 }
 
-// Mailbox message for genesis state
-message MailboxMessage {
+// GenesisMailboxMessageWrapper ...
+message GenesisMailboxMessageWrapper {
   uint64 mailbox_id = 1;
-  bytes message_id = 2;
+  string message_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 }

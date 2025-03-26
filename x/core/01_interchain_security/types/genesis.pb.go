@@ -28,7 +28,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type GenesisState struct {
 	// accounts are the accounts present at genesis.
 	Isms                      []*types.Any                             `protobuf:"bytes,1,rep,name=isms,proto3" json:"isms,omitempty"`
-	ValidatorStorageLocations []ValidatorStorageLocationGenesisWrapper `protobuf:"bytes,2,rep,name=validator_storage_locations,json=validatorStorageLocations,proto3" json:"validator_storage_locations"`
+	ValidatorStorageLocations []GenesisValidatorStorageLocationWrapper `protobuf:"bytes,2,rep,name=validator_storage_locations,json=validatorStorageLocations,proto3" json:"validator_storage_locations"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -71,36 +71,36 @@ func (m *GenesisState) GetIsms() []*types.Any {
 	return nil
 }
 
-func (m *GenesisState) GetValidatorStorageLocations() []ValidatorStorageLocationGenesisWrapper {
+func (m *GenesisState) GetValidatorStorageLocations() []GenesisValidatorStorageLocationWrapper {
 	if m != nil {
 		return m.ValidatorStorageLocations
 	}
 	return nil
 }
 
-// ValidatorStorageLocationGenesisWrapper stores the information for
+// GenesisValidatorStorageLocationWrapper stores the information for
 // validator, mailbox and storage-location which validators have announced
-type ValidatorStorageLocationGenesisWrapper struct {
+type GenesisValidatorStorageLocationWrapper struct {
 	MailboxId        uint64 `protobuf:"varint,1,opt,name=mailbox_id,json=mailboxId,proto3" json:"mailbox_id,omitempty"`
 	ValidatorAddress string `protobuf:"bytes,2,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
 	Index            uint64 `protobuf:"varint,3,opt,name=index,proto3" json:"index,omitempty"`
 	StorageLocation  string `protobuf:"bytes,4,opt,name=storage_location,json=storageLocation,proto3" json:"storage_location,omitempty"`
 }
 
-func (m *ValidatorStorageLocationGenesisWrapper) Reset() {
-	*m = ValidatorStorageLocationGenesisWrapper{}
+func (m *GenesisValidatorStorageLocationWrapper) Reset() {
+	*m = GenesisValidatorStorageLocationWrapper{}
 }
-func (m *ValidatorStorageLocationGenesisWrapper) String() string { return proto.CompactTextString(m) }
-func (*ValidatorStorageLocationGenesisWrapper) ProtoMessage()    {}
-func (*ValidatorStorageLocationGenesisWrapper) Descriptor() ([]byte, []int) {
+func (m *GenesisValidatorStorageLocationWrapper) String() string { return proto.CompactTextString(m) }
+func (*GenesisValidatorStorageLocationWrapper) ProtoMessage()    {}
+func (*GenesisValidatorStorageLocationWrapper) Descriptor() ([]byte, []int) {
 	return fileDescriptor_908eb45c3c27ef24, []int{1}
 }
-func (m *ValidatorStorageLocationGenesisWrapper) XXX_Unmarshal(b []byte) error {
+func (m *GenesisValidatorStorageLocationWrapper) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ValidatorStorageLocationGenesisWrapper) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GenesisValidatorStorageLocationWrapper) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ValidatorStorageLocationGenesisWrapper.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GenesisValidatorStorageLocationWrapper.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -110,40 +110,40 @@ func (m *ValidatorStorageLocationGenesisWrapper) XXX_Marshal(b []byte, determini
 		return b[:n], nil
 	}
 }
-func (m *ValidatorStorageLocationGenesisWrapper) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ValidatorStorageLocationGenesisWrapper.Merge(m, src)
+func (m *GenesisValidatorStorageLocationWrapper) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisValidatorStorageLocationWrapper.Merge(m, src)
 }
-func (m *ValidatorStorageLocationGenesisWrapper) XXX_Size() int {
+func (m *GenesisValidatorStorageLocationWrapper) XXX_Size() int {
 	return m.Size()
 }
-func (m *ValidatorStorageLocationGenesisWrapper) XXX_DiscardUnknown() {
-	xxx_messageInfo_ValidatorStorageLocationGenesisWrapper.DiscardUnknown(m)
+func (m *GenesisValidatorStorageLocationWrapper) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisValidatorStorageLocationWrapper.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ValidatorStorageLocationGenesisWrapper proto.InternalMessageInfo
+var xxx_messageInfo_GenesisValidatorStorageLocationWrapper proto.InternalMessageInfo
 
-func (m *ValidatorStorageLocationGenesisWrapper) GetMailboxId() uint64 {
+func (m *GenesisValidatorStorageLocationWrapper) GetMailboxId() uint64 {
 	if m != nil {
 		return m.MailboxId
 	}
 	return 0
 }
 
-func (m *ValidatorStorageLocationGenesisWrapper) GetValidatorAddress() string {
+func (m *GenesisValidatorStorageLocationWrapper) GetValidatorAddress() string {
 	if m != nil {
 		return m.ValidatorAddress
 	}
 	return ""
 }
 
-func (m *ValidatorStorageLocationGenesisWrapper) GetIndex() uint64 {
+func (m *GenesisValidatorStorageLocationWrapper) GetIndex() uint64 {
 	if m != nil {
 		return m.Index
 	}
 	return 0
 }
 
-func (m *ValidatorStorageLocationGenesisWrapper) GetStorageLocation() string {
+func (m *GenesisValidatorStorageLocationWrapper) GetStorageLocation() string {
 	if m != nil {
 		return m.StorageLocation
 	}
@@ -152,7 +152,7 @@ func (m *ValidatorStorageLocationGenesisWrapper) GetStorageLocation() string {
 
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "hyperlane.core.interchain_security.v1.GenesisState")
-	proto.RegisterType((*ValidatorStorageLocationGenesisWrapper)(nil), "hyperlane.core.interchain_security.v1.ValidatorStorageLocationGenesisWrapper")
+	proto.RegisterType((*GenesisValidatorStorageLocationWrapper)(nil), "hyperlane.core.interchain_security.v1.GenesisValidatorStorageLocationWrapper")
 }
 
 func init() {
@@ -174,18 +174,18 @@ var fileDescriptor_908eb45c3c27ef24 = []byte{
 	0xc2, 0x30, 0xc3, 0xbd, 0x10, 0xbb, 0x42, 0x97, 0xda, 0x47, 0xc3, 0x9b, 0xf0, 0xfe, 0xeb, 0x1e,
 	0xb1, 0x40, 0x72, 0x02, 0x92, 0x99, 0x6c, 0xa2, 0xb6, 0xc2, 0xfb, 0x86, 0xf0, 0xe3, 0x9a, 0x15,
 	0x22, 0x63, 0x06, 0x54, 0xac, 0x0d, 0x28, 0x96, 0xf3, 0xb8, 0x80, 0x94, 0x19, 0x01, 0x52, 0xfb,
-	0x77, 0x5a, 0xc2, 0x7b, 0x72, 0x55, 0xe7, 0xe4, 0xe3, 0x89, 0xb4, 0xb0, 0xa0, 0x77, 0x47, 0xce,
-	0xb1, 0xb9, 0x4f, 0x8a, 0x55, 0x15, 0x57, 0x73, 0x77, 0xf3, 0xeb, 0xa9, 0x13, 0xf5, 0xeb, 0x5b,
-	0xaa, 0xf5, 0xe8, 0x3b, 0xc2, 0xcf, 0xaf, 0x63, 0x79, 0x4f, 0x30, 0x2e, 0x99, 0x28, 0x12, 0x58,
+	0x77, 0x5a, 0xc2, 0x7b, 0x72, 0x55, 0xe7, 0xe4, 0xd8, 0xc4, 0xc7, 0x13, 0x70, 0x61, 0x79, 0xef,
+	0x8e, 0xb8, 0x4f, 0x8a, 0x55, 0x15, 0x57, 0x73, 0x77, 0xf3, 0xeb, 0xa9, 0x13, 0xf5, 0xeb, 0x5b,
+	0xca, 0xf4, 0xe8, 0x3b, 0xc2, 0xcf, 0xaf, 0x63, 0x79, 0x4f, 0x30, 0x2e, 0x99, 0x28, 0x12, 0x58,
 	0xc7, 0x22, 0xf3, 0xd1, 0x10, 0x85, 0x6e, 0xd4, 0x39, 0x66, 0xde, 0x66, 0xde, 0x4b, 0xfc, 0xe8,
 	0xaf, 0x3d, 0x96, 0x65, 0x8a, 0xeb, 0x83, 0x29, 0x14, 0x76, 0xa2, 0xee, 0xf9, 0x62, 0x66, 0xf3,
 	0x5e, 0x0f, 0xdf, 0x15, 0x32, 0xe3, 0x6b, 0xff, 0xa6, 0xc5, 0xd8, 0x83, 0xf7, 0x02, 0x77, 0xff,
-	0x9f, 0x8b, 0xef, 0xb6, 0x84, 0x87, 0xfa, 0xdf, 0xd6, 0xe6, 0x62, 0xb3, 0x0b, 0xd0, 0x76, 0x17,
+	0x9f, 0x8b, 0xef, 0xb6, 0x84, 0x87, 0xfa, 0xdf, 0x9e, 0xe6, 0x62, 0xb3, 0x0b, 0xd0, 0x76, 0x17,
 	0xa0, 0xdf, 0xbb, 0x00, 0x7d, 0xdd, 0x07, 0xce, 0x76, 0x1f, 0x38, 0x3f, 0xf7, 0x81, 0xf3, 0xf9,
 	0x43, 0x2e, 0xcc, 0x72, 0x95, 0x90, 0x14, 0x4a, 0x9a, 0xa4, 0xd5, 0x58, 0x48, 0x09, 0xb5, 0x75,
 	0x4b, 0xcf, 0xb3, 0x1d, 0xa7, 0xa0, 0x4b, 0xd0, 0x74, 0x6d, 0x77, 0xea, 0xd5, 0x24, 0xbe, 0xb4,
-	0x56, 0xa6, 0xa9, 0xb8, 0x4e, 0xee, 0xb5, 0x9f, 0x39, 0xfd, 0x13, 0x00, 0x00, 0xff, 0xff, 0xde,
-	0x8b, 0x58, 0xfd, 0x89, 0x02, 0x00, 0x00,
+	0x56, 0xa6, 0xa9, 0xb8, 0x4e, 0xee, 0xb5, 0x9f, 0x39, 0xfd, 0x13, 0x00, 0x00, 0xff, 0xff, 0xcd,
+	0xd1, 0x1a, 0xb1, 0x89, 0x02, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -239,7 +239,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *ValidatorStorageLocationGenesisWrapper) Marshal() (dAtA []byte, err error) {
+func (m *GenesisValidatorStorageLocationWrapper) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -249,12 +249,12 @@ func (m *ValidatorStorageLocationGenesisWrapper) Marshal() (dAtA []byte, err err
 	return dAtA[:n], nil
 }
 
-func (m *ValidatorStorageLocationGenesisWrapper) MarshalTo(dAtA []byte) (int, error) {
+func (m *GenesisValidatorStorageLocationWrapper) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ValidatorStorageLocationGenesisWrapper) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GenesisValidatorStorageLocationWrapper) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -318,7 +318,7 @@ func (m *GenesisState) Size() (n int) {
 	return n
 }
 
-func (m *ValidatorStorageLocationGenesisWrapper) Size() (n int) {
+func (m *GenesisValidatorStorageLocationWrapper) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -439,7 +439,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ValidatorStorageLocations = append(m.ValidatorStorageLocations, ValidatorStorageLocationGenesisWrapper{})
+			m.ValidatorStorageLocations = append(m.ValidatorStorageLocations, GenesisValidatorStorageLocationWrapper{})
 			if err := m.ValidatorStorageLocations[len(m.ValidatorStorageLocations)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -465,7 +465,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ValidatorStorageLocationGenesisWrapper) Unmarshal(dAtA []byte) error {
+func (m *GenesisValidatorStorageLocationWrapper) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -488,10 +488,10 @@ func (m *ValidatorStorageLocationGenesisWrapper) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ValidatorStorageLocationGenesisWrapper: wiretype end group for non-group")
+			return fmt.Errorf("proto: GenesisValidatorStorageLocationWrapper: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ValidatorStorageLocationGenesisWrapper: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GenesisValidatorStorageLocationWrapper: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

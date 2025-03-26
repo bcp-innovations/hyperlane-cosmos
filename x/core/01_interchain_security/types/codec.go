@@ -17,7 +17,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
 	registry.RegisterInterface(
-		"hyperlane.core._interchain_security.HyperlaneInterchainSecurityModule",
+		"hyperlane.core.interchain_security.v1.HyperlaneInterchainSecurityModule",
 		(*HyperlaneInterchainSecurityModule)(nil),
 		&NoopISM{},
 		&MessageIdMultisigISM{},

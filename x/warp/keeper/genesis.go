@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/collections"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 )
 
@@ -17,6 +19,12 @@ func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) erro
 		}
 	}
 
+	for _, r := range data.RemoteRouters {
+		if err := k.EnrolledRouters.Set(ctx, collections.Join(r.TokenId, r.RemoteRouter.ReceiverDomain), r.RemoteRouter); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -26,17 +34,31 @@ func (k *Keeper) ExportGenesis(ctx context.Context) (*types.GenesisState, error)
 	if err != nil {
 		return nil, err
 	}
-	token, err := k.HypTokens.Iterate(ctx, nil)
+
+	tokenIterator, err := k.HypTokens.Iterate(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	tokens, err := token.Values()
+	tokens, err := tokenIterator.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	genesisRouters := make([]types.GenesisRemoteRouterWrapper, 0)
+	err = k.EnrolledRouters.Walk(ctx, nil, func(key collections.Pair[uint64, uint32], value types.RemoteRouter) (stop bool, err error) {
+		genesisRouters = append(genesisRouters, types.GenesisRemoteRouterWrapper{
+			TokenId:      key.K1(),
+			RemoteRouter: value,
+		})
+		return false, nil
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.GenesisState{
-		Tokens: tokens,
-		Params: params,
+		Tokens:        tokens,
+		Params:        params,
+		RemoteRouters: genesisRouters,
 	}, nil
 }

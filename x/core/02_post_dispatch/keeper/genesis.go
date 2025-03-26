@@ -9,7 +9,7 @@ import (
 func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 	if data == nil || data.Igps == nil || data.IgpGasConfigs == nil ||
 		data.MerkleTreeHooks == nil || data.NoopHooks == nil {
-		return
+		panic("cannot init genesis state, some data not available")
 	}
 
 	for _, igp := range data.Igps {
@@ -64,9 +64,9 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 		panic(err)
 	}
 
-	gasConfigs := make([]types.DestinationGasConfigGenesisWrapper, len(destinationGasConfigs))
+	gasConfigs := make([]types.GenesisDestinationGasConfigWrapper, len(destinationGasConfigs))
 	for i := range destinationGasConfigs {
-		cfg := types.DestinationGasConfigGenesisWrapper{
+		cfg := types.GenesisDestinationGasConfigWrapper{
 			RemoteDomain: destinationGasConfigs[i].Value.RemoteDomain,
 			GasOracle:    destinationGasConfigs[i].Value.GasOracle,
 			GasOverhead:  destinationGasConfigs[i].Value.GasOverhead,

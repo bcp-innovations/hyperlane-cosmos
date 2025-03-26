@@ -1,13 +1,23 @@
 package integration
 
 import (
+	"fmt"
 	"time"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/x/warp"
+	warpTypes "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core"
+	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/tests/simapp"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankTypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+
+	"cosmossdk.io/store"
+	storeTypes "cosmossdk.io/store/types"
 )
 
 var (
@@ -139,5 +149,48 @@ func (suite *KeeperTestSuite) RunTx(msg sdk.Msg) (*sdk.Result, error) {
 	}
 
 	commit()
+
+	// Run a full export and re-import via the genesis functions on every transaction
+	// to detect errors in the export/import functionality
+	suite.genesisImportExport()
+
 	return res, nil
+}
+
+func (suite *KeeperTestSuite) genesisImportExport() {
+	// Reimport Hyperlane core state
+	coreModule := core.NewAppModule(suite.App().AppCodec(), suite.App().HyperlaneKeeper)
+	coreGenState := coreModule.ExportGenesis(suite.Ctx(), suite.App().AppCodec())
+	suite.deleteStore(suite.getStoreByKeyName(coreTypes.ModuleName))
+	coreModule.InitGenesis(suite.Ctx(), suite.App().AppCodec(), coreGenState)
+
+	// Reimport Hyperlane Warp state
+	warpModule := warp.NewAppModule(suite.App().AppCodec(), suite.App().WarpKeeper)
+	genWarpState := warpModule.ExportGenesis(suite.Ctx(), suite.App().AppCodec())
+	suite.deleteStore(suite.getStoreByKeyName(warpTypes.ModuleName))
+	warpModule.InitGenesis(suite.Ctx(), suite.App().AppCodec(), genWarpState)
+}
+
+func (suite *KeeperTestSuite) deleteStore(store store.KVStore) {
+	iterator := store.Iterator(nil, nil)
+	keys := make([][]byte, 0)
+	for ; iterator.Valid(); iterator.Next() {
+		key := make([]byte, len(iterator.Key()))
+		copy(key, iterator.Key())
+		keys = append(keys, key)
+	}
+	iterator.Close()
+	for _, key := range keys {
+		store.Delete(key)
+	}
+}
+
+func (suite *KeeperTestSuite) getStoreByKeyName(keyName string) storeTypes.KVStore {
+	keys := suite.app.GetStoreKeys()
+	for _, key := range keys {
+		if key.Name() == keyName {
+			return suite.Ctx().KVStore(key)
+		}
+	}
+	panic(fmt.Errorf("store with name %s not found", keyName))
 }

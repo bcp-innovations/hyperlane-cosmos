@@ -9,15 +9,15 @@ import "gogoproto/gogo.proto";
 // GenesisState defines the post dispatch submodule's genesis state.
 message GenesisState {
   repeated InterchainGasPaymaster igps = 1 [ (gogoproto.nullable) = false ];
-  repeated DestinationGasConfigGenesisWrapper igp_gas_configs = 2
+  repeated GenesisDestinationGasConfigWrapper igp_gas_configs = 2
       [ (gogoproto.nullable) = false ];
   repeated MerkleTreeHook merkle_tree_hooks = 3
       [ (gogoproto.nullable) = false ];
   repeated NoopHook noop_hooks = 4 [ (gogoproto.nullable) = false ];
 }
 
-// DestinationGasConfigGenesisWrapper ...
-message DestinationGasConfigGenesisWrapper {
+// GenesisDestinationGasConfigWrapper ...
+message GenesisDestinationGasConfigWrapper {
   // remote_domain ...
   uint32 remote_domain = 1;
 

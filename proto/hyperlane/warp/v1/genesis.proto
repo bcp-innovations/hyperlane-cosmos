@@ -1,0 +1,25 @@
+syntax = "proto3";
+package hyperlane.warp.v1;
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
+
+import "hyperlane/warp/v1/types.proto";
+
+import "gogoproto/gogo.proto";
+
+// GenesisState is the state that must be provided at genesis.
+message GenesisState {
+  hyperlane.warp.v1.Params params = 1 [ (gogoproto.nullable) = false ];
+  repeated hyperlane.warp.v1.HypToken tokens = 2
+      [ (gogoproto.nullable) = false ];
+
+  repeated GenesisRemoteRouterWrapper remote_routers = 3
+      [ (gogoproto.nullable) = false ];
+}
+
+// GenesisRemoteRouterWrapper ...
+message GenesisRemoteRouterWrapper {
+  uint64 token_id = 1;
+  hyperlane.warp.v1.RemoteRouter remote_router = 2
+      [ (gogoproto.nullable) = false ];
+}

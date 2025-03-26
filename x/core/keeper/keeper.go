@@ -52,15 +52,16 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 
 	sb := collections.NewSchemaBuilder(storeService)
 	k := Keeper{
-		cdc:               cdc,
-		addressCodec:      addressCodec,
-		authority:         authority,
+		cdc:          cdc,
+		addressCodec: addressCodec,
+		authority:    authority,
+
 		Mailboxes:         collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.Uint64Key, codec.CollValue[types.Mailbox](cdc)),
 		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.Uint64Key, collections.BytesKey)),
 		MailboxesSequence: collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
-		bankKeeper:        bankKeeper,
 
-		// REFACTORED
+		bankKeeper: bankKeeper,
+
 		IsmKeeper:          ismkeeper.NewKeeper(cdc, storeService),
 		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService, bankKeeper),
 

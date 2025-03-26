@@ -11,13 +11,13 @@ message GenesisState {
   // accounts are the accounts present at genesis.
   repeated google.protobuf.Any isms = 1;
 
-  repeated ValidatorStorageLocationGenesisWrapper validator_storage_locations =
+  repeated GenesisValidatorStorageLocationWrapper validator_storage_locations =
       2 [ (gogoproto.nullable) = false ];
 }
 
-// ValidatorStorageLocationGenesisWrapper stores the information for
+// GenesisValidatorStorageLocationWrapper stores the information for
 // validator, mailbox and storage-location which validators have announced
-message ValidatorStorageLocationGenesisWrapper {
+message GenesisValidatorStorageLocationWrapper {
   uint64 mailbox_id = 1;
 
   string validator_address = 2;
