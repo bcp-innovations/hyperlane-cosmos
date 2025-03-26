@@ -121,7 +121,7 @@ func (m *GenesisState) GetAppSequence() uint64 {
 	return 0
 }
 
-// Mailbox message for genesis state
+// GenesisMailboxMessageWrapper ...
 type GenesisMailboxMessageWrapper struct {
 	MailboxId uint64                                                      `protobuf:"varint,1,opt,name=mailbox_id,json=mailboxId,proto3" json:"mailbox_id,omitempty"`
 	MessageId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,2,opt,name=message_id,json=messageId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"message_id"`
