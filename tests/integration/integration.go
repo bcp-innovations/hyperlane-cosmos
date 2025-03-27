@@ -36,6 +36,12 @@ func NewCleanChainAtTime(startTime int64) *KeeperTestSuite {
 	return &s
 }
 
+func NewCleanChainWithEnabledTokens(enabledTokens []int32) *KeeperTestSuite {
+	s := KeeperTestSuite{}
+	s.setupAppWithTokens(time.Now().Unix(), enabledTokens)
+	return &s
+}
+
 func (suite *KeeperTestSuite) App() *simapp.App {
 	return suite.app
 }

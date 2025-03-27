@@ -28,6 +28,7 @@ require (
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.35.1
 	mvdan.cc/gofumpt v0.7.0
+	sigs.k8s.io/yaml v1.4.0
 )
 
 require (
@@ -163,5 +164,4 @@ require (
 	gotest.tools/v3 v3.5.1 // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
 	pgregory.net/rapid v1.1.0 // indirect
-	sigs.k8s.io/yaml v1.4.0 // indirect
 )

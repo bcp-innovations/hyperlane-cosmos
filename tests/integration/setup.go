@@ -53,10 +53,14 @@ var DefaultConsensusParams = &cmtProto.ConsensusParams{
 }
 
 func (suite *KeeperTestSuite) setupApp(startTime int64) {
+	suite.setupAppWithTokens(startTime, []int32{1, 2})
+}
+
+func (suite *KeeperTestSuite) setupAppWithTokens(startTime int64, enabledTokens []int32) {
 	db := dbm.NewMemDB()
 
 	logger := log.NewNopLogger()
-	localApp, err := simapp.NewMiniApp(logger, db, nil, true, EmptyAppOptions{}, baseapp.SetChainID("hyperlane-local"))
+	localApp, err := simapp.NewMiniAppWithCustomConfig(logger, db, nil, true, EmptyAppOptions{}, simapp.DefaultHyperlaneModuleConfigs(enabledTokens), baseapp.SetChainID("hyperlane-local"))
 	if err != nil {
 		panic(err)
 	}

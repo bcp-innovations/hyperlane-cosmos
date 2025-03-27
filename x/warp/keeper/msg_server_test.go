@@ -84,27 +84,28 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId)))
 	})
 
-	// TODO
-	PIt("MsgCreateSyntheticToken (invalid) when module disabled synthetic tokens", func() {
+	It("MsgCreateSyntheticToken (invalid) when module disabled synthetic tokens", func() {
 		// Arrange
+
+		// Create new chain with only collateral tokens enabled
+		s = i.NewCleanChainWithEnabledTokens([]int32{1})
+		err := s.MintBaseCoins(owner.Address, 1_000_000)
+		Expect(err).To(BeNil())
+
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
-		//s.App().WarpKeeper.EnabledTokens = []int32{
-		//	int32(types.HYP_TOKEN_TYPE_COLLATERAL),
-		//}
-
 		// Act
-		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
+		_, err = s.RunTx(&types.MsgCreateSyntheticToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId,
 		})
 
 		// Assert
-		Expect(err).To(BeNil())
+		Expect(err.Error()).To(Equal("module disabled synthetic tokens"))
 
 		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
 		Expect(err).To(BeNil())
-		Expect(tokens).To(HaveLen(0))
+		Expect(tokens.Tokens).To(HaveLen(0))
 	})
 
 	It("MsgCreateSyntheticToken (valid)", func() {
@@ -153,28 +154,29 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId)))
 	})
 
-	// TODO
-	PIt("MsgCreateCollateralToken (invalid) when module disabled collateral tokens", func() {
+	It("MsgCreateCollateralToken (invalid) when module disabled collateral tokens", func() {
 		// Arrange
+
+		// Create new chain with only synthetic tokens enabled
+		s = i.NewCleanChainWithEnabledTokens([]int32{2})
+		err := s.MintBaseCoins(owner.Address, 1_000_000)
+		Expect(err).To(BeNil())
+
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
 
-		//s.App().WarpKeeper.EnabledTokens = []int32{
-		//	int32(types.HYP_TOKEN_TYPE_SYNTHETIC),
-		//}
-
 		// Act
-		_, err := s.RunTx(&types.MsgCreateCollateralToken{
+		_, err = s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
 			OriginMailbox: mailboxId,
 			OriginDenom:   denom,
 		})
 
 		// Assert
-		Expect(err).To(BeNil())
+		Expect(err.Error()).To(Equal("module disabled collateral tokens"))
 
 		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
 		Expect(err).To(BeNil())
-		Expect(tokens).To(HaveLen(0))
+		Expect(tokens.Tokens).To(HaveLen(0))
 	})
 
 	It("MsgCreateCollateralToken (valid)", func() {

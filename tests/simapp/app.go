@@ -6,6 +6,15 @@ import (
 	"os"
 	"path/filepath"
 
+	"google.golang.org/protobuf/encoding/protojson"
+
+	"sigs.k8s.io/yaml"
+
+	appv1alpha1 "cosmossdk.io/api/cosmos/app/v1alpha1"
+
+	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
+	warpTypes "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
+
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 
 	dbm "github.com/cosmos/cosmos-db"
@@ -15,6 +24,8 @@ import (
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 
+	coremodulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/core/module/v1"
+	warpmodulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/warp/module/v1"
 	hyperlanekeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	warpkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -91,10 +102,40 @@ type App struct {
 	sm *module.SimulationManager
 }
 
+func DefaultHyperlaneModuleConfigs(enabledTokens []int32) []*appv1alpha1.ModuleConfig {
+	return []*appv1alpha1.ModuleConfig{
+		{
+			Name: warpTypes.ModuleName,
+			Config: appconfig.WrapAny(&warpmodulev1.Module{
+				EnabledTokens: enabledTokens,
+			}),
+		},
+		{
+			Name:   coreTypes.ModuleName,
+			Config: appconfig.WrapAny(&coremodulev1.Module{}),
+		},
+	}
+}
+
 // AppConfig returns the default app config.
-func AppConfig() depinject.Config {
+func AppConfig(hyperlaneModuleConfigs []*appv1alpha1.ModuleConfig) depinject.Config {
+
+	// Manually load YAML file, because we want to inject the custom HyperlaneConfig after that.
+	j, err := yaml.YAMLToJSON(AppConfigYAML)
+	if err != nil {
+		return depinject.Error(err)
+	}
+	cc := &appv1alpha1.Config{}
+	err = protojson.Unmarshal(j, cc)
+	if err != nil {
+		return depinject.Error(err)
+	}
+
+	// Add custom hyperlane configs to app.yaml
+	cc.Modules = append(cc.Modules, hyperlaneModuleConfigs...)
+
 	return depinject.Configs(
-		appconfig.LoadYAML(AppConfigYAML),
+		appconfig.Compose(cc),
 		depinject.Supply(
 			// needed for genutil commands
 			map[string]module.AppModuleBasic{
@@ -113,6 +154,19 @@ func NewMiniApp(
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) (*App, error) {
+	return NewMiniAppWithCustomConfig(logger, db, traceStore, loadLatest, appOpts, DefaultHyperlaneModuleConfigs([]int32{1, 2}), baseAppOptions...)
+}
+
+// NewMiniAppWithCustomConfig returns a reference to an initialized App.
+func NewMiniAppWithCustomConfig(
+	logger log.Logger,
+	db dbm.DB,
+	traceStore io.Writer,
+	loadLatest bool,
+	appOpts servertypes.AppOptions,
+	hyperlaneConfig []*appv1alpha1.ModuleConfig,
+	baseAppOptions ...func(*baseapp.BaseApp),
+) (*App, error) {
 	var (
 		app        = &App{}
 		appBuilder *runtime.AppBuilder
@@ -120,7 +174,7 @@ func NewMiniApp(
 
 	if err := depinject.Inject(
 		depinject.Configs(
-			AppConfig(),
+			AppConfig(hyperlaneConfig),
 			depinject.Supply(
 				logger,
 				appOpts,
