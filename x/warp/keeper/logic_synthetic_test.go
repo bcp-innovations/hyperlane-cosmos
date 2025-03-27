@@ -329,7 +329,7 @@ var _ = Describe("logic_synthetic.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		message := util.HyperlaneMessage{
-			Version:     1,
+			Version:     3,
 			Nonce:       1,
 			Origin:      remoteRouter.ReceiverDomain,
 			Sender:      receiverContract,
