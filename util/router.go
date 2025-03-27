@@ -83,7 +83,7 @@ func (r *Router[T]) GetNextSequence(ctx context.Context, moduleId uint8) (HexAdd
 	}
 
 	if _, ok := r.modules[id]; !ok {
-		return HexAddress{}, fmt.Errorf("module with id %d not found", moduleId)
+		return HexAddress{}, fmt.Errorf("module with id not found: %d", moduleId)
 	}
 
 	address := GenerateHexAddress(r.name, id, next)
