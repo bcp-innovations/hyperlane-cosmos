@@ -119,7 +119,6 @@ func DefaultHyperlaneModuleConfigs(enabledTokens []int32) []*appv1alpha1.ModuleC
 
 // AppConfig returns the default app config.
 func AppConfig(hyperlaneModuleConfigs []*appv1alpha1.ModuleConfig) depinject.Config {
-
 	// Manually load YAML file, because we want to inject the custom HyperlaneConfig after that.
 	j, err := yaml.YAMLToJSON(AppConfigYAML)
 	if err != nil {
