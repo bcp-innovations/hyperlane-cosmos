@@ -35,7 +35,7 @@ secured by **multi-signature Interchain Security Modules**.
   - **MessageId-Multisig-ISM** – Ensures integrity with message ID-based validation.
 - **Post Dispatch Hooks**
   - **Merkle Tree Hook** – Supports Merkle-based verification for Multisig ISMs.
-  - **InterchainGasPaymaster** – Provides gas prices for destination chains.
+  - **InterchainGasPaymaster** – Provides gas prices for destination chains and interchain gas payments.
 
 The module includes a comprehensive test suite and a preconfigured minimal 
 Cosmos SDK app.
