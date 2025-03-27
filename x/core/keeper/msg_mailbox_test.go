@@ -337,7 +337,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		recipient := util.CreateMockHexAddress("recipient", 0)
 
 		message := util.HyperlaneMessage{
-			Version:     1,
+			Version:     3,
 			Nonce:       1,
 			Origin:      0,
 			Sender:      util.CreateMockHexAddress("sender", 0),
@@ -371,7 +371,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		message := util.HyperlaneMessage{
-			Version:     1,
+			Version:     3,
 			Nonce:       1,
 			Origin:      0,
 			Sender:      util.CreateMockHexAddress("sender", 0),

@@ -25,6 +25,11 @@ func (k Keeper) ProcessMessage(
 		return err
 	}
 
+	// Check for valid message version
+	if message.Version != types.MESSAGE_VERSION {
+		return fmt.Errorf("unsupported message version %d", message.Version)
+	}
+
 	// Check if mailbox exists and increment counter
 	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
 	if err != nil {
@@ -123,7 +128,7 @@ func (k Keeper) DispatchMessage(
 	}
 
 	hypMsg := util.HyperlaneMessage{
-		Version:     3,
+		Version:     types.MESSAGE_VERSION,
 		Nonce:       mailbox.MessageSent,
 		Origin:      mailbox.LocalDomain,
 		Sender:      sender,
