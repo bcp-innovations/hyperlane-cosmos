@@ -92,7 +92,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		err := s.MintBaseCoins(owner.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		// Act
 		_, err = s.RunTx(&types.MsgCreateSyntheticToken{
@@ -110,7 +110,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgCreateSyntheticToken (valid)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateSyntheticToken{
@@ -126,7 +126,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Arrange
 		invalidDenom := "123HYPERLANE!"
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateCollateralToken{
@@ -162,7 +162,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		err := s.MintBaseCoins(owner.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		// Act
 		_, err = s.RunTx(&types.MsgCreateCollateralToken{
@@ -181,7 +181,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgCreateCollateralToken (valid)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		// Act
 		_, err := s.RunTx(&types.MsgCreateCollateralToken{
@@ -198,7 +198,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Arrange
 		nonExistingTokenId, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		_, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -220,7 +220,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgEnrollRemoteRouter (invalid) non-owner address", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -259,7 +259,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Gas:              math.NewInt(50000),
 		}
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -300,7 +300,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgEnrollRemoteRouter (invalid) invalid remote router", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -342,7 +342,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Gas:              math.NewInt(50000),
 		}
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -393,7 +393,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Gas:              math.NewInt(50000),
 		}
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -478,7 +478,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Gas:              math.NewInt(50000),
 		}
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -564,7 +564,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Gas:              math.NewInt(50000),
 		}
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -648,7 +648,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Gas:              math.NewInt(50000),
 		}
 
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -735,7 +735,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgSetToken (invalid) empty new-owner and ISM ID", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
 			Owner:         owner.Address,
@@ -763,7 +763,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgSetToken (invalid) non-existing ISM ID", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 		nonExistingIsm, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 
 		res, err := s.RunTx(&types.MsgCreateCollateralToken{
@@ -792,7 +792,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgSetToken (invalid) non-owner address", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 
 		secondIsmId := createNoopIsm(s, owner.Address)
 
@@ -822,7 +822,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgSetToken (valid)", func() {
 		// Arrange
-		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", false, 1)
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
 		newOwner := "new_owner"
 
 		secondIsmId := createNoopIsm(s, owner.Address)
@@ -930,7 +930,7 @@ func createMerkleHook(s *i.KeeperTestSuite, creator string, mailboxId util.HexAd
 	return response.Id
 }
 
-func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
+func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
 	var ismId util.HexAddress
 	switch ism {
 	case "noop":
@@ -971,7 +971,7 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 		return [32]byte{}, [32]byte{}, [32]byte{}
 	}
 
-	return verifyNewMailbox(s, res, creator, igpId.String(), ismId.String(), igpRequired), igpId, ismId
+	return verifyNewMailbox(s, res, creator, igpId.String(), ismId.String()), igpId, ismId
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
@@ -1023,7 +1023,7 @@ func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId util.He
 	return err
 }
 
-func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ismId string, igpRequired bool) util.HexAddress {
+func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ismId string) util.HexAddress {
 	var response coreTypes.MsgCreateMailboxResponse
 	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
@@ -1041,12 +1041,6 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 		Expect(mailbox.DefaultHook).To(BeNil())
 	}
 
-	//if igpRequired {
-	//	Expect(mailbox.Igp.Required).To(BeTrue()) TODO
-	//} else {
-	//	Expect(mailbox.Igp.Required).To(BeFalse())
-	//}
-
 	mailboxes, err := coreKeeper.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &coreTypes.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())
 	Expect(mailboxes.Mailboxes).To(HaveLen(1))
@@ -1056,7 +1050,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 }
 
 func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, sender string, tokenType types.HypTokenType) (util.HexAddress, util.HexAddress, util.HexAddress, util.HexAddress) {
-	mailboxId, igpId, ismId := createValidMailbox(s, owner, "noop", false, 1)
+	mailboxId, igpId, ismId := createValidMailbox(s, owner, "noop", 1)
 
 	var tokenId util.HexAddress
 	switch tokenType {

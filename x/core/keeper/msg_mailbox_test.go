@@ -34,9 +34,12 @@ TEST CASES - msg_mailbox.go
 * DispatchMessage (valid) with MultisigISM
 * DispatchMessage (valid) with custom hook
 * DispatchMessage (valid)
+* ProcessMessage (invalid) (unkown recipient)
 * ProcessMessage (invalid) with empty message
 * ProcessMessage (invalid) with invalid non-hex message
 * ProcessMessage (invalid) with invalid metadata (Noop ISM)
+* ProcessMessage (valid) (Noop ISM)
+* ProcessMessage (valid) (Multisig ISM)
 * SetMailbox (valid) with hooks
 * SetMailbox (valid) without hooks
 * SetMailbox (valid)
@@ -324,14 +327,13 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err.Error()).To(Equal("failed to decode metadata"))
 	})
 
-	PIt("ProcessMessage (valid) (Noop ISM)", func() {
+	It("ProcessMessage (invalid) (unkown recipient)", func() {
 		// Arrange
 		mailboxId, _, _, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
-		// TODO: Create token to use as recipient
 		recipient := util.CreateMockHexAddress("recipient", 0)
 
 		message := util.HyperlaneMessage{
@@ -353,7 +355,47 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		})
 
 		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("id %v not found", recipient)))
+	})
+
+	It("ProcessMessage (valid) (Noop ISM)", func() {
+		// Arrange
+		mailboxId, _, _, ismId := createValidMailbox(s, creator.Address, "noop", 1)
+
+		err := s.MintBaseCoins(sender.Address, 1_000_000)
 		Expect(err).To(BeNil())
+
+		// Register a mock recipient
+		mockApp := i.CreateMockApp(s.App().HyperlaneKeeper.AppRouter())
+		recipient, err := mockApp.RegisterApp(s.Ctx(), ismId)
+		Expect(err).To(BeNil())
+
+		message := util.HyperlaneMessage{
+			Version:     1,
+			Nonce:       1,
+			Origin:      0,
+			Sender:      util.CreateMockHexAddress("sender", 0),
+			Destination: 1,
+			Recipient:   recipient,
+			Body:        nil,
+		}
+
+		// Act
+		_, err = s.RunTx(&types.MsgProcessMessage{
+			MailboxId: mailboxId,
+			Relayer:   sender.Address,
+			Metadata:  "",
+			Message:   message.String(),
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		// Expect our mock app to have been called
+		callcount, message, mailboxId := mockApp.CallInfo()
+		Expect(callcount).To(Equal(1))
+		Expect(message.String()).To(Equal(message.String()))
+		Expect(mailboxId.String()).To(Equal(mailboxId.String()))
 	})
 
 	It("SetMailbox (valid) with hooks", func() {
@@ -443,8 +485,6 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(mailbox.RequiredHook).To(Equal(&requiredHookId))
 		Expect(mailbox.Owner).To(Equal(newOwner))
 	})
-
-	// TODO: ProcessMessage (valid) (Multisig ISM)
 })
 
 // Utils
