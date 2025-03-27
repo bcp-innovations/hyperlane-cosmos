@@ -2,9 +2,6 @@
 
 This project is an implementation of **Hyperlane for the Cosmos SDK**, designed for a seamless interchain communication following the Hyperlane spec. This allows chains built with the Cosmos SDK to communicate with other blockchains using Hyperlane without relying on CosmWasm.
 
-> [!WARNING]  
-> This project is currently under development and not intended to be used in production.
-
 ## [x/core](./x/core)
 `core` is intended to implement the fundamental functionalities of the Hyperlane 
 protocol to dispatch and process messages, which can then be used by 
@@ -33,6 +30,14 @@ make test
 ```
 
 More information can be found in the [Contributing](https://github.com/bcp-innovations/hyperlane-cosmos/blob/main/CONTRIBUTING.md).
+
+To get quickly started with a test chain setup:
+```shell
+make build-simapp
+cd build
+./hypd init-sample-chain --home test
+./hypd start --home test
+```
 
 ## Integrating the module
 
@@ -173,7 +178,7 @@ Update Mailbox with the newly created hooks:
 ./hypd tx hyperlane mailbox set [mailbox-id] --default-hook [igp-hook-id] --required-hook [merkle-tree-hook-id] $HYPD_FLAGS
 ```
 
-## Deploying a collateral token with hpyd
+## Deploying a collateral token with hypd
 
 Create collateral token
 ```shell
