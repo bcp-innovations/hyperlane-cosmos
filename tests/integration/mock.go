@@ -56,3 +56,69 @@ func (n NoopPostDispatchHookHandler) QuoteDispatch(_ context.Context, _, _ util.
 func (n NoopPostDispatchHookHandler) HookType() uint8 {
 	return MOCK_TYPE_NOOP_POST_DISPATCH
 }
+
+const MOCK_TYPE_APP uint8 = 201
+
+type CallInfo struct {
+	count     int
+	message   util.HyperlaneMessage
+	mailboxId util.HexAddress
+}
+type MockApp struct {
+	// Map from recipient to ISM ID
+	apps     map[util.HexAddress]util.HexAddress
+	router   *util.Router[util.HyperlaneApp]
+	callinfo *CallInfo
+	moduleId uint8
+}
+
+func CreateMockApp(router *util.Router[util.HyperlaneApp]) *MockApp {
+	handler := MockApp{
+		apps:     make(map[util.HexAddress]util.HexAddress),
+		router:   router,
+		callinfo: new(CallInfo),
+		moduleId: MOCK_TYPE_APP,
+	}
+
+	router.RegisterModule(handler.moduleId, handler)
+
+	return &handler
+}
+
+func (m MockApp) RegisterApp(ctx context.Context, ismId util.HexAddress) (util.HexAddress, error) {
+	sequence, err := m.router.GetNextSequence(ctx, m.moduleId)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+	m.apps[sequence] = ismId
+	return sequence, nil
+}
+
+func (m MockApp) Handle(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) error {
+	*m.callinfo = CallInfo{
+		count:     m.callinfo.count + 1,
+		message:   message,
+		mailboxId: mailboxId,
+	}
+	return nil
+}
+
+func (m MockApp) CallInfo() (count int, message util.HyperlaneMessage, mailboxId util.HexAddress) {
+	if m.callinfo == nil {
+		return 0, util.HyperlaneMessage{}, util.HexAddress{}
+	}
+	return m.callinfo.count, m.callinfo.message, m.callinfo.mailboxId
+}
+
+func (m MockApp) Exists(_ context.Context, recipient util.HexAddress) (bool, error) {
+	_, ok := m.apps[recipient]
+	return ok, nil
+}
+
+func (m MockApp) ReceiverIsmId(_ context.Context, recipient util.HexAddress) (*util.HexAddress, error) {
+	ismId, ok := m.apps[recipient]
+	if !ok {
+		return nil, nil
+	}
+	return &ismId, nil
+}
