@@ -35,7 +35,7 @@ func NewRootCmd() *cobra.Command {
 	)
 
 	if err := depinject.Inject(
-		depinject.Configs(simapp.AppConfig(),
+		depinject.Configs(simapp.AppConfig(simapp.DefaultHyperlaneModuleConfigs([]int32{1, 2})),
 			depinject.Supply(
 				log.NewNopLogger(),
 			),
