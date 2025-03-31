@@ -2,10 +2,10 @@ version: v1
 name: buf.build/bcp-innovations/hyperlane-cosmos
 deps:
   - buf.build/cosmos/cosmos-sdk:v0.50.0
-  - buf.build/cosmos/cosmos-proto
-  - buf.build/cosmos/gogo-proto
-  - buf.build/googleapis/googleapis
-  - buf.build/protocolbuffers/wellknowntypes
+  - buf.build/cosmos/cosmos-proto:1935555c206d4afb9e94615dfd0fad31
+  - buf.build/cosmos/gogo-proto:5e5b9fdd01804356895f8f79a6f1ddc1
+  - buf.build/googleapis/googleapis:28151c0d0a1641bf938a7672c500e01d
+  - buf.build/protocolbuffers/wellknowntypes:657250e6a39648cbb169d079a60bd9ba
 lint:
   use:
     - DEFAULT
