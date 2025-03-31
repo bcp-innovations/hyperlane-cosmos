@@ -55,7 +55,7 @@ proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "--> Generating protobuf files..."
-	@$(protoImage) sh ./scripts/protocgen.sh
+	@$(protoImage) sh ./proto/protocgen.sh
 	@go mod tidy
 
 proto-format:
