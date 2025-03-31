@@ -48,7 +48,7 @@ jobs:
           fi
 
   buf-break-check:
-    runs-on: depot-ubuntu-22.04-4
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: bufbuild/buf-setup-action@v1.38.0
