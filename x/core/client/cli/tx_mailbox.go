@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -120,7 +121,23 @@ func CmdSetMailbox() *cobra.Command {
 		Use:   "set [mailbox-id]",
 		Short: "Update a Hyperlane Mailbox",
 		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if renounceOwnership {
+				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
+				var response string
+
+				_, err := fmt.Scanln(&response)
+				if err != nil {
+					return err
+				}
+
+				if strings.ToLower(response) != "yes" {
+					return fmt.Errorf("canceled transaction")
+				}
+			}
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -147,12 +164,13 @@ func CmdSetMailbox() *cobra.Command {
 			}
 
 			msg := types.MsgSetMailbox{
-				Owner:        clientCtx.GetFromAddress().String(),
-				MailboxId:    mailboxId,
-				DefaultIsm:   defaultIsmId,
-				DefaultHook:  defaultHookId,
-				RequiredHook: requiredHookId,
-				NewOwner:     newOwner,
+				Owner:             clientCtx.GetFromAddress().String(),
+				MailboxId:         mailboxId,
+				DefaultIsm:        defaultIsmId,
+				DefaultHook:       defaultHookId,
+				RequiredHook:      requiredHookId,
+				NewOwner:          newOwner,
+				RenounceOwnership: renounceOwnership,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)
@@ -168,6 +186,7 @@ func CmdSetMailbox() *cobra.Command {
 	cmd.Flags().StringVar(&defaultHook, "default-hook", "", "set updated defaultHook")
 	cmd.Flags().StringVar(&requiredHook, "required-hook", "", "set updated requiredHook")
 	cmd.Flags().StringVar(&newOwner, "new-owner", "", "set updated owner")
+	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
 
 	flags.AddTxFlagsToCmd(cmd)
 
