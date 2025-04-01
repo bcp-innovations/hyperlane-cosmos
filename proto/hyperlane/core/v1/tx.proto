@@ -96,7 +96,9 @@ message MsgSetMailbox {
     (gogoproto.nullable) = true
   ];
   // new_owner ...
-  string new_owner = 6;
+  string new_owner = 6 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // renounce_ownership
+  bool renounce_ownership = 7;
 }
 
 // MsgSetMailboxResponse ...

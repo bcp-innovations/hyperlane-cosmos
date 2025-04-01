@@ -40,7 +40,9 @@ TEST CASES - msg_mailbox.go
 * ProcessMessage (invalid) with invalid metadata (Noop ISM)
 * ProcessMessage (valid) (Noop ISM)
 * ProcessMessage (valid) (Multisig ISM)
-* SetMailbox (valid) with hooks
+* SetMailbox (invalid) with invalid new owner
+* SetMailbox (invalid) with non-owner address
+* SetMailbox (valid) renounce ownership
 * SetMailbox (valid) without hooks
 * SetMailbox (valid)
 
@@ -398,7 +400,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(mailboxId.String()).To(Equal(mailboxId.String()))
 	})
 
-	It("SetMailbox (valid) with hooks", func() {
+	It("SetMailbox (invalid) with invalid new owner", func() {
 		// Arrange
 		mailboxId, requiredHook, defaultHook, ism := createValidMailbox(s, creator.Address, "noop", 1)
 
@@ -409,12 +411,44 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgSetMailbox{
-			Owner:        sender.Address,
-			MailboxId:    mailboxId,
-			DefaultIsm:   &noopIsmId,
-			DefaultHook:  &defaultHookId,
-			RequiredHook: &requiredHookId,
-			NewOwner:     newOwner,
+			Owner:             creator.Address,
+			MailboxId:         mailboxId,
+			DefaultIsm:        &noopIsmId,
+			DefaultHook:       &defaultHookId,
+			RequiredHook:      &requiredHookId,
+			NewOwner:          newOwner,
+			RenounceOwnership: false,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("invalid new owner"))
+
+		mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
+		Expect(err).To(BeNil())
+		Expect(mailbox.DefaultIsm).To(Equal(ism))
+		Expect(mailbox.DefaultHook).To(Equal(&defaultHook))
+		Expect(mailbox.RequiredHook).To(Equal(&requiredHook))
+		Expect(mailbox.Owner).To(Equal(creator.Address))
+	})
+
+	It("SetMailbox (invalid) with non-owner address", func() {
+		// Arrange
+		mailboxId, requiredHook, defaultHook, ism := createValidMailbox(s, creator.Address, "noop", 1)
+
+		noopIsmId := createNoopIsm(s, sender.Address)
+		defaultHookId := createIgp(s, creator.Address)
+		requiredHookId := createIgp(s, creator.Address)
+		newOwner := i.GenerateTestValidatorAddress("new_owner").AccAddress.String()
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetMailbox{
+			Owner:             sender.Address,
+			MailboxId:         mailboxId,
+			DefaultIsm:        &noopIsmId,
+			DefaultHook:       &defaultHookId,
+			RequiredHook:      &requiredHookId,
+			NewOwner:          newOwner,
+			RenounceOwnership: false,
 		})
 
 		// Assert
@@ -428,21 +462,50 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(mailbox.Owner).To(Equal(creator.Address))
 	})
 
+	It("SetMailbox (valid) renounce ownership", func() {
+		// Arrange
+		mailboxId, requiredHook, defaultHook, _ := createValidMailbox(s, creator.Address, "noop", 1)
+
+		noopIsmId := createNoopIsm(s, sender.Address)
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetMailbox{
+			Owner:             creator.Address,
+			MailboxId:         mailboxId,
+			DefaultIsm:        &noopIsmId,
+			DefaultHook:       nil,
+			RequiredHook:      nil,
+			NewOwner:          "",
+			RenounceOwnership: true,
+		})
+
+		// Assert
+		Expect(err).NotTo(HaveOccurred())
+
+		mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
+		Expect(err).To(BeNil())
+		Expect(mailbox.DefaultIsm).To(Equal(noopIsmId))
+		Expect(mailbox.DefaultHook).To(Equal(&defaultHook))
+		Expect(mailbox.RequiredHook).To(Equal(&requiredHook))
+		Expect(mailbox.Owner).To(Equal(""))
+	})
+
 	It("SetMailbox (valid) without hooks", func() {
 		// Arrange
 		mailboxId, requiredHook, defaultHook, _ := createValidMailbox(s, creator.Address, "noop", 1)
 
 		noopIsmId := createNoopIsm(s, sender.Address)
-		newOwner := "new_owner"
+		newOwner := i.GenerateTestValidatorAddress("new_owner").AccAddress.String()
 
 		// Act
 		_, err := s.RunTx(&types.MsgSetMailbox{
-			Owner:        creator.Address,
-			MailboxId:    mailboxId,
-			DefaultIsm:   &noopIsmId,
-			DefaultHook:  nil,
-			RequiredHook: nil,
-			NewOwner:     newOwner,
+			Owner:             creator.Address,
+			MailboxId:         mailboxId,
+			DefaultIsm:        &noopIsmId,
+			DefaultHook:       nil,
+			RequiredHook:      nil,
+			NewOwner:          newOwner,
+			RenounceOwnership: false,
 		})
 
 		// Assert
@@ -463,16 +526,17 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		noopIsmId := createNoopIsm(s, sender.Address)
 		defaultHookId := createIgp(s, creator.Address)
 		requiredHookId := createIgp(s, creator.Address)
-		newOwner := "new_owner"
+		newOwner := i.GenerateTestValidatorAddress("new_owner").AccAddress.String()
 
 		// Act
 		_, err := s.RunTx(&types.MsgSetMailbox{
-			Owner:        creator.Address,
-			MailboxId:    mailboxId,
-			DefaultIsm:   &noopIsmId,
-			DefaultHook:  &defaultHookId,
-			RequiredHook: &requiredHookId,
-			NewOwner:     newOwner,
+			Owner:             creator.Address,
+			MailboxId:         mailboxId,
+			DefaultIsm:        &noopIsmId,
+			DefaultHook:       &defaultHookId,
+			RequiredHook:      &requiredHookId,
+			NewOwner:          newOwner,
+			RenounceOwnership: false,
 		})
 
 		// Assert

@@ -119,7 +119,14 @@ func (ms msgServer) SetMailbox(ctx context.Context, req *types.MsgSetMailbox) (*
 	}
 
 	if req.NewOwner != "" {
+		if _, err := ms.k.addressCodec.StringToBytes(req.NewOwner); err != nil {
+			return nil, fmt.Errorf("invalid new owner")
+		}
 		mailbox.Owner = req.NewOwner
+	}
+
+	if req.RenounceOwnership {
+		mailbox.Owner = ""
 	}
 
 	if err = ms.k.Mailboxes.Set(ctx, mailboxId.GetInternalId(), mailbox); err != nil {
