@@ -54,6 +54,38 @@ message MerkleRootMultisigISM {
   uint32 threshold = 4;
 }
 
+// DomainRoutingISM ...
+message DomainRoutingISM {
+  option (gogoproto.goproto_getters) = false;
+  option (cosmos_proto.implements_interface) =
+      "hyperlane.core.interchain_security.v1.HyperlaneInterchainSecurityModule";
+
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // domain_ism_mapping ...
+  repeated DomainIsmMapping domain_ism_mapping = 3;
+}
+
+// DomainIsmMapping ...
+message DomainIsmMapping {
+  uint32 domain_id = 1;
+
+  // ism_id ...
+  string ism_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
 // NoopISM ...
 message NoopISM {
   option (gogoproto.goproto_getters) = false;

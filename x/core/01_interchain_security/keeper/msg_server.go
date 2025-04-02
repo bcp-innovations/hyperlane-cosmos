@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	"context"
+	"fmt"
 
 	"cosmossdk.io/errors"
 
@@ -16,6 +17,52 @@ import (
 
 type msgServer struct {
 	k *Keeper
+}
+
+func (m msgServer) CreateDomainRoutingIsm(ctx context.Context, req *types.MsgCreateDomainRoutingIsm) (*types.MsgCreateDomainRoutingIsmResponse, error) {
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING)
+	if err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	newIsm := types.DomainRoutingISM{
+		Id:               ismId,
+		Owner:            req.Creator,
+		DomainIsmMapping: req.DomainIsmMapping,
+	}
+
+	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgCreateDomainRoutingIsmResponse{Id: ismId}, nil
+}
+
+func (m msgServer) SetDomainRoutingIsm(ctx context.Context, req *types.MsgSetDomainRoutingIsm) (*types.MsgSetDomainRoutingIsmResponse, error) {
+	ism, err := m.k.isms.Get(ctx, req.Id.GetInternalId())
+	if err != nil {
+		return nil, fmt.Errorf("failed to find mailbox with id: %v", req.Id.String())
+	}
+
+	// TODO: Verify owner
+
+	routingIsm, ok := ism.(*types.DomainRoutingISM)
+	if !ok {
+		return &types.MsgSetDomainRoutingIsmResponse{}, fmt.Errorf("expected DomainRoutingISM")
+	}
+
+	routingIsm.DomainIsmMapping = req.DomainIsmMapping
+
+	if err = m.k.isms.Set(ctx, req.Id.GetInternalId(), routingIsm); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgSetDomainRoutingIsmResponse{}, nil
+}
+
+func (m msgServer) RemoveDomainRoutingIsm(ctx context.Context, req *types.MsgRemoveDomainRoutingIsm) (*types.MsgRemoveDomainRoutingIsmResponse, error) {
+	// TODO: implement
+	panic("implement me")
 }
 
 var _ types.MsgServer = msgServer{}

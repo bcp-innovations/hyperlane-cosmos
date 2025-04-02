@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	github_com_bcp_innovations_hyperlane_cosmos_util "github.com/bcp-innovations/hyperlane-cosmos/util"
+	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -134,7 +135,7 @@ func (m *MsgCreateMessageIdMultisigIsmResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateMessageIdMultisigIsmResponse proto.InternalMessageInfo
 
-// MsgCreateMultisigIsm ...
+// MsgCreateMerkleRootMultisigIsm ...
 type MsgCreateMerkleRootMultisigIsm struct {
 	// creator is the message sender.
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
@@ -199,7 +200,7 @@ func (m *MsgCreateMerkleRootMultisigIsm) GetThreshold() uint32 {
 	return 0
 }
 
-// MsgCreateMultisigIsmResponse ...
+// MsgCreateMerkleRootMultisigIsmResponse ...
 type MsgCreateMerkleRootMultisigIsmResponse struct {
 	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`
 }
@@ -239,6 +240,286 @@ func (m *MsgCreateMerkleRootMultisigIsmResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateMerkleRootMultisigIsmResponse proto.InternalMessageInfo
 
+// MsgCreateDomainRoutingIsm ...
+type MsgCreateDomainRoutingIsm struct {
+	// creator is the message sender.
+	Creator          string              `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	DomainIsmMapping []*DomainIsmMapping `protobuf:"bytes,2,rep,name=domain_ism_mapping,json=domainIsmMapping,proto3" json:"domain_ism_mapping,omitempty"`
+}
+
+func (m *MsgCreateDomainRoutingIsm) Reset()         { *m = MsgCreateDomainRoutingIsm{} }
+func (m *MsgCreateDomainRoutingIsm) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateDomainRoutingIsm) ProtoMessage()    {}
+func (*MsgCreateDomainRoutingIsm) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{4}
+}
+func (m *MsgCreateDomainRoutingIsm) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateDomainRoutingIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateDomainRoutingIsm.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateDomainRoutingIsm) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateDomainRoutingIsm.Merge(m, src)
+}
+func (m *MsgCreateDomainRoutingIsm) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateDomainRoutingIsm) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateDomainRoutingIsm.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateDomainRoutingIsm proto.InternalMessageInfo
+
+func (m *MsgCreateDomainRoutingIsm) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateDomainRoutingIsm) GetDomainIsmMapping() []*DomainIsmMapping {
+	if m != nil {
+		return m.DomainIsmMapping
+	}
+	return nil
+}
+
+// MsgCreateDomainRoutingIsmResponse ...
+type MsgCreateDomainRoutingIsmResponse struct {
+	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`
+}
+
+func (m *MsgCreateDomainRoutingIsmResponse) Reset()         { *m = MsgCreateDomainRoutingIsmResponse{} }
+func (m *MsgCreateDomainRoutingIsmResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateDomainRoutingIsmResponse) ProtoMessage()    {}
+func (*MsgCreateDomainRoutingIsmResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{5}
+}
+func (m *MsgCreateDomainRoutingIsmResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateDomainRoutingIsmResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateDomainRoutingIsmResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateDomainRoutingIsmResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateDomainRoutingIsmResponse.Merge(m, src)
+}
+func (m *MsgCreateDomainRoutingIsmResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateDomainRoutingIsmResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateDomainRoutingIsmResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateDomainRoutingIsmResponse proto.InternalMessageInfo
+
+// MsgSetDomainRoutingIsm ...
+type MsgSetDomainRoutingIsm struct {
+	// owner is the message sender.
+	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	// id is the Routing ISM id.
+	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,2,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`
+	// domain_ism_mapping ...
+	DomainIsmMapping []*DomainIsmMapping `protobuf:"bytes,3,rep,name=domain_ism_mapping,json=domainIsmMapping,proto3" json:"domain_ism_mapping,omitempty"`
+}
+
+func (m *MsgSetDomainRoutingIsm) Reset()         { *m = MsgSetDomainRoutingIsm{} }
+func (m *MsgSetDomainRoutingIsm) String() string { return proto.CompactTextString(m) }
+func (*MsgSetDomainRoutingIsm) ProtoMessage()    {}
+func (*MsgSetDomainRoutingIsm) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{6}
+}
+func (m *MsgSetDomainRoutingIsm) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetDomainRoutingIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetDomainRoutingIsm.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetDomainRoutingIsm) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetDomainRoutingIsm.Merge(m, src)
+}
+func (m *MsgSetDomainRoutingIsm) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetDomainRoutingIsm) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetDomainRoutingIsm.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetDomainRoutingIsm proto.InternalMessageInfo
+
+func (m *MsgSetDomainRoutingIsm) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *MsgSetDomainRoutingIsm) GetDomainIsmMapping() []*DomainIsmMapping {
+	if m != nil {
+		return m.DomainIsmMapping
+	}
+	return nil
+}
+
+// MsgSetDomainRoutingIsmResponse ...
+type MsgSetDomainRoutingIsmResponse struct {
+}
+
+func (m *MsgSetDomainRoutingIsmResponse) Reset()         { *m = MsgSetDomainRoutingIsmResponse{} }
+func (m *MsgSetDomainRoutingIsmResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetDomainRoutingIsmResponse) ProtoMessage()    {}
+func (*MsgSetDomainRoutingIsmResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{7}
+}
+func (m *MsgSetDomainRoutingIsmResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetDomainRoutingIsmResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetDomainRoutingIsmResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetDomainRoutingIsmResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetDomainRoutingIsmResponse.Merge(m, src)
+}
+func (m *MsgSetDomainRoutingIsmResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetDomainRoutingIsmResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetDomainRoutingIsmResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetDomainRoutingIsmResponse proto.InternalMessageInfo
+
+// MsgRemoveDomainRoutingIsm ...
+type MsgRemoveDomainRoutingIsm struct {
+	// owner is the message sender.
+	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	// id is the Routing ISM id.
+	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,2,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`
+	// domain_ism_mapping ...
+	Domain uint32 `protobuf:"varint,3,opt,name=domain,proto3" json:"domain,omitempty"`
+}
+
+func (m *MsgRemoveDomainRoutingIsm) Reset()         { *m = MsgRemoveDomainRoutingIsm{} }
+func (m *MsgRemoveDomainRoutingIsm) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveDomainRoutingIsm) ProtoMessage()    {}
+func (*MsgRemoveDomainRoutingIsm) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{8}
+}
+func (m *MsgRemoveDomainRoutingIsm) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveDomainRoutingIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveDomainRoutingIsm.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveDomainRoutingIsm) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveDomainRoutingIsm.Merge(m, src)
+}
+func (m *MsgRemoveDomainRoutingIsm) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveDomainRoutingIsm) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveDomainRoutingIsm.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveDomainRoutingIsm proto.InternalMessageInfo
+
+func (m *MsgRemoveDomainRoutingIsm) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *MsgRemoveDomainRoutingIsm) GetDomain() uint32 {
+	if m != nil {
+		return m.Domain
+	}
+	return 0
+}
+
+// MsgRemoveDomainRoutingIsmResponse ...
+type MsgRemoveDomainRoutingIsmResponse struct {
+}
+
+func (m *MsgRemoveDomainRoutingIsmResponse) Reset()         { *m = MsgRemoveDomainRoutingIsmResponse{} }
+func (m *MsgRemoveDomainRoutingIsmResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveDomainRoutingIsmResponse) ProtoMessage()    {}
+func (*MsgRemoveDomainRoutingIsmResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{9}
+}
+func (m *MsgRemoveDomainRoutingIsmResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveDomainRoutingIsmResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveDomainRoutingIsmResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveDomainRoutingIsmResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveDomainRoutingIsmResponse.Merge(m, src)
+}
+func (m *MsgRemoveDomainRoutingIsmResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveDomainRoutingIsmResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveDomainRoutingIsmResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveDomainRoutingIsmResponse proto.InternalMessageInfo
+
 // MsgCreateNoopIsm ...
 type MsgCreateNoopIsm struct {
 	// creator is the message sender.
@@ -249,7 +530,7 @@ func (m *MsgCreateNoopIsm) Reset()         { *m = MsgCreateNoopIsm{} }
 func (m *MsgCreateNoopIsm) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateNoopIsm) ProtoMessage()    {}
 func (*MsgCreateNoopIsm) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{4}
+	return fileDescriptor_4ee100bdd8d27ecb, []int{10}
 }
 func (m *MsgCreateNoopIsm) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -294,7 +575,7 @@ func (m *MsgCreateNoopIsmResponse) Reset()         { *m = MsgCreateNoopIsmRespon
 func (m *MsgCreateNoopIsmResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateNoopIsmResponse) ProtoMessage()    {}
 func (*MsgCreateNoopIsmResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{5}
+	return fileDescriptor_4ee100bdd8d27ecb, []int{11}
 }
 func (m *MsgCreateNoopIsmResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -341,7 +622,7 @@ func (m *MsgAnnounceValidator) Reset()         { *m = MsgAnnounceValidator{} }
 func (m *MsgAnnounceValidator) String() string { return proto.CompactTextString(m) }
 func (*MsgAnnounceValidator) ProtoMessage()    {}
 func (*MsgAnnounceValidator) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{6}
+	return fileDescriptor_4ee100bdd8d27ecb, []int{12}
 }
 func (m *MsgAnnounceValidator) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -406,7 +687,7 @@ func (m *MsgAnnounceValidatorResponse) Reset()         { *m = MsgAnnounceValidat
 func (m *MsgAnnounceValidatorResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAnnounceValidatorResponse) ProtoMessage()    {}
 func (*MsgAnnounceValidatorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4ee100bdd8d27ecb, []int{7}
+	return fileDescriptor_4ee100bdd8d27ecb, []int{13}
 }
 func (m *MsgAnnounceValidatorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -440,6 +721,12 @@ func init() {
 	proto.RegisterType((*MsgCreateMessageIdMultisigIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMessageIdMultisigIsmResponse")
 	proto.RegisterType((*MsgCreateMerkleRootMultisigIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMerkleRootMultisigIsm")
 	proto.RegisterType((*MsgCreateMerkleRootMultisigIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMerkleRootMultisigIsmResponse")
+	proto.RegisterType((*MsgCreateDomainRoutingIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateDomainRoutingIsm")
+	proto.RegisterType((*MsgCreateDomainRoutingIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateDomainRoutingIsmResponse")
+	proto.RegisterType((*MsgSetDomainRoutingIsm)(nil), "hyperlane.core.interchain_security.v1.MsgSetDomainRoutingIsm")
+	proto.RegisterType((*MsgSetDomainRoutingIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgSetDomainRoutingIsmResponse")
+	proto.RegisterType((*MsgRemoveDomainRoutingIsm)(nil), "hyperlane.core.interchain_security.v1.MsgRemoveDomainRoutingIsm")
+	proto.RegisterType((*MsgRemoveDomainRoutingIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgRemoveDomainRoutingIsmResponse")
 	proto.RegisterType((*MsgCreateNoopIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateNoopIsm")
 	proto.RegisterType((*MsgCreateNoopIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateNoopIsmResponse")
 	proto.RegisterType((*MsgAnnounceValidator)(nil), "hyperlane.core.interchain_security.v1.MsgAnnounceValidator")
@@ -451,48 +738,63 @@ func init() {
 }
 
 var fileDescriptor_4ee100bdd8d27ecb = []byte{
-	// 642 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0x41, 0x6b, 0xd4, 0x40,
-	0x14, 0xde, 0xd9, 0x5a, 0x65, 0x07, 0x8a, 0x6d, 0x28, 0x18, 0x62, 0x9b, 0xd6, 0x40, 0xa5, 0xae,
-	0x34, 0x71, 0xeb, 0x41, 0x68, 0x05, 0x69, 0xab, 0x60, 0xa1, 0x51, 0x88, 0xe0, 0x41, 0x84, 0x25,
-	0x9b, 0x0c, 0xb3, 0x83, 0xc9, 0x4c, 0x98, 0x99, 0x2c, 0x5b, 0x50, 0x10, 0x6f, 0x7a, 0xf2, 0xe2,
-	0xc1, 0x5f, 0xe1, 0x82, 0xe2, 0x6f, 0xe8, 0xb1, 0x47, 0xf1, 0x50, 0xa4, 0x3d, 0xf4, 0x6f, 0x48,
-	0xb2, 0xd9, 0x6c, 0xbb, 0x8d, 0xa1, 0xd5, 0xd6, 0xcb, 0x92, 0x7c, 0xfb, 0xde, 0xf7, 0xde, 0xfb,
-	0xbe, 0xcc, 0x4b, 0xa0, 0xd9, 0xde, 0x8e, 0x10, 0x0f, 0x5c, 0x8a, 0x2c, 0x8f, 0x71, 0x64, 0x11,
-	0x2a, 0x11, 0xf7, 0xda, 0x2e, 0xa1, 0x4d, 0x81, 0xbc, 0x98, 0x13, 0xb9, 0x6d, 0x75, 0x1a, 0x96,
-	0xec, 0x9a, 0x11, 0x67, 0x92, 0x29, 0x0b, 0x79, 0xbc, 0x99, 0xc4, 0x9b, 0x05, 0xf1, 0x66, 0xa7,
-	0xa1, 0x5d, 0xf3, 0x98, 0x08, 0x99, 0xb0, 0x42, 0x81, 0x93, 0xf4, 0x50, 0xe0, 0x7e, 0xbe, 0x36,
-	0xe5, 0x86, 0x84, 0x32, 0x2b, 0xfd, 0xcd, 0xa0, 0x69, 0xcc, 0x30, 0x4b, 0x2f, 0xad, 0xe4, 0xaa,
-	0x8f, 0x1a, 0xdf, 0x00, 0x9c, 0xb5, 0x05, 0xde, 0xe0, 0xc8, 0x95, 0xc8, 0x46, 0x42, 0xb8, 0x18,
-	0x6d, 0xfa, 0x76, 0x1c, 0x48, 0x22, 0x08, 0xde, 0x14, 0xa1, 0xa2, 0xc2, 0x2b, 0x5e, 0xf2, 0x2f,
-	0xe3, 0x2a, 0x98, 0x07, 0x8b, 0x35, 0x67, 0x70, 0xab, 0xe8, 0x10, 0x76, 0xdc, 0x80, 0xf8, 0xc9,
-	0x8d, 0x50, 0xab, 0xf3, 0x63, 0x8b, 0x35, 0xe7, 0x08, 0xa2, 0xcc, 0xc0, 0x9a, 0x6c, 0x73, 0x24,
-	0xda, 0x2c, 0xf0, 0xd5, 0xb1, 0x79, 0xb0, 0x38, 0xe1, 0x0c, 0x81, 0x95, 0xd5, 0x77, 0x87, 0xbd,
-	0xfa, 0x80, 0xeb, 0xc3, 0x61, 0xaf, 0x5e, 0x1f, 0x6a, 0xd4, 0x69, 0x58, 0xa5, 0x4d, 0x19, 0xaf,
-	0xe1, 0x42, 0x69, 0x80, 0x83, 0x44, 0xc4, 0xa8, 0x40, 0xca, 0x33, 0x58, 0x25, 0x7e, 0xbf, 0xf1,
-	0xf5, 0x8d, 0x9d, 0xbd, 0xb9, 0xca, 0xcf, 0xbd, 0xb9, 0x55, 0x4c, 0x64, 0x3b, 0x6e, 0x99, 0x1e,
-	0x0b, 0xad, 0x96, 0x17, 0x2d, 0x11, 0x4a, 0x59, 0xc7, 0x95, 0x84, 0x51, 0x61, 0xe5, 0x3d, 0x2c,
-	0x65, 0xd2, 0xc6, 0x92, 0x04, 0xe6, 0x63, 0xd4, 0x5d, 0xf3, 0x7d, 0x8e, 0x84, 0x70, 0xaa, 0xc4,
-	0x37, 0xbe, 0x03, 0xa8, 0x1f, 0x29, 0xcf, 0x5f, 0x05, 0xc8, 0x61, 0x4c, 0xfe, 0x0f, 0xd5, 0xee,
-	0x8f, 0xaa, 0x76, 0xfb, 0x4f, 0xaa, 0x15, 0x74, 0x65, 0xbc, 0x81, 0x37, 0xcb, 0x23, 0x2e, 0x56,
-	0xb7, 0x97, 0x70, 0x32, 0x2f, 0xff, 0x84, 0xb1, 0xa8, 0x54, 0xa8, 0x15, 0x73, 0x74, 0xd4, 0xd9,
-	0xe2, 0x51, 0x33, 0x26, 0x83, 0x41, 0x75, 0x14, 0xbb, 0xd8, 0x71, 0xbe, 0x54, 0xe1, 0xb4, 0x2d,
-	0xf0, 0x1a, 0xa5, 0x2c, 0xa6, 0x1e, 0x7a, 0x3e, 0xf0, 0x30, 0xb1, 0x30, 0x37, 0x34, 0x9b, 0x6a,
-	0x08, 0x28, 0xb7, 0xe0, 0xa4, 0x90, 0x8c, 0xbb, 0x18, 0x35, 0x03, 0xe6, 0xa5, 0x05, 0xd5, 0x6a,
-	0x1a, 0x74, 0x35, 0xc3, 0xb7, 0x32, 0x38, 0x21, 0x12, 0x04, 0x53, 0x57, 0xc6, 0x1c, 0xa5, 0xcf,
-	0x42, 0xcd, 0x19, 0x02, 0x4a, 0x0b, 0xc2, 0xd0, 0x25, 0x41, 0x8b, 0x75, 0x9b, 0xc4, 0x57, 0x2f,
-	0x9d, 0xdf, 0x70, 0xb5, 0x8c, 0x76, 0xd3, 0x3f, 0x6a, 0xcf, 0xf8, 0x71, 0x7b, 0x96, 0x47, 0xed,
-	0xb9, 0x31, 0x6a, 0xcf, 0x09, 0x61, 0x0c, 0x1d, 0xce, 0x14, 0xe1, 0x03, 0x9b, 0x96, 0x3f, 0x8f,
-	0xc3, 0x31, 0x5b, 0x60, 0xa5, 0x07, 0xa0, 0x56, 0xb2, 0x92, 0x1e, 0x9a, 0xa7, 0x5a, 0x8f, 0x66,
-	0xe9, 0x8a, 0xd0, 0xb6, 0xce, 0x83, 0x25, 0x7f, 0xc2, 0xbe, 0x02, 0x78, 0xbd, 0x6c, 0x21, 0x3c,
-	0x3a, 0x7b, 0xb5, 0x02, 0x1a, 0xcd, 0x3e, 0x17, 0x9a, 0xbc, 0xeb, 0xf7, 0x00, 0x4e, 0x1c, 0x3f,
-	0x8f, 0xf7, 0xce, 0x5a, 0x20, 0x4b, 0xd4, 0x1e, 0xfc, 0x65, 0x62, 0xde, 0xcb, 0x27, 0x00, 0xa7,
-	0x4e, 0x9e, 0xa5, 0xd5, 0xd3, 0xd3, 0x9e, 0x48, 0xd6, 0x36, 0xfe, 0x21, 0x79, 0xd0, 0x97, 0x36,
-	0xfe, 0xf6, 0xb0, 0x57, 0x07, 0xeb, 0x64, 0x67, 0x5f, 0x07, 0xbb, 0xfb, 0x3a, 0xf8, 0xb5, 0xaf,
-	0x83, 0x8f, 0x07, 0x7a, 0x65, 0xf7, 0x40, 0xaf, 0xfc, 0x38, 0xd0, 0x2b, 0x2f, 0x9e, 0x9e, 0xe5,
-	0xac, 0x75, 0xfb, 0x1f, 0x00, 0x77, 0x1a, 0xcd, 0xa2, 0x6f, 0x00, 0xb9, 0x1d, 0x21, 0xd1, 0xba,
-	0x9c, 0xbe, 0x9b, 0xef, 0xfe, 0x0e, 0x00, 0x00, 0xff, 0xff, 0xed, 0x7b, 0x1b, 0xfc, 0x36, 0x08,
-	0x00, 0x00,
+	// 888 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0xdf, 0x6b, 0x23, 0x45,
+	0x1c, 0xcf, 0x24, 0xf6, 0x24, 0x23, 0x87, 0xbd, 0xb5, 0xd4, 0xdc, 0x7a, 0xb7, 0x97, 0x5b, 0xb9,
+	0xa3, 0x46, 0xba, 0x6b, 0x2a, 0x52, 0x68, 0x15, 0xbd, 0xf6, 0x0e, 0x2e, 0x70, 0xab, 0xb0, 0x05,
+	0x1f, 0x44, 0x08, 0x9b, 0xdd, 0x61, 0x33, 0xb8, 0x3b, 0xb3, 0xec, 0x4c, 0x62, 0x0a, 0x0a, 0x22,
+	0xf8, 0xa0, 0x4f, 0xbe, 0xf8, 0xe4, 0xab, 0xef, 0x06, 0x2c, 0xbe, 0xf8, 0x0f, 0xf4, 0xb1, 0x08,
+	0x82, 0xf8, 0x50, 0xa4, 0x7d, 0xe8, 0xa3, 0xff, 0x82, 0xec, 0xee, 0x64, 0xd3, 0x6e, 0x36, 0xdb,
+	0xc4, 0xa6, 0x72, 0x2f, 0x61, 0xe7, 0x3b, 0xdf, 0x1f, 0x9f, 0xf9, 0x7c, 0x66, 0xbe, 0x93, 0x81,
+	0x5a, 0x77, 0x3f, 0x40, 0xa1, 0x67, 0x11, 0xa4, 0xdb, 0x34, 0x44, 0x3a, 0x26, 0x1c, 0x85, 0x76,
+	0xd7, 0xc2, 0xa4, 0xcd, 0x90, 0xdd, 0x0b, 0x31, 0xdf, 0xd7, 0xfb, 0x4d, 0x9d, 0x0f, 0xb4, 0x20,
+	0xa4, 0x9c, 0x4a, 0x0f, 0x52, 0x7f, 0x2d, 0xf2, 0xd7, 0x72, 0xfc, 0xb5, 0x7e, 0x53, 0x7e, 0xd5,
+	0xa6, 0xcc, 0xa7, 0x4c, 0xf7, 0x99, 0x1b, 0x85, 0xfb, 0xcc, 0x4d, 0xe2, 0xe5, 0x5b, 0x96, 0x8f,
+	0x09, 0xd5, 0xe3, 0x5f, 0x61, 0x5a, 0x71, 0xa9, 0x4b, 0xe3, 0x4f, 0x3d, 0xfa, 0x12, 0xd6, 0xdb,
+	0x49, 0x86, 0x76, 0x32, 0x91, 0x0c, 0xc4, 0x54, 0x73, 0x46, 0xcc, 0xfb, 0x01, 0x12, 0x21, 0xea,
+	0x01, 0x80, 0x77, 0x0d, 0xe6, 0xee, 0x86, 0xc8, 0xe2, 0xc8, 0x40, 0x8c, 0x59, 0x2e, 0x6a, 0x39,
+	0x46, 0xcf, 0xe3, 0x98, 0x61, 0xb7, 0xc5, 0x7c, 0xa9, 0x06, 0x5f, 0xb4, 0xa3, 0x59, 0x1a, 0xd6,
+	0x40, 0x1d, 0xac, 0x55, 0xcd, 0xd1, 0x50, 0x52, 0x20, 0xec, 0x5b, 0x1e, 0x76, 0xa2, 0x01, 0xab,
+	0x95, 0xeb, 0x95, 0xb5, 0xaa, 0x79, 0xce, 0x22, 0xdd, 0x81, 0x55, 0xde, 0x0d, 0x11, 0xeb, 0x52,
+	0xcf, 0xa9, 0x55, 0xea, 0x60, 0xed, 0xa6, 0x39, 0x36, 0x6c, 0x6d, 0x7f, 0x7d, 0x36, 0x6c, 0x8c,
+	0x72, 0x7d, 0x77, 0x36, 0x6c, 0x34, 0xc6, 0xe8, 0xfb, 0x4d, 0xbd, 0x10, 0x94, 0xfa, 0x05, 0x7c,
+	0x50, 0xe8, 0x60, 0x22, 0x16, 0x50, 0xc2, 0x90, 0xb4, 0x07, 0xcb, 0xd8, 0x49, 0x80, 0xef, 0xec,
+	0x1e, 0x1e, 0xdf, 0x2b, 0xfd, 0x75, 0x7c, 0x6f, 0xdb, 0xc5, 0xbc, 0xdb, 0xeb, 0x68, 0x36, 0xf5,
+	0xf5, 0x8e, 0x1d, 0xac, 0x63, 0x42, 0x68, 0xdf, 0xe2, 0x98, 0x12, 0xa6, 0xa7, 0x18, 0xd6, 0x85,
+	0x50, 0x3d, 0x8e, 0x3d, 0xed, 0x29, 0x1a, 0x3c, 0x72, 0x9c, 0x10, 0x31, 0x66, 0x96, 0xb1, 0xa3,
+	0xfe, 0x0a, 0xa0, 0x72, 0xae, 0x7c, 0xf8, 0x99, 0x87, 0x4c, 0x4a, 0xf9, 0xff, 0xc1, 0xda, 0xbb,
+	0x59, 0xd6, 0xde, 0x9c, 0xc6, 0x5a, 0x0e, 0x2a, 0xf5, 0x4b, 0xf8, 0xb0, 0xd8, 0xe3, 0x7a, 0x79,
+	0xfb, 0x03, 0xc0, 0xdb, 0x69, 0xfd, 0xc7, 0xd4, 0xb7, 0x30, 0x31, 0x69, 0x8f, 0x63, 0x72, 0x09,
+	0x65, 0x08, 0x4a, 0x4e, 0xec, 0xdd, 0xc6, 0xcc, 0x6f, 0xfb, 0x56, 0x10, 0x60, 0xe2, 0xc6, 0xd4,
+	0xbd, 0xb4, 0xb1, 0xa9, 0xcd, 0x74, 0xf0, 0xb4, 0xa4, 0x5c, 0x8b, 0xf9, 0x46, 0x12, 0x6e, 0x2e,
+	0x3b, 0x19, 0xcb, 0xd6, 0x66, 0x96, 0xdb, 0x87, 0xf9, 0xdc, 0x66, 0x91, 0xab, 0x03, 0x78, 0x7f,
+	0xea, 0xe4, 0xf5, 0x32, 0xfa, 0x5b, 0x19, 0xae, 0x1a, 0xcc, 0xdd, 0x43, 0x7c, 0x82, 0x4e, 0x0d,
+	0x2e, 0xd1, 0xcf, 0x09, 0x12, 0x64, 0xee, 0xd4, 0x7e, 0x3f, 0x58, 0x5f, 0x11, 0xdd, 0x42, 0x64,
+	0xd8, 0xe3, 0x61, 0x44, 0x44, 0xe2, 0x26, 0xf0, 0x95, 0x17, 0x8a, 0x6f, 0x8a, 0x72, 0x95, 0x45,
+	0x2b, 0xf7, 0x4e, 0xa4, 0x5c, 0xb2, 0x8e, 0x79, 0x74, 0xab, 0xc7, 0xc7, 0x38, 0x87, 0xbc, 0x91,
+	0x68, 0xea, 0x3f, 0xc9, 0x8e, 0x35, 0x91, 0x4f, 0xfb, 0xe8, 0xf9, 0xa4, 0x78, 0x15, 0xde, 0x48,
+	0xf8, 0x10, 0xcd, 0x42, 0x8c, 0x2e, 0xe5, 0x24, 0x7f, 0x4d, 0xea, 0xeb, 0xf1, 0x5e, 0xce, 0x9f,
+	0x4c, 0x69, 0xf9, 0x14, 0x2e, 0xa7, 0xac, 0x7e, 0x48, 0x69, 0x50, 0x78, 0x7c, 0xb7, 0xb4, 0xec,
+	0xb9, 0xba, 0x9b, 0xaf, 0x8f, 0xc8, 0xa4, 0x52, 0x58, 0xcb, 0xda, 0xae, 0xf7, 0x14, 0xfd, 0x5c,
+	0x86, 0x2b, 0x06, 0x73, 0x1f, 0x11, 0x42, 0x7b, 0xc4, 0x46, 0x1f, 0x8f, 0x9a, 0x71, 0xd4, 0x8b,
+	0xd3, 0xce, 0x2c, 0x56, 0x35, 0x36, 0x48, 0x6f, 0xc0, 0x65, 0xc6, 0x69, 0x68, 0xb9, 0xa8, 0xed,
+	0x51, 0x3b, 0x2e, 0x98, 0x88, 0x6b, 0xbe, 0x2c, 0xec, 0xcf, 0x84, 0x39, 0x4a, 0xc4, 0xb0, 0x4b,
+	0x2c, 0xde, 0x0b, 0x51, 0xac, 0x53, 0xd5, 0x1c, 0x1b, 0xa4, 0x0e, 0x84, 0xbe, 0x85, 0xbd, 0x0e,
+	0x1d, 0xb4, 0xb1, 0x53, 0x7b, 0x61, 0x71, 0x8b, 0xab, 0x8a, 0xb4, 0x2d, 0xe7, 0xbc, 0x3c, 0x4b,
+	0x17, 0xe5, 0xd9, 0xc8, 0xca, 0x73, 0x3f, 0x2b, 0xcf, 0x04, 0x31, 0xaa, 0x02, 0xef, 0xe4, 0xd9,
+	0x47, 0x32, 0x6d, 0x7c, 0x53, 0x85, 0x15, 0x83, 0xb9, 0xd2, 0x10, 0x40, 0xb9, 0xe0, 0xbf, 0xc5,
+	0xe3, 0x19, 0x5b, 0x40, 0xe1, 0x5d, 0x2f, 0x3f, 0x5b, 0x44, 0x96, 0x74, 0x87, 0xfd, 0x02, 0xe0,
+	0x6b, 0x45, 0x37, 0xfb, 0x93, 0xf9, 0xab, 0xe5, 0xa4, 0x91, 0x8d, 0x85, 0xa4, 0x49, 0x51, 0xff,
+	0x04, 0xe0, 0xea, 0x94, 0x7b, 0xf5, 0x83, 0x79, 0x2b, 0x65, 0x33, 0xc8, 0x4f, 0xaf, 0x9a, 0x21,
+	0x85, 0xf9, 0x23, 0x80, 0xaf, 0xe4, 0x5d, 0x56, 0xef, 0xcd, 0x5e, 0x21, 0x27, 0x5c, 0x7e, 0x72,
+	0xa5, 0xf0, 0x0b, 0x24, 0x4e, 0x69, 0xf5, 0x73, 0x90, 0x98, 0x9f, 0x61, 0x1e, 0x12, 0x8b, 0xbb,
+	0xaf, 0xf4, 0x2d, 0x80, 0x37, 0x2f, 0xf6, 0xde, 0xcd, 0x79, 0x05, 0x12, 0x81, 0xf2, 0xfb, 0xff,
+	0x31, 0x30, 0xc5, 0xf2, 0x03, 0x80, 0xb7, 0x26, 0xfb, 0xe6, 0xf6, 0xec, 0x69, 0x27, 0x82, 0xe5,
+	0xdd, 0x2b, 0x04, 0x8f, 0x70, 0xc9, 0x4b, 0x5f, 0x9d, 0x0d, 0x1b, 0x60, 0x07, 0x1f, 0x9e, 0x28,
+	0xe0, 0xe8, 0x44, 0x01, 0x7f, 0x9f, 0x28, 0xe0, 0xfb, 0x53, 0xa5, 0x74, 0x74, 0xaa, 0x94, 0xfe,
+	0x3c, 0x55, 0x4a, 0x9f, 0x7c, 0x34, 0x4f, 0x5f, 0x1d, 0x24, 0xef, 0xa9, 0xb7, 0x9a, 0xed, 0xbc,
+	0x27, 0x55, 0xfc, 0x9e, 0xea, 0xdc, 0x88, 0x1f, 0x54, 0x6f, 0xff, 0x1b, 0x00, 0x00, 0xff, 0xff,
+	0x3e, 0xd5, 0x4f, 0xaa, 0x39, 0x0e, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -511,6 +813,12 @@ type MsgClient interface {
 	CreateMessageIdMultisigIsm(ctx context.Context, in *MsgCreateMessageIdMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMessageIdMultisigIsmResponse, error)
 	// CreateMerkleRootMultisigIsm ...
 	CreateMerkleRootMultisigIsm(ctx context.Context, in *MsgCreateMerkleRootMultisigIsm, opts ...grpc.CallOption) (*MsgCreateMerkleRootMultisigIsmResponse, error)
+	// CreateDomainRoutingIsm ...
+	CreateDomainRoutingIsm(ctx context.Context, in *MsgCreateDomainRoutingIsm, opts ...grpc.CallOption) (*MsgCreateDomainRoutingIsmResponse, error)
+	// SetDomainRoutingIsm ...
+	SetDomainRoutingIsm(ctx context.Context, in *MsgSetDomainRoutingIsm, opts ...grpc.CallOption) (*MsgSetDomainRoutingIsmResponse, error)
+	// RemoveDomainRoutingIsm ...
+	RemoveDomainRoutingIsm(ctx context.Context, in *MsgRemoveDomainRoutingIsm, opts ...grpc.CallOption) (*MsgRemoveDomainRoutingIsmResponse, error)
 	// CreateNoopIsm ...
 	CreateNoopIsm(ctx context.Context, in *MsgCreateNoopIsm, opts ...grpc.CallOption) (*MsgCreateNoopIsmResponse, error)
 	// AnnounceValidator ...
@@ -543,6 +851,33 @@ func (c *msgClient) CreateMerkleRootMultisigIsm(ctx context.Context, in *MsgCrea
 	return out, nil
 }
 
+func (c *msgClient) CreateDomainRoutingIsm(ctx context.Context, in *MsgCreateDomainRoutingIsm, opts ...grpc.CallOption) (*MsgCreateDomainRoutingIsmResponse, error) {
+	out := new(MsgCreateDomainRoutingIsmResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/CreateDomainRoutingIsm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetDomainRoutingIsm(ctx context.Context, in *MsgSetDomainRoutingIsm, opts ...grpc.CallOption) (*MsgSetDomainRoutingIsmResponse, error) {
+	out := new(MsgSetDomainRoutingIsmResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/SetDomainRoutingIsm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RemoveDomainRoutingIsm(ctx context.Context, in *MsgRemoveDomainRoutingIsm, opts ...grpc.CallOption) (*MsgRemoveDomainRoutingIsmResponse, error) {
+	out := new(MsgRemoveDomainRoutingIsmResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/RemoveDomainRoutingIsm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) CreateNoopIsm(ctx context.Context, in *MsgCreateNoopIsm, opts ...grpc.CallOption) (*MsgCreateNoopIsmResponse, error) {
 	out := new(MsgCreateNoopIsmResponse)
 	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/CreateNoopIsm", in, out, opts...)
@@ -567,6 +902,12 @@ type MsgServer interface {
 	CreateMessageIdMultisigIsm(context.Context, *MsgCreateMessageIdMultisigIsm) (*MsgCreateMessageIdMultisigIsmResponse, error)
 	// CreateMerkleRootMultisigIsm ...
 	CreateMerkleRootMultisigIsm(context.Context, *MsgCreateMerkleRootMultisigIsm) (*MsgCreateMerkleRootMultisigIsmResponse, error)
+	// CreateDomainRoutingIsm ...
+	CreateDomainRoutingIsm(context.Context, *MsgCreateDomainRoutingIsm) (*MsgCreateDomainRoutingIsmResponse, error)
+	// SetDomainRoutingIsm ...
+	SetDomainRoutingIsm(context.Context, *MsgSetDomainRoutingIsm) (*MsgSetDomainRoutingIsmResponse, error)
+	// RemoveDomainRoutingIsm ...
+	RemoveDomainRoutingIsm(context.Context, *MsgRemoveDomainRoutingIsm) (*MsgRemoveDomainRoutingIsmResponse, error)
 	// CreateNoopIsm ...
 	CreateNoopIsm(context.Context, *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error)
 	// AnnounceValidator ...
@@ -582,6 +923,15 @@ func (*UnimplementedMsgServer) CreateMessageIdMultisigIsm(ctx context.Context, r
 }
 func (*UnimplementedMsgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *MsgCreateMerkleRootMultisigIsm) (*MsgCreateMerkleRootMultisigIsmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMerkleRootMultisigIsm not implemented")
+}
+func (*UnimplementedMsgServer) CreateDomainRoutingIsm(ctx context.Context, req *MsgCreateDomainRoutingIsm) (*MsgCreateDomainRoutingIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDomainRoutingIsm not implemented")
+}
+func (*UnimplementedMsgServer) SetDomainRoutingIsm(ctx context.Context, req *MsgSetDomainRoutingIsm) (*MsgSetDomainRoutingIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetDomainRoutingIsm not implemented")
+}
+func (*UnimplementedMsgServer) RemoveDomainRoutingIsm(ctx context.Context, req *MsgRemoveDomainRoutingIsm) (*MsgRemoveDomainRoutingIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveDomainRoutingIsm not implemented")
 }
 func (*UnimplementedMsgServer) CreateNoopIsm(ctx context.Context, req *MsgCreateNoopIsm) (*MsgCreateNoopIsmResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNoopIsm not implemented")
@@ -626,6 +976,60 @@ func _Msg_CreateMerkleRootMultisigIsm_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).CreateMerkleRootMultisigIsm(ctx, req.(*MsgCreateMerkleRootMultisigIsm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CreateDomainRoutingIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateDomainRoutingIsm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateDomainRoutingIsm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/CreateDomainRoutingIsm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateDomainRoutingIsm(ctx, req.(*MsgCreateDomainRoutingIsm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetDomainRoutingIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetDomainRoutingIsm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetDomainRoutingIsm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/SetDomainRoutingIsm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetDomainRoutingIsm(ctx, req.(*MsgSetDomainRoutingIsm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RemoveDomainRoutingIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveDomainRoutingIsm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveDomainRoutingIsm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/RemoveDomainRoutingIsm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveDomainRoutingIsm(ctx, req.(*MsgRemoveDomainRoutingIsm))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -678,6 +1082,18 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateMerkleRootMultisigIsm",
 			Handler:    _Msg_CreateMerkleRootMultisigIsm_Handler,
+		},
+		{
+			MethodName: "CreateDomainRoutingIsm",
+			Handler:    _Msg_CreateDomainRoutingIsm_Handler,
+		},
+		{
+			MethodName: "SetDomainRoutingIsm",
+			Handler:    _Msg_SetDomainRoutingIsm_Handler,
+		},
+		{
+			MethodName: "RemoveDomainRoutingIsm",
+			Handler:    _Msg_RemoveDomainRoutingIsm_Handler,
 		},
 		{
 			MethodName: "CreateNoopIsm",
@@ -843,6 +1259,228 @@ func (m *MsgCreateMerkleRootMultisigIsmResponse) MarshalToSizedBuffer(dAtA []byt
 	}
 	i--
 	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateDomainRoutingIsm) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateDomainRoutingIsm) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateDomainRoutingIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DomainIsmMapping) > 0 {
+		for iNdEx := len(m.DomainIsmMapping) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.DomainIsmMapping[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateDomainRoutingIsmResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateDomainRoutingIsmResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateDomainRoutingIsmResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Id.Size()
+		i -= size
+		if _, err := m.Id.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetDomainRoutingIsm) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetDomainRoutingIsm) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetDomainRoutingIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DomainIsmMapping) > 0 {
+		for iNdEx := len(m.DomainIsmMapping) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.DomainIsmMapping[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	{
+		size := m.Id.Size()
+		i -= size
+		if _, err := m.Id.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetDomainRoutingIsmResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetDomainRoutingIsmResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetDomainRoutingIsmResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveDomainRoutingIsm) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveDomainRoutingIsm) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveDomainRoutingIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Domain != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Domain))
+		i--
+		dAtA[i] = 0x18
+	}
+	{
+		size := m.Id.Size()
+		i -= size
+		if _, err := m.Id.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveDomainRoutingIsmResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveDomainRoutingIsmResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveDomainRoutingIsmResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -1067,6 +1705,93 @@ func (m *MsgCreateMerkleRootMultisigIsmResponse) Size() (n int) {
 	_ = l
 	l = m.Id.Size()
 	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgCreateDomainRoutingIsm) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.DomainIsmMapping) > 0 {
+		for _, e := range m.DomainIsmMapping {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgCreateDomainRoutingIsmResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Id.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgSetDomainRoutingIsm) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Id.Size()
+	n += 1 + l + sovTx(uint64(l))
+	if len(m.DomainIsmMapping) > 0 {
+		for _, e := range m.DomainIsmMapping {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgSetDomainRoutingIsmResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRemoveDomainRoutingIsm) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Id.Size()
+	n += 1 + l + sovTx(uint64(l))
+	if m.Domain != 0 {
+		n += 1 + sovTx(uint64(m.Domain))
+	}
+	return n
+}
+
+func (m *MsgRemoveDomainRoutingIsmResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -1549,6 +2274,591 @@ func (m *MsgCreateMerkleRootMultisigIsmResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateDomainRoutingIsm) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateDomainRoutingIsm: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateDomainRoutingIsm: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DomainIsmMapping", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DomainIsmMapping = append(m.DomainIsmMapping, &DomainIsmMapping{})
+			if err := m.DomainIsmMapping[len(m.DomainIsmMapping)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateDomainRoutingIsmResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateDomainRoutingIsmResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateDomainRoutingIsmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetDomainRoutingIsm) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetDomainRoutingIsm: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetDomainRoutingIsm: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DomainIsmMapping", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DomainIsmMapping = append(m.DomainIsmMapping, &DomainIsmMapping{})
+			if err := m.DomainIsmMapping[len(m.DomainIsmMapping)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetDomainRoutingIsmResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetDomainRoutingIsmResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetDomainRoutingIsmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveDomainRoutingIsm) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveDomainRoutingIsm: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveDomainRoutingIsm: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Domain", wireType)
+			}
+			m.Domain = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Domain |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveDomainRoutingIsmResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveDomainRoutingIsmResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveDomainRoutingIsmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

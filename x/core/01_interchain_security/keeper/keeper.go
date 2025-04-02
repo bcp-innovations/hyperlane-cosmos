@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
@@ -59,10 +60,28 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_UNUSED, k)
 	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG, k)
 	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG, k)
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING, k)
 }
 
 // Verify checks if the metadata has signed the message correctly.
 func (k *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
+	if ismId.GetType() == uint32(types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING) {
+		domainRoutingIsm, err := k.isms.Get(ctx, ismId.GetInternalId())
+		if err != nil {
+			return false, err
+		}
+
+		routingIsm, ok := domainRoutingIsm.(*types.DomainRoutingISM)
+		if !ok {
+			return false, fmt.Errorf("expected DomainRoutingISM")
+		}
+
+		ismId, err = routingIsm.Route(message)
+		if err != nil {
+			return false, err
+		}
+	}
+
 	ism, err := k.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
 		return false, err
