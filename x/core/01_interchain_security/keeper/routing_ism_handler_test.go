@@ -15,6 +15,7 @@ import (
 TEST CASES - routing_ism_handler_test.go
 
 * Verify (valid)
+* Verify (valid) with nested RoutingISM
 * Verify (invalid) no registered route
 * Verify (invalid) registered itself
 */
@@ -73,6 +74,34 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		result, err := s.App().HyperlaneKeeper.Verify(s.Ctx(), routingIsm, []byte{}, util.HyperlaneMessage{
+			Origin: 1,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+		Expect(result).To(BeTrue())
+
+		// verify mock ISM was called
+		Expect(mockIsm.CallCount()).To(Equal(1))
+	})
+
+	It("Verify (valid) with nested RoutingISM", func() {
+		// Arrange
+
+		// registry mock ISM
+		mockIsm := i.CreateMockIsm(s.App().HyperlaneKeeper.IsmRouter())
+
+		mockIsmId, err := mockIsm.RegisterIsm(s.Ctx())
+		Expect(err).To(BeNil())
+
+		routingIsmB := createRoutingIsm()
+		setRoute(routingIsmB, mockIsmId, 1)
+
+		routingIsmA := createRoutingIsm()
+		setRoute(routingIsmA, routingIsmB, 1)
+
+		// Act
+		result, err := s.App().HyperlaneKeeper.Verify(s.Ctx(), routingIsmA, []byte{}, util.HyperlaneMessage{
 			Origin: 1,
 		})
 

@@ -1041,7 +1041,6 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
 		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
-
 	})
 })
 
