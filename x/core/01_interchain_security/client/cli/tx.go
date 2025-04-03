@@ -15,7 +15,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var renounceOwnership bool
+var (
+	renounceOwnership bool
+	newOwner          string
+)
 
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
@@ -34,6 +37,7 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateRoutingIsm(),
 		CmdSetRoutingIsmDomain(),
 		CmdRemoveRoutingIsmDomain(),
+		CmdUpdateRoutingIsmOwner(),
 	)
 
 	return txCmd
@@ -267,9 +271,9 @@ func CmdRemoveRoutingIsmDomain() *cobra.Command {
 
 func CmdUpdateRoutingIsmOwner() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-routing-ism-owner [routing-ism-id] [new-owner]",
+		Use:   "update-routing-ism-owner [routing-ism-id]",
 		Short: "Update the owner of a routing ISM",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if renounceOwnership {
 				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
@@ -296,8 +300,6 @@ func CmdUpdateRoutingIsmOwner() *cobra.Command {
 				return err
 			}
 
-			newOwner := args[1]
-
 			msg := types.MsgUpdateRoutingIsmOwner{
 				IsmId:             routingIsmId,
 				NewOwner:          newOwner,
@@ -309,6 +311,7 @@ func CmdUpdateRoutingIsmOwner() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().StringVar(&newOwner, "new-owner", "", "new owner")
 	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
 
 	flags.AddTxFlagsToCmd(cmd)
