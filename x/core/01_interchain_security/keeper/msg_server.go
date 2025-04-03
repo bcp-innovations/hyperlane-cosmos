@@ -25,6 +25,37 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
+// UpdateRoutingIsmOwner
+func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdateRoutingIsmOwner) (*types.MsgUpdateRoutingIsmOwnerResponse, error) {
+	// get routing ism
+	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	// check if the new owner is empty
+	routingISM.Owner = req.NewOwner
+
+	if req.RenounceOwnership && req.NewOwner != "" {
+		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
+	}
+
+	if !req.RenounceOwnership && req.NewOwner == "" {
+		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
+	}
+
+	if req.RenounceOwnership {
+		routingISM.Owner = ""
+	}
+
+	// write to kv store
+	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgUpdateRoutingIsmOwnerResponse{}, nil
+}
+
 // CreateRoutingIsm
 func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (*types.MsgCreateRoutingIsmResponse, error) {
 	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING)

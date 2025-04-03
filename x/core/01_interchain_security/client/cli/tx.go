@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -13,6 +14,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 )
+
+var renounceOwnership bool
 
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
@@ -256,6 +259,57 @@ func CmdRemoveRoutingIsmDomain() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdUpdateRoutingIsmOwner() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-routing-ism-owner [routing-ism-id] [new-owner]",
+		Short: "Update the owner of a routing ISM",
+		Args:  cobra.ExactArgs(2),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if renounceOwnership {
+				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
+				var response string
+
+				_, err := fmt.Scanln(&response)
+				if err != nil {
+					return err
+				}
+
+				if strings.ToLower(response) != "yes" {
+					return fmt.Errorf("canceled transaction")
+				}
+			}
+			return nil
+		}, RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			routingIsmId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			newOwner := args[1]
+
+			msg := types.MsgUpdateRoutingIsmOwner{
+				IsmId:             routingIsmId,
+				NewOwner:          newOwner,
+				Owner:             clientCtx.GetFromAddress().String(),
+				RenounceOwnership: renounceOwnership,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
 
 	flags.AddTxFlagsToCmd(cmd)
 

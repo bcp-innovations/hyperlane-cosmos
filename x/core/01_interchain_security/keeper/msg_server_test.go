@@ -57,7 +57,12 @@ TEST CASES - msg_server.go
 * RemoveRoutingIsmDomain (invalid) on non routing ism
 * RemoveRoutingIsmDomain (invalid) on unkown ism"
 * RemoveRoutingIsmDomain (invalid) with non owner
-* RemoveRoutingIsmDomain (valid)"
+* RemoveRoutingIsmDomain (valid)
+* UpdateRoutingIsmOwner (invalid) with non owner
+* UpdateRoutingIsmOwner (invalid) with both renounce and new owner
+* UpdateRoutingIsmOwner (invalid) with empty new owner
+* UpdateRoutingIsmOwner (valid) new owner
+* UpdateRoutingIsmOwner (valid) renounce ownership
 */
 
 var _ = Describe("msg_server.go", Ordered, func() {
@@ -1041,6 +1046,170 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
 		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
+	})
+
+	It("UpdateRoutingIsmOwner (invalid) with non owner", func() {
+		// Arrange
+
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		var ism types.RoutingISM
+		typeUrl := queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateRoutingIsmOwner{
+			Owner:    nonOwner.Address,
+			IsmId:    ism.Id,
+			NewOwner: creator.Address,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", nonOwner.Address, ism.Id).Error()))
+	})
+
+	It("UpdateRoutingIsmOwner (invalid) with both enounce and new owner", func() {
+		// Arrange
+
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		var ism types.RoutingISM
+		typeUrl := queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateRoutingIsmOwner{
+			Owner:             creator.Address,
+			IsmId:             ism.Id,
+			NewOwner:          nonOwner.Address,
+			RenounceOwnership: true,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time").Error()))
+	})
+
+	It("UpdateRoutingIsmOwner (invalid) with empty new owner", func() {
+		// Arrange
+
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		var ism types.RoutingISM
+		typeUrl := queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateRoutingIsmOwner{
+			Owner:             creator.Address,
+			IsmId:             ism.Id,
+			NewOwner:          "",
+			RenounceOwnership: false,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership").Error()))
+	})
+
+	It("UpdateRoutingIsmOwner (valid) new owner", func() {
+		// Arrange
+
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		var ism types.RoutingISM
+		typeUrl := queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateRoutingIsmOwner{
+			Owner:             creator.Address,
+			IsmId:             ism.Id,
+			NewOwner:          nonOwner.Address,
+			RenounceOwnership: false,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		typeUrl = queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(nonOwner.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+	})
+
+	It("UpdateRoutingIsmOwner (valid) renounce ownership", func() {
+		// Arrange
+
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		var ism types.RoutingISM
+		typeUrl := queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateRoutingIsmOwner{
+			Owner:             creator.Address,
+			IsmId:             ism.Id,
+			NewOwner:          "",
+			RenounceOwnership: true,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		typeUrl = queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(""))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
 	})
 })
 
