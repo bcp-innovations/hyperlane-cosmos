@@ -51,20 +51,24 @@ TEST CASES - msg_server.go
 * SetRoutingIsmDomain (invalid) with a valid domain & unkown ism
 * SetRoutingIsmDomain (invalid) on non routing ism
 * SetRoutingIsmDomain (invalid) with a non existing ism
+* SetRoutingIsmDomain (invalid) with non owner
 * SetRoutingIsmDomain (valid)
 * SetRoutingIsmDomain (valid) update existing domain
 * RemoveRoutingIsmDomain (invalid) on non routing ism
 * RemoveRoutingIsmDomain (invalid) on unkown ism"
+* RemoveRoutingIsmDomain (invalid) with non owner
 * RemoveRoutingIsmDomain (valid)"
 */
 
 var _ = Describe("msg_server.go", Ordered, func() {
 	var s *i.KeeperTestSuite
 	var creator i.TestValidatorAddress
+	var nonOwner i.TestValidatorAddress
 
 	BeforeEach(func() {
 		s = i.NewCleanChain()
 		creator = i.GenerateTestValidatorAddress("Creator")
+		nonOwner = i.GenerateTestValidatorAddress("NonOwner")
 		err := s.MintBaseCoins(creator.Address, 1_000_000)
 		Expect(err).To(BeNil())
 	})
@@ -742,6 +746,49 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", ismId.String()).Error()))
 	})
 
+	It("SetRoutingIsmDomain (invalid) with non owner", func() {
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateNoopIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var noopIsm types.MsgCreateNoopIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
+		Expect(err).To(BeNil())
+
+		res, err = s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var routingIsm types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &routingIsm)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
+			Owner: nonOwner.Address,
+			IsmId: routingIsm.Id,
+			Route: types.Route{
+				Ism:    noopIsm.Id,
+				Domain: 1337,
+			},
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", nonOwner.Address, routingIsm.Id).Error()))
+
+		var ism types.RoutingISM
+		typeUrl := queryISM(&ism, s, routingIsm.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
+		Expect(ism.Routes).To(HaveLen(0))
+	})
+
 	It("SetRoutingIsmDomain (valid)", func() {
 		// Arrange
 		res, err := s.RunTx(&types.MsgCreateNoopIsm{
@@ -937,6 +984,64 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Owner).To(Equal(creator.Address))
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(0))
+	})
+
+	It("RemoveRoutingIsmDomain (invalid) with non owner", func() {
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateNoopIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var noopIsm types.MsgCreateNoopIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
+		Expect(err).To(BeNil())
+
+		res, err = s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var routingIsm types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &routingIsm)
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
+			Owner: creator.Address,
+			IsmId: routingIsm.Id,
+			Route: types.Route{
+				Ism:    noopIsm.Id,
+				Domain: 1337,
+			},
+		})
+
+		Expect(err).To(BeNil())
+		var ism types.RoutingISM
+		typeUrl := queryISM(&ism, s, routingIsm.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
+		Expect(ism.Routes).To(HaveLen(1))
+		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
+
+		// Act
+		_, err = s.RunTx(&types.MsgRemoveRoutingIsmDomain{
+			Owner:  nonOwner.Address,
+			IsmId:  routingIsm.Id,
+			Domain: 1337,
+		})
+		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", nonOwner.Address, routingIsm.Id).Error()))
+		typeUrl = queryISM(&ism, s, routingIsm.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
+		Expect(ism.Routes).To(HaveLen(1))
+		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
+
 	})
 })
 

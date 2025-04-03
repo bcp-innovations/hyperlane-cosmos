@@ -44,7 +44,7 @@ func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRou
 	return &types.MsgCreateRoutingIsmResponse{Id: ismId}, nil
 }
 
-func (m msgServer) GetRoutingIsm(ctx context.Context, ismId util.HexAddress) (*types.RoutingISM, error) {
+func (m msgServer) GetRoutingIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.RoutingISM, error) {
 	// check if the ism exists
 	ism, err := m.k.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
@@ -61,13 +61,18 @@ func (m msgServer) GetRoutingIsm(ctx context.Context, ismId util.HexAddress) (*t
 		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
 	}
 
+	// check if the tx sender is the owner of the ism
+	if routingISM.Owner != owner {
+		return nil, errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", owner, routingISM.Id.String())
+	}
+
 	return routingISM, nil
 }
 
 // RemoveRoutingIsmDomain
 func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) (*types.MsgRemoveRoutingIsmDomainResponse, error) {
 	// get routing ism
-	routingISM, err := m.GetRoutingIsm(ctx, req.IsmId)
+	routingISM, err := m.GetRoutingIsm(ctx, req.IsmId, req.Owner)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +91,7 @@ func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRem
 // SetRoutingIsmDomain
 func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) (*types.MsgSetRoutingIsmDomainResponse, error) {
 	// get routing ism
-	routingISM, err := m.GetRoutingIsm(ctx, req.IsmId)
+	routingISM, err := m.GetRoutingIsm(ctx, req.IsmId, req.Owner)
 	if err != nil {
 		return nil, err
 	}

@@ -11,4 +11,5 @@ var (
 	ErrInvalidISMType               = errors.Register(SubModuleName, 6, "invalid ism type")
 	ErrUnkownIsmId                  = errors.Register(SubModuleName, 7, "unknown ism id")
 	ErrNoRouteFound                 = errors.Register(SubModuleName, 8, "no route found")
+	ErrUnauthorized                 = errors.Register(SubModuleName, 9, "unauthorized")
 )
