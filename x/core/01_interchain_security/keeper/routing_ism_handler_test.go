@@ -47,8 +47,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	setRoute := func(routingIsm, ism util.HexAddress, domain uint32) {
 		// Act
 		_, err := s.RunTx(&types.MsgSetRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   routingIsm,
+			Owner: creator.Address,
+			IsmId: routingIsm,
 			Route: types.Route{
 				Ism:    ism,
 				Domain: domain,

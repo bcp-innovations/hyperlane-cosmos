@@ -97,7 +97,7 @@ func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDr
 		limit = parsed
 	}
 
-	// explicitly set a GasMeter to not run into stack overflows as ISM might call themselvs
+	// explicitly set a GasMeter to not run into stack overflows as ISM might call themselves
 	sdkCtx := sdk.UnwrapSDKContext(ctx).WithGasMeter(storetypes.NewGasMeter(limit))
 
 	ismId, err := util.DecodeHexAddress(req.IsmId)

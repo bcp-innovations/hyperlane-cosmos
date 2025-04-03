@@ -687,7 +687,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
-			Creator: creator.Address,
+			Owner: creator.Address,
 			Route: types.Route{
 				Ism:    ismId,
 				Domain: 1337,
@@ -712,8 +712,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   noopIsm.Id,
+			Owner: creator.Address,
+			IsmId: noopIsm.Id,
 			Route: types.Route{
 				Ism:    util.CreateMockHexAddress("ism", 0),
 				Domain: 1337,
@@ -730,8 +730,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgSetRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   ismId,
+			Owner: creator.Address,
+			IsmId: ismId,
 			Route: types.Route{
 				Ism:    util.CreateMockHexAddress("ism", 0),
 				Domain: 1337,
@@ -766,8 +766,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   routingIsm.Id,
+			Owner: creator.Address,
+			IsmId: routingIsm.Id,
 			Route: types.Route{
 				Ism:    noopIsm.Id,
 				Domain: 1337,
@@ -809,8 +809,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   routingIsm.Id,
+			Owner: creator.Address,
+			IsmId: routingIsm.Id,
 			Route: types.Route{
 				Ism:    noopIsm.Id,
 				Domain: 1337,
@@ -829,8 +829,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   routingIsm.Id,
+			Owner: creator.Address,
+			IsmId: routingIsm.Id,
 			Route: types.Route{
 				Ism:    routingIsm.Id,
 				Domain: 1337,
@@ -862,8 +862,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgRemoveRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   noopIsm.Id,
+			Owner: creator.Address,
+			IsmId: noopIsm.Id,
 		})
 
 		// Assert
@@ -876,8 +876,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err := s.RunTx(&types.MsgRemoveRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   ismId,
+			Owner: creator.Address,
+			IsmId: ismId,
 		})
 
 		// Assert
@@ -907,8 +907,8 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   routingIsm.Id,
+			Owner: creator.Address,
+			IsmId: routingIsm.Id,
 			Route: types.Route{
 				Ism:    noopIsm.Id,
 				Domain: 1337,
@@ -927,9 +927,9 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgRemoveRoutingIsmDomain{
-			Creator: creator.Address,
-			IsmId:   routingIsm.Id,
-			Domain:  1337,
+			Owner:  creator.Address,
+			IsmId:  routingIsm.Id,
+			Domain: 1337,
 		})
 		Expect(err).To(BeNil())
 		typeUrl = queryISM(&ism, s, routingIsm.Id.String())

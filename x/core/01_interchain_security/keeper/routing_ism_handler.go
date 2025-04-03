@@ -16,7 +16,7 @@ type RoutingISMHandler struct {
 }
 
 // Verify implements HyperlaneInterchainSecurityModule
-// Delegeates the verify call to the configured ISM in the routing ISM, routing happens based on the origin of the message
+// Delegates the verify call to the configured ISM in the routing ISM, routing happens based on the origin of the message
 func (m *RoutingISMHandler) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	ism, err := m.keeper.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
@@ -29,7 +29,7 @@ func (m *RoutingISMHandler) Verify(ctx context.Context, ismId util.HexAddress, m
 		return false, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
 	}
 
-	// get the ism for the message
+	// get the ism for the registered route
 	routedIsm, exists := routingIsm.GetIsm(message.Origin)
 	if !exists || routedIsm == nil {
 		return false, errors.Wrapf(types.ErrNoRouteFound, "no route found for message %s", message.String())

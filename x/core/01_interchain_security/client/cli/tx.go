@@ -214,7 +214,7 @@ func CmdSetRoutingIsmDomain() *cobra.Command {
 					Ism:    ismId,
 					Domain: uint32(domain),
 				},
-				Creator: clientCtx.GetFromAddress().String(),
+				Owner: clientCtx.GetFromAddress().String(),
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
@@ -248,9 +248,9 @@ func CmdRemoveRoutingIsmDomain() *cobra.Command {
 			}
 
 			msg := types.MsgRemoveRoutingIsmDomain{
-				IsmId:   routingIsmId,
-				Domain:  uint32(domain),
-				Creator: clientCtx.GetFromAddress().String(),
+				IsmId:  routingIsmId,
+				Domain: uint32(domain),
+				Owner:  clientCtx.GetFromAddress().String(),
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

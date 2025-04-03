@@ -156,7 +156,7 @@ message MsgCreateRoutingIsmResponse {
 
 // MsgSetRoutingIsmDomain ...
 message MsgSetRoutingIsmDomain {
-  option (cosmos.msg.v1.signer) = "creator";
+  option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) =
       "hyperlane/v1/MsgCreateRoMsgSetRoutingIsmDomainutingIsm";
 
@@ -170,8 +170,8 @@ message MsgSetRoutingIsmDomain {
   // route ...
   Route route = 2 [ (gogoproto.nullable) = false ];
 
-  // creator ...
-  string creator = 3;
+  // owner ...
+  string owner = 3;
 }
 
 // MsgSetRoutingIsmDomainResponse ...
@@ -179,7 +179,7 @@ message MsgSetRoutingIsmDomainResponse {}
 
 // MsgRemoveRoutingIsmDomain ...
 message MsgRemoveRoutingIsmDomain {
-  option (cosmos.msg.v1.signer) = "creator";
+  option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/v1/MsgRemoveRoutingIsmDomain";
 
   // ism_id ...
@@ -192,8 +192,8 @@ message MsgRemoveRoutingIsmDomain {
   // domain ...
   uint32 domain = 2;
 
-  // creator ...
-  string creator = 3;
+  // owner ...
+  string owner = 3;
 }
 
 // MsgRemoveRoutingIsmDomainResponse ...
