@@ -72,7 +72,11 @@ type RoutingISM struct {
 	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`
 	// owner ...
 	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
-	// routes ...
+	// Routes associated with the Routing ISM.
+	// These are stored directly within the ISM to simplify the design,
+	// as the number of routes is expected to remain small.
+	// This approach avoids the added complexity of managing a separate
+	// collection.
 	Routes []*Route `protobuf:"bytes,3,rep,name=routes,proto3" json:"routes,omitempty"`
 }
 

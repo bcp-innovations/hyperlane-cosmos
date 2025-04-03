@@ -44,7 +44,7 @@ func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRou
 	return &types.MsgCreateRoutingIsmResponse{Id: ismId}, nil
 }
 
-func (m msgServer) GetRoutingIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.RoutingISM, error) {
+func (m msgServer) getRoutingIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.RoutingISM, error) {
 	// check if the ism exists
 	ism, err := m.k.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
@@ -72,7 +72,7 @@ func (m msgServer) GetRoutingIsm(ctx context.Context, ismId util.HexAddress, own
 // RemoveRoutingIsmDomain
 func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) (*types.MsgRemoveRoutingIsmDomainResponse, error) {
 	// get routing ism
-	routingISM, err := m.GetRoutingIsm(ctx, req.IsmId, req.Owner)
+	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRem
 // SetRoutingIsmDomain
 func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) (*types.MsgSetRoutingIsmDomainResponse, error) {
 	// get routing ism
-	routingISM, err := m.GetRoutingIsm(ctx, req.IsmId, req.Owner)
+	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
 	if err != nil {
 		return nil, err
 	}

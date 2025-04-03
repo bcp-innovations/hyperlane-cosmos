@@ -46,7 +46,6 @@ func (m *RoutingISM) RemoveDomain(domainId uint32) bool {
 }
 
 // SetDomain adds/sets a domain to the routing ISM.
-// It returns true if the domain was added, false if it was already present and was overwritten
 func (m *RoutingISM) SetDomain(newRoute Route) {
 	for _, route := range m.Routes {
 		if newRoute.Domain == route.Domain {
