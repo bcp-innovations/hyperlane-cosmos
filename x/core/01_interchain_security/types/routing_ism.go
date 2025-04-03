@@ -4,6 +4,7 @@ import (
 	"context"
 	"slices"
 
+	"cosmossdk.io/errors"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 )
 
@@ -23,7 +24,7 @@ func (m *RoutingISM) ModuleType() uint8 {
 func (m *RoutingISM) Verify(ctx context.Context, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	// This method will never be called in the routing ISM struct
 	// Routing happens on the Handler level in `routing_ism_handler.go`
-	panic("RoutingISM.Verify should never be called")
+	return false, errors.Wrapf(ErrUnexpectedError, "Verify should not be called on RoutingISM")
 }
 
 func (m *RoutingISM) GetIsm(domainId uint32) (*util.HexAddress, bool) {
