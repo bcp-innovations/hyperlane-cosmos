@@ -112,7 +112,8 @@ func (k Keeper) IsmRouter() *util.Router[util.InterchainSecurityModule] {
 }
 
 func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
-	// consume a fixed amount of gas to prevent DoS attacks and to ensure that recursive calls are limited
+	// Consume a fixed amount of gas to prevent DoS attacks and limit recursive calls.
+	// This ensures a maximum number of approximately 2100 recursive verify calls.
 	sdk.UnwrapSDKContext(ctx).GasMeter().ConsumeGas(10000, "ism verification")
 
 	handler, err := k.ismRouter.GetModule(ismId)
