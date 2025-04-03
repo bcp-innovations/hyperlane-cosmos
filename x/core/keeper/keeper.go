@@ -111,7 +111,10 @@ func (k Keeper) IsmRouter() *util.Router[util.InterchainSecurityModule] {
 	return k.ismRouter
 }
 
-func (k *Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
+func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
+	// consume a fixed amount of gas to prevent DoS attacks and to ensure that recursive calls are limited
+	sdk.UnwrapSDKContext(ctx).GasMeter().ConsumeGas(10000, "ism verification")
+
 	handler, err := k.ismRouter.GetModule(ismId)
 	if err != nil {
 		return false, err

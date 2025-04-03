@@ -87,6 +87,7 @@ message QueryVerifyDryRunRequest {
   string ism_id = 1;
   string message = 2;
   string metadata = 3;
+  string gas_limit = 4;
 }
 
 // QueryVerifyDryRunResponse ...

@@ -25,6 +25,94 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
+// CreateRoutingIsm
+func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (*types.MsgCreateRoutingIsmResponse, error) {
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING)
+	if err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	newIsm := types.RoutingISM{
+		Id:    ismId,
+		Owner: req.Creator,
+	}
+
+	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgCreateRoutingIsmResponse{Id: ismId}, nil
+}
+
+func (m msgServer) GetRoutingIsm(ctx context.Context, ismId util.HexAddress) (*types.RoutingISM, error) {
+	// check if the ism exists
+	ism, err := m.k.isms.Get(ctx, ismId.GetInternalId())
+	if err != nil {
+		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", ismId.String())
+	}
+	// check if the ism is a routing ism
+	if ism.ModuleType() != types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING {
+		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
+	}
+
+	// this should never happen
+	routingISM, ok := ism.(*types.RoutingISM)
+	if !ok {
+		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
+	}
+
+	return routingISM, nil
+}
+
+// RemoveRoutingIsmDomain
+func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) (*types.MsgRemoveRoutingIsmDomainResponse, error) {
+	// get routing ism
+	routingISM, err := m.GetRoutingIsm(ctx, req.IsmId)
+	if err != nil {
+		return nil, err
+	}
+
+	// remove the domain from the list
+	routingISM.RemoveDomain(req.Domain)
+
+	// write to kv store
+	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgRemoveRoutingIsmDomainResponse{}, nil
+}
+
+// SetRoutingIsmDomain
+func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) (*types.MsgSetRoutingIsmDomainResponse, error) {
+	// get routing ism
+	routingISM, err := m.GetRoutingIsm(ctx, req.IsmId)
+	if err != nil {
+		return nil, err
+	}
+
+	// check if the ism we want to route to exists
+	module, err := m.k.coreKeeper.IsmRouter().GetModule(req.Route.Ism)
+	if err != nil || module == nil {
+		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", req.Route.Ism.String())
+	}
+
+	exists, err := (*module).Exists(ctx, req.Route.Ism)
+	if err != nil || !exists {
+		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", req.Route.Ism.String())
+	}
+
+	// we don't check if the domain was overwritten
+	routingISM.SetDomain(req.Route)
+
+	// write to kv store
+	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgSetRoutingIsmDomainResponse{}, nil
+}
+
 // AnnounceValidator lets a validator store a string in the state, which is queryable.
 // The string should contain the storage location for the proofs (e.g. an S3 bucket)
 // The Relayer uses this information to fetch the signatures for messages.

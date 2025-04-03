@@ -28,6 +28,9 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateMessageIdMultisigIsm(),
 		CmdCreateMerkleRootMultiSigIsm(),
 		CmdCreateNoopIsm(),
+		CmdCreateRoutingIsm(),
+		CmdSetRoutingIsmDomain(),
+		CmdRemoveRoutingIsmDomain(),
 	)
 
 	return txCmd
@@ -143,6 +146,110 @@ func CmdCreateNoopIsm() *cobra.Command {
 			}
 
 			msg := types.MsgCreateNoopIsm{
+				Creator: clientCtx.GetFromAddress().String(),
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdCreateRoutingIsm() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-routing",
+		Short: "Create a Hyperlane Routing ISM",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgCreateRoutingIsm{
+				Creator: clientCtx.GetFromAddress().String(),
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSetRoutingIsmDomain() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-routing-ism-domain [routing-ism-id] [domain] [ism-id]",
+		Short: "Sets the ISM for a given domain in the routing ISM",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			routingIsmId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			domain, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			ismId, err := util.DecodeHexAddress(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgSetRoutingIsmDomain{
+				IsmId: routingIsmId,
+				Route: types.Route{
+					Ism:    ismId,
+					Domain: uint32(domain),
+				},
+				Creator: clientCtx.GetFromAddress().String(),
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdRemoveRoutingIsmDomain() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-routing-ism-domain [routing-ism-id] [domain]",
+		Short: "Removes the ISM for a given domain in the routing ISM",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			routingIsmId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			domain, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgRemoveRoutingIsmDomain{
+				IsmId:   routingIsmId,
+				Domain:  uint32(domain),
 				Creator: clientCtx.GetFromAddress().String(),
 			}
 

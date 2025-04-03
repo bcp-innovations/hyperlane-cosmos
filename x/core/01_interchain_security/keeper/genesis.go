@@ -28,6 +28,8 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 			item = &types.MessageIdMultisigISM{}
 		case "/hyperlane.core.interchain_security.v1.MerkleRootMultisigISM":
 			item = &types.MerkleRootMultisigISM{}
+		case "/hyperlane.core.interchain_security.v1.RoutingISM":
+			item = &types.RoutingISM{}
 		default:
 			panic(fmt.Sprintf("unsupported type %s", rawIsm.TypeUrl))
 		}
