@@ -33,19 +33,16 @@ func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpda
 		return nil, err
 	}
 
-	// check if the new owner is empty
 	routingISM.Owner = req.NewOwner
 
+	// only renounce if new owner is empty
 	if req.RenounceOwnership && req.NewOwner != "" {
 		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
 	}
 
+	// don't allow new owner to be empty if not renouncing ownership
 	if !req.RenounceOwnership && req.NewOwner == "" {
 		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
-	}
-
-	if req.RenounceOwnership {
-		routingISM.Owner = ""
 	}
 
 	// write to kv store
