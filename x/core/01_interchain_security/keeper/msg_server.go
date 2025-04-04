@@ -25,35 +25,8 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-// UpdateRoutingIsmOwner ...
-func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdateRoutingIsmOwner) (*types.MsgUpdateRoutingIsmOwnerResponse, error) {
-	// get routing ism
-	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
-	if err != nil {
-		return nil, err
-	}
-
-	routingISM.Owner = req.NewOwner
-
-	// only renounce if new owner is empty
-	if req.RenounceOwnership && req.NewOwner != "" {
-		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
-	}
-
-	// don't allow new owner to be empty if not renouncing ownership
-	if !req.RenounceOwnership && req.NewOwner == "" {
-		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
-	}
-
-	// write to kv store
-	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
-	}
-
-	return &types.MsgUpdateRoutingIsmOwnerResponse{}, nil
-}
-
-// CreateRoutingIsm ...
+// CreateRoutingIsm creates a new Routing ISM after validating that all routes
+// have unique domains and reference existing ISMs.
 func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (*types.MsgCreateRoutingIsmResponse, error) {
 	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING)
 	if err != nil {
@@ -96,32 +69,35 @@ func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRou
 	return &types.MsgCreateRoutingIsmResponse{Id: ismId}, nil
 }
 
-func (m msgServer) getRoutingIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.RoutingISM, error) {
-	// check if the ism exists
-	ism, err := m.k.isms.Get(ctx, ismId.GetInternalId())
+// UpdateRoutingIsmOwner updates or renounces the owner of a Routing ISM.
+func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdateRoutingIsmOwner) (*types.MsgUpdateRoutingIsmOwnerResponse, error) {
+	// get routing ism
+	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
 	if err != nil {
-		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", ismId.String())
-	}
-	// check if the ism is a routing ism
-	if ism.ModuleType() != types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING {
-		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
+		return nil, err
 	}
 
-	// this should never happen
-	routingISM, ok := ism.(*types.RoutingISM)
-	if !ok {
-		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
+	routingISM.Owner = req.NewOwner
+
+	// only renounce if new owner is empty
+	if req.RenounceOwnership && req.NewOwner != "" {
+		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
 	}
 
-	// check if the tx sender is the owner of the ism
-	if routingISM.Owner != owner {
-		return nil, errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", owner, routingISM.Id.String())
+	// don't allow new owner to be empty if not renouncing ownership
+	if !req.RenounceOwnership && req.NewOwner == "" {
+		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
 	}
 
-	return routingISM, nil
+	// write to kv store
+	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgUpdateRoutingIsmOwnerResponse{}, nil
 }
 
-// RemoveRoutingIsmDomain ...
+// RemoveRoutingIsmDomain removes a domain from the specified Routing ISM.
 func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) (*types.MsgRemoveRoutingIsmDomainResponse, error) {
 	// get routing ism
 	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
@@ -140,7 +116,7 @@ func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRem
 	return &types.MsgRemoveRoutingIsmDomainResponse{}, nil
 }
 
-// SetRoutingIsmDomain ...
+// SetRoutingIsmDomain sets or updates the ISM route for a given domain in a Routing ISM.
 func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) (*types.MsgSetRoutingIsmDomainResponse, error) {
 	// get routing ism
 	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
@@ -323,4 +299,29 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 	}
 
 	return &types.MsgCreateNoopIsmResponse{Id: ismId}, nil
+}
+
+func (m msgServer) getRoutingIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.RoutingISM, error) {
+	// check if the ism exists
+	ism, err := m.k.isms.Get(ctx, ismId.GetInternalId())
+	if err != nil {
+		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", ismId.String())
+	}
+	// check if the ism is a routing ism
+	if ism.ModuleType() != types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING {
+		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
+	}
+
+	// this should never happen
+	routingISM, ok := ism.(*types.RoutingISM)
+	if !ok {
+		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
+	}
+
+	// check if the tx sender is the owner of the ism
+	if routingISM.Owner != owner {
+		return nil, errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", owner, routingISM.Id.String())
+	}
+
+	return routingISM, nil
 }

@@ -16,7 +16,7 @@ type RoutingISMHandler struct {
 }
 
 // Verify implements HyperlaneInterchainSecurityModule
-// Delegates the verify call to the configured ISM in the routing ISM, routing happens based on the origin of the message
+// Delegates the verify call to the configured ISM in the RoutingISM based on the origin of the message.
 func (m *RoutingISMHandler) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	ism, err := m.keeper.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {

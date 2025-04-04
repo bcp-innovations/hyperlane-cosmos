@@ -20,13 +20,14 @@ func (m *RoutingISM) ModuleType() uint8 {
 	return INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING
 }
 
-// ModuleType implements HyperlaneInterchainSecurityModule.
+// Verify implements HyperlaneInterchainSecurityModule, but should not be called on RoutingISM.
 func (m *RoutingISM) Verify(ctx context.Context, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	// This method will never be called in the routing ISM struct
 	// Routing happens on the Handler level in `routing_ism_handler.go`
 	return false, errors.Wrapf(ErrUnexpectedError, "Verify should not be called on RoutingISM")
 }
 
+// GetIsm returns the ISM ID for a given domain.
 func (m *RoutingISM) GetIsm(domainId uint32) (*util.HexAddress, bool) {
 	for _, route := range m.Routes {
 		if route.Domain == domainId {
@@ -36,6 +37,7 @@ func (m *RoutingISM) GetIsm(domainId uint32) (*util.HexAddress, bool) {
 	return nil, false
 }
 
+// RemoveDomain removes a Route from a Routing ISM fora given domain.
 func (m *RoutingISM) RemoveDomain(domainId uint32) bool {
 	for i, route := range m.Routes {
 		if route.Domain == domainId {
