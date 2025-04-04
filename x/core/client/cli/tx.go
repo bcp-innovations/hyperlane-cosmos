@@ -19,7 +19,6 @@ var (
 	newOwner          string
 	renounceOwnership bool
 	requiredHook      string
-	yes               bool
 )
 
 func GetTxCmd() *cobra.Command {

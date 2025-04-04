@@ -103,10 +103,15 @@ func CmdCreateIgp() *cobra.Command {
 
 func CmdSetIgpOwner() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-owner [igp-id] [new-owner]",
+		Use:   "set-owner [igp-id]",
 		Short: "Update a Hyperlane Interchain Gas Paymaster",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
+			yes, err := cmd.Flags().GetBool("yes")
+			if err != nil {
+				return err
+			}
+
 			if renounceOwnership && !yes {
 				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
 				var response string
@@ -136,7 +141,7 @@ func CmdSetIgpOwner() *cobra.Command {
 			msg := types.MsgSetIgpOwner{
 				Owner:             clientCtx.GetFromAddress().String(),
 				IgpId:             igpId,
-				NewOwner:          args[1],
+				NewOwner:          newOwner,
 				RenounceOwnership: renounceOwnership,
 			}
 
@@ -149,8 +154,8 @@ func CmdSetIgpOwner() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().StringVar(&newOwner, "new-owner", "", "set updated owner")
 	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
-	cmd.Flags().BoolVarP(&yes, "yes", "y", false, "auto-confirm all prompts")
 
 	flags.AddTxFlagsToCmd(cmd)
 

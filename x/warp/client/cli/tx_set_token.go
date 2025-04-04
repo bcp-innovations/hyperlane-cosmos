@@ -20,6 +20,11 @@ func CmdSetToken() *cobra.Command {
 		Short: "Update the Warp token",
 		Args:  cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
+			yes, err := cmd.Flags().GetBool("yes")
+			if err != nil {
+				return err
+			}
+
 			if renounceOwnership && !yes {
 				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
 				var response string
@@ -75,7 +80,6 @@ func CmdSetToken() *cobra.Command {
 	cmd.Flags().StringVar(&newOwner, "new-owner", "", "set updated owner")
 	cmd.Flags().StringVar(&ismId, "ism-id", "", "set updated ism")
 	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
-	cmd.Flags().BoolVarP(&yes, "yes", "y", false, "auto-confirm all prompts")
 
 	flags.AddTxFlagsToCmd(cmd)
 
