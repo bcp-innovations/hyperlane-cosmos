@@ -462,6 +462,34 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(mailbox.Owner).To(Equal(creator.Address))
 	})
 
+	It("SetMailbox (invalid) renounce ownership when new owner is specified", func() {
+		// Arrange
+		mailboxId, requiredHook, defaultHook, ismId := createValidMailbox(s, creator.Address, "noop", 1)
+
+		noopIsmId := createNoopIsm(s, sender.Address)
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetMailbox{
+			Owner:             creator.Address,
+			MailboxId:         mailboxId,
+			DefaultIsm:        &noopIsmId,
+			DefaultHook:       nil,
+			RequiredHook:      nil,
+			NewOwner:          "test",
+			RenounceOwnership: true,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("cannot set new owner and renounce ownership at the same time"))
+
+		mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.GetInternalId())
+		Expect(err).To(BeNil())
+		Expect(mailbox.DefaultIsm).To(Equal(ismId))
+		Expect(mailbox.DefaultHook).To(Equal(&defaultHook))
+		Expect(mailbox.RequiredHook).To(Equal(&requiredHook))
+		Expect(mailbox.Owner).To(Equal(creator.Address))
+	})
+
 	It("SetMailbox (valid) renounce ownership", func() {
 		// Arrange
 		mailboxId, requiredHook, defaultHook, _ := createValidMailbox(s, creator.Address, "noop", 1)
@@ -638,7 +666,7 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	return response.Id
 }
 
-func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId util.HexAddress, domain uint32) error {
+func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId util.HexAddress, _ uint32) error {
 	_, err := s.RunTx(&pdTypes.MsgSetDestinationGasConfig{
 		Owner: creator,
 		IgpId: igpId,

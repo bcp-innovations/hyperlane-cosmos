@@ -118,6 +118,11 @@ func (ms msgServer) SetMailbox(ctx context.Context, req *types.MsgSetMailbox) (*
 		mailbox.RequiredHook = req.RequiredHook
 	}
 
+	// Only renounce if new owner is empty
+	if req.RenounceOwnership && req.NewOwner != "" {
+		return nil, fmt.Errorf("cannot set new owner and renounce ownership at the same time")
+	}
+
 	if req.NewOwner != "" {
 		if _, err := ms.k.addressCodec.StringToBytes(req.NewOwner); err != nil {
 			return nil, fmt.Errorf("invalid new owner")
