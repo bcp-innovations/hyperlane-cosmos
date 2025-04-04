@@ -6,6 +6,45 @@ option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_inter
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 
+// Route
+message Route {
+  option (gogoproto.goproto_getters) = false;
+
+  // ism ...
+  string ism = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // domain ...
+  uint32 domain = 2;
+}
+
+// Routing ISM ...
+message RoutingISM {
+  option (gogoproto.goproto_getters) = false;
+  option (cosmos_proto.implements_interface) =
+      "hyperlane.core.interchain_security.v1.HyperlaneInterchainSecurityModule";
+
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // Routes associated with the Routing ISM.
+  // These are stored directly within the ISM to simplify the design,
+  // as the number of routes is expected to remain small.
+  // This approach avoids the added complexity of managing a separate
+  // collection.
+  repeated Route routes = 3 [ (gogoproto.nullable) = false ];
+}
+
 // MessageIdMultisigISM ...
 message MessageIdMultisigISM {
   option (gogoproto.goproto_getters) = false;

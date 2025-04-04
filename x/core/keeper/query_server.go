@@ -3,10 +3,13 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"cosmossdk.io/collections"
 
+	storetypes "cosmossdk.io/store/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
@@ -84,6 +87,19 @@ func (qs queryServer) Mailbox(ctx context.Context, req *types.QueryMailboxReques
 }
 
 func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDryRunRequest) (*types.QueryVerifyDryRunResponse, error) {
+	limit := uint64(200000)
+	if req.GasLimit != "" {
+		parsed, err := strconv.ParseUint(req.GasLimit, 10, 32)
+		if err != nil {
+			return nil, err
+		}
+
+		limit = parsed
+	}
+
+	// explicitly set a GasMeter to not run into stack overflows as ISM might call themselves
+	sdkCtx := sdk.UnwrapSDKContext(ctx).WithGasMeter(storetypes.NewGasMeter(limit))
+
 	ismId, err := util.DecodeHexAddress(req.IsmId)
 	if err != nil {
 		return nil, err
@@ -96,7 +112,7 @@ func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDr
 		return nil, err
 	}
 
-	verified, err := qs.k.Verify(ctx, ismId, metadata, msg)
+	verified, err := qs.k.Verify(sdkCtx, ismId, metadata, msg)
 	return &types.QueryVerifyDryRunResponse{
 		Verified: verified,
 	}, err

@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -12,6 +14,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
+)
+
+var (
+	newOwner          string
+	renounceOwnership bool
+	routesJSON        string
 )
 
 func GetTxCmd() *cobra.Command {
@@ -28,6 +36,10 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateMessageIdMultisigIsm(),
 		CmdCreateMerkleRootMultiSigIsm(),
 		CmdCreateNoopIsm(),
+		CmdCreateRoutingIsm(),
+		CmdSetRoutingIsmDomain(),
+		CmdRemoveRoutingIsmDomain(),
+		CmdUpdateRoutingIsmOwner(),
 	)
 
 	return txCmd
@@ -149,6 +161,173 @@ func CmdCreateNoopIsm() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdCreateRoutingIsm() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-routing",
+		Short: "Create a Hyperlane Routing ISM",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			var routes []types.Route
+			if err = json.Unmarshal([]byte(routesJSON), &routes); err != nil {
+				return fmt.Errorf("failed to parse routes JSON: %w", err)
+			}
+
+			msg := types.MsgCreateRoutingIsm{
+				Creator: clientCtx.GetFromAddress().String(),
+				Routes:  routes,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	cmd.Flags().StringVar(&routesJSON, "routes", "[]", "JSON array of routes, e.g. '[{\"domain\":1,\"ism\":\"0xabc...\"}]'")
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSetRoutingIsmDomain() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-routing-ism-domain [routing-ism-id] [domain] [ism-id]",
+		Short: "Sets the ISM for a given domain in the routing ISM",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			routingIsmId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			domain, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			ismId, err := util.DecodeHexAddress(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgSetRoutingIsmDomain{
+				IsmId: routingIsmId,
+				Route: types.Route{
+					Ism:    ismId,
+					Domain: uint32(domain),
+				},
+				Owner: clientCtx.GetFromAddress().String(),
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdRemoveRoutingIsmDomain() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-routing-ism-domain [routing-ism-id] [domain]",
+		Short: "Removes the ISM for a given domain in the routing ISM",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			routingIsmId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			domain, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgRemoveRoutingIsmDomain{
+				IsmId:  routingIsmId,
+				Domain: uint32(domain),
+				Owner:  clientCtx.GetFromAddress().String(),
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdUpdateRoutingIsmOwner() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-routing-ism-owner [routing-ism-id]",
+		Short: "Update the owner of a routing ISM",
+		Args:  cobra.ExactArgs(1),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			yes, err := cmd.Flags().GetBool("yes")
+			if err != nil {
+				return err
+			}
+
+			if renounceOwnership && !yes {
+				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
+				var response string
+
+				_, err := fmt.Scanln(&response)
+				if err != nil {
+					return err
+				}
+
+				if strings.ToLower(response) != "yes" {
+					return fmt.Errorf("canceled transaction")
+				}
+			}
+			return nil
+		}, RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			routingIsmId, err := util.DecodeHexAddress(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgUpdateRoutingIsmOwner{
+				IsmId:             routingIsmId,
+				NewOwner:          newOwner,
+				Owner:             clientCtx.GetFromAddress().String(),
+				RenounceOwnership: renounceOwnership,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	cmd.Flags().StringVar(&newOwner, "new-owner", "", "new owner")
+	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
 
 	flags.AddTxFlagsToCmd(cmd)
 

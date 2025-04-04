@@ -3,8 +3,10 @@ package hyperlane.core.interchain_security.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types";
 
+import "cosmos_proto/cosmos.proto";
 import "cosmos/msg/v1/msg.proto";
 import "amino/amino.proto";
+import "hyperlane/core/interchain_security/v1/types.proto";
 import "gogoproto/gogo.proto";
 
 // Msg defines the module Msg service.
@@ -21,6 +23,22 @@ service Msg {
 
   // CreateNoopIsm ...
   rpc CreateNoopIsm(MsgCreateNoopIsm) returns (MsgCreateNoopIsmResponse);
+
+  // CreateRoutingIsm ...
+  rpc CreateRoutingIsm(MsgCreateRoutingIsm)
+      returns (MsgCreateRoutingIsmResponse);
+
+  // SetRoutingIsmDomain ...
+  rpc SetRoutingIsmDomain(MsgSetRoutingIsmDomain)
+      returns (MsgSetRoutingIsmDomainResponse);
+
+  // RemoveRoutingIsmDomain ...
+  rpc RemoveRoutingIsmDomain(MsgRemoveRoutingIsmDomain)
+      returns (MsgRemoveRoutingIsmDomainResponse);
+
+  // UpdateRoutingIsmOwner ...
+  rpc UpdateRoutingIsmOwner(MsgUpdateRoutingIsmOwner)
+      returns (MsgUpdateRoutingIsmOwnerResponse);
 
   // AnnounceValidator ...
   rpc AnnounceValidator(MsgAnnounceValidator)
@@ -122,3 +140,94 @@ message MsgAnnounceValidator {
 
 // MsgAnnounceValidatorResponse ...
 message MsgAnnounceValidatorResponse {}
+
+// MsgCreateRoutingIsm ...
+message MsgCreateRoutingIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/v1/MsgCreateRoutingIsm";
+
+  // creator ...
+  string creator = 1;
+
+  // routes ...
+  repeated Route routes = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgCreateRoutingIsmResponse ...
+message MsgCreateRoutingIsmResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgSetRoutingIsmDomain ...
+message MsgSetRoutingIsmDomain {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) =
+      "hyperlane/v1/MsgCreateRoMsgSetRoutingIsmDomainutingIsm";
+
+  // ism_id ...
+  string ism_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // route ...
+  Route route = 2 [ (gogoproto.nullable) = false ];
+
+  // owner ...
+  string owner = 3;
+}
+
+// MsgSetRoutingIsmDomainResponse ...
+message MsgSetRoutingIsmDomainResponse {}
+
+// MsgRemoveRoutingIsmDomain ...
+message MsgRemoveRoutingIsmDomain {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/v1/MsgRemoveRoutingIsmDomain";
+
+  // ism_id ...
+  string ism_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // domain ...
+  uint32 domain = 2;
+
+  // owner ...
+  string owner = 3;
+}
+
+// MsgRemoveRoutingIsmDomainResponse ...
+message MsgRemoveRoutingIsmDomainResponse {}
+
+// MsgUpdateRoutingIsmOwner ...
+message MsgUpdateRoutingIsmOwner {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/v1/MsgUpdateRoutingIsmOwner";
+
+  // ism_id ...
+  string ism_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2;
+
+  // new owner
+  string new_owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // renounce_ownership
+  bool renounce_ownership = 4;
+}
+
+// MsgUpdateRoutingIsmOwnerResponse ...
+message MsgUpdateRoutingIsmOwnerResponse {}

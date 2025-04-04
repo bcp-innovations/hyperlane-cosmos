@@ -122,3 +122,57 @@ func (m MockApp) ReceiverIsmId(_ context.Context, recipient util.HexAddress) (*u
 	}
 	return &ismId, nil
 }
+
+const MOCK_ISM uint8 = 202
+
+type MockIsm struct {
+	router   *util.Router[util.InterchainSecurityModule]
+	isms     map[util.HexAddress]struct{}
+	calls    *int
+	moduleId uint8
+}
+
+func CreateMockIsm(router *util.Router[util.InterchainSecurityModule]) *MockIsm {
+	handler := MockIsm{
+		isms:     make(map[util.HexAddress]struct{}),
+		router:   router,
+		calls:    new(int),
+		moduleId: MOCK_ISM,
+	}
+
+	router.RegisterModule(handler.moduleId, handler)
+
+	return &handler
+}
+
+func (m MockIsm) Exists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+	_, ok := m.isms[ismId]
+	if !ok {
+		return false, nil
+	}
+	return true, nil
+}
+
+func (m MockIsm) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
+	*m.calls++
+	if _, ok := m.isms[ismId]; !ok {
+		return false, nil
+	}
+	return true, nil
+}
+
+func (m MockIsm) RegisterIsm(ctx context.Context) (util.HexAddress, error) {
+	sequence, err := m.router.GetNextSequence(ctx, m.moduleId)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+	m.isms[sequence] = struct{}{}
+	return sequence, nil
+}
+
+func (m MockIsm) CallCount() int {
+	if m.calls == nil {
+		return 0
+	}
+	return *m.calls
+}

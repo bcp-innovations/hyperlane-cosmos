@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"cosmossdk.io/errors"
 
 	"cosmossdk.io/collections"
@@ -23,6 +25,123 @@ var _ types.MsgServer = msgServer{}
 // NewMsgServerImpl returns an implementation of the module MsgServer interface.
 func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
+}
+
+// CreateRoutingIsm creates a new Routing ISM after validating that all routes
+// have unique domains and reference existing ISMs.
+func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (*types.MsgCreateRoutingIsmResponse, error) {
+	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING)
+	if err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	var routes []types.Route
+	domainSet := make(map[uint32]bool)
+	for _, route := range req.Routes {
+		// Check for duplicate domains
+		if domainSet[route.Domain] {
+			return nil, errors.Wrapf(types.ErrDuplicatedDomains, "multiple ISMs for domain %v not allowed", route.Domain)
+		}
+		domainSet[route.Domain] = true
+
+		// Validate ISM exists
+		exists, err := m.k.coreKeeper.IsmExists(ctx, route.Ism)
+		if err != nil || !exists {
+			return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", route.Ism.String())
+		}
+
+		routes = append(routes, route)
+	}
+
+	newIsm := types.RoutingISM{
+		Id:     ismId,
+		Owner:  req.Creator,
+		Routes: routes,
+	}
+
+	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgCreateRoutingIsmResponse{Id: ismId}, nil
+}
+
+// UpdateRoutingIsmOwner updates or renounces the owner of a Routing ISM.
+func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdateRoutingIsmOwner) (*types.MsgUpdateRoutingIsmOwnerResponse, error) {
+	// get routing ism
+	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	if req.NewOwner != "" {
+		_, err = sdk.AccAddressFromBech32(req.NewOwner)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
+		}
+	}
+	routingISM.Owner = req.NewOwner
+
+	// only renounce if new owner is empty
+	if req.RenounceOwnership && req.NewOwner != "" {
+		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
+	}
+
+	// don't allow new owner to be empty if not renouncing ownership
+	if !req.RenounceOwnership && req.NewOwner == "" {
+		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
+	}
+
+	// write to kv store
+	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgUpdateRoutingIsmOwnerResponse{}, nil
+}
+
+// RemoveRoutingIsmDomain removes a domain from the specified Routing ISM.
+func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) (*types.MsgRemoveRoutingIsmDomainResponse, error) {
+	// get routing ism
+	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	// remove the domain from the list
+	routingISM.RemoveDomain(req.Domain)
+
+	// write to kv store
+	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgRemoveRoutingIsmDomainResponse{}, nil
+}
+
+// SetRoutingIsmDomain sets or updates the ISM route for a given domain in a Routing ISM.
+func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) (*types.MsgSetRoutingIsmDomainResponse, error) {
+	// get routing ism
+	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	// check if the ism we want to route to exists
+	exists, err := m.k.coreKeeper.IsmExists(ctx, req.Route.Ism)
+	if err != nil || !exists {
+		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", req.Route.Ism.String())
+	}
+
+	// we don't check if the domain was overwritten
+	routingISM.SetDomain(req.Route)
+
+	// write to kv store
+	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	return &types.MsgSetRoutingIsmDomainResponse{}, nil
 }
 
 // AnnounceValidator lets a validator store a string in the state, which is queryable.
@@ -178,4 +297,29 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 	}
 
 	return &types.MsgCreateNoopIsmResponse{Id: ismId}, nil
+}
+
+func (m msgServer) getRoutingIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.RoutingISM, error) {
+	// check if the ism exists
+	ism, err := m.k.isms.Get(ctx, ismId.GetInternalId())
+	if err != nil {
+		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", ismId.String())
+	}
+	// check if the ism is a routing ism
+	if ism.ModuleType() != types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING {
+		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
+	}
+
+	// this should never happen
+	routingISM, ok := ism.(*types.RoutingISM)
+	if !ok {
+		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", ismId.String())
+	}
+
+	// check if the tx sender is the owner of the ism
+	if routingISM.Owner != owner {
+		return nil, errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", owner, routingISM.Id.String())
+	}
+
+	return routingISM, nil
 }
