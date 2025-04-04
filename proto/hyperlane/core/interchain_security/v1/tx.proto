@@ -148,6 +148,9 @@ message MsgCreateRoutingIsm {
 
   // creator ...
   string creator = 1;
+
+  // routes ...
+  repeated Route routes = 2 [ (gogoproto.nullable) = false ];
 }
 
 // MsgCreateRoutingIsmResponse ...

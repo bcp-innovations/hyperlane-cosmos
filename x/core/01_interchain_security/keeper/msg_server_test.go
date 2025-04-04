@@ -78,12 +78,72 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 	})
 
+	It("Create (invalid) non existing ISM", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+		nonExistingIsmId := util.CreateMockHexAddress("ism", 0)
+
+		routes := []types.Route{
+			{
+				Domain: 1338,
+				Ism:    noopIsmId,
+			},
+			{
+				Domain: 1337,
+				Ism:    nonExistingIsmId,
+			},
+		}
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+			Routes:  routes,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("ISM %s not found: unknown ism id", nonExistingIsmId.String())))
+	})
+
+	It("Create (invalid) multiple ISMs for one domain", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+		noopIsmId2 := createNoopIsm(s, creator.Address)
+
+		routes := []types.Route{
+			{
+				Domain: 1338,
+				Ism:    noopIsmId,
+			},
+			{
+				Domain: 1338,
+				Ism:    noopIsmId2,
+			},
+		}
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+			Routes:  routes,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("multiple ISMs for domain %v not allowed: route for domain already exists", 1338)))
+	})
+
 	It("Create (valid) Routing ISM", func() {
 		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+		routes := []types.Route{
+			{
+				Domain: 1337,
+				Ism:    noopIsmId,
+			},
+		}
 
 		// Act
 		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
+			Routes:  routes,
 		})
 
 		// Assert
@@ -98,6 +158,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
 		Expect(ism.Owner).To(Equal(creator.Address))
 		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+		Expect(ism.Routes).To(Equal(routes))
 	})
 
 	It("Create (valid) Noop ISM", func() {
@@ -680,7 +741,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 	})
 
-	It("SetRoutingIsmDomain (invalid) with a valid domain & unkown ism", func() {
+	It("SetRoutingIsmDomain (invalid) with a valid domain & unknown ism", func() {
 		// Arrange
 		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
@@ -709,20 +770,12 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("SetRoutingIsmDomain (invalid) on non routing ism", func() {
 		// Arrange
-		res, err := s.RunTx(&types.MsgCreateNoopIsm{
-			Creator: creator.Address,
-		})
-
-		Expect(err).To(BeNil())
-
-		var noopIsm types.MsgCreateNoopIsmResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
-		Expect(err).To(BeNil())
+		noopIsmId := createNoopIsm(s, creator.Address)
 
 		// Act
-		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
+		_, err := s.RunTx(&types.MsgSetRoutingIsmDomain{
 			Owner: creator.Address,
-			IsmId: noopIsm.Id,
+			IsmId: noopIsmId,
 			Route: types.Route{
 				Ism:    util.CreateMockHexAddress("ism", 0),
 				Domain: 1337,
@@ -730,7 +783,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", noopIsm.Id.String()).Error()))
+		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", noopIsmId.String()).Error()))
 	})
 
 	It("SetRoutingIsmDomain (invalid) with non existing ism", func() {
@@ -753,17 +806,9 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("SetRoutingIsmDomain (invalid) with non owner", func() {
 		// Arrange
-		res, err := s.RunTx(&types.MsgCreateNoopIsm{
-			Creator: creator.Address,
-		})
+		noopIsmId := createNoopIsm(s, creator.Address)
 
-		Expect(err).To(BeNil())
-
-		var noopIsm types.MsgCreateNoopIsmResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
-		Expect(err).To(BeNil())
-
-		res, err = s.RunTx(&types.MsgCreateRoutingIsm{
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
 		})
 
@@ -778,7 +823,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Owner: nonOwner.Address,
 			IsmId: routingIsm.Id,
 			Route: types.Route{
-				Ism:    noopIsm.Id,
+				Ism:    noopIsmId,
 				Domain: 1337,
 			},
 		})
@@ -796,17 +841,9 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("SetRoutingIsmDomain (valid)", func() {
 		// Arrange
-		res, err := s.RunTx(&types.MsgCreateNoopIsm{
-			Creator: creator.Address,
-		})
+		noopIsmId := createNoopIsm(s, creator.Address)
 
-		Expect(err).To(BeNil())
-
-		var noopIsm types.MsgCreateNoopIsmResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
-		Expect(err).To(BeNil())
-
-		res, err = s.RunTx(&types.MsgCreateRoutingIsm{
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
 		})
 
@@ -821,7 +858,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Owner: creator.Address,
 			IsmId: routingIsm.Id,
 			Route: types.Route{
-				Ism:    noopIsm.Id,
+				Ism:    noopIsmId,
 				Domain: 1337,
 			},
 		})
@@ -835,22 +872,14 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
-		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsmId.String()))
 	})
 
 	It("SetRoutingIsmDomain (valid) update existing domain", func() {
 		// Arrange
-		res, err := s.RunTx(&types.MsgCreateNoopIsm{
-			Creator: creator.Address,
-		})
+		noopIsmId := createNoopIsm(s, creator.Address)
 
-		Expect(err).To(BeNil())
-
-		var noopIsm types.MsgCreateNoopIsmResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
-		Expect(err).To(BeNil())
-
-		res, err = s.RunTx(&types.MsgCreateRoutingIsm{
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
 		})
 
@@ -864,7 +893,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Owner: creator.Address,
 			IsmId: routingIsm.Id,
 			Route: types.Route{
-				Ism:    noopIsm.Id,
+				Ism:    noopIsmId,
 				Domain: 1337,
 			},
 		})
@@ -877,7 +906,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
-		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsmId.String()))
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetRoutingIsmDomain{
@@ -897,29 +926,21 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
-		Expect(ism.Routes[0].Ism.String()).To(Equal(routingIsm.Id.String()))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsmId.String()))
 	})
 
 	It("RemoveRoutingIsmDomain (invalid) on non routing ism", func() {
 		// Arrange
-		res, err := s.RunTx(&types.MsgCreateNoopIsm{
-			Creator: creator.Address,
-		})
-
-		Expect(err).To(BeNil())
-
-		var noopIsm types.MsgCreateNoopIsmResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
-		Expect(err).To(BeNil())
+		noopIsmId := createNoopIsm(s, creator.Address)
 
 		// Act
-		_, err = s.RunTx(&types.MsgRemoveRoutingIsmDomain{
+		_, err := s.RunTx(&types.MsgRemoveRoutingIsmDomain{
 			Owner: creator.Address,
-			IsmId: noopIsm.Id,
+			IsmId: noopIsmId,
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", noopIsm.Id.String()).Error()))
+		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", noopIsmId.String()).Error()))
 	})
 
 	It("RemoveRoutingIsmDomain (invalid) on unkown ism", func() {
@@ -938,17 +959,9 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("RemoveRoutingIsmDomain (valid)", func() {
 		// Arrange
-		res, err := s.RunTx(&types.MsgCreateNoopIsm{
-			Creator: creator.Address,
-		})
+		noopIsmId := createNoopIsm(s, creator.Address)
 
-		Expect(err).To(BeNil())
-
-		var noopIsm types.MsgCreateNoopIsmResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
-		Expect(err).To(BeNil())
-
-		res, err = s.RunTx(&types.MsgCreateRoutingIsm{
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
 		})
 
@@ -962,7 +975,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Owner: creator.Address,
 			IsmId: routingIsm.Id,
 			Route: types.Route{
-				Ism:    noopIsm.Id,
+				Ism:    noopIsmId,
 				Domain: 1337,
 			},
 		})
@@ -975,7 +988,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
-		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsmId.String()))
 
 		// Act
 		_, err = s.RunTx(&types.MsgRemoveRoutingIsmDomain{
@@ -993,17 +1006,9 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("RemoveRoutingIsmDomain (invalid) with non owner", func() {
 		// Arrange
-		res, err := s.RunTx(&types.MsgCreateNoopIsm{
-			Creator: creator.Address,
-		})
+		noopIsmId := createNoopIsm(s, creator.Address)
 
-		Expect(err).To(BeNil())
-
-		var noopIsm types.MsgCreateNoopIsmResponse
-		err = proto.Unmarshal(res.MsgResponses[0].Value, &noopIsm)
-		Expect(err).To(BeNil())
-
-		res, err = s.RunTx(&types.MsgCreateRoutingIsm{
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
 		})
 
@@ -1017,7 +1022,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Owner: creator.Address,
 			IsmId: routingIsm.Id,
 			Route: types.Route{
-				Ism:    noopIsm.Id,
+				Ism:    noopIsmId,
 				Domain: 1337,
 			},
 		})
@@ -1030,7 +1035,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
-		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsmId.String()))
 
 		// Act
 		_, err = s.RunTx(&types.MsgRemoveRoutingIsmDomain{
@@ -1045,7 +1050,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
-		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsm.Id.String()))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsmId.String()))
 	})
 
 	It("UpdateRoutingIsmOwner (invalid) with non owner", func() {

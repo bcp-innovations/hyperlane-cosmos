@@ -54,5 +54,5 @@ func (m *RoutingISM) SetDomain(newRoute Route) {
 			return
 		}
 	}
-	m.Routes = append(m.Routes, &newRoute)
+	m.Routes = append(m.Routes, newRoute)
 }

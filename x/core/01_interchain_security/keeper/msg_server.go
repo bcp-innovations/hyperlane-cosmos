@@ -25,7 +25,7 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-// UpdateRoutingIsmOwner
+// UpdateRoutingIsmOwner ...
 func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdateRoutingIsmOwner) (*types.MsgUpdateRoutingIsmOwnerResponse, error) {
 	// get routing ism
 	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
@@ -53,16 +53,40 @@ func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpda
 	return &types.MsgUpdateRoutingIsmOwnerResponse{}, nil
 }
 
-// CreateRoutingIsm
+// CreateRoutingIsm ...
 func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (*types.MsgCreateRoutingIsmResponse, error) {
 	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING)
 	if err != nil {
 		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
+	var routes []types.Route
+	domainSet := make(map[uint32]bool)
+	for _, route := range req.Routes {
+		// Check for duplicate domains
+		if domainSet[route.Domain] {
+			return nil, errors.Wrapf(types.ErrDuplicatedDomains, "multiple ISMs for domain %v not allowed", route.Domain)
+		}
+		domainSet[route.Domain] = true
+
+		// Validate ISM exists
+		module, err := m.k.coreKeeper.IsmRouter().GetModule(route.Ism)
+		if err != nil || module == nil {
+			return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", route.Ism.String())
+		}
+
+		exists, err := (*module).Exists(ctx, route.Ism)
+		if err != nil || !exists {
+			return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", route.Ism.String())
+		}
+
+		routes = append(routes, route)
+	}
+
 	newIsm := types.RoutingISM{
-		Id:    ismId,
-		Owner: req.Creator,
+		Id:     ismId,
+		Owner:  req.Creator,
+		Routes: routes,
 	}
 
 	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
@@ -97,7 +121,7 @@ func (m msgServer) getRoutingIsm(ctx context.Context, ismId util.HexAddress, own
 	return routingISM, nil
 }
 
-// RemoveRoutingIsmDomain
+// RemoveRoutingIsmDomain ...
 func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) (*types.MsgRemoveRoutingIsmDomainResponse, error) {
 	// get routing ism
 	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
@@ -116,7 +140,7 @@ func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRem
 	return &types.MsgRemoveRoutingIsmDomainResponse{}, nil
 }
 
-// SetRoutingIsmDomain
+// SetRoutingIsmDomain ...
 func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) (*types.MsgSetRoutingIsmDomainResponse, error) {
 	// get routing ism
 	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)

@@ -13,4 +13,5 @@ var (
 	ErrNoRouteFound                 = errors.Register(SubModuleName, 8, "no route found")
 	ErrUnauthorized                 = errors.Register(SubModuleName, 9, "unauthorized")
 	ErrInvalidOwner                 = errors.Register(SubModuleName, 10, "invalid owner")
+	ErrDuplicatedDomains            = errors.Register(SubModuleName, 11, "route for domain already exists")
 )

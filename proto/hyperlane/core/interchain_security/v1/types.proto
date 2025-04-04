@@ -42,7 +42,7 @@ message RoutingISM {
   // as the number of routes is expected to remain small.
   // This approach avoids the added complexity of managing a separate
   // collection.
-  repeated Route routes = 3 [ (gogoproto.nullable) = true ];
+  repeated Route routes = 3 [ (gogoproto.nullable) = false ];
 }
 
 // MessageIdMultisigISM ...
