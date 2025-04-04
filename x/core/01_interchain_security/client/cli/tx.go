@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -18,8 +19,9 @@ import (
 )
 
 var (
-	renounceOwnership bool
 	newOwner          string
+	renounceOwnership bool
+	routesJSON        string
 )
 
 func GetTxCmd() *cobra.Command {
@@ -178,13 +180,21 @@ func CmdCreateRoutingIsm() *cobra.Command {
 				return err
 			}
 
+			var routes []types.Route
+			if err = json.Unmarshal([]byte(routesJSON), &routes); err != nil {
+				return fmt.Errorf("failed to parse routes JSON: %w", err)
+			}
+
 			msg := types.MsgCreateRoutingIsm{
 				Creator: clientCtx.GetFromAddress().String(),
+				Routes:  routes,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
+
+	cmd.Flags().StringVar(&routesJSON, "routes", "[]", "JSON array of routes, e.g. '[{\"domain\":1,\"ism\":\"0xabc...\"}]'")
 
 	flags.AddTxFlagsToCmd(cmd)
 
