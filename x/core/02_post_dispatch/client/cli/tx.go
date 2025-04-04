@@ -5,6 +5,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	newOwner          string
+	renounceOwnership bool
+)
+
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        "hooks",

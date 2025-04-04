@@ -29,6 +29,8 @@ TEST CASES - msg_igp.go
 * SetDestinationGasConfig (valid)
 * MsgSetIgpOwner (invalid) for non-existing IGP
 * MsgSetIgpOwner (invalid) called by non-owner
+* MsgSetToken (invalid) invalid new owner
+* MsgSetToken (invalid) renounce ownership with new owner set
 * MsgSetIgpOwner (valid)
 */
 
@@ -293,6 +295,86 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own igp with id %s", gasPayer.Address, igpId)))
+	})
+
+	It("MsgSetToken (invalid) invalid new owner", func() {
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateIgp{
+			Owner: creator.Address,
+			Denom: denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateIgpResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		igpId := response.Id
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetIgpOwner{
+			Owner:             creator.Address,
+			NewOwner:          "new_owner",
+			IgpId:             igpId,
+			RenounceOwnership: false,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("invalid new owner"))
+	})
+
+	It("MsgSetToken (invalid) renounce ownership with new owner set", func() {
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateIgp{
+			Owner: creator.Address,
+			Denom: denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateIgpResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		igpId := response.Id
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetIgpOwner{
+			Owner:             creator.Address,
+			NewOwner:          gasPayer.Address,
+			IgpId:             igpId,
+			RenounceOwnership: true,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("cannot set new owner and renounce ownership at the same time"))
+	})
+
+	It("MsgSetIgpOwner (valid) - renounce ownership", func() {
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateIgp{
+			Owner: creator.Address,
+			Denom: denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateIgpResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		igpId := response.Id
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetIgpOwner{
+			Owner:             creator.Address,
+			NewOwner:          "",
+			IgpId:             igpId,
+			RenounceOwnership: true,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		// Check if the owner has been updated
+		igp, err := s.App().HyperlaneKeeper.PostDispatchKeeper.Igps.Get(s.Ctx(), igpId.GetInternalId())
+		Expect(err).To(BeNil())
+		Expect(igp.Owner).To(Equal(""))
 	})
 
 	It("MsgSetIgpOwner (valid)", func() {

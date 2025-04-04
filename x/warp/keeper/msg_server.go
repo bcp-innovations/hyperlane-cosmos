@@ -91,8 +91,8 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 
 // SetToken allows the owner of a token to change its ownership or update its ISM ID.
 func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*types.MsgSetTokenResponse, error) {
-	if msg.NewOwner == "" && msg.IsmId == nil {
-		return nil, fmt.Errorf("new owner or ism id required")
+	if msg.NewOwner == "" && msg.IsmId == nil && !msg.RenounceOwnership {
+		return nil, fmt.Errorf("new owner, renounce ownership or ism id required")
 	}
 
 	tokenId := msg.TokenId
@@ -105,8 +105,20 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
+	// Only renounce if new owner is empty
+	if msg.RenounceOwnership && msg.NewOwner != "" {
+		return nil, fmt.Errorf("cannot set new owner and renounce ownership at the same time")
+	}
+
 	if msg.NewOwner != "" {
+		if _, err := ms.k.addressCodec.StringToBytes(msg.NewOwner); err != nil {
+			return nil, fmt.Errorf("invalid new owner")
+		}
 		token.Owner = msg.NewOwner
+	}
+
+	if msg.RenounceOwnership {
+		token.Owner = ""
 	}
 
 	if msg.IsmId != nil {

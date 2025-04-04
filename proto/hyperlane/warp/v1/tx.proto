@@ -104,6 +104,7 @@ message MsgSetToken {
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = true
   ];
+  bool renounce_ownership = 7;
 }
 
 // MsgSetTokenResponse ...

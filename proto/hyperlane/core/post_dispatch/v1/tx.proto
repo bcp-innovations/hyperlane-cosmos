@@ -76,6 +76,9 @@ message MsgSetIgpOwner {
 
   // new_owner
   string new_owner = 3;
+
+  // renounce_ownership
+  bool renounce_ownership = 4;
 }
 
 // MsgCreateIgpResponse ...

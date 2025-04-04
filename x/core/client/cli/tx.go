@@ -14,10 +14,11 @@ import (
 
 var (
 	// SetMailbox
-	defaultIsm   string
-	defaultHook  string
-	requiredHook string
-	newOwner     string
+	defaultIsm        string
+	defaultHook       string
+	newOwner          string
+	renounceOwnership bool
+	requiredHook      string
 )
 
 func GetTxCmd() *cobra.Command {
