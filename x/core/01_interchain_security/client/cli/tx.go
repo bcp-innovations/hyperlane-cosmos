@@ -285,7 +285,12 @@ func CmdUpdateRoutingIsmOwner() *cobra.Command {
 		Short: "Update the owner of a routing ISM",
 		Args:  cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if renounceOwnership {
+			yes, err := cmd.Flags().GetBool("yes")
+			if err != nil {
+				return err
+			}
+
+			if renounceOwnership && !yes {
 				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
 				var response string
 
