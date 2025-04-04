@@ -23,6 +23,8 @@ import (
 
 TEST CASES - msg_server.go
 
+* Create (invalid) Routing ISM with non-existing child ISM
+* Create (invalid) RoutingISM: multiple ISMs for one domain
 * Create (valid) Routing ISM
 * Create (valid) Noop ISM
 * Create (invalid) MessageIdMultisig ISM with less addresses
@@ -55,12 +57,13 @@ TEST CASES - msg_server.go
 * SetRoutingIsmDomain (valid)
 * SetRoutingIsmDomain (valid) update existing domain
 * RemoveRoutingIsmDomain (invalid) on non routing ism
-* RemoveRoutingIsmDomain (invalid) on unkown ism"
-* RemoveRoutingIsmDomain (invalid) with non owner
+* RemoveRoutingIsmDomain (invalid) on unknown ism
 * RemoveRoutingIsmDomain (valid)
+* RemoveRoutingIsmDomain (invalid) with non owner
 * UpdateRoutingIsmOwner (invalid) with non owner
 * UpdateRoutingIsmOwner (invalid) with both renounce and new owner
 * UpdateRoutingIsmOwner (invalid) with empty new owner
+* UpdateRoutingIsmOwner (invalid) incorrectly formatted owner address
 * UpdateRoutingIsmOwner (valid) new owner
 * UpdateRoutingIsmOwner (valid) renounce ownership
 */
@@ -78,7 +81,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 	})
 
-	It("Create (invalid) non existing ISM", func() {
+	It("Create (invalid) Routing ISM with non-existing child ISM", func() {
 		// Arrange
 		noopIsmId := createNoopIsm(s, creator.Address)
 		nonExistingIsmId := util.CreateMockHexAddress("ism", 0)
@@ -104,7 +107,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("ISM %s not found: unknown ism id", nonExistingIsmId.String())))
 	})
 
-	It("Create (invalid) multiple ISMs for one domain", func() {
+	It("Create (invalid) RoutingISM: multiple ISMs for one domain", func() {
 		// Arrange
 		noopIsmId := createNoopIsm(s, creator.Address)
 		noopIsmId2 := createNoopIsm(s, creator.Address)
@@ -228,7 +231,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v: invalid multisig configuration", invalidAddress[0])))
 	})
 
-	It("Create (invalid) MessageIdMultisig ISM with invalid validator address", func() {
+	It("Create (invalid) MessageIdMultisig ISM with invalid validator addresses", func() {
 		// Arrange
 		validValidatorAddress := "0xa04b6a0aa112b61a7aa16c19cac27d970692995e"
 		invalidAddress := []string{
@@ -353,7 +356,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v: invalid multisig configuration", invalidAddress[0])))
 	})
 
-	It("Create (invalid) MerkleRootMultisig ISM with invalid validator address", func() {
+	It("Create (invalid) MerkleRootMultisig ISM with invalid validator addresses", func() {
 		// Arrange
 		validValidatorAddress := "0xa04b6a0aa112b61a7aa16c19cac27d970692995e"
 		invalidAddress := []string{
@@ -943,7 +946,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not a routing ISM", noopIsmId.String()).Error()))
 	})
 
-	It("RemoveRoutingIsmDomain (invalid) on unkown ism", func() {
+	It("RemoveRoutingIsmDomain (invalid) on unknown ism", func() {
 		// Arrange
 		ismId := util.CreateMockHexAddress("ism", 0)
 
@@ -1143,6 +1146,42 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership").Error()))
+	})
+
+	It("UpdateRoutingIsmOwner (invalid) incorrectly formatted owner address", func() {
+		// Arrange
+
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		var ism types.RoutingISM
+		typeUrl := queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateRoutingIsmOwner{
+			Owner:             creator.Address,
+			IsmId:             ism.Id,
+			NewOwner:          "invalid-address",
+			RenounceOwnership: false,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("invalid new owner: invalid owner"))
+
+		typeUrl = queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Id.String()).To(Equal(response.Id.String()))
 	})
 
 	It("UpdateRoutingIsmOwner (valid) new owner", func() {

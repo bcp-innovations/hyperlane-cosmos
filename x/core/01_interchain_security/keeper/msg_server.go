@@ -128,12 +128,7 @@ func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRou
 	}
 
 	// check if the ism we want to route to exists
-	module, err := m.k.coreKeeper.IsmRouter().GetModule(req.Route.Ism)
-	if err != nil || module == nil {
-		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", req.Route.Ism.String())
-	}
-
-	exists, err := (*module).Exists(ctx, req.Route.Ism)
+	exists, err := m.k.coreKeeper.IsmExists(ctx, req.Route.Ism)
 	if err != nil || !exists {
 		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", req.Route.Ism.String())
 	}

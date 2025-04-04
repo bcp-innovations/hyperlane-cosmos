@@ -32,11 +32,11 @@ func (m *RoutingISMHandler) Verify(ctx context.Context, ismId util.HexAddress, m
 	// get the ism for the registered route
 	routedIsm, exists := routingIsm.GetIsm(message.Origin)
 	if !exists || routedIsm == nil {
-		return false, errors.Wrapf(types.ErrNoRouteFound, "no route found for message %s", message.String())
+		return false, errors.Wrapf(types.ErrNoRouteFound, "no route found for domain %d", message.Origin)
 	}
 
 	// call the top level Verify method on the core module
-	// this method will then recursivly invoke the Verify method on all the sub ISMs
+	// this method will then recursively invoke the Verify method on all the sub ISMs
 	return m.keeper.coreKeeper.Verify(ctx, *routedIsm, metadata, message)
 }
 

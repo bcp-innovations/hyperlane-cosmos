@@ -37,7 +37,7 @@ func (m *RoutingISM) GetIsm(domainId uint32) (*util.HexAddress, bool) {
 	return nil, false
 }
 
-// RemoveDomain removes a Route from a Routing ISM fora given domain.
+// RemoveDomain removes a Route from a Routing ISM for a given domain.
 func (m *RoutingISM) RemoveDomain(domainId uint32) bool {
 	for i, route := range m.Routes {
 		if route.Domain == domainId {

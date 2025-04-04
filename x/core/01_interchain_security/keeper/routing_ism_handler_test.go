@@ -16,8 +16,11 @@ TEST CASES - routing_ism_handler_test.go
 
 * Verify (valid)
 * Verify (valid) with nested RoutingISM
-* Verify (invalid) no registered route
-* Verify (invalid) registered itself
+* Verify (valid) - multiple registered routes
+* Verify (invalid) - non-existing ISM
+* Verify (invalid) - message for non-enrolled domain
+* Verify (invalid) overflow due to self reference with large gas
+* Verify (valid) gas costs for 1000 registered routes
 */
 
 var _ = Describe("msg_server.go", Ordered, func() {
@@ -142,12 +145,39 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(mockIsm.CallCount()).To(Equal(1))
 	})
 
-	It("Verify (invalid) overflow due to self reference", func() {
+	It("Verify (invalid) - non-existing ISM", func() {
 		// Arrange
+		routingIsm := createRoutingIsm()
 
-		// registry mock ISM
-		mockIsm := i.CreateMockIsm(s.App().HyperlaneKeeper.IsmRouter())
+		// create invalid ism id
+		routingIsm[31] = 10
 
+		// Act
+		result, err := s.App().HyperlaneKeeper.Verify(s.Ctx(), routingIsm, []byte{}, util.HyperlaneMessage{
+			Origin: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("collections: not found: key '10' of type <nil>"))
+		Expect(result).To(BeFalse())
+	})
+
+	It("Verify (invalid) - message for non-enrolled domain", func() {
+		// Arrange
+		routingIsm := createRoutingIsm()
+
+		// Act
+		result, err := s.App().HyperlaneKeeper.Verify(s.Ctx(), routingIsm, []byte{}, util.HyperlaneMessage{
+			Origin: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("no route found for domain 1: no route found"))
+		Expect(result).To(BeFalse())
+	})
+
+	It("Verify (invalid) overflow due to self reference with large gas", func() {
+		// Arrange
 		routingIsm := createRoutingIsm()
 		setRoute(routingIsm, routingIsm, 1)
 
@@ -155,15 +185,15 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Origin: 1,
 		}
 
-		// set an explicity gas limit
-		ctx := s.Ctx().WithGasMeter(storetypes.NewGasMeter(200000))
+		// set an explict gas limit
+		ctx := s.Ctx().WithGasMeter(storetypes.NewGasMeter(1_000_000_000)).WithBlockGasMeter(storetypes.NewGasMeter(1_000_000_000))
 
-		panic := false
+		hasPanicked := false
 
 		act := func() {
 			defer func() {
 				if r := recover(); r != nil {
-					panic = true
+					hasPanicked = true
 				}
 			}()
 			// satisfy linter
@@ -174,9 +204,34 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		// Act
 		act()
 
-		Expect(panic).To(BeTrue())
+		Expect(hasPanicked).To(BeTrue())
+	})
 
-		// verify mock ISM was called
-		Expect(mockIsm.CallCount()).To(Equal(0))
+	It("Verify (valid) gas costs for 1000 registered routes", func() {
+		// Arrange
+		routingIsm := createRoutingIsm()
+		mockIsm := i.CreateMockIsm(s.App().HyperlaneKeeper.IsmRouter())
+
+		for k := uint32(1); k <= 1000; k++ {
+			ism, err := mockIsm.RegisterIsm(s.Ctx())
+			Expect(err).To(BeNil())
+			setRoute(routingIsm, ism, k)
+		}
+
+		message := util.HyperlaneMessage{
+			Origin: 1000,
+		}
+
+		// set an explict gas limit
+		ctx := s.Ctx().WithGasMeter(storetypes.NewGasMeter(300_000))
+
+		// Act
+		result, err := s.App().HyperlaneKeeper.Verify(ctx, routingIsm, []byte{}, message)
+
+		// Assert
+		Expect(err).To(BeNil())
+		Expect(result).To(BeTrue())
+		Expect(mockIsm.CallCount()).To(Equal(1))
+		Expect(ctx.GasMeter().GasConsumed()).Should(BeNumerically("<", 300_000))
 	})
 })
