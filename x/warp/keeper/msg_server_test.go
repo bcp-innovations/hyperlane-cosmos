@@ -763,7 +763,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("new owner or ism id required"))
+		Expect(err.Error()).To(Equal("new owner, renounce ownership or ism id required"))
 	})
 
 	It("MsgSetToken (invalid) non-existing ISM ID", func() {
