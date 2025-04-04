@@ -74,6 +74,14 @@ func (r *Router[T]) GetModule(id HexAddress) (*T, error) {
 	return &module, nil
 }
 
+func (r *Router[T]) GetModuleIds() (moduleIds []uint32) {
+	for moduleId := range r.modules {
+		moduleIds = append(moduleIds, moduleId)
+	}
+
+	return
+}
+
 // GetNextSequence returns the next sequence number and maps it to the given module id
 func (r *Router[T]) GetNextSequence(ctx context.Context, moduleId uint8) (HexAddress, error) {
 	id := uint32(moduleId)

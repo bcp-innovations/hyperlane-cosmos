@@ -117,3 +117,21 @@ func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDr
 		Verified: verified,
 	}, err
 }
+
+func (qs queryServer) RegisteredISMs(_ context.Context, _ *types.QueryRegisteredISMs) (*types.QueryRegisteredISMsResponse, error) {
+	return &types.QueryRegisteredISMsResponse{
+		Ids: qs.k.IsmRouter().GetModuleIds(),
+	}, nil
+}
+
+func (qs queryServer) RegisteredHooks(_ context.Context, _ *types.QueryRegisteredHooks) (*types.QueryRegisteredHooksResponse, error) {
+	return &types.QueryRegisteredHooksResponse{
+		Ids: qs.k.PostDispatchRouter().GetModuleIds(),
+	}, nil
+}
+
+func (qs queryServer) RegisteredApps(_ context.Context, _ *types.QueryRegisteredApps) (*types.QueryRegisteredAppsResponse, error) {
+	return &types.QueryRegisteredAppsResponse{
+		Ids: qs.k.AppRouter().GetModuleIds(),
+	}, nil
+}
