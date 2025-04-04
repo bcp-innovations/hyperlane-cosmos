@@ -14,8 +14,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var (
@@ -310,13 +308,6 @@ func CmdUpdateRoutingIsmOwner() *cobra.Command {
 			routingIsmId, err := util.DecodeHexAddress(args[0])
 			if err != nil {
 				return err
-			}
-
-			if newOwner != "" {
-				_, err = sdk.AccAddressFromBech32(newOwner)
-				if err != nil {
-					return err
-				}
 			}
 
 			msg := types.MsgUpdateRoutingIsmOwner{

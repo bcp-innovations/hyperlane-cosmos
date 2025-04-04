@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"cosmossdk.io/errors"
 
 	"cosmossdk.io/collections"
@@ -43,12 +45,7 @@ func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRou
 		domainSet[route.Domain] = true
 
 		// Validate ISM exists
-		module, err := m.k.coreKeeper.IsmRouter().GetModule(route.Ism)
-		if err != nil || module == nil {
-			return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", route.Ism.String())
-		}
-
-		exists, err := (*module).Exists(ctx, route.Ism)
+		exists, err := m.k.coreKeeper.IsmExists(ctx, route.Ism)
 		if err != nil || !exists {
 			return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", route.Ism.String())
 		}
@@ -77,6 +74,12 @@ func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpda
 		return nil, err
 	}
 
+	if req.NewOwner != "" {
+		_, err = sdk.AccAddressFromBech32(req.NewOwner)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
+		}
+	}
 	routingISM.Owner = req.NewOwner
 
 	// only renounce if new owner is empty

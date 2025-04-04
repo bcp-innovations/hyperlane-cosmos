@@ -1083,7 +1083,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", nonOwner.Address, ism.Id).Error()))
 	})
 
-	It("UpdateRoutingIsmOwner (invalid) with both enounce and new owner", func() {
+	It("UpdateRoutingIsmOwner (invalid) with both renounce and new owner", func() {
 		// Arrange
 
 		res, err := s.RunTx(&types.MsgCreateRoutingIsm{

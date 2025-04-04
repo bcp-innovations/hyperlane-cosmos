@@ -123,7 +123,7 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, metadata []by
 	return (*handler).Verify(ctx, ismId, metadata, message)
 }
 
-func (k *Keeper) IsmExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+func (k Keeper) IsmExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
 	handler, err := k.ismRouter.GetModule(ismId)
 	if err != nil {
 		return false, err
