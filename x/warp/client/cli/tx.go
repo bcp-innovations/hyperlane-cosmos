@@ -12,6 +12,8 @@ var (
 	ismId              string
 	maxFee             string
 	newOwner           string
+	renounceOwnership  bool
+	yes                bool
 )
 
 func GetTxCmd() *cobra.Command {

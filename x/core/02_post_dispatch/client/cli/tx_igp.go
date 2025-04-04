@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 
@@ -105,6 +106,22 @@ func CmdSetIgpOwner() *cobra.Command {
 		Use:   "set-owner [igp-id] [new-owner]",
 		Short: "Update a Hyperlane Interchain Gas Paymaster",
 		Args:  cobra.ExactArgs(2),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if renounceOwnership && !yes {
+				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
+				var response string
+
+				_, err := fmt.Scanln(&response)
+				if err != nil {
+					return err
+				}
+
+				if strings.ToLower(response) != "yes" {
+					return fmt.Errorf("canceled transaction")
+				}
+			}
+			return nil
+		},
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -117,9 +134,10 @@ func CmdSetIgpOwner() *cobra.Command {
 			}
 
 			msg := types.MsgSetIgpOwner{
-				Owner:    clientCtx.GetFromAddress().String(),
-				IgpId:    igpId,
-				NewOwner: args[1],
+				Owner:             clientCtx.GetFromAddress().String(),
+				IgpId:             igpId,
+				NewOwner:          args[1],
+				RenounceOwnership: renounceOwnership,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)
@@ -130,6 +148,9 @@ func CmdSetIgpOwner() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
+
+	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
+	cmd.Flags().BoolVarP(&yes, "yes", "y", false, "auto-confirm all prompts")
 
 	flags.AddTxFlagsToCmd(cmd)
 

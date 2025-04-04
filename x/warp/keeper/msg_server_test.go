@@ -43,6 +43,9 @@ TEST CASES - msg_server.go
 * MsgSetToken (invalid) empty new-owner and ISM ID
 * MsgSetToken (invalid) non-existing ISM ID
 * MsgSetToken (invalid) non-owner address
+* MsgSetToken (invalid) invalid new owner
+* MsgSetToken (invalid) renounce ownership with new owner set
+* MsgSetToken (valid) - renounce ownership
 * MsgSetToken (valid)
 * MsgRemoteTransfer (invalid) non-existing Token ID
 * MsgRemoteTransfer (invalid) invalid CustomHookMetadata
@@ -55,12 +58,14 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	var s *i.KeeperTestSuite
 	var owner i.TestValidatorAddress
 	var sender i.TestValidatorAddress
+	var nonOwner i.TestValidatorAddress
 	var noopPostDispatchHandler *i.NoopPostDispatchHookHandler
 
 	BeforeEach(func() {
 		s = i.NewCleanChain()
 		owner = i.GenerateTestValidatorAddress("Owner")
 		sender = i.GenerateTestValidatorAddress("Sender")
+		nonOwner = i.GenerateTestValidatorAddress("NonOwner")
 		err := s.MintBaseCoins(owner.Address, 1_000_000)
 		Expect(err).To(BeNil())
 
@@ -820,10 +825,9 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("%s does not own token with id %s", sender.Address, tokenId.String())))
 	})
 
-	It("MsgSetToken (valid)", func() {
+	It("MsgSetToken (invalid) invalid new owner", func() {
 		// Arrange
 		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
-		newOwner := "new_owner"
 
 		secondIsmId := createNoopIsm(s, owner.Address)
 
@@ -841,10 +845,73 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		_, err = s.RunTx(&types.MsgSetToken{
-			Owner:    owner.Address,
-			TokenId:  tokenId,
-			IsmId:    &secondIsmId,
-			NewOwner: newOwner,
+			Owner:             owner.Address,
+			TokenId:           tokenId,
+			IsmId:             &secondIsmId,
+			NewOwner:          "new_owner",
+			RenounceOwnership: false,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("invalid new owner"))
+	})
+
+	It("MsgSetToken (invalid) renounce ownership with new owner set", func() {
+		// Arrange
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
+
+		secondIsmId := createNoopIsm(s, owner.Address)
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId,
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId := response.Id
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:             owner.Address,
+			TokenId:           tokenId,
+			IsmId:             &secondIsmId,
+			NewOwner:          nonOwner.Address,
+			RenounceOwnership: true,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("cannot set new owner and renounce ownership at the same time"))
+	})
+
+	It("MsgSetToken (valid) - renounce ownership", func() {
+		// Arrange
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
+
+		secondIsmId := createNoopIsm(s, owner.Address)
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId,
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId := response.Id
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:             owner.Address,
+			TokenId:           tokenId,
+			IsmId:             &secondIsmId,
+			NewOwner:          "",
+			RenounceOwnership: true,
 		})
 
 		// Assert
@@ -853,7 +920,44 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
 		Expect(err).To(BeNil())
 		Expect(tokens.Tokens).To(HaveLen(1))
-		Expect(tokens.Tokens[0].Owner).To(Equal(newOwner))
+		Expect(tokens.Tokens[0].Owner).To(Equal(""))
+		Expect(tokens.Tokens[0].IsmId.String()).To(Equal(secondIsmId.String()))
+	})
+
+	It("MsgSetToken (valid)", func() {
+		// Arrange
+		mailboxId, _, _ := createValidMailbox(s, owner.Address, "noop", 1)
+
+		secondIsmId := createNoopIsm(s, owner.Address)
+
+		res, err := s.RunTx(&types.MsgCreateCollateralToken{
+			Owner:         owner.Address,
+			OriginMailbox: mailboxId,
+			OriginDenom:   denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateCollateralTokenResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		tokenId := response.Id
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetToken{
+			Owner:             owner.Address,
+			TokenId:           tokenId,
+			IsmId:             &secondIsmId,
+			NewOwner:          nonOwner.Address,
+			RenounceOwnership: false,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		tokens, err := keeper.NewQueryServerImpl(s.App().WarpKeeper).Tokens(s.Ctx(), &types.QueryTokensRequest{})
+		Expect(err).To(BeNil())
+		Expect(tokens.Tokens).To(HaveLen(1))
+		Expect(tokens.Tokens[0].Owner).To(Equal(nonOwner.Address))
 		Expect(tokens.Tokens[0].IsmId.String()).To(Equal(secondIsmId.String()))
 	})
 
@@ -1049,7 +1153,7 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 	return mailboxId
 }
 
-func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, sender string, tokenType types.HypTokenType) (util.HexAddress, util.HexAddress, util.HexAddress, util.HexAddress) {
+func createToken(s *i.KeeperTestSuite, remoteRouter *types.RemoteRouter, owner, _ string, tokenType types.HypTokenType) (util.HexAddress, util.HexAddress, util.HexAddress, util.HexAddress) {
 	mailboxId, igpId, ismId := createValidMailbox(s, owner, "noop", 1)
 
 	var tokenId util.HexAddress

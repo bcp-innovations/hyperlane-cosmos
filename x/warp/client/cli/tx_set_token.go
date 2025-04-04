@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -18,6 +19,22 @@ func CmdSetToken() *cobra.Command {
 		Use:   "set-token [token-id]",
 		Short: "Update the Warp token",
 		Args:  cobra.ExactArgs(1),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if renounceOwnership && !yes {
+				fmt.Print("Are you sure you want to renounce ownership? This action is irreversible. (yes/no): ")
+				var response string
+
+				_, err := fmt.Scanln(&response)
+				if err != nil {
+					return err
+				}
+
+				if strings.ToLower(response) != "yes" {
+					return fmt.Errorf("canceled transaction")
+				}
+			}
+			return nil
+		},
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -39,10 +56,11 @@ func CmdSetToken() *cobra.Command {
 			}
 
 			msg := types.MsgSetToken{
-				Owner:    clientCtx.GetFromAddress().String(),
-				TokenId:  tokenId,
-				NewOwner: newOwner,
-				IsmId:    ism,
+				Owner:             clientCtx.GetFromAddress().String(),
+				TokenId:           tokenId,
+				NewOwner:          newOwner,
+				IsmId:             ism,
+				RenounceOwnership: renounceOwnership,
 			}
 
 			_, err = sdk.AccAddressFromBech32(msg.Owner)
@@ -56,6 +74,8 @@ func CmdSetToken() *cobra.Command {
 
 	cmd.Flags().StringVar(&newOwner, "new-owner", "", "set updated owner")
 	cmd.Flags().StringVar(&ismId, "ism-id", "", "set updated ism")
+	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
+	cmd.Flags().BoolVarP(&yes, "yes", "y", false, "auto-confirm all prompts")
 
 	flags.AddTxFlagsToCmd(cmd)
 

@@ -105,8 +105,20 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 		return nil, fmt.Errorf("%s does not own token with id %s", msg.Owner, tokenId.String())
 	}
 
+	// Only renounce if new owner is empty
+	if msg.RenounceOwnership && msg.NewOwner != "" {
+		return nil, fmt.Errorf("cannot set new owner and renounce ownership at the same time")
+	}
+
 	if msg.NewOwner != "" {
+		if _, err := ms.k.addressCodec.StringToBytes(msg.NewOwner); err != nil {
+			return nil, fmt.Errorf("invalid new owner")
+		}
 		token.Owner = msg.NewOwner
+	}
+
+	if msg.RenounceOwnership {
+		token.Owner = ""
 	}
 
 	if msg.IsmId != nil {

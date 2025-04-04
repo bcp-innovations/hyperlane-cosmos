@@ -48,8 +48,22 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 		return nil, fmt.Errorf("%s does not own igp with id %s", req.Owner, req.IgpId.String())
 	}
 
-	// Any arbitrary string is allowed for a new owner.
-	igp.Owner = req.NewOwner
+	// Only renounce if new owner is empty
+	if req.RenounceOwnership && req.NewOwner != "" {
+		return nil, fmt.Errorf("cannot set new owner and renounce ownership at the same time")
+	}
+
+	if req.NewOwner != "" {
+		_, err = sdk.AccAddressFromBech32(req.NewOwner)
+		if err != nil {
+			return nil, fmt.Errorf("invalid new owner")
+		}
+		igp.Owner = req.NewOwner
+	}
+
+	if req.RenounceOwnership {
+		igp.Owner = ""
+	}
 
 	if err = ms.k.Igps.Set(ctx, req.IgpId.GetInternalId(), igp); err != nil {
 		return nil, err
