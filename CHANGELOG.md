@@ -14,6 +14,12 @@
 
 An '!' indicates a state machine breaking change.
 
+## Unreleased
+
+### Improvements
+
+- [#98](https://github.com/bcp-innovations/hyperlane-cosmos/pull/98) Add renounce ownership functionalities and validate new owner
+
 ## [v1.0.0-beta0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.0-beta0) - 2025-03-27
 
 **Initial Release of the Hyperlane Cosmos SDK Module** 🚀
