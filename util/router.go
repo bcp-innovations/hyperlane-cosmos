@@ -3,6 +3,7 @@ package util
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -72,6 +73,15 @@ func (r *Router[T]) GetModule(id HexAddress) (*T, error) {
 		return nil, fmt.Errorf("id %s not found", id.String())
 	}
 	return &module, nil
+}
+
+func (r *Router[T]) GetModuleIds() (moduleIds []uint32) {
+	for moduleId := range r.modules {
+		moduleIds = append(moduleIds, moduleId)
+	}
+
+	slices.Sort(moduleIds)
+	return
 }
 
 // GetNextSequence returns the next sequence number and maps it to the given module id
