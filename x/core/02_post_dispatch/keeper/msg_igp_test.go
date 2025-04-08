@@ -319,7 +319,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("invalid new owner"))
+		Expect(err.Error()).To(Equal("invalid new owner: invalid owner"))
 	})
 
 	It("MsgSetToken (invalid) renounce ownership with new owner set", func() {
@@ -344,7 +344,7 @@ var _ = Describe("msg_igp.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("cannot set new owner and renounce ownership at the same time"))
+		Expect(err.Error()).To(Equal("cannot set new owner and renounce ownership at the same time: invalid owner"))
 	})
 
 	It("MsgSetIgpOwner (valid) - renounce ownership", func() {

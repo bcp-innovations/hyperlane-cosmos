@@ -111,7 +111,7 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 	}
 
 	if msg.NewOwner != "" {
-		if _, err := ms.k.addressCodec.StringToBytes(msg.NewOwner); err != nil {
+		if _, err := sdk.AccAddressFromBech32(msg.NewOwner); err != nil {
 			return nil, fmt.Errorf("invalid new owner")
 		}
 		token.Owner = msg.NewOwner

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"cosmossdk.io/errors"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -48,21 +49,22 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 		return nil, fmt.Errorf("%s does not own igp with id %s", req.Owner, req.IgpId.String())
 	}
 
-	// Only renounce if new owner is empty
-	if req.RenounceOwnership && req.NewOwner != "" {
-		return nil, fmt.Errorf("cannot set new owner and renounce ownership at the same time")
-	}
-
 	if req.NewOwner != "" {
 		_, err = sdk.AccAddressFromBech32(req.NewOwner)
 		if err != nil {
-			return nil, fmt.Errorf("invalid new owner")
+			return nil, errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
 		}
-		igp.Owner = req.NewOwner
+	}
+	igp.Owner = req.NewOwner
+
+	// only renounce if new owner is empty
+	if req.RenounceOwnership && req.NewOwner != "" {
+		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
 	}
 
-	if req.RenounceOwnership {
-		igp.Owner = ""
+	// don't allow new owner to be empty if not renouncing ownership
+	if !req.RenounceOwnership && req.NewOwner == "" {
+		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
 	}
 
 	if err = ms.k.Igps.Set(ctx, req.IgpId.GetInternalId(), igp); err != nil {
