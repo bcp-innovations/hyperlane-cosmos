@@ -12,7 +12,7 @@ func GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
 }
 
-// GetQueryCmd returns the root command for the core ISMs
+// GetQueryCmd returns the root command for the core post dispatch hooks
 func GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
