@@ -144,7 +144,7 @@ func (qs queryServer) MerkleTreeHooks(ctx context.Context, req *types.QueryMerkl
 		responses[i] = types.WrappedMerkleTreeHookResponse{
 			Id:        merkleTreeHook.Id.String(),
 			Owner:     merkleTreeHook.Owner,
-			MailboxId: merkleTreeHook.MailboxId,
+			MailboxId: merkleTreeHook.MailboxId.String(),
 			MerkleTree: &types.TreeResponse{
 				Count: merkleTreeHook.Tree.Count,
 				Root:  root[:],
@@ -180,7 +180,7 @@ func (qs queryServer) MerkleTreeHook(ctx context.Context, req *types.QueryMerkle
 	return &types.QueryMerkleTreeHookResponse{MerkleTreeHook: types.WrappedMerkleTreeHookResponse{
 		Id:        merkleTreeHook.Id.String(),
 		Owner:     merkleTreeHook.Owner,
-		MailboxId: merkleTreeHook.MailboxId,
+		MailboxId: merkleTreeHook.MailboxId.String(),
 		MerkleTree: &types.TreeResponse{
 			Count: merkleTreeHook.Tree.Count,
 			Root:  root[:],

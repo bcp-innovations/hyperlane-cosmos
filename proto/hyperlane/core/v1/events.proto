@@ -3,10 +3,12 @@ package hyperlane.core.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/types";
 
+import "gogoproto/gogo.proto";
+
 import "cosmos_proto/cosmos.proto";
 
-// Dispatch ...
-message Dispatch {
+// EventDispatch ...
+message EventDispatch {
 
   // origin_mailbox_id ...
   string origin_mailbox_id = 1;
@@ -24,8 +26,8 @@ message Dispatch {
   string message = 5;
 }
 
-// Process ...
-message Process {
+// EventProcess ...
+message EventProcess {
 
   // origin_mailbox_id ...
   string origin_mailbox_id = 1;
@@ -44,4 +46,76 @@ message Process {
 
   // message ...
   string message = 6;
+}
+
+// EventCreateMailbox ...
+message EventCreateMailbox {
+
+  // mailbox_id ...
+  string mailbox_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // default_ism ...
+  string default_ism = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // default_hook ...
+  string default_hook = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
+
+  // required_hook ...
+  string required_hook = 5 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
+
+  // local_domain ...
+  uint32 local_domain = 6;
+}
+
+// EventSetMailbox ...
+message EventSetMailbox {
+
+  // mailbox_id ...
+  string mailbox_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // default_ism ...
+  string default_ism = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
+
+  // default_hook ...
+  string default_hook = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
+
+  // new_owner ...
+  string new_owner = 5;
+
+  // renounce_ownership ...
+  bool renounce_ownership = 6;
 }

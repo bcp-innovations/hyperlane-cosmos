@@ -6,6 +6,10 @@ import (
 	"slices"
 	"strings"
 
+	"cosmossdk.io/math"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
@@ -138,6 +142,17 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message 
 	} else {
 		panic("inconsistent store")
 	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventReceiveRemoteTransfer{
+		Sender:       message.Sender,
+		TokenId:      token.Id,
+		OriginDomain: message.Origin,
+		Recipient:    payload.GetCosmosAccount().String(),
+		Amount: sdk.NewCoins(sdk.NewCoin(
+			token.OriginDenom,
+			math.NewIntFromBigInt(payload.Amount()),
+		)).String(),
+	})
 
 	return err
 }

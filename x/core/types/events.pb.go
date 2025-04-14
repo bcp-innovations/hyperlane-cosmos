@@ -5,7 +5,9 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_bcp_innovations_hyperlane_cosmos_util "github.com/bcp-innovations/hyperlane-cosmos/util"
 	_ "github.com/cosmos/cosmos-proto"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
@@ -23,8 +25,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Dispatch ...
-type Dispatch struct {
+// EventDispatch ...
+type EventDispatch struct {
 	// origin_mailbox_id ...
 	OriginMailboxId string `protobuf:"bytes,1,opt,name=origin_mailbox_id,json=originMailboxId,proto3" json:"origin_mailbox_id,omitempty"`
 	// sender ...
@@ -37,18 +39,18 @@ type Dispatch struct {
 	Message string `protobuf:"bytes,5,opt,name=message,proto3" json:"message,omitempty"`
 }
 
-func (m *Dispatch) Reset()         { *m = Dispatch{} }
-func (m *Dispatch) String() string { return proto.CompactTextString(m) }
-func (*Dispatch) ProtoMessage()    {}
-func (*Dispatch) Descriptor() ([]byte, []int) {
+func (m *EventDispatch) Reset()         { *m = EventDispatch{} }
+func (m *EventDispatch) String() string { return proto.CompactTextString(m) }
+func (*EventDispatch) ProtoMessage()    {}
+func (*EventDispatch) Descriptor() ([]byte, []int) {
 	return fileDescriptor_accf54c6a5f88be3, []int{0}
 }
-func (m *Dispatch) XXX_Unmarshal(b []byte) error {
+func (m *EventDispatch) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Dispatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventDispatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Dispatch.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventDispatch.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -58,55 +60,55 @@ func (m *Dispatch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Dispatch) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Dispatch.Merge(m, src)
+func (m *EventDispatch) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventDispatch.Merge(m, src)
 }
-func (m *Dispatch) XXX_Size() int {
+func (m *EventDispatch) XXX_Size() int {
 	return m.Size()
 }
-func (m *Dispatch) XXX_DiscardUnknown() {
-	xxx_messageInfo_Dispatch.DiscardUnknown(m)
+func (m *EventDispatch) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventDispatch.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Dispatch proto.InternalMessageInfo
+var xxx_messageInfo_EventDispatch proto.InternalMessageInfo
 
-func (m *Dispatch) GetOriginMailboxId() string {
+func (m *EventDispatch) GetOriginMailboxId() string {
 	if m != nil {
 		return m.OriginMailboxId
 	}
 	return ""
 }
 
-func (m *Dispatch) GetSender() string {
+func (m *EventDispatch) GetSender() string {
 	if m != nil {
 		return m.Sender
 	}
 	return ""
 }
 
-func (m *Dispatch) GetDestination() uint32 {
+func (m *EventDispatch) GetDestination() uint32 {
 	if m != nil {
 		return m.Destination
 	}
 	return 0
 }
 
-func (m *Dispatch) GetRecipient() string {
+func (m *EventDispatch) GetRecipient() string {
 	if m != nil {
 		return m.Recipient
 	}
 	return ""
 }
 
-func (m *Dispatch) GetMessage() string {
+func (m *EventDispatch) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
 	return ""
 }
 
-// Process ...
-type Process struct {
+// EventProcess ...
+type EventProcess struct {
 	// origin_mailbox_id ...
 	OriginMailboxId string `protobuf:"bytes,1,opt,name=origin_mailbox_id,json=originMailboxId,proto3" json:"origin_mailbox_id,omitempty"`
 	// origin ...
@@ -121,18 +123,18 @@ type Process struct {
 	Message string `protobuf:"bytes,6,opt,name=message,proto3" json:"message,omitempty"`
 }
 
-func (m *Process) Reset()         { *m = Process{} }
-func (m *Process) String() string { return proto.CompactTextString(m) }
-func (*Process) ProtoMessage()    {}
-func (*Process) Descriptor() ([]byte, []int) {
+func (m *EventProcess) Reset()         { *m = EventProcess{} }
+func (m *EventProcess) String() string { return proto.CompactTextString(m) }
+func (*EventProcess) ProtoMessage()    {}
+func (*EventProcess) Descriptor() ([]byte, []int) {
 	return fileDescriptor_accf54c6a5f88be3, []int{1}
 }
-func (m *Process) XXX_Unmarshal(b []byte) error {
+func (m *EventProcess) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Process) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventProcess) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Process.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventProcess.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -142,94 +144,242 @@ func (m *Process) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Process) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Process.Merge(m, src)
+func (m *EventProcess) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventProcess.Merge(m, src)
 }
-func (m *Process) XXX_Size() int {
+func (m *EventProcess) XXX_Size() int {
 	return m.Size()
 }
-func (m *Process) XXX_DiscardUnknown() {
-	xxx_messageInfo_Process.DiscardUnknown(m)
+func (m *EventProcess) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventProcess.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Process proto.InternalMessageInfo
+var xxx_messageInfo_EventProcess proto.InternalMessageInfo
 
-func (m *Process) GetOriginMailboxId() string {
+func (m *EventProcess) GetOriginMailboxId() string {
 	if m != nil {
 		return m.OriginMailboxId
 	}
 	return ""
 }
 
-func (m *Process) GetOrigin() uint32 {
+func (m *EventProcess) GetOrigin() uint32 {
 	if m != nil {
 		return m.Origin
 	}
 	return 0
 }
 
-func (m *Process) GetSender() string {
+func (m *EventProcess) GetSender() string {
 	if m != nil {
 		return m.Sender
 	}
 	return ""
 }
 
-func (m *Process) GetRecipient() string {
+func (m *EventProcess) GetRecipient() string {
 	if m != nil {
 		return m.Recipient
 	}
 	return ""
 }
 
-func (m *Process) GetMessageId() string {
+func (m *EventProcess) GetMessageId() string {
 	if m != nil {
 		return m.MessageId
 	}
 	return ""
 }
 
-func (m *Process) GetMessage() string {
+func (m *EventProcess) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
 	return ""
 }
 
+// EventCreateMailbox ...
+type EventCreateMailbox struct {
+	// origin_mailbox_id ...
+	MailboxId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=mailbox_id,json=mailboxId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"mailbox_id"`
+	// sender ...
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// destination ...
+	DefaultIsm github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,3,opt,name=default_ism,json=defaultIsm,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"default_ism"`
+	// recipient ...
+	DefaultHook *github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,4,opt,name=default_hook,json=defaultHook,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"default_hook,omitempty"`
+	// recipient ...
+	RequiredHook *github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,5,opt,name=required_hook,json=requiredHook,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"required_hook,omitempty"`
+	// message ...
+	LocalDomain uint32 `protobuf:"varint,6,opt,name=local_domain,json=localDomain,proto3" json:"local_domain,omitempty"`
+}
+
+func (m *EventCreateMailbox) Reset()         { *m = EventCreateMailbox{} }
+func (m *EventCreateMailbox) String() string { return proto.CompactTextString(m) }
+func (*EventCreateMailbox) ProtoMessage()    {}
+func (*EventCreateMailbox) Descriptor() ([]byte, []int) {
+	return fileDescriptor_accf54c6a5f88be3, []int{2}
+}
+func (m *EventCreateMailbox) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventCreateMailbox) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventCreateMailbox.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventCreateMailbox) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventCreateMailbox.Merge(m, src)
+}
+func (m *EventCreateMailbox) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventCreateMailbox) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventCreateMailbox.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventCreateMailbox proto.InternalMessageInfo
+
+func (m *EventCreateMailbox) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *EventCreateMailbox) GetLocalDomain() uint32 {
+	if m != nil {
+		return m.LocalDomain
+	}
+	return 0
+}
+
+// EventCreateMailbox ...
+type EventSetMailbox struct {
+	// origin_mailbox_id ...
+	MailboxId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=mailbox_id,json=mailboxId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"mailbox_id"`
+	// sender ...
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// destination ...
+	DefaultIsm *github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,3,opt,name=default_ism,json=defaultIsm,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"default_ism,omitempty"`
+	// recipient ...
+	DefaultHook *github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,4,opt,name=default_hook,json=defaultHook,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"default_hook,omitempty"`
+	// recipient ...
+	NewOwner string `protobuf:"bytes,5,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
+	// message ...
+	RenounceOwnership bool `protobuf:"varint,6,opt,name=renounce_ownership,json=renounceOwnership,proto3" json:"renounce_ownership,omitempty"`
+}
+
+func (m *EventSetMailbox) Reset()         { *m = EventSetMailbox{} }
+func (m *EventSetMailbox) String() string { return proto.CompactTextString(m) }
+func (*EventSetMailbox) ProtoMessage()    {}
+func (*EventSetMailbox) Descriptor() ([]byte, []int) {
+	return fileDescriptor_accf54c6a5f88be3, []int{3}
+}
+func (m *EventSetMailbox) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventSetMailbox) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventSetMailbox.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventSetMailbox) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventSetMailbox.Merge(m, src)
+}
+func (m *EventSetMailbox) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventSetMailbox) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventSetMailbox.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventSetMailbox proto.InternalMessageInfo
+
+func (m *EventSetMailbox) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *EventSetMailbox) GetNewOwner() string {
+	if m != nil {
+		return m.NewOwner
+	}
+	return ""
+}
+
+func (m *EventSetMailbox) GetRenounceOwnership() bool {
+	if m != nil {
+		return m.RenounceOwnership
+	}
+	return false
+}
+
 func init() {
-	proto.RegisterType((*Dispatch)(nil), "hyperlane.core.v1.Dispatch")
-	proto.RegisterType((*Process)(nil), "hyperlane.core.v1.Process")
+	proto.RegisterType((*EventDispatch)(nil), "hyperlane.core.v1.EventDispatch")
+	proto.RegisterType((*EventProcess)(nil), "hyperlane.core.v1.EventProcess")
+	proto.RegisterType((*EventCreateMailbox)(nil), "hyperlane.core.v1.EventCreateMailbox")
+	proto.RegisterType((*EventSetMailbox)(nil), "hyperlane.core.v1.EventSetMailbox")
 }
 
 func init() { proto.RegisterFile("hyperlane/core/v1/events.proto", fileDescriptor_accf54c6a5f88be3) }
 
 var fileDescriptor_accf54c6a5f88be3 = []byte{
-	// 347 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0x3f, 0x4b, 0xc3, 0x40,
-	0x14, 0xef, 0x59, 0x4d, 0xed, 0x49, 0x91, 0x06, 0x91, 0x28, 0x1a, 0x4a, 0xa7, 0x22, 0x34, 0xb1,
-	0xb8, 0xb8, 0x5a, 0x5c, 0x3a, 0x08, 0x12, 0x37, 0x97, 0x92, 0x3f, 0x8f, 0xf4, 0xa0, 0xb9, 0x0b,
-	0xf7, 0xce, 0xd0, 0x7e, 0x0b, 0x3f, 0x8c, 0xa3, 0x93, 0x93, 0x63, 0x71, 0x72, 0x94, 0xf6, 0x8b,
-	0x48, 0xee, 0xd2, 0x5a, 0x17, 0xc1, 0xf1, 0xf7, 0x27, 0x79, 0xbf, 0xdf, 0x7b, 0x47, 0xdd, 0xc9,
-	0x3c, 0x07, 0x39, 0x0d, 0x39, 0xf8, 0xb1, 0x90, 0xe0, 0x17, 0x03, 0x1f, 0x0a, 0xe0, 0x0a, 0xbd,
-	0x5c, 0x0a, 0x25, 0xec, 0xf6, 0x46, 0xf7, 0x4a, 0xdd, 0x2b, 0x06, 0xa7, 0x27, 0xb1, 0xc0, 0x4c,
-	0xe0, 0x58, 0x1b, 0x7c, 0x03, 0x8c, 0xbb, 0xfb, 0x46, 0xe8, 0xfe, 0x2d, 0xc3, 0x3c, 0x54, 0xf1,
-	0xc4, 0xbe, 0xa0, 0x6d, 0x21, 0x59, 0xca, 0xf8, 0x38, 0x0b, 0xd9, 0x34, 0x12, 0xb3, 0x31, 0x4b,
-	0x1c, 0xd2, 0x21, 0xbd, 0x66, 0x70, 0x68, 0x84, 0x3b, 0xc3, 0x8f, 0x12, 0xfb, 0x92, 0x5a, 0x08,
-	0x3c, 0x01, 0xe9, 0xec, 0x94, 0x86, 0xa1, 0xf3, 0xf1, 0xd2, 0x3f, 0xaa, 0x7e, 0x7d, 0x93, 0x24,
-	0x12, 0x10, 0x1f, 0x94, 0x64, 0x3c, 0x0d, 0x2a, 0x9f, 0xdd, 0xa1, 0x07, 0x09, 0xa0, 0x62, 0x3c,
-	0x54, 0x4c, 0x70, 0xa7, 0xde, 0x21, 0xbd, 0x56, 0xb0, 0x4d, 0xd9, 0x67, 0xb4, 0x29, 0x21, 0x66,
-	0x39, 0x03, 0xae, 0x9c, 0x5d, 0x3d, 0xf7, 0x87, 0xb0, 0x1d, 0xda, 0xc8, 0x00, 0x31, 0x4c, 0xc1,
-	0xd9, 0xd3, 0xda, 0x1a, 0x76, 0x5f, 0x09, 0x6d, 0xdc, 0x4b, 0x11, 0x03, 0xe2, 0xbf, 0x3a, 0x1c,
-	0x53, 0xcb, 0x50, 0xba, 0x43, 0x2b, 0xa8, 0x50, 0xc9, 0x57, 0xdd, 0xea, 0xfa, 0xc3, 0x75, 0x83,
-	0xbf, 0xf3, 0x9d, 0x53, 0x5a, 0x05, 0x2a, 0x47, 0x9a, 0x88, 0xcd, 0x8a, 0x19, 0x25, 0xdb, 0xf1,
-	0xad, 0x5f, 0xf1, 0x87, 0xc1, 0xfb, 0xd2, 0x25, 0x8b, 0xa5, 0x4b, 0xbe, 0x96, 0x2e, 0x79, 0x5e,
-	0xb9, 0xb5, 0xc5, 0xca, 0xad, 0x7d, 0xae, 0xdc, 0xda, 0xe3, 0x75, 0xca, 0xd4, 0xe4, 0x29, 0xf2,
-	0x62, 0x91, 0xf9, 0x51, 0x9c, 0xf7, 0x19, 0xe7, 0xa2, 0xd0, 0xbb, 0x42, 0x7f, 0x73, 0xe6, 0xbe,
-	0xd9, 0xba, 0x3f, 0x33, 0xef, 0x41, 0xcd, 0x73, 0xc0, 0xc8, 0xd2, 0xe7, 0xbd, 0xfa, 0x0e, 0x00,
-	0x00, 0xff, 0xff, 0x4f, 0x58, 0x20, 0xc0, 0x2e, 0x02, 0x00, 0x00,
+	// 560 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x54, 0xbf, 0x6f, 0xd3, 0x40,
+	0x14, 0x8e, 0x69, 0x1b, 0x9a, 0xd7, 0x44, 0x55, 0x4f, 0x15, 0x32, 0x05, 0xdc, 0x92, 0xa9, 0x42,
+	0x8a, 0x4d, 0xc5, 0x82, 0xc4, 0x44, 0x5a, 0xa4, 0x66, 0x40, 0x45, 0xee, 0xc6, 0x62, 0x39, 0xf6,
+	0xab, 0x7d, 0xaa, 0x7d, 0x67, 0xee, 0x2e, 0x3f, 0x3a, 0xf3, 0x0f, 0xf0, 0xc7, 0xb0, 0x23, 0x26,
+	0x3a, 0x56, 0x4c, 0x88, 0xa1, 0x42, 0xc9, 0x3f, 0x82, 0x7c, 0x67, 0x87, 0xc2, 0x80, 0xa8, 0xe8,
+	0xd2, 0x2d, 0xf7, 0x7d, 0x2f, 0xf7, 0x7d, 0xdf, 0x7b, 0xcf, 0x07, 0x4e, 0x7a, 0x56, 0xa0, 0xc8,
+	0x42, 0x86, 0x5e, 0xc4, 0x05, 0x7a, 0xe3, 0x3d, 0x0f, 0xc7, 0xc8, 0x94, 0x74, 0x0b, 0xc1, 0x15,
+	0x27, 0x1b, 0x0b, 0xde, 0x2d, 0x79, 0x77, 0xbc, 0xb7, 0xb5, 0x99, 0xf0, 0x84, 0x6b, 0xd6, 0x2b,
+	0x7f, 0x99, 0xc2, 0xad, 0xfb, 0x11, 0x97, 0x39, 0x97, 0x81, 0x21, 0xcc, 0xc1, 0x50, 0xdd, 0x2f,
+	0x16, 0x74, 0x5e, 0x95, 0x97, 0x1e, 0x50, 0x59, 0x84, 0x2a, 0x4a, 0xc9, 0x13, 0xd8, 0xe0, 0x82,
+	0x26, 0x94, 0x05, 0x79, 0x48, 0xb3, 0x21, 0x9f, 0x06, 0x34, 0xb6, 0xad, 0x1d, 0x6b, 0xb7, 0xe5,
+	0xaf, 0x1b, 0xe2, 0xb5, 0xc1, 0x07, 0x31, 0x79, 0x0a, 0x4d, 0x89, 0x2c, 0x46, 0x61, 0xdf, 0x29,
+	0x0b, 0xfa, 0xf6, 0xd7, 0x8f, 0xbd, 0xcd, 0xea, 0xfe, 0x97, 0x71, 0x2c, 0x50, 0xca, 0x63, 0x25,
+	0x28, 0x4b, 0xfc, 0xaa, 0x8e, 0xec, 0xc0, 0x5a, 0x8c, 0x52, 0x51, 0x16, 0x2a, 0xca, 0x99, 0xbd,
+	0xb4, 0x63, 0xed, 0x76, 0xfc, 0xab, 0x10, 0x79, 0x08, 0x2d, 0x81, 0x11, 0x2d, 0x28, 0x32, 0x65,
+	0x2f, 0x6b, 0xdd, 0x5f, 0x00, 0xb1, 0xe1, 0x6e, 0x8e, 0x52, 0x86, 0x09, 0xda, 0x2b, 0x9a, 0xab,
+	0x8f, 0xdd, 0xcf, 0x16, 0xb4, 0x75, 0x92, 0x37, 0x82, 0x47, 0x28, 0xe5, 0xb5, 0x82, 0xdc, 0x83,
+	0xa6, 0x81, 0x74, 0x90, 0x8e, 0x5f, 0x9d, 0x4a, 0xbc, 0x0a, 0xb8, 0xa4, 0xff, 0x58, 0xc7, 0xf8,
+	0xbb, 0xc9, 0x47, 0x00, 0x95, 0xab, 0x52, 0xd2, 0xf8, 0x6c, 0x55, 0xc8, 0x20, 0xbe, 0x9a, 0xa1,
+	0xf9, 0x7b, 0x86, 0xf7, 0xcb, 0x40, 0x74, 0x86, 0x7d, 0x81, 0xa1, 0xc2, 0xca, 0x1f, 0x19, 0x02,
+	0xfc, 0x19, 0xa1, 0xbf, 0x7f, 0x7e, 0xb9, 0xdd, 0xf8, 0x7e, 0xb9, 0xfd, 0x22, 0xa1, 0x2a, 0x1d,
+	0x0d, 0xdd, 0x88, 0xe7, 0xde, 0x30, 0x2a, 0x7a, 0x94, 0x31, 0x3e, 0xd6, 0x9d, 0x94, 0xde, 0x62,
+	0x3f, 0x7a, 0x66, 0x26, 0xde, 0x48, 0xd1, 0xcc, 0x3d, 0xc4, 0x69, 0x35, 0x1b, 0xbf, 0x95, 0x2f,
+	0x3a, 0xe0, 0xc2, 0x0a, 0x9f, 0xb0, 0x7f, 0x98, 0xa4, 0x29, 0x23, 0x71, 0x39, 0xc8, 0x93, 0x70,
+	0x94, 0xa9, 0x80, 0xca, 0xdc, 0xb4, 0xe7, 0x66, 0x4c, 0x41, 0x75, 0xef, 0x40, 0xe6, 0xe4, 0x04,
+	0xda, 0xb5, 0x4a, 0xca, 0xf9, 0xa9, 0x69, 0xb5, 0x96, 0xb1, 0xfe, 0x57, 0xa6, 0xb6, 0x7f, 0xc8,
+	0xf9, 0x29, 0x49, 0xa1, 0x23, 0xf0, 0xdd, 0x88, 0x0a, 0x8c, 0x8d, 0xd0, 0xca, 0xcd, 0x09, 0xb5,
+	0xeb, 0x9b, 0xb5, 0xd2, 0x63, 0x68, 0x67, 0x3c, 0x0a, 0xb3, 0x20, 0xe6, 0x79, 0x48, 0x99, 0xde,
+	0x80, 0x8e, 0xbf, 0xa6, 0xb1, 0x03, 0x0d, 0x75, 0x3f, 0x2d, 0xc1, 0xba, 0xde, 0x82, 0x63, 0x54,
+	0xb7, 0x72, 0x05, 0xac, 0xdb, 0xb8, 0x02, 0x0f, 0xa0, 0xc5, 0x70, 0x12, 0x98, 0x0e, 0x98, 0x6f,
+	0x76, 0x95, 0xe1, 0xe4, 0x48, 0x47, 0xed, 0x01, 0x11, 0xc8, 0xf8, 0x88, 0x45, 0x68, 0x2a, 0x64,
+	0x4a, 0x0b, 0x3d, 0xbb, 0x55, 0x7f, 0xa3, 0x66, 0x8e, 0x6a, 0xa2, 0xef, 0x9f, 0xcf, 0x1c, 0xeb,
+	0x62, 0xe6, 0x58, 0x3f, 0x66, 0x8e, 0xf5, 0x61, 0xee, 0x34, 0x2e, 0xe6, 0x4e, 0xe3, 0xdb, 0xdc,
+	0x69, 0xbc, 0x7d, 0x7e, 0x1d, 0xbf, 0x53, 0xf3, 0xee, 0xab, 0xb3, 0x02, 0xe5, 0xb0, 0xa9, 0x1f,
+	0xec, 0x67, 0x3f, 0x03, 0x00, 0x00, 0xff, 0xff, 0xfd, 0x25, 0x14, 0xcc, 0x16, 0x06, 0x00, 0x00,
 }
 
-func (m *Dispatch) Marshal() (dAtA []byte, err error) {
+func (m *EventDispatch) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -239,12 +389,12 @@ func (m *Dispatch) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Dispatch) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventDispatch) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Dispatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventDispatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -285,7 +435,7 @@ func (m *Dispatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Process) Marshal() (dAtA []byte, err error) {
+func (m *EventProcess) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -295,12 +445,12 @@ func (m *Process) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Process) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventProcess) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Process) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventProcess) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -348,6 +498,166 @@ func (m *Process) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *EventCreateMailbox) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventCreateMailbox) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventCreateMailbox) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.LocalDomain != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.LocalDomain))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.RequiredHook != nil {
+		{
+			size := m.RequiredHook.Size()
+			i -= size
+			if _, err := m.RequiredHook.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintEvents(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.DefaultHook != nil {
+		{
+			size := m.DefaultHook.Size()
+			i -= size
+			if _, err := m.DefaultHook.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintEvents(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	{
+		size := m.DefaultIsm.Size()
+		i -= size
+		if _, err := m.DefaultIsm.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintEvents(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size := m.MailboxId.Size()
+		i -= size
+		if _, err := m.MailboxId.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintEvents(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *EventSetMailbox) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventSetMailbox) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventSetMailbox) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RenounceOwnership {
+		i--
+		if m.RenounceOwnership {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.NewOwner) > 0 {
+		i -= len(m.NewOwner)
+		copy(dAtA[i:], m.NewOwner)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.NewOwner)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.DefaultHook != nil {
+		{
+			size := m.DefaultHook.Size()
+			i -= size
+			if _, err := m.DefaultHook.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintEvents(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.DefaultIsm != nil {
+		{
+			size := m.DefaultIsm.Size()
+			i -= size
+			if _, err := m.DefaultIsm.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintEvents(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size := m.MailboxId.Size()
+		i -= size
+		if _, err := m.MailboxId.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintEvents(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	offset -= sovEvents(v)
 	base := offset
@@ -359,7 +669,7 @@ func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Dispatch) Size() (n int) {
+func (m *EventDispatch) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -387,7 +697,7 @@ func (m *Dispatch) Size() (n int) {
 	return n
 }
 
-func (m *Process) Size() (n int) {
+func (m *EventProcess) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -419,13 +729,71 @@ func (m *Process) Size() (n int) {
 	return n
 }
 
+func (m *EventCreateMailbox) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.MailboxId.Size()
+	n += 1 + l + sovEvents(uint64(l))
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = m.DefaultIsm.Size()
+	n += 1 + l + sovEvents(uint64(l))
+	if m.DefaultHook != nil {
+		l = m.DefaultHook.Size()
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.RequiredHook != nil {
+		l = m.RequiredHook.Size()
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.LocalDomain != 0 {
+		n += 1 + sovEvents(uint64(m.LocalDomain))
+	}
+	return n
+}
+
+func (m *EventSetMailbox) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.MailboxId.Size()
+	n += 1 + l + sovEvents(uint64(l))
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.DefaultIsm != nil {
+		l = m.DefaultIsm.Size()
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.DefaultHook != nil {
+		l = m.DefaultHook.Size()
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.NewOwner)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.RenounceOwnership {
+		n += 2
+	}
+	return n
+}
+
 func sovEvents(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozEvents(x uint64) (n int) {
 	return sovEvents(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Dispatch) Unmarshal(dAtA []byte) error {
+func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -448,10 +816,10 @@ func (m *Dispatch) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Dispatch: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventDispatch: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Dispatch: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventDispatch: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -622,7 +990,7 @@ func (m *Dispatch) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Process) Unmarshal(dAtA []byte) error {
+func (m *EventProcess) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -645,10 +1013,10 @@ func (m *Process) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Process: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventProcess: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Process: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventProcess: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -830,6 +1198,487 @@ func (m *Process) Unmarshal(dAtA []byte) error {
 			}
 			m.Message = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventCreateMailbox) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventCreateMailbox: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventCreateMailbox: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MailboxId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MailboxId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultIsm", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.DefaultIsm.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultHook", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress
+			m.DefaultHook = &v
+			if err := m.DefaultHook.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RequiredHook", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress
+			m.RequiredHook = &v
+			if err := m.RequiredHook.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LocalDomain", wireType)
+			}
+			m.LocalDomain = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LocalDomain |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventSetMailbox) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventSetMailbox: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventSetMailbox: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MailboxId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MailboxId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultIsm", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress
+			m.DefaultIsm = &v
+			if err := m.DefaultIsm.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultHook", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress
+			m.DefaultHook = &v
+			if err := m.DefaultHook.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewOwner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NewOwner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RenounceOwnership", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.RenounceOwnership = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipEvents(dAtA[iNdEx:])

@@ -51,6 +51,14 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		return util.HexAddress{}, err
 	}
 
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventSendRemoteTransfer{
+		Sender:            cosmosSender,
+		TokenId:           token.Id,
+		DestinationDomain: destinationDomain,
+		Recipient:         recipient,
+		Amount:            sdk.NewCoins(sdk.NewCoin(token.OriginDenom, amount)).String(),
+	})
+
 	// Token destinationDomain, recipientAddress
 	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,

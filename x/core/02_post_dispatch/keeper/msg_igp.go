@@ -36,6 +36,12 @@ func (ms msgServer) CreateIgp(ctx context.Context, req *types.MsgCreateIgp) (*ty
 		return nil, err
 	}
 
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateIgp{
+		IgpId: newIgp.Id,
+		Owner: newIgp.Owner,
+		Denom: newIgp.Denom,
+	})
+
 	return &types.MsgCreateIgpResponse{Id: nextId}, nil
 }
 
@@ -70,6 +76,13 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 	if err = ms.k.Igps.Set(ctx, req.IgpId.GetInternalId(), igp); err != nil {
 		return nil, err
 	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetIgp{
+		IgpId:             req.IgpId,
+		Owner:             req.Owner,
+		NewOwner:          req.NewOwner,
+		RenounceOwnership: req.RenounceOwnership,
+	})
 
 	return &types.MsgSetIgpOwnerResponse{}, nil
 }

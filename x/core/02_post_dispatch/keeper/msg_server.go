@@ -32,7 +32,7 @@ func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCrea
 	}
 	merkleTreeHook := types.MerkleTreeHook{
 		Id:        nextId,
-		MailboxId: msg.MailboxId.String(),
+		MailboxId: msg.MailboxId,
 		Owner:     msg.Owner,
 		Tree:      types.ProtoFromTree(util.NewTree(util.ZeroHashes, 0)),
 	}
@@ -43,9 +43,9 @@ func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCrea
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateMerkleTreeHook{
-		Id:        merkleTreeHook.Id.String(),
-		MailboxId: merkleTreeHook.MailboxId,
-		Owner:     merkleTreeHook.Owner,
+		MerkleTreeHookId: merkleTreeHook.Id,
+		MailboxId:        merkleTreeHook.MailboxId,
+		Owner:            merkleTreeHook.Owner,
 	})
 
 	return &types.MsgCreateMerkleTreeHookResponse{
@@ -69,8 +69,8 @@ func (ms msgServer) CreateNoopHook(ctx context.Context, msg *types.MsgCreateNoop
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateNoopHook{
-		Id:    noopHook.String(),
-		Owner: noopHook.Owner,
+		NoopHookId: noopHook.Id,
+		Owner:      noopHook.Owner,
 	})
 
 	return &types.MsgCreateNoopHookResponse{

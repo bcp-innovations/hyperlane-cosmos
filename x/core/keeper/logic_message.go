@@ -83,7 +83,7 @@ func (k Keeper) ProcessMessage(
 		return err
 	}
 
-	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.Process{
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventProcess{
 		OriginMailboxId: mailboxId.String(),
 		Origin:          message.Origin,
 		Sender:          message.Sender.String(),
@@ -148,7 +148,7 @@ func (k Keeper) DispatchMessage(
 		return util.HexAddress{}, err
 	}
 
-	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.Dispatch{
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventDispatch{
 		OriginMailboxId: originMailboxId.String(),
 		Sender:          sender.String(),
 		Destination:     destinationDomain,

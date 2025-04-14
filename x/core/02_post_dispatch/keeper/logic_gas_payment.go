@@ -45,6 +45,12 @@ func (k Keeper) Claim(ctx context.Context, sender string, igpId util.HexAddress)
 		return err
 	}
 
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventClaimIgp{
+		IgpId:  igpId,
+		Owner:  ownerAcc.String(),
+		Amount: igp.ClaimableFees.String(),
+	})
+
 	return nil
 }
 
@@ -75,5 +81,15 @@ func (k Keeper) SetDestinationGasConfig(ctx context.Context, igpId util.HexAddre
 	if err = k.IgpDestinationGasConfigs.Set(ctx, key, updatedDestinationGasConfig); err != nil {
 		return err
 	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetDestinationGasConfig{
+		IgpId:             igpId,
+		Owner:             owner,
+		RemoteDomain:      destinationGasConfig.RemoteDomain,
+		GasOverhead:       destinationGasConfig.GasOverhead,
+		GasPrice:          destinationGasConfig.GasOracle.GasPrice,
+		TokenExchangeRate: destinationGasConfig.GasOracle.TokenExchangeRate,
+	})
+
 	return nil
 }

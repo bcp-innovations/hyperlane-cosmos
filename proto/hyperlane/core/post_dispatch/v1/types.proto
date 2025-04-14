@@ -69,7 +69,11 @@ message MerkleTreeHook {
     (gogoproto.nullable) = false
   ];
 
-  string mailbox_id = 2;
+  string mailbox_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // owner ...
   string owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];

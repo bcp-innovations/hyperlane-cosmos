@@ -36,7 +36,7 @@ func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hook
 		return nil, err
 	}
 
-	if merkleTreeHook.MailboxId != mailboxId.String() {
+	if merkleTreeHook.MailboxId != mailboxId {
 		return nil, errors.Wrapf(types.ErrSenderIsNotDesignatedMailbox, "required mailbox id: %s, sender mailbox id: %s", merkleTreeHook.MailboxId, mailboxId.String())
 	}
 
@@ -53,10 +53,10 @@ func (i MerkleTreeHookHandler) PostDispatch(ctx context.Context, mailboxId, hook
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
-	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
-		MessageId:        message.Id().String(),
+	_ = sdkCtx.EventManager().EmitTypedEvent(&types.EventInsertedIntoTree{
+		MessageId:        message.Id(),
 		Index:            count,
-		MerkleTreeHookId: merkleTreeHook.Id.String(),
+		MerkleTreeHookId: merkleTreeHook.Id,
 	})
 
 	merkleTreeHook.Tree = types.ProtoFromTree(tree)

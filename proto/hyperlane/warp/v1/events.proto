@@ -1,10 +1,112 @@
 syntax = "proto3";
 package hyperlane.warp.v1;
 
+import "gogoproto/gogo.proto";
+
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
 
-// RemoteTransfer ...
-message RemoteTransfer {
-  uint32 destination_domain = 1;
-  string recipient_address = 2;
+// EventCreateSyntheticToken ...
+message EventCreateSyntheticToken {
+  string token_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 2;
+  string origin_mailbox = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string orign_denom = 4;
+}
+
+// EventCreateCollateralToken ...
+message EventCreateCollateralToken {
+  string token_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 2;
+  string origin_mailbox = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string orign_denom = 4;
+}
+
+// EventSetToken ...
+message EventSetToken {
+  string token_id = 1;
+  string owner = 2;
+
+  string ism_id = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = true
+  ];
+  string new_owner = 4;
+  bool renounce_ownership = 5;
+}
+
+// EventEnrollRemoteRouter ...
+message EventEnrollRemoteRouter {
+  string token_id = 1;
+  string owner = 2;
+
+  uint32 receiver_domain = 3;
+  string receiver_contract = 4;
+  string gas = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// EventUnrollRemoteRouter ...
+message EventUnrollRemoteRouter {
+  string token_id = 1;
+  string owner = 2;
+
+  uint32 receiver_domain = 3;
+}
+
+// EventSendRemoteTransfer ...
+message EventSendRemoteTransfer {
+  string token_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  string sender = 2;
+
+  uint32 destination_domain = 3;
+  string recipient = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  string amount = 5;
+}
+
+// EventReceiveRemoteTransfer ...
+message EventReceiveRemoteTransfer {
+  string token_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string sender = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  uint32 origin_domain = 3;
+  string recipient = 4;
+
+  string amount = 5;
 }

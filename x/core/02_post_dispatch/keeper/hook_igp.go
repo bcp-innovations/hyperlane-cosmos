@@ -90,12 +90,12 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
-	_ = sdkCtx.EventManager().EmitTypedEvent(&types.GasPayment{
-		MessageId:   messageId.String(),
+	_ = sdkCtx.EventManager().EmitTypedEvent(&types.EventGasPayment{
+		MessageId:   messageId,
 		Destination: destinationDomain,
 		GasAmount:   gasLimit.String(),
 		Payment:     amount.String(),
-		IgpId:       hookId.String(),
+		IgpId:       hookId,
 	})
 
 	return nil

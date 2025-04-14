@@ -48,6 +48,13 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateSyntheticToken{
+		TokenId:       newToken.Id,
+		Owner:         newToken.Owner,
+		OriginMailbox: newToken.OriginMailbox,
+		OrignDenom:    newToken.OriginDenom,
+	})
+
 	return &types.MsgCreateSyntheticTokenResponse{Id: tokenId}, nil
 }
 
@@ -86,6 +93,14 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
 		return nil, err
 	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateCollateralToken{
+		TokenId:       newToken.Id,
+		Owner:         newToken.Owner,
+		OriginMailbox: newToken.OriginMailbox,
+		OrignDenom:    newToken.OriginDenom,
+	})
+
 	return &types.MsgCreateCollateralTokenResponse{Id: tokenId}, nil
 }
 
@@ -133,6 +148,14 @@ func (ms msgServer) SetToken(ctx context.Context, msg *types.MsgSetToken) (*type
 		return nil, err
 	}
 
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetToken{
+		TokenId:           tokenId.String(),
+		Owner:             msg.Owner,
+		IsmId:             msg.IsmId,
+		NewOwner:          msg.NewOwner,
+		RenounceOwnership: msg.RenounceOwnership,
+	})
+
 	return &types.MsgSetTokenResponse{}, nil
 }
 
@@ -160,6 +183,14 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, err
 	}
 
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventEnrollRemoteRouter{
+		TokenId:          tokenId.String(),
+		Owner:            msg.Owner,
+		ReceiverDomain:   msg.RemoteRouter.ReceiverDomain,
+		ReceiverContract: msg.RemoteRouter.ReceiverContract,
+		Gas:              msg.RemoteRouter.Gas,
+	})
+
 	return &types.MsgEnrollRemoteRouterResponse{}, nil
 }
 
@@ -183,6 +214,12 @@ func (ms msgServer) UnrollRemoteRouter(ctx context.Context, msg *types.MsgUnroll
 	if err = ms.k.EnrolledRouters.Remove(ctx, collections.Join(tokenId.GetInternalId(), msg.ReceiverDomain)); err != nil {
 		return nil, err
 	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventUnrollRemoteRouter{
+		TokenId:        tokenId.String(),
+		Owner:          msg.Owner,
+		ReceiverDomain: msg.ReceiverDomain,
+	})
 
 	return &types.MsgUnrollRemoteRouterResponse{}, nil
 }

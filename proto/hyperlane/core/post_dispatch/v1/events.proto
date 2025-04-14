@@ -1,38 +1,60 @@
 syntax = "proto3";
 package hyperlane.core.post_dispatch.v1;
 
+import "gogoproto/gogo.proto";
+
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
 
-// InsertedIntoTree ...
+// EventCreateMerkleTreeHook ...
 message EventCreateMerkleTreeHook {
 
   // id ...
-  string id = 1;
+  string merkle_tree_hook_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // mailbox_id ...
-  string mailbox_id = 2;
+  string mailbox_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   string owner = 3;
 }
 
-// InsertedIntoTree ...
-message InsertedIntoTree {
+// EventInsertedIntoTree ...
+message EventInsertedIntoTree {
 
   // message_id ...
-  string message_id = 1;
+  string message_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // index ...
   uint32 index = 2;
 
   // merkle_tree_hook_id ...
-  string merkle_tree_hook_id = 3;
+  string merkle_tree_hook_id = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
-// GasPayment ...
-message GasPayment {
+// EventGasPayment ...
+message EventGasPayment {
 
   // message_id ...
-  string message_id = 1;
+  string message_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // destination ...
   uint32 destination = 2;
@@ -44,15 +66,80 @@ message GasPayment {
   string payment = 4;
 
   // igp_id ...
-  string igp_id = 5;
+  string igp_id = 5 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
-// InsertedIntoTree ...
+// EventCreateNoopHook ...
 message EventCreateNoopHook {
 
   // id ...
-  string id = 1;
+  string noop_hook_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
 
   // owner ...
   string owner = 2;
+}
+
+// EventCreateIgp ...
+message EventCreateIgp {
+  string igp_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 2;
+  string denom = 3;
+}
+
+// EventSetIgp ...
+message EventSetIgp {
+  string igp_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 2;
+  string new_owner = 3;
+  bool renounce_ownership = 4;
+}
+
+// EventSetDestinationGasConfig ...
+message EventSetDestinationGasConfig {
+  string igp_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 2;
+  uint32 remote_domain = 4;
+  string gas_overhead = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string gas_price = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string token_exchange_rate = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// EventClaimIgp ...
+message EventClaimIgp {
+  string igp_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 2;
+  string amount = 3;
 }

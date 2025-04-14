@@ -56,6 +56,15 @@ func (k Keeper) CreateMailbox(ctx context.Context, req *types.MsgCreateMailbox) 
 		return util.HexAddress{}, err
 	}
 
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateMailbox{
+		MailboxId:    newMailbox.Id,
+		Owner:        newMailbox.Owner,
+		DefaultIsm:   newMailbox.DefaultIsm,
+		DefaultHook:  newMailbox.DefaultHook,
+		RequiredHook: newMailbox.RequiredHook,
+		LocalDomain:  newMailbox.LocalDomain,
+	})
+
 	return prefixedId, nil
 }
 
@@ -146,6 +155,15 @@ func (ms msgServer) SetMailbox(ctx context.Context, req *types.MsgSetMailbox) (*
 	if err = ms.k.Mailboxes.Set(ctx, mailboxId.GetInternalId(), mailbox); err != nil {
 		return nil, err
 	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetMailbox{
+		MailboxId:         mailboxId,
+		Owner:             req.Owner,
+		DefaultIsm:        req.DefaultIsm,
+		DefaultHook:       req.DefaultHook,
+		NewOwner:          req.NewOwner,
+		RenounceOwnership: req.RenounceOwnership,
+	})
 
 	return &types.MsgSetMailboxResponse{}, nil
 }
