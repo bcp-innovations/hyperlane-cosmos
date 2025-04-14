@@ -24,17 +24,19 @@ An '!' indicates a state machine breaking change.
 ### Improvements
 
 - [#99](https://github.com/bcp-innovations/hyperlane-cosmos/pull/99) Add registration queries for routers, extract create mailbox logic
+- [#102](https://github.com/bcp-innovations/hyperlane-cosmos/pull/102) Add Query Commands for CLI
 
 ## [v1.0.0-beta0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.0-beta0) - 2025-03-27
 
 **Initial Release of the Hyperlane Cosmos SDK Module** 🚀
 
-This module integrates the **Hyperlane messaging protocol** 
-([Hyperlane Docs](https://docs.hyperlane.xyz/)), enabling seamless interchain 
-communication. It also provides full support for **token bridges**, 
+This module integrates the **Hyperlane messaging protocol**
+([Hyperlane Docs](https://docs.hyperlane.xyz/)), enabling seamless interchain
+communication. It also provides full support for **token bridges**,
 secured by **multi-signature Interchain Security Modules**.
 
 ### **Key Features**
+
 - **Mailbox Functionality** – Send and receive messages securely across chains.
 - **Warp Routes (Token Bridging)**
   - **Collateral Tokens** – Native asset bridging.
@@ -48,5 +50,5 @@ secured by **multi-signature Interchain Security Modules**.
   - **Merkle Tree Hook** – Supports Merkle-based verification for Multisig ISMs.
   - **InterchainGasPaymaster** – Provides gas prices for destination chains and interchain gas payments.
 
-The module includes a comprehensive test suite and a preconfigured minimal 
+The module includes a comprehensive test suite and a preconfigured minimal
 Cosmos SDK app.
