@@ -113,3 +113,8 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 func (am AppModule) GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
 }
+
+// GetQueryCmd implements AppModuleBasic interface
+func (am AppModule) GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
