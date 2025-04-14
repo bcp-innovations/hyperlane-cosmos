@@ -399,7 +399,7 @@ func (m *EventSendRemoteTransfer) GetAmount() string {
 	return ""
 }
 
-// EventSendRemoteTransfer ...
+// EventReceiveRemoteTransfer ...
 type EventReceiveRemoteTransfer struct {
 	TokenId      github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=token_id,json=tokenId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"token_id"`
 	Sender       github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,2,opt,name=sender,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"sender"`

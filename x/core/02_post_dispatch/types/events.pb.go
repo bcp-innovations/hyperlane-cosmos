@@ -25,7 +25,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// InsertedIntoTree ...
+// EventCreateMerkleTreeHook ...
 type EventCreateMerkleTreeHook struct {
 	// id ...
 	MerkleTreeHookId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=merkle_tree_hook_id,json=merkleTreeHookId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"merkle_tree_hook_id"`
@@ -192,7 +192,7 @@ func (m *EventGasPayment) GetPayment() string {
 	return ""
 }
 
-// InsertedIntoTree ...
+// EventCreateNoopHook ...
 type EventCreateNoopHook struct {
 	// id ...
 	NoopHookId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=noop_hook_id,json=noopHookId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"noop_hook_id"`
@@ -356,7 +356,7 @@ func (m *EventSetIgp) GetRenounceOwnership() bool {
 	return false
 }
 
-// EventSetIgp ...
+// EventSetDestinationGasConfig ...
 type EventSetDestinationGasConfig struct {
 	IgpId             github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=igp_id,json=igpId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"igp_id"`
 	Owner             string                                                      `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
