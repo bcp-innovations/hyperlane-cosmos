@@ -12,7 +12,6 @@ import (
 
 // GetQueryCmd returns the cli query commands for this module
 func GetQueryCmd() *cobra.Command {
-
 	// Group query queries under a subcommand
 	cmd := &cobra.Command{
 		Use:                        "hooks",
