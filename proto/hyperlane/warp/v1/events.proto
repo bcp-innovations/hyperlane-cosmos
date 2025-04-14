@@ -18,7 +18,7 @@ message EventCreateSyntheticToken {
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = false
   ];
-  string orign_denom = 4;
+  string origin_denom = 4;
 }
 
 // EventCreateCollateralToken ...
@@ -34,7 +34,7 @@ message EventCreateCollateralToken {
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = false
   ];
-  string orign_denom = 4;
+  string origin_denom = 4;
 }
 
 // EventSetToken ...

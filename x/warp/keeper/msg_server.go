@@ -52,7 +52,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		TokenId:       newToken.Id,
 		Owner:         newToken.Owner,
 		OriginMailbox: newToken.OriginMailbox,
-		OrignDenom:    newToken.OriginDenom,
+		OriginDenom:   newToken.OriginDenom,
 	})
 
 	return &types.MsgCreateSyntheticTokenResponse{Id: tokenId}, nil
@@ -98,7 +98,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		TokenId:       newToken.Id,
 		Owner:         newToken.Owner,
 		OriginMailbox: newToken.OriginMailbox,
-		OrignDenom:    newToken.OriginDenom,
+		OriginDenom:   newToken.OriginDenom,
 	})
 
 	return &types.MsgCreateCollateralTokenResponse{Id: tokenId}, nil
