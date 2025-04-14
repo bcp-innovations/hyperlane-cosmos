@@ -20,12 +20,12 @@ func GetQueryCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdTokens())
-	cmd.AddCommand(CmdToken())
-	cmd.AddCommand(CmdBridgedSupply())
-	cmd.AddCommand(CmdRemoteRouters())
-	cmd.AddCommand(CmdQuoteRemoteTransfer())
-
+	cmd.AddCommand(CmdTokens(),
+		CmdToken(),
+		CmdBridgedSupply(),
+		CmdRemoteRouters(),
+		CmdQuoteRemoteTransfer(),
+	)
 	return cmd
 }
 
