@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"fmt"
+
+	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 )
@@ -17,8 +20,9 @@ var (
 
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
-		Use:                        "hyperlane-transfer",
-		Short:                      "hyperlane-transfer transactions subcommands",
+		Use:                        types.ModuleName,
+		Short:                      fmt.Sprintf("%v transactions subcommands", types.ModuleName),
+		Aliases:                    []string{"hyperlane-transfer"},
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,

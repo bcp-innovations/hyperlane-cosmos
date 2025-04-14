@@ -16,6 +16,7 @@ func GetQueryCmd() *cobra.Command {
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
+		Aliases:                    []string{"hyperlane-transfer"},
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
