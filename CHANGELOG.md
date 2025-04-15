@@ -27,10 +27,6 @@ An '!' indicates a state machine breaking change.
 - [#99](https://github.com/bcp-innovations/hyperlane-cosmos/pull/99) Add registration queries for routers, extract create mailbox logic.
 - [#102](https://github.com/bcp-innovations/hyperlane-cosmos/pull/102) Add Query Commands for CLI
 
-### Bug Fixes
-
-- [#103](https://github.com/bcp-innovations/hyperlane-cosmos/pull/103) Only execute `buf-break-check` when opening a PR
-
 ## [v1.0.0-beta0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.0-beta0) - 2025-03-27
 
 **Initial Release of the Hyperlane Cosmos SDK Module** 🚀
