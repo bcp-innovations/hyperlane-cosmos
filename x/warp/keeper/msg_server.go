@@ -51,28 +51,27 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 	return &types.MsgCreateSyntheticTokenResponse{Id: tokenId}, nil
 }
 
-// CreateCollateralToken ...
-func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (*types.MsgCreateCollateralTokenResponse, error) {
-	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
-		return nil, fmt.Errorf("module disabled collateral tokens")
+func (k *Keeper) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (util.HexAddress, error) {
+	if !slices.Contains(k.enabledTokens, int32(types.HYP_TOKEN_TYPE_COLLATERAL)) {
+		return util.HexAddress{}, fmt.Errorf("module disabled collateral tokens")
 	}
 
 	err := sdk.ValidateDenom(msg.OriginDenom)
 	if err != nil {
-		return nil, fmt.Errorf("origin denom %s is invalid", msg.OriginDenom)
+		return util.HexAddress{}, fmt.Errorf("origin denom %s is invalid", msg.OriginDenom)
 	}
 
-	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, msg.OriginMailbox)
+	has, err := k.coreKeeper.MailboxIdExists(ctx, msg.OriginMailbox)
 	if err != nil {
-		return nil, err
+		return util.HexAddress{}, err
 	}
 	if !has {
-		return nil, fmt.Errorf("failed to find mailbox with id: %s", msg.OriginMailbox.String())
+		return util.HexAddress{}, fmt.Errorf("failed to find mailbox with id: %s", msg.OriginMailbox.String())
 	}
 
-	tokenId, err := ms.k.coreKeeper.AppRouter().GetNextSequence(ctx, uint8(types.HYP_TOKEN_TYPE_COLLATERAL))
+	tokenId, err := k.coreKeeper.AppRouter().GetNextSequence(ctx, uint8(types.HYP_TOKEN_TYPE_COLLATERAL))
 	if err != nil {
-		return nil, err
+		return util.HexAddress{}, err
 	}
 
 	newToken := types.HypToken{
@@ -83,9 +82,20 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 		OriginDenom:   msg.OriginDenom,
 	}
 
-	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
+	if err = k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
+		return util.HexAddress{}, err
+	}
+
+	return tokenId, nil
+}
+
+// CreateCollateralToken ...
+func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCreateCollateralToken) (*types.MsgCreateCollateralTokenResponse, error) {
+	tokenId, err := ms.k.CreateCollateralToken(ctx, msg)
+	if err != nil {
 		return nil, err
 	}
+
 	return &types.MsgCreateCollateralTokenResponse{Id: tokenId}, nil
 }
 
