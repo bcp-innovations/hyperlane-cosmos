@@ -27,12 +27,10 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-// CreateRoutingIsm creates a new Routing ISM after validating that all routes
-// have unique domains and reference existing ISMs.
-func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (*types.MsgCreateRoutingIsmResponse, error) {
-	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING)
+func (k *Keeper) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (util.HexAddress, error) {
+	ismId, err := k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING)
 	if err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	var routes []types.Route
@@ -40,14 +38,14 @@ func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRou
 	for _, route := range req.Routes {
 		// Check for duplicate domains
 		if domainSet[route.Domain] {
-			return nil, errors.Wrapf(types.ErrDuplicatedDomains, "multiple ISMs for domain %v not allowed", route.Domain)
+			return util.HexAddress{}, errors.Wrapf(types.ErrDuplicatedDomains, "multiple ISMs for domain %v not allowed", route.Domain)
 		}
 		domainSet[route.Domain] = true
 
 		// Validate ISM exists
-		exists, err := m.k.coreKeeper.IsmExists(ctx, route.Ism)
+		exists, err := k.coreKeeper.IsmExists(ctx, route.Ism)
 		if err != nil || !exists {
-			return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", route.Ism.String())
+			return util.HexAddress{}, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", route.Ism.String())
 		}
 
 		routes = append(routes, route)
@@ -59,8 +57,8 @@ func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRou
 		Routes: routes,
 	}
 
-	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	if err = k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateRoutingIsm{
@@ -75,6 +73,17 @@ func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRou
 			RouteIsmId:  route.Ism,
 			RouteDomain: route.Domain,
 		})
+	}
+
+	return ismId, nil
+}
+
+// CreateRoutingIsm creates a new Routing ISM after validating that all routes
+// have unique domains and reference existing ISMs.
+func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (*types.MsgCreateRoutingIsmResponse, error) {
+	ismId, err := m.k.CreateRoutingIsm(ctx, req)
+	if err != nil {
+		return nil, err
 	}
 
 	return &types.MsgCreateRoutingIsmResponse{Id: ismId}, nil
