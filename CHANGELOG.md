@@ -14,7 +14,7 @@
 
 An '!' indicates a state machine breaking change.
 
-## Unreleased
+## [v1.0.0-rc0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.0-rc0) - 2025-04-15
 
 ### Features
 
