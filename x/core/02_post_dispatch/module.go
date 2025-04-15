@@ -12,6 +12,11 @@ func GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
 }
 
+// GetQueryCmd returns the root command for the core post dispatch hooks
+func GetQueryCmd() *cobra.Command {
+	return cli.GetQueryCmd()
+}
+
 // RegisterMsgServer registers the post dispatch hook handler for transactions
 func RegisterMsgServer(server grpc.Server, msgServer types.MsgServer) {
 	types.RegisterMsgServer(server, msgServer)
