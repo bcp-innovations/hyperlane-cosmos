@@ -89,35 +89,34 @@ func (m msgServer) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRou
 	return &types.MsgCreateRoutingIsmResponse{Id: ismId}, nil
 }
 
-// UpdateRoutingIsmOwner updates or renounces the owner of a Routing ISM.
-func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdateRoutingIsmOwner) (*types.MsgUpdateRoutingIsmOwnerResponse, error) {
+func (k *Keeper) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdateRoutingIsmOwner) error {
 	// get routing ism
-	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
+	routingISM, err := k.getRoutingIsm(ctx, req.IsmId, req.Owner)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if req.NewOwner != "" {
 		_, err = sdk.AccAddressFromBech32(req.NewOwner)
 		if err != nil {
-			return nil, errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
+			return errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
 		}
 	}
 	routingISM.Owner = req.NewOwner
 
 	// only renounce if new owner is empty
 	if req.RenounceOwnership && req.NewOwner != "" {
-		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
+		return errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
 	}
 
 	// don't allow new owner to be empty if not renouncing ownership
 	if !req.RenounceOwnership && req.NewOwner == "" {
-		return nil, errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
+		return errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
 	}
 
 	// write to kv store
-	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	if err = k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetRoutingIsm{
@@ -127,23 +126,32 @@ func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpda
 		RenounceOwnership: req.RenounceOwnership,
 	})
 
+	return nil
+}
+
+// UpdateRoutingIsmOwner updates or renounces the owner of a Routing ISM.
+func (m msgServer) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdateRoutingIsmOwner) (*types.MsgUpdateRoutingIsmOwnerResponse, error) {
+	err := m.k.UpdateRoutingIsmOwner(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgUpdateRoutingIsmOwnerResponse{}, nil
 }
 
-// RemoveRoutingIsmDomain removes a domain from the specified Routing ISM.
-func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) (*types.MsgRemoveRoutingIsmDomainResponse, error) {
+func (k *Keeper) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) error {
 	// get routing ism
-	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
+	routingISM, err := k.getRoutingIsm(ctx, req.IsmId, req.Owner)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// remove the domain from the list
 	routingISM.RemoveDomain(req.Domain)
 
 	// write to kv store
-	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	if err = k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventRemoveRoutingIsmDomain{
@@ -152,29 +160,38 @@ func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRem
 		RouteDomain: req.Domain,
 	})
 
-	return &types.MsgRemoveRoutingIsmDomainResponse{}, nil
+	return nil
 }
 
-// SetRoutingIsmDomain sets or updates the ISM route for a given domain in a Routing ISM.
-func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) (*types.MsgSetRoutingIsmDomainResponse, error) {
-	// get routing ism
-	routingISM, err := m.getRoutingIsm(ctx, req.IsmId, req.Owner)
+// RemoveRoutingIsmDomain removes a domain from the specified Routing ISM.
+func (m msgServer) RemoveRoutingIsmDomain(ctx context.Context, req *types.MsgRemoveRoutingIsmDomain) (*types.MsgRemoveRoutingIsmDomainResponse, error) {
+	err := m.k.RemoveRoutingIsmDomain(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
+	return &types.MsgRemoveRoutingIsmDomainResponse{}, nil
+}
+
+func (k *Keeper) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) error {
+	// get routing ism
+	routingISM, err := k.getRoutingIsm(ctx, req.IsmId, req.Owner)
+	if err != nil {
+		return err
+	}
+
 	// check if the ism we want to route to exists
-	exists, err := m.k.coreKeeper.IsmExists(ctx, req.Route.Ism)
+	exists, err := k.coreKeeper.IsmExists(ctx, req.Route.Ism)
 	if err != nil || !exists {
-		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", req.Route.Ism.String())
+		return errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", req.Route.Ism.String())
 	}
 
 	// we don't check if the domain was overwritten
 	routingISM.SetDomain(req.Route)
 
 	// write to kv store
-	if err = m.k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	if err = k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
+		return errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetRoutingIsmDomain{
@@ -183,6 +200,16 @@ func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRou
 		RouteIsmId:  req.Route.Ism,
 		RouteDomain: req.Route.Domain,
 	})
+
+	return nil
+}
+
+// SetRoutingIsmDomain sets or updates the ISM route for a given domain in a Routing ISM.
+func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRoutingIsmDomain) (*types.MsgSetRoutingIsmDomainResponse, error) {
+	err := m.k.SetRoutingIsmDomain(ctx, req)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.MsgSetRoutingIsmDomainResponse{}, nil
 }
@@ -281,10 +308,10 @@ func (m msgServer) AnnounceValidator(ctx context.Context, req *types.MsgAnnounce
 	return &types.MsgAnnounceValidatorResponse{}, nil
 }
 
-func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.MsgCreateMessageIdMultisigIsm) (*types.MsgCreateMessageIdMultisigIsmResponse, error) {
-	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG)
+func (k *Keeper) CreateMessageIdMultisigIsm(ctx context.Context, req *types.MsgCreateMessageIdMultisigIsm) (util.HexAddress, error) {
+	ismId, err := k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG)
 	if err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	newIsm := types.MessageIdMultisigISM{
@@ -295,11 +322,11 @@ func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.Ms
 	}
 
 	if err = newIsm.Validate(); err != nil {
-		return nil, errors.Wrap(types.ErrInvalidMultisigConfiguration, err.Error())
+		return util.HexAddress{}, errors.Wrap(types.ErrInvalidMultisigConfiguration, err.Error())
 	}
 
-	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	if err = k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateMessageIdMultisigIsm{
@@ -309,13 +336,22 @@ func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.Ms
 		Threshold:  newIsm.Threshold,
 	})
 
+	return ismId, nil
+}
+
+func (m msgServer) CreateMessageIdMultisigIsm(ctx context.Context, req *types.MsgCreateMessageIdMultisigIsm) (*types.MsgCreateMessageIdMultisigIsmResponse, error) {
+	ismId, err := m.k.CreateMessageIdMultisigIsm(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgCreateMessageIdMultisigIsmResponse{Id: ismId}, nil
 }
 
-func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.MsgCreateMerkleRootMultisigIsm) (*types.MsgCreateMerkleRootMultisigIsmResponse, error) {
-	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG)
+func (k *Keeper) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.MsgCreateMerkleRootMultisigIsm) (util.HexAddress, error) {
+	ismId, err := k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG)
 	if err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	newIsm := types.MerkleRootMultisigISM{
@@ -326,11 +362,11 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 	}
 
 	if err = newIsm.Validate(); err != nil {
-		return nil, errors.Wrap(types.ErrInvalidMultisigConfiguration, err.Error())
+		return util.HexAddress{}, errors.Wrap(types.ErrInvalidMultisigConfiguration, err.Error())
 	}
 
-	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	if err = k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateMerkleRootMultisigIsm{
@@ -340,13 +376,22 @@ func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.M
 		Threshold:  newIsm.Threshold,
 	})
 
+	return ismId, nil
+}
+
+func (m msgServer) CreateMerkleRootMultisigIsm(ctx context.Context, req *types.MsgCreateMerkleRootMultisigIsm) (*types.MsgCreateMerkleRootMultisigIsmResponse, error) {
+	ismId, err := m.k.CreateMerkleRootMultisigIsm(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgCreateMerkleRootMultisigIsmResponse{Id: ismId}, nil
 }
 
-func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIsm) (*types.MsgCreateNoopIsmResponse, error) {
-	ismId, err := m.k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_UNUSED)
+func (k *Keeper) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIsm) (util.HexAddress, error) {
+	ismId, err := k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_UNUSED)
 	if err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	newIsm := types.NoopISM{
@@ -356,8 +401,8 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 
 	// no validation needed, as there are no params to this ism
 
-	if err = m.k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
-		return nil, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	if err = k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateNoopIsm{
@@ -365,12 +410,21 @@ func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIs
 		Owner: ism.Creator,
 	})
 
+	return ismId, nil
+}
+
+func (m msgServer) CreateNoopIsm(ctx context.Context, ism *types.MsgCreateNoopIsm) (*types.MsgCreateNoopIsmResponse, error) {
+	ismId, err := m.k.CreateNoopIsm(ctx, ism)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgCreateNoopIsmResponse{Id: ismId}, nil
 }
 
-func (m msgServer) getRoutingIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.RoutingISM, error) {
+func (k *Keeper) getRoutingIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.RoutingISM, error) {
 	// check if the ism exists
-	ism, err := m.k.isms.Get(ctx, ismId.GetInternalId())
+	ism, err := k.isms.Get(ctx, ismId.GetInternalId())
 	if err != nil {
 		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", ismId.String())
 	}
