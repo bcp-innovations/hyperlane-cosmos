@@ -58,7 +58,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId
 }
 
 // PayForGasWithoutQuote executes an InterchainGasPayment without using `QuoteGasPayment`.
-// This is used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
+// This is also used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
 // amount for e.g. re-funding a certain message-id as the first payment wasn't enough.
 func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId util.HexAddress, sender string, messageId util.HexAddress, destinationDomain uint32, gasLimit math.Int, amount sdk.Coins) error {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
