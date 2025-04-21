@@ -66,26 +66,24 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 		return fmt.Errorf("igp does not exist: %s", hookId.String())
 	}
 
-	if amount.IsZero() {
-		return fmt.Errorf("amount must be greater than zero")
-	}
+	if !amount.IsZero() {
+		senderAcc, err := sdk.AccAddressFromBech32(sender)
+		if err != nil {
+			return err
+		}
 
-	senderAcc, err := sdk.AccAddressFromBech32(sender)
-	if err != nil {
-		return err
-	}
+		// TODO use core-types module name or create sub-account
+		err = i.k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, "hyperlane", amount)
+		if err != nil {
+			return err
+		}
 
-	// TODO use core-types module name or create sub-account
-	err = i.k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, "hyperlane", amount)
-	if err != nil {
-		return err
-	}
+		igp.ClaimableFees = igp.ClaimableFees.Add(amount...)
 
-	igp.ClaimableFees = igp.ClaimableFees.Add(amount...)
-
-	err = i.k.Igps.Set(ctx, igp.Id.GetInternalId(), igp)
-	if err != nil {
-		return err
+		err = i.k.Igps.Set(ctx, igp.Id.GetInternalId(), igp)
+		if err != nil {
+			return err
+		}
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
