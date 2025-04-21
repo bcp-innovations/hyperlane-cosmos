@@ -91,6 +91,10 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*types.MsgPayForGasResponse, error) {
 	handler := InterchainGasPaymasterHookHandler{*ms.k}
 
+	if req.Amount.IsZero() {
+		return &types.MsgPayForGasResponse{}, fmt.Errorf("amount must be greater than zero")
+	}
+
 	return &types.MsgPayForGasResponse{}, handler.PayForGasWithoutQuote(ctx, req.IgpId, req.Sender, req.MessageId, req.DestinationDomain, req.GasLimit, sdk.NewCoins(req.Amount))
 }
 
