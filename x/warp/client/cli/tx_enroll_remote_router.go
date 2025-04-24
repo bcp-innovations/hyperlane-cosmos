@@ -43,6 +43,11 @@ func CmdEnrollRemoteRouter() *cobra.Command {
 				return err
 			}
 
+			_, err = util.DecodeHexAddress(args[2])
+			if err != nil {
+				return fmt.Errorf("failed to decode receiver contract address %s", args[2])
+			}
+
 			msg := types.MsgEnrollRemoteRouter{
 				Owner:   clientCtx.GetFromAddress().String(),
 				TokenId: tokenId,
