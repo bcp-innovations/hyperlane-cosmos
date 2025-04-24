@@ -14,6 +14,12 @@
 
 An '!' indicates a state machine breaking change.
 
+## [v1.0.0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.0) - 2025-04-24
+
+### Improvements
+
+- [#111](https://github.com/bcp-innovations/hyperlane-cosmos/pull/111) Verify remote router contract address in CLI.
+
 ## [v1.0.0-rc0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.0-rc0) - 2025-04-15
 
 ### Features
