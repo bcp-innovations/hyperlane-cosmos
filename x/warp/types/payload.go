@@ -12,9 +12,10 @@ import (
 type WarpPayload struct {
 	recipient []byte
 	amount    big.Int
+	metadata  []byte
 }
 
-func NewWarpPayload(recipient []byte, amount big.Int) (WarpPayload, error) {
+func NewWarpPayload(recipient []byte, amount big.Int, metadata []byte) (WarpPayload, error) {
 	if len(amount.Bytes()) > 32 {
 		return WarpPayload{}, errors.New("amount is too long")
 	}
@@ -22,11 +23,11 @@ func NewWarpPayload(recipient []byte, amount big.Int) (WarpPayload, error) {
 		return WarpPayload{}, errors.New("recipient address is too long")
 	}
 
-	return WarpPayload{recipient: recipient, amount: amount}, nil
+	return WarpPayload{recipient: recipient, amount: amount, metadata: metadata}, nil
 }
 
 func ParseWarpPayload(payload []byte) (WarpPayload, error) {
-	if len(payload) != 64 {
+	if len(payload) < 64 {
 		return WarpPayload{}, errors.New("payload is invalid")
 	}
 
@@ -35,6 +36,7 @@ func ParseWarpPayload(payload []byte) (WarpPayload, error) {
 	return WarpPayload{
 		recipient: payload[0:32],
 		amount:    *amount,
+		metadata:  payload[64:],
 	}, nil
 }
 
@@ -61,6 +63,10 @@ func (p WarpPayload) Amount() *big.Int {
 	return newInt
 }
 
+func (p WarpPayload) Metadata() []byte {
+	return p.metadata
+}
+
 func (p WarpPayload) Bytes() []byte {
 	intBytes := p.amount.Bytes()
 	amountBytes := make([]byte, 32)
@@ -73,5 +79,6 @@ func (p WarpPayload) Bytes() []byte {
 	return slices.Concat(
 		receiverBytes,
 		amountBytes,
+		p.metadata,
 	)
 }

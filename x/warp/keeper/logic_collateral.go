@@ -14,7 +14,7 @@ import (
 
 // RemoteTransferCollateral handles the transfer of collateral token to a remote chain.
 // It withdraws the collateral from the sender, updates the token balance, and dispatches a message to the destination.
-func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient util.HexAddress, amount math.Int, customHookId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient util.HexAddress, amount math.Int, customHookId *util.HexAddress, gasLimit math.Int, maxFee sdk.Coin, customHookMetadata []byte, metadata []byte) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -46,7 +46,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		gas = gasLimit
 	}
 
-	warpPayload, err := types.NewWarpPayload(externalRecipient.Bytes(), *amount.BigInt())
+	warpPayload, err := types.NewWarpPayload(externalRecipient.Bytes(), *amount.BigInt(), metadata)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
