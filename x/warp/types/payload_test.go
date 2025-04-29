@@ -2,9 +2,10 @@ package types
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestIsZeroPadded(t *testing.T) {
