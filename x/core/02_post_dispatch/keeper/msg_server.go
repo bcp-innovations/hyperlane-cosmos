@@ -21,14 +21,14 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCreateMerkleTreeHook) (*types.MsgCreateMerkleTreeHookResponse, error) {
-	if exists, err := ms.k.coreKeeper.MailboxIdExists(ctx, msg.MailboxId); !exists || err != nil {
-		return nil, errors.Wrapf(types.ErrMailboxDoesNotExist, "%s", msg.MailboxId)
+func (k *Keeper) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCreateMerkleTreeHook) (util.HexAddress, error) {
+	if exists, err := k.coreKeeper.MailboxIdExists(ctx, msg.MailboxId); !exists || err != nil {
+		return util.HexAddress{}, errors.Wrapf(types.ErrMailboxDoesNotExist, "%s", msg.MailboxId)
 	}
 
-	nextId, err := ms.k.coreKeeper.PostDispatchRouter().GetNextSequence(ctx, types.POST_DISPATCH_HOOK_TYPE_MERKLE_TREE)
+	nextId, err := k.coreKeeper.PostDispatchRouter().GetNextSequence(ctx, types.POST_DISPATCH_HOOK_TYPE_MERKLE_TREE)
 	if err != nil {
-		return nil, err
+		return util.HexAddress{}, err
 	}
 	merkleTreeHook := types.MerkleTreeHook{
 		Id:        nextId,
@@ -37,9 +37,9 @@ func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCrea
 		Tree:      types.ProtoFromTree(util.NewTree(util.ZeroHashes, 0)),
 	}
 
-	err = ms.k.merkleTreeHooks.Set(ctx, merkleTreeHook.Id.GetInternalId(), merkleTreeHook)
+	err = k.merkleTreeHooks.Set(ctx, merkleTreeHook.Id.GetInternalId(), merkleTreeHook)
 	if err != nil {
-		return nil, err
+		return util.HexAddress{}, err
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateMerkleTreeHook{
@@ -48,30 +48,48 @@ func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCrea
 		Owner:            merkleTreeHook.Owner,
 	})
 
+	return nextId, nil
+}
+
+func (ms msgServer) CreateMerkleTreeHook(ctx context.Context, msg *types.MsgCreateMerkleTreeHook) (*types.MsgCreateMerkleTreeHookResponse, error) {
+	nextId, err := ms.k.CreateMerkleTreeHook(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgCreateMerkleTreeHookResponse{
 		Id: nextId,
 	}, nil
 }
 
-func (ms msgServer) CreateNoopHook(ctx context.Context, msg *types.MsgCreateNoopHook) (*types.MsgCreateNoopHookResponse, error) {
-	nextId, err := ms.k.coreKeeper.PostDispatchRouter().GetNextSequence(ctx, types.POST_DISPATCH_HOOK_TYPE_UNUSED)
+func (k *Keeper) CreateNoopHook(ctx context.Context, msg *types.MsgCreateNoopHook) (util.HexAddress, error) {
+	nextId, err := k.coreKeeper.PostDispatchRouter().GetNextSequence(ctx, types.POST_DISPATCH_HOOK_TYPE_UNUSED)
 	if err != nil {
-		return nil, err
+		return util.HexAddress{}, err
 	}
 	noopHook := types.NoopHook{
 		Id:    nextId,
 		Owner: msg.Owner,
 	}
 
-	err = ms.k.noopHooks.Set(ctx, nextId.GetInternalId(), noopHook)
+	err = k.noopHooks.Set(ctx, nextId.GetInternalId(), noopHook)
 	if err != nil {
-		return nil, err
+		return util.HexAddress{}, err
 	}
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateNoopHook{
 		NoopHookId: noopHook.Id,
 		Owner:      noopHook.Owner,
 	})
+
+	return nextId, nil
+}
+
+func (ms msgServer) CreateNoopHook(ctx context.Context, msg *types.MsgCreateNoopHook) (*types.MsgCreateNoopHookResponse, error) {
+	nextId, err := ms.k.CreateNoopHook(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.MsgCreateNoopHookResponse{
 		Id: nextId,
