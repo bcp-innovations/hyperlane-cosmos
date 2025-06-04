@@ -114,7 +114,7 @@ func (qs queryServer) QuoteGasPayment(ctx context.Context, req *types.QueryQuote
 
 	igpHandler := InterchainGasPaymasterHookHandler{*qs.k}
 
-	payment, err := igpHandler.QuoteGasPayment(ctx, igpId, uint32(destinationDomain), gasLimit)
+	payment, _, err := igpHandler.QuoteGasPayment(ctx, igpId, uint32(destinationDomain), gasLimit)
 	if err != nil {
 		return nil, err
 	}

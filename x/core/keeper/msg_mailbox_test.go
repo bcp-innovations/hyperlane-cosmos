@@ -218,8 +218,10 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		recipient, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		body, _ := hex.DecodeString("0x6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b")
 
-		_, err = s.App().HyperlaneKeeper.DispatchMessage(
-			s.Ctx(),
+		ctx := s.Ctx()
+
+		result, err := s.App().HyperlaneKeeper.DispatchMessage(
+			ctx,
 			mailboxId,
 			hexSender,
 			sdk.NewCoins(sdk.NewCoin("acoin", math.NewInt(1250000))),
@@ -237,6 +239,33 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		verifyDispatch(s, mailboxId, 1)
+
+		// Verify IGP event is correctly emitted
+		events := ctx.EventManager().Events()
+
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.post_dispatch.v1.EventGasPayment" {
+				found = true
+
+				igp, _ := event.GetAttribute("igp_id")
+				Expect(igp.Value).To(Equal(fmt.Sprintf("\"%s\"", igpId)))
+
+				destination, _ := event.GetAttribute("destination")
+				Expect(destination.Value).To(Equal("1"))
+
+				gas_amount, _ := event.GetAttribute("gas_amount")
+				Expect(gas_amount.Value).To(Equal("\"250000\""))
+
+				payment, _ := event.GetAttribute("payment")
+				Expect(payment.Value).To(Equal("\"250000acoin\""))
+
+				message_id, _ := event.GetAttribute("message_id")
+				Expect(message_id.Value).To(Equal(fmt.Sprintf("\"%s\"", result)))
+			}
+		}
+
+		Expect(found).To(BeTrue(), "IGP event not found in events")
 	})
 
 	It("DispatchMessage (valid)", func() {
