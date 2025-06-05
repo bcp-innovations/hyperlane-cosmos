@@ -55,8 +55,30 @@ func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the mailbox module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
-func (AppModule) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {
-	// this is already handled by the proto annotation
+func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	// core
+	cdc.RegisterConcrete(&types.MsgCreateMailbox{}, "hyperlane/v1/MsgCreateMailbox", nil)
+	cdc.RegisterConcrete(&types.MsgSetMailbox{}, "hyperlane/v1/MsgSetMailbox", nil)
+	cdc.RegisterConcrete(&types.MsgProcessMessage{}, "hyperlane/v1/MsgProcessMessage", nil)
+
+	// 01_interchain_security
+	cdc.RegisterConcrete(&ismtypes.MsgAnnounceValidator{}, "hyperlane/v1/MsgAnnounceValidator", nil)
+	cdc.RegisterConcrete(&ismtypes.MsgCreateMessageIdMultisigIsm{}, "hyperlane/v1/MsgCreateMessageIdMultisigIsm", nil)
+	cdc.RegisterConcrete(&ismtypes.MsgCreateMerkleRootMultisigIsm{}, "hyperlane/v1/MsgCreateMerkleRootMultisigIsm", nil)
+	cdc.RegisterConcrete(&ismtypes.MsgCreateNoopIsm{}, "hyperlane/v1/MsgCreateNoopIsm", nil)
+	cdc.RegisterConcrete(&ismtypes.MsgCreateRoutingIsm{}, "hyperlane/v1/MsgCreateRoutingIsm", nil)
+	cdc.RegisterConcrete(&ismtypes.MsgSetRoutingIsmDomain{}, "hyperlane/v1/MsgSetRoutingIsmDomain", nil)
+	cdc.RegisterConcrete(&ismtypes.MsgRemoveRoutingIsmDomain{}, "hyperlane/v1/MsgRemoveRoutingIsmDomain", nil)
+	cdc.RegisterConcrete(&ismtypes.MsgUpdateRoutingIsmOwner{}, "hyperlane/v1/MsgUpdateRoutingIsmOwner", nil)
+
+	// 02_post_dispatch
+	cdc.RegisterConcrete(&pdtypes.MsgClaim{}, "hyperlane/v1/MsgClaim", nil)
+	cdc.RegisterConcrete(&pdtypes.MsgCreateIgp{}, "hyperlane/v1/MsgCreateIgp", nil)
+	cdc.RegisterConcrete(&pdtypes.MsgCreateMerkleTreeHook{}, "hyperlane/v1/MsgCreateMerkleTreeHook", nil)
+	cdc.RegisterConcrete(&pdtypes.MsgCreateNoopHook{}, "hyperlane/v1/MsgCreateNoopHook", nil)
+	cdc.RegisterConcrete(&pdtypes.MsgPayForGas{}, "hyperlane/v1/MsgPayForGas", nil)
+	cdc.RegisterConcrete(&pdtypes.MsgSetDestinationGasConfig{}, "hyperlane/v1/MsgSetDestinationGasConfig", nil)
+	cdc.RegisterConcrete(&pdtypes.MsgSetIgpOwner{}, "hyperlane/v1/MsgSetIgpOwner", nil)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.

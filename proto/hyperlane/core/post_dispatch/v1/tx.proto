@@ -41,7 +41,7 @@ service Msg {
 // MsgCreateIgp ...
 message MsgCreateIgp {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/v1/MsgCreateInterchainGasPaymaster";
+  option (amino.name) = "hyperlane/v1/MsgCreateIgp";
 
   // owner is the message sender.
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -81,7 +81,7 @@ message MsgSetIgpOwner {
   bool renounce_ownership = 4;
 }
 
-// MsgCreateIgpResponse ...
+// MsgSetIgpOwnerResponse ...
 message MsgSetIgpOwnerResponse {}
 
 // MsgSetDestinationGasConfig ...
@@ -164,7 +164,7 @@ message MsgClaim {
 // MsgClaimResponse ...
 message MsgClaimResponse {}
 
-// MsgMerkleTreeHook ...
+// MsgCreateMerkleTreeHook ...
 message MsgCreateMerkleTreeHook {
   option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/v1/MsgCreateMerkleTreeHook";
@@ -188,16 +188,16 @@ message MsgCreateMerkleTreeHookResponse {
   ];
 }
 
-// MsgMerkleTreeHook ...
+// MsgCreateNoopHook ...
 message MsgCreateNoopHook {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) = "hyperlane/v1/MsgCreateMerkleTreeHook";
+  option (amino.name) = "hyperlane/v1/MsgCreateNoopHook";
 
   // sender ...
   string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-// MsgCreateMerkleTreeHookResponse ...
+// MsgCreateNoopHookResponse ...
 message MsgCreateNoopHookResponse {
   string id = 1 [
     (gogoproto.customtype) =
