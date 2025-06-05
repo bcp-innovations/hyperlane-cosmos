@@ -220,6 +220,9 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 
 		ctx := s.Ctx()
 
+		gasLimit := int64(50_000)
+		gasOverhead := int64(200_000)
+
 		result, err := s.App().HyperlaneKeeper.DispatchMessage(
 			ctx,
 			mailboxId,
@@ -229,7 +232,7 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 			recipient,
 			body,
 			util.StandardHookMetadata{
-				GasLimit: math.NewInt(50000),
+				GasLimit: math.NewInt(gasLimit),
 				Address:  sender.AccAddress,
 			},
 			&igpId,
@@ -254,8 +257,8 @@ var _ = Describe("msg_mailbox.go", Ordered, func() {
 				destination, _ := event.GetAttribute("destination")
 				Expect(destination.Value).To(Equal("1"))
 
-				gas_amount, _ := event.GetAttribute("gas_amount")
-				Expect(gas_amount.Value).To(Equal("\"250000\""))
+				total_gas_amount, _ := event.GetAttribute("gas_amount")
+				Expect(total_gas_amount.Value).To(Equal(fmt.Sprintf("\"%v\"", gasOverhead+gasLimit)))
 
 				payment, _ := event.GetAttribute("payment")
 				Expect(payment.Value).To(Equal("\"250000acoin\""))
