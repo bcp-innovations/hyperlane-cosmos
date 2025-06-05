@@ -47,8 +47,13 @@ func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the warp module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
-func (AppModule) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {
-	// already handled by the proto annotation
+func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&types.MsgCreateCollateralToken{}, "hyperlane/v1/MsgCreateCollateralToken", nil)
+	cdc.RegisterConcrete(&types.MsgCreateSyntheticToken{}, "hyperlane/v1/MsgCreateSyntheticToken", nil)
+	cdc.RegisterConcrete(&types.MsgEnrollRemoteRouter{}, "hyperlane/v1/MsgEnrollRemoteRouter", nil)
+	cdc.RegisterConcrete(&types.MsgRemoteTransfer{}, "hyperlane/v1/MsgRemoteTransfer", nil)
+	cdc.RegisterConcrete(&types.MsgSetToken{}, "hyperlane/v1/MsgSetToken", nil)
+	cdc.RegisterConcrete(&types.MsgUnrollRemoteRouter{}, "hyperlane/v1/MsgUnrollRemoteRouter", nil)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the warp module.
