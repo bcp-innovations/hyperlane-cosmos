@@ -55,8 +55,17 @@ func (AppModule) Name() string { return types.ModuleName }
 
 // RegisterLegacyAminoCodec registers the mailbox module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
-func (AppModule) RegisterLegacyAminoCodec(_ *codec.LegacyAmino) {
-	// this is already handled by the proto annotation
+func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	// core
+	cdc.RegisterConcrete(&types.MsgCreateMailbox{}, "hyperlane/v1/MsgCreateMailbox", nil)
+	cdc.RegisterConcrete(&types.MsgSetMailbox{}, "hyperlane/v1/MsgSetMailbox", nil)
+	cdc.RegisterConcrete(&types.MsgProcessMessage{}, "hyperlane/v1/MsgProcessMessage", nil)
+
+	// 01_interchain_security
+	ismmodule.RegisterLegacyAminoCodec(cdc)
+
+	// 02_post_dispatch
+	pdmodule.RegisterLegacyAminoCodec(cdc)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.
