@@ -105,9 +105,19 @@ func (qs queryServer) VerifyDryRun(ctx context.Context, req *types.QueryVerifyDr
 		return nil, err
 	}
 
-	metadata := []byte(req.Metadata)
+	// parse metadata from hex string
+	metadata, err := util.DecodeEthHex(req.Metadata)
+	if err != nil {
+		return nil, err
+	}
 
-	msg, err := util.ParseHyperlaneMessage([]byte(req.Message))
+	// parse message bytes from hex string first
+	msgBytes, err := util.DecodeEthHex(req.Message)
+	if err != nil {
+		return nil, err
+	}
+
+	msg, err := util.ParseHyperlaneMessage(msgBytes)
 	if err != nil {
 		return nil, err
 	}
