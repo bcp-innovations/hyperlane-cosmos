@@ -75,10 +75,13 @@ func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&pdtypes.MsgClaim{}, "hyperlane/v1/MsgClaim", nil)
 	cdc.RegisterConcrete(&pdtypes.MsgCreateIgp{}, "hyperlane/v1/MsgCreateInterchainGasPaymaster", nil)
 	cdc.RegisterConcrete(&pdtypes.MsgCreateMerkleTreeHook{}, "hyperlane/v1/MsgCreateMerkleTreeHook", nil)
-	cdc.RegisterConcrete(&pdtypes.MsgCreateNoopHook{}, "hyperlane/v1/MsgCreateMerkleTreeHook", nil)
 	cdc.RegisterConcrete(&pdtypes.MsgPayForGas{}, "hyperlane/v1/MsgPayForGas", nil)
 	cdc.RegisterConcrete(&pdtypes.MsgSetDestinationGasConfig{}, "hyperlane/v1/MsgSetDestinationGasConfig", nil)
 	cdc.RegisterConcrete(&pdtypes.MsgSetIgpOwner{}, "hyperlane/v1/MsgSetIgpOwner", nil)
+
+	// TODO: Remove comment
+	// Duplicates are not allowed. This will be fixed with https://github.com/bcp-innovations/hyperlane-cosmos/pull/123
+	//cdc.RegisterConcrete(&pdtypes.MsgCreateNoopHook{}, "hyperlane/v1/MsgCreateMerkleTreeHook", nil)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.
