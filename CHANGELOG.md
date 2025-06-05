@@ -14,6 +14,18 @@
 
 An '!' indicates a state machine breaking change.
 
+## [v1.0.1](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.1) - 2025-06-05
+
+### Improvements
+
+- [#122](https://github.com/bcp-innovations/hyperlane-cosmos/pull/122) Add optional custom hook parameters to quote query.
+- [#127](https://github.com/bcp-innovations/hyperlane-cosmos/pull/127) Register amino types.
+
+### Bug Fixes
+
+- [#125](https://github.com/bcp-innovations/hyperlane-cosmos/pull/125) Fix account for `gasOverhead` on the PayForGas Event.
+- [#126](https://github.com/bcp-innovations/hyperlane-cosmos/pull/126) Fix VerifyDryRun query params parsing.
+
 ## [v1.0.0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.0) - 2025-04-24
 
 ### Improvements
