@@ -20,6 +20,7 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 )
@@ -38,6 +39,7 @@ func initRootCmd(rootCmd *cobra.Command, txConfig client.TxConfig, basicManager 
 
 	rootCmd.AddCommand(
 		genutilcli.Commands(txConfig, basicManager, simapp.DefaultNodeHome),
+		txCommand(),
 		keys.Commands(),
 	)
 }
@@ -51,6 +53,32 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 	}
 
 	return app
+}
+
+func txCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:                        "tx",
+		Short:                      "Transactions subcommands",
+		DisableFlagParsing:         false,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	cmd.AddCommand(
+		authcmd.GetSignCommand(),
+		authcmd.GetSignBatchCommand(),
+		authcmd.GetMultiSignCommand(),
+		authcmd.GetMultiSignBatchCmd(),
+		authcmd.GetValidateSignaturesCommand(),
+		flags.LineBreak,
+		authcmd.GetBroadcastCommand(),
+		authcmd.GetEncodeCommand(),
+		authcmd.GetDecodeCommand(),
+		authcmd.GetSimulateCmd(),
+	)
+	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
+
+	return cmd
 }
 
 // appExport creates a new app (optionally at a given height) and exports state.
