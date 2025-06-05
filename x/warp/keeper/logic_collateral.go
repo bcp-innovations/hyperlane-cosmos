@@ -88,7 +88,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 // RemoteReceiveCollateral handles the receipt of collateral from a remote chain.
 // It updates the token balance, verifies there is enough collateral, and transfers the funds to the recipient's account.
 func (k *Keeper) RemoteReceiveCollateral(ctx context.Context, token types.HypToken, payload types.WarpPayload) error {
-	account := sdk.AccAddress(payload.Recipient()[12:32])
+	account := payload.GetCosmosAccount()
 
 	amount := math.NewIntFromBigInt(payload.Amount())
 
