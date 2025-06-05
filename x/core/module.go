@@ -81,7 +81,7 @@ func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 
 	// TODO: Remove comment
 	// Duplicates are not allowed. This will be fixed with https://github.com/bcp-innovations/hyperlane-cosmos/pull/123
-	//cdc.RegisterConcrete(&pdtypes.MsgCreateNoopHook{}, "hyperlane/v1/MsgCreateMerkleTreeHook", nil)
+	// cdc.RegisterConcrete(&pdtypes.MsgCreateNoopHook{}, "hyperlane/v1/MsgCreateMerkleTreeHook", nil)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.
