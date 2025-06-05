@@ -107,6 +107,8 @@ message QueryRemoteRoutersResponse {
 message QueryQuoteRemoteTransferRequest {
   string id = 1;
   string destination_domain = 2;
+  string custom_hook_id = 3;
+  string custom_hook_metadata = 4;
 }
 
 // QueryQuoteRemoteTransferResponse ...

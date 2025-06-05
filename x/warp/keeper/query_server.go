@@ -104,13 +104,27 @@ func (qs queryServer) QuoteRemoteTransfer(ctx context.Context, request *types.Qu
 		return nil, fmt.Errorf("failed to get remote router for destination domain %v", request.DestinationDomain)
 	}
 
+	overwriteHookId := util.NewZeroAddress()
+	var customHookMetadata []byte
+	if request.CustomHookId != "" {
+		overwriteHookId, err = util.DecodeHexAddress(request.CustomHookId)
+		if err != nil {
+			return nil, fmt.Errorf("invalid custom hook id")
+		}
+
+		customHookMetadata, err = util.DecodeEthHex(request.CustomHookMetadata)
+		if err != nil {
+			return nil, fmt.Errorf("invalid custom hook metadata")
+		}
+	}
+
 	metadata := util.StandardHookMetadata{
 		GasLimit:           remoteRouter.Gas,
 		Address:            sdk.AccAddress{},
-		CustomHookMetadata: []byte{},
+		CustomHookMetadata: customHookMetadata,
 	}
 
-	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, util.HexAddress(token.OriginMailbox), util.NewZeroAddress(), metadata, util.HyperlaneMessage{Destination: uint32(destinationDomain)})
+	requiredPayment, err := qs.k.coreKeeper.QuoteDispatch(ctx, token.OriginMailbox, overwriteHookId, metadata, util.HyperlaneMessage{Destination: uint32(destinationDomain)})
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +171,7 @@ func parseTokenResponse(get types.HypToken) *types.WrappedHypToken {
 		Owner:     get.Owner,
 		TokenType: get.TokenType,
 
-		OriginMailbox: util.HexAddress(get.OriginMailbox).String(),
+		OriginMailbox: get.OriginMailbox.String(),
 		OriginDenom:   get.OriginDenom,
 
 		IsmId: get.IsmId,
