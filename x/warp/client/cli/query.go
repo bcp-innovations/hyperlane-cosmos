@@ -172,8 +172,10 @@ func CmdQuoteRemoteTransfer() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			params := &types.QueryQuoteRemoteTransferRequest{
-				Id:                args[0],
-				DestinationDomain: args[1],
+				Id:                 args[0],
+				DestinationDomain:  args[1],
+				CustomHookId:       customHookId,
+				CustomHookMetadata: customHookMetadata,
 			}
 
 			res, err := queryClient.QuoteRemoteTransfer(cmd.Context(), params)
@@ -186,6 +188,9 @@ func CmdQuoteRemoteTransfer() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+
+	cmd.Flags().StringVar(&customHookId, "custom-hook-id", "", "custom DefaultHookId")
+	cmd.Flags().StringVar(&customHookMetadata, "custom-hook-metadata", "", "custom hook metadata")
 
 	return cmd
 }
