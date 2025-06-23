@@ -52,7 +52,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId
 		return sdk.NewCoins(), err
 	}
 
-	if requiredPayment.IsAllGT(maxFee) {
+	if requiredPayment.IsAnyGT(maxFee) {
 		return sdk.NewCoins(), fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
 	}
 
@@ -60,7 +60,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId
 }
 
 // PayForGasWithoutQuote executes an InterchainGasPayment without using `QuoteGasPayment`.
-// This is used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
+// This is also used in the `MsgPayForGas` transaction, as the main purpose is paying an exact
 // amount for e.g. re-funding a certain message-id as the first payment wasn't enough.
 func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Context, hookId util.HexAddress, sender string, messageId util.HexAddress, destinationDomain uint32, gasLimit math.Int, amount sdk.Coins) error {
 	igp, err := i.k.Igps.Get(ctx, hookId.GetInternalId())
@@ -68,26 +68,24 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 		return fmt.Errorf("igp does not exist: %s", hookId.String())
 	}
 
-	if amount.IsZero() {
-		return fmt.Errorf("amount must be greater than zero")
-	}
+	if !amount.IsZero() {
+		senderAcc, err := sdk.AccAddressFromBech32(sender)
+		if err != nil {
+			return err
+		}
 
-	senderAcc, err := sdk.AccAddressFromBech32(sender)
-	if err != nil {
-		return err
-	}
+		// TODO use core-types module name or create sub-account
+		err = i.k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, "hyperlane", amount)
+		if err != nil {
+			return err
+		}
 
-	// TODO use core-types module name or create sub-account
-	err = i.k.bankKeeper.SendCoinsFromAccountToModule(ctx, senderAcc, "hyperlane", amount)
-	if err != nil {
-		return err
-	}
+		igp.ClaimableFees = igp.ClaimableFees.Add(amount...)
 
-	igp.ClaimableFees = igp.ClaimableFees.Add(amount...)
-
-	err = i.k.Igps.Set(ctx, igp.Id.GetInternalId(), igp)
-	if err != nil {
-		return err
+		err = i.k.Igps.Set(ctx, igp.Id.GetInternalId(), igp)
+		if err != nil {
+			return err
+		}
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
