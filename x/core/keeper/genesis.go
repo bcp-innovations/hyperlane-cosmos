@@ -34,7 +34,7 @@ func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) erro
 	}
 
 	for _, message := range data.Messages {
-		if err := k.Messages.Set(ctx, collections.Join(message.MailboxId, message.MessageId.Bytes())); err != nil {
+		if err := k.MessagesMap.Set(ctx, collections.Join(message.MailboxId, message.MessageId.Bytes()), true); err != nil {
 			return err
 		}
 	}
@@ -58,7 +58,7 @@ func (k *Keeper) ExportGenesis(ctx context.Context) (*types.GenesisState, error)
 	}
 
 	messages := make([]types.GenesisMailboxMessageWrapper, 0)
-	err = k.Messages.Walk(ctx, nil, func(key collections.Pair[uint64, []byte]) (stop bool, err error) {
+	err = k.MessagesMap.Walk(ctx, nil, func(key collections.Pair[uint64, []byte], _ bool) (stop bool, err error) {
 		messages = append(messages, types.GenesisMailboxMessageWrapper{
 			MailboxId: key.K1(),
 			MessageId: util.HexAddress(key.K2()),

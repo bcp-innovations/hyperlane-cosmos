@@ -28,6 +28,8 @@ type Keeper struct {
 	Mailboxes collections.Map[uint64, types.Mailbox]
 	// Messages is a set of tuples. The first key is the mailbox ID, second key is the message ID.
 	Messages collections.KeySet[collections.Pair[uint64, []byte]]
+	// MessagesMap is the new representation of messages as a map for existence checks
+	MessagesMap collections.Map[collections.Pair[uint64, []byte], bool]
 	// MailboxesSequence is a monotonically increasing number of mailboxes. The
 	// internal ID for a mailbox is the sequence number when it was created.
 	MailboxesSequence collections.Sequence
@@ -58,6 +60,7 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 
 		Mailboxes:         collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.Uint64Key, codec.CollValue[types.Mailbox](cdc)),
 		Messages:          collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.Uint64Key, collections.BytesKey)),
+		MessagesMap:       collections.NewMap(sb, types.MessagesMapKey, "messages_map", collections.PairKeyCodec(collections.Uint64Key, collections.BytesKey), collections.BoolValue),
 		MailboxesSequence: collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
 
 		bankKeeper: bankKeeper,

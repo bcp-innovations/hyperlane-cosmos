@@ -48,14 +48,14 @@ func (k Keeper) ProcessMessage(
 
 	// Check replay protection
 	key := collections.Join(mailboxId.GetInternalId(), message.Id().Bytes())
-	received, err := k.Messages.Has(ctx, key)
+	received, err := k.MessagesMap.Has(ctx, key)
 	if err != nil {
 		return err
 	}
 	if received {
 		return fmt.Errorf("already received messsage with id %s", message.Id().String())
 	}
-	err = k.Messages.Set(ctx, key)
+	err = k.MessagesMap.Set(ctx, key, true)
 	if err != nil {
 		return err
 	}
@@ -138,7 +138,7 @@ func (k Keeper) DispatchMessage(
 	}
 	mailbox.MessageSent++
 
-	err = k.Messages.Set(ctx, collections.Join(originMailboxId.GetInternalId(), hypMsg.Id().Bytes()))
+	err = k.MessagesMap.Set(ctx, collections.Join(originMailboxId.GetInternalId(), hypMsg.Id().Bytes()), true)
 	if err != nil {
 		return util.HexAddress{}, err
 	}

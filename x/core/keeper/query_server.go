@@ -36,7 +36,7 @@ func (qs queryServer) Delivered(ctx context.Context, req *types.QueryDeliveredRe
 		return nil, err
 	}
 
-	delivered, err := qs.k.Messages.Has(ctx, collections.Join(mailboxId.GetInternalId(), messageId))
+	delivered, err := qs.k.MessagesMap.Has(ctx, collections.Join(mailboxId.GetInternalId(), messageId))
 	if err != nil {
 		return nil, err
 	}

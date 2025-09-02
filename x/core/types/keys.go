@@ -12,6 +12,7 @@ var (
 	IsmRouterKey          = []byte{ModuleId, 4}
 	PostDispatchRouterKey = []byte{ModuleId, 5}
 	AppRouterKey          = []byte{ModuleId, 6}
+	MessagesMapKey        = []byte{ModuleId, 7}
 
 	// Leave 0 in case we add params in the future.
 )
