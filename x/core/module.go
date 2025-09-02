@@ -35,7 +35,7 @@ var (
 )
 
 // ConsensusVersion defines the current module consensus version.
-const ConsensusVersion = 1
+const ConsensusVersion = 2
 
 type AppModule struct {
 	cdc    codec.Codec
@@ -105,6 +105,12 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 
 	pdmodule.RegisterMsgServer(cfg.MsgServer(), pdkeeper.NewMsgServerImpl(&am.keeper.PostDispatchKeeper))
 	pdmodule.RegisterQueryService(cfg.QueryServer(), pdkeeper.NewQueryServerImpl(&am.keeper.PostDispatchKeeper))
+
+	// Register messages migration from v1 -> v2
+	migrator := keeper2.NewMigrator(*am.keeper)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, migrator.Migrate1to2); err != nil {
+		panic(fmt.Sprintf("failed to register migration v1 to v2: %v", err))
+	}
 }
 
 // DefaultGenesis returns default genesis state as raw bytes for the module.
