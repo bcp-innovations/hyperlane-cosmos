@@ -30,15 +30,15 @@ func (ms msgServer) CreateNativeSyntheticToken(ctx context.Context, msg *types.M
 		return nil, fmt.Errorf("invalid authority: expected %s, got %s", ms.k.authority, msg.Owner)
 	}
 
-	if supply := ms.k.bankKeeper.GetSupply(ctx, msg.OriginDenom); !supply.IsZero() {
-		return nil, fmt.Errorf("denom %s already exists with a supply", msg.OriginDenom)
+	if supply := ms.k.bankKeeper.GetSupply(ctx, msg.LocalDenom); !supply.IsZero() {
+		return nil, fmt.Errorf("denom %s already exists with a supply", msg.LocalDenom)
 	}
 
-	return ms.internalCreateSyntheticToken(ctx, msg.Owner, msg.OriginMailbox, msg.OriginDenom)
+	return ms.internalCreateSyntheticToken(ctx, msg.Owner, msg.OriginMailbox, msg.LocalDenom)
 }
 
 // internalCreateSyntheticToken handles the internal logic for creating a synthetic token.
-func (ms msgServer) internalCreateSyntheticToken(ctx context.Context, owner string, originMailbox util.HexAddress, originDenom string) (*types.MsgCreateSyntheticTokenResponse, error) {
+func (ms msgServer) internalCreateSyntheticToken(ctx context.Context, owner string, originMailbox util.HexAddress, localDenom string) (*types.MsgCreateSyntheticTokenResponse, error) {
 	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
 		return nil, fmt.Errorf("module disabled synthetic tokens")
 	}
@@ -56,9 +56,9 @@ func (ms msgServer) internalCreateSyntheticToken(ctx context.Context, owner stri
 		return nil, err
 	}
 
-	// If the originDenom is left empty, we populate it as a non-native denom.
-	if originDenom == "" {
-		originDenom = fmt.Sprintf("hyperlane/%s", tokenId.String())
+	// If the localDenom is left empty, we populate it as a non-native denom.
+	if localDenom == "" {
+		localDenom = fmt.Sprintf("hyperlane/%s", tokenId.String())
 	}
 
 	newToken := types.HypToken{
@@ -66,7 +66,7 @@ func (ms msgServer) internalCreateSyntheticToken(ctx context.Context, owner stri
 		Owner:         owner,
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
 		OriginMailbox: originMailbox,
-		OriginDenom:   originDenom,
+		OriginDenom:   localDenom,
 	}
 
 	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {

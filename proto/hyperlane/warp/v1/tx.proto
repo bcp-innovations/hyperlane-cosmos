@@ -93,7 +93,7 @@ message MsgCreateNativeSyntheticToken {
     (gogoproto.nullable) = false
   ];
 
-  string origin_denom = 3;
+  string local_denom = 3;
 }
 
 // MsgCreateSyntheticTokenResponse ...
