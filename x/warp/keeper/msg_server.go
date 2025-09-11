@@ -30,8 +30,8 @@ func (ms msgServer) CreateNativeSyntheticToken(ctx context.Context, msg *types.M
 		return nil, fmt.Errorf("invalid authority: expected %s, got %s", ms.k.authority, msg.Owner)
 	}
 
-	if supply := ms.k.bankKeeper.GetSupply(ctx, msg.OriginDenom); !supply.IsZero() {
-		return nil, fmt.Errorf("denom %s already exists with a supply", msg.OriginDenom)
+	if ms.k.bankKeeper.HasSupply(ctx, msg.OriginDenom) {
+		return nil, fmt.Errorf("denom %s already exists", msg.OriginDenom)
 	}
 
 	return ms.internalCreateSyntheticToken(ctx, msg.Owner, msg.OriginMailbox, msg.OriginDenom)
