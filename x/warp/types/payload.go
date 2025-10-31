@@ -26,7 +26,7 @@ func NewWarpPayload(recipient []byte, amount big.Int) (WarpPayload, error) {
 }
 
 func ParseWarpPayload(payload []byte) (WarpPayload, error) {
-	if len(payload) != 64 {
+	if len(payload) < 64 {
 		return WarpPayload{}, errors.New("payload is invalid")
 	}
 
