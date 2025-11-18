@@ -74,9 +74,6 @@ func NewKeeper(
 		panic(err)
 	}
 
-	coreKeeper.AppRouter().RegisterModule(uint8(types.HYP_TOKEN_TYPE_COLLATERAL), &k)
-	coreKeeper.AppRouter().RegisterModule(uint8(types.HYP_TOKEN_TYPE_SYNTHETIC), &k)
-
 	k.Schema = schema
 
 	return k

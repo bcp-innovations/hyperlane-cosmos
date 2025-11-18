@@ -87,6 +87,10 @@ func (k Keeper) AppRouter() *util.Router[util.HyperlaneApp] {
 	return k.appRouter
 }
 
+func (k Keeper) RegisterApp(moduleId uint8, module util.HyperlaneApp) {
+	k.appRouter.RegisterModule(moduleId, module)
+}
+
 func (k *Keeper) ReceiverIsmId(ctx context.Context, recipient util.HexAddress) (util.HexAddress, error) {
 	handler, err := k.appRouter.GetModule(recipient)
 	if err != nil {
