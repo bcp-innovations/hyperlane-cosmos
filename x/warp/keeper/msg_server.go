@@ -19,16 +19,36 @@ type msgServer struct {
 
 // CreateSyntheticToken ...
 func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCreateSyntheticToken) (*types.MsgCreateSyntheticTokenResponse, error) {
+	return ms.internalCreateSyntheticToken(ctx, msg.Owner, msg.OriginMailbox, "")
+}
+
+// CreateNativeSyntheticToken is an authority gated version of
+// CreateSyntheticToken that allows the module authority to specify a native
+// (custom) origin denom for the synthetic token.
+func (ms msgServer) CreateNativeSyntheticToken(ctx context.Context, msg *types.MsgCreateNativeSyntheticToken) (*types.MsgCreateSyntheticTokenResponse, error) {
+	if msg.Owner != ms.k.authority {
+		return nil, fmt.Errorf("invalid authority: expected %s, got %s", ms.k.authority, msg.Owner)
+	}
+
+	if ms.k.bankKeeper.HasSupply(ctx, msg.OriginDenom) {
+		return nil, fmt.Errorf("denom %s already exists", msg.OriginDenom)
+	}
+
+	return ms.internalCreateSyntheticToken(ctx, msg.Owner, msg.OriginMailbox, msg.OriginDenom)
+}
+
+// internalCreateSyntheticToken handles the internal logic for creating a synthetic token.
+func (ms msgServer) internalCreateSyntheticToken(ctx context.Context, owner string, originMailbox util.HexAddress, originDenom string) (*types.MsgCreateSyntheticTokenResponse, error) {
 	if !slices.Contains(ms.k.enabledTokens, int32(types.HYP_TOKEN_TYPE_SYNTHETIC)) {
 		return nil, fmt.Errorf("module disabled synthetic tokens")
 	}
 
-	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, msg.OriginMailbox)
+	has, err := ms.k.coreKeeper.MailboxIdExists(ctx, originMailbox)
 	if err != nil {
 		return nil, err
 	}
 	if !has {
-		return nil, fmt.Errorf("failed to find mailbox with id: %s", msg.OriginMailbox.String())
+		return nil, fmt.Errorf("failed to find mailbox with id: %s", originMailbox.String())
 	}
 
 	tokenId, err := ms.k.coreKeeper.AppRouter().GetNextSequence(ctx, uint8(types.HYP_TOKEN_TYPE_SYNTHETIC))
@@ -36,12 +56,17 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
+	// If the originDenom is left empty, we populate it as a non-native denom.
+	if originDenom == "" {
+		originDenom = fmt.Sprintf("hyperlane/%s", tokenId.String())
+	}
+
 	newToken := types.HypToken{
 		Id:            tokenId,
-		Owner:         msg.Owner,
+		Owner:         owner,
 		TokenType:     types.HYP_TOKEN_TYPE_SYNTHETIC,
-		OriginMailbox: msg.OriginMailbox,
-		OriginDenom:   fmt.Sprintf("hyperlane/%s", tokenId.String()),
+		OriginMailbox: originMailbox,
+		OriginDenom:   originDenom,
 	}
 
 	if err = ms.k.HypTokens.Set(ctx, tokenId.GetInternalId(), newToken); err != nil {
