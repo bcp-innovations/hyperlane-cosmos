@@ -820,6 +820,300 @@ func (m *MsgUpdateRoutingIsmOwnerResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateRoutingIsmOwnerResponse proto.InternalMessageInfo
 
+// MsgCreateAggregationIsm ...
+type MsgCreateAggregationIsm struct {
+	// creator ...
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// modules - list of ISM IDs to aggregate
+	Modules []github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,2,rep,name=modules,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"modules"`
+	// threshold - number of ISMs that must pass verification
+	Threshold uint32 `protobuf:"varint,3,opt,name=threshold,proto3" json:"threshold,omitempty"`
+}
+
+func (m *MsgCreateAggregationIsm) Reset()         { *m = MsgCreateAggregationIsm{} }
+func (m *MsgCreateAggregationIsm) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateAggregationIsm) ProtoMessage()    {}
+func (*MsgCreateAggregationIsm) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{16}
+}
+func (m *MsgCreateAggregationIsm) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateAggregationIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateAggregationIsm.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateAggregationIsm) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateAggregationIsm.Merge(m, src)
+}
+func (m *MsgCreateAggregationIsm) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateAggregationIsm) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateAggregationIsm.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateAggregationIsm proto.InternalMessageInfo
+
+func (m *MsgCreateAggregationIsm) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateAggregationIsm) GetThreshold() uint32 {
+	if m != nil {
+		return m.Threshold
+	}
+	return 0
+}
+
+// MsgCreateAggregationIsmResponse ...
+type MsgCreateAggregationIsmResponse struct {
+	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`
+}
+
+func (m *MsgCreateAggregationIsmResponse) Reset()         { *m = MsgCreateAggregationIsmResponse{} }
+func (m *MsgCreateAggregationIsmResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateAggregationIsmResponse) ProtoMessage()    {}
+func (*MsgCreateAggregationIsmResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{17}
+}
+func (m *MsgCreateAggregationIsmResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateAggregationIsmResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateAggregationIsmResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateAggregationIsmResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateAggregationIsmResponse.Merge(m, src)
+}
+func (m *MsgCreateAggregationIsmResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateAggregationIsmResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateAggregationIsmResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateAggregationIsmResponse proto.InternalMessageInfo
+
+// MsgSetAggregationIsmModules ...
+type MsgSetAggregationIsmModules struct {
+	// ism_id ...
+	IsmId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=ism_id,json=ismId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"ism_id"`
+	// modules - list of ISM IDs to aggregate
+	Modules []github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,2,rep,name=modules,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"modules"`
+	// threshold - number of ISMs that must pass verification
+	Threshold uint32 `protobuf:"varint,3,opt,name=threshold,proto3" json:"threshold,omitempty"`
+	// owner ...
+	Owner string `protobuf:"bytes,4,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *MsgSetAggregationIsmModules) Reset()         { *m = MsgSetAggregationIsmModules{} }
+func (m *MsgSetAggregationIsmModules) String() string { return proto.CompactTextString(m) }
+func (*MsgSetAggregationIsmModules) ProtoMessage()    {}
+func (*MsgSetAggregationIsmModules) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{18}
+}
+func (m *MsgSetAggregationIsmModules) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetAggregationIsmModules) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetAggregationIsmModules.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetAggregationIsmModules) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetAggregationIsmModules.Merge(m, src)
+}
+func (m *MsgSetAggregationIsmModules) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetAggregationIsmModules) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetAggregationIsmModules.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetAggregationIsmModules proto.InternalMessageInfo
+
+func (m *MsgSetAggregationIsmModules) GetThreshold() uint32 {
+	if m != nil {
+		return m.Threshold
+	}
+	return 0
+}
+
+func (m *MsgSetAggregationIsmModules) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+// MsgSetAggregationIsmModulesResponse ...
+type MsgSetAggregationIsmModulesResponse struct {
+}
+
+func (m *MsgSetAggregationIsmModulesResponse) Reset()         { *m = MsgSetAggregationIsmModulesResponse{} }
+func (m *MsgSetAggregationIsmModulesResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetAggregationIsmModulesResponse) ProtoMessage()    {}
+func (*MsgSetAggregationIsmModulesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{19}
+}
+func (m *MsgSetAggregationIsmModulesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetAggregationIsmModulesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetAggregationIsmModulesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetAggregationIsmModulesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetAggregationIsmModulesResponse.Merge(m, src)
+}
+func (m *MsgSetAggregationIsmModulesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetAggregationIsmModulesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetAggregationIsmModulesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetAggregationIsmModulesResponse proto.InternalMessageInfo
+
+// MsgUpdateAggregationIsmOwner ...
+type MsgUpdateAggregationIsmOwner struct {
+	// ism_id ...
+	IsmId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=ism_id,json=ismId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"ism_id"`
+	// owner ...
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// new owner
+	NewOwner string `protobuf:"bytes,3,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
+	// renounce_ownership
+	RenounceOwnership bool `protobuf:"varint,4,opt,name=renounce_ownership,json=renounceOwnership,proto3" json:"renounce_ownership,omitempty"`
+}
+
+func (m *MsgUpdateAggregationIsmOwner) Reset()         { *m = MsgUpdateAggregationIsmOwner{} }
+func (m *MsgUpdateAggregationIsmOwner) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateAggregationIsmOwner) ProtoMessage()    {}
+func (*MsgUpdateAggregationIsmOwner) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{20}
+}
+func (m *MsgUpdateAggregationIsmOwner) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateAggregationIsmOwner) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateAggregationIsmOwner.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateAggregationIsmOwner) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateAggregationIsmOwner.Merge(m, src)
+}
+func (m *MsgUpdateAggregationIsmOwner) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateAggregationIsmOwner) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateAggregationIsmOwner.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateAggregationIsmOwner proto.InternalMessageInfo
+
+func (m *MsgUpdateAggregationIsmOwner) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *MsgUpdateAggregationIsmOwner) GetNewOwner() string {
+	if m != nil {
+		return m.NewOwner
+	}
+	return ""
+}
+
+func (m *MsgUpdateAggregationIsmOwner) GetRenounceOwnership() bool {
+	if m != nil {
+		return m.RenounceOwnership
+	}
+	return false
+}
+
+// MsgUpdateAggregationIsmOwnerResponse ...
+type MsgUpdateAggregationIsmOwnerResponse struct {
+}
+
+func (m *MsgUpdateAggregationIsmOwnerResponse) Reset()         { *m = MsgUpdateAggregationIsmOwnerResponse{} }
+func (m *MsgUpdateAggregationIsmOwnerResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateAggregationIsmOwnerResponse) ProtoMessage()    {}
+func (*MsgUpdateAggregationIsmOwnerResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4ee100bdd8d27ecb, []int{21}
+}
+func (m *MsgUpdateAggregationIsmOwnerResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateAggregationIsmOwnerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateAggregationIsmOwnerResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateAggregationIsmOwnerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateAggregationIsmOwnerResponse.Merge(m, src)
+}
+func (m *MsgUpdateAggregationIsmOwnerResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateAggregationIsmOwnerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateAggregationIsmOwnerResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateAggregationIsmOwnerResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgCreateMessageIdMultisigIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMessageIdMultisigIsm")
 	proto.RegisterType((*MsgCreateMessageIdMultisigIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateMessageIdMultisigIsmResponse")
@@ -837,6 +1131,12 @@ func init() {
 	proto.RegisterType((*MsgRemoveRoutingIsmDomainResponse)(nil), "hyperlane.core.interchain_security.v1.MsgRemoveRoutingIsmDomainResponse")
 	proto.RegisterType((*MsgUpdateRoutingIsmOwner)(nil), "hyperlane.core.interchain_security.v1.MsgUpdateRoutingIsmOwner")
 	proto.RegisterType((*MsgUpdateRoutingIsmOwnerResponse)(nil), "hyperlane.core.interchain_security.v1.MsgUpdateRoutingIsmOwnerResponse")
+	proto.RegisterType((*MsgCreateAggregationIsm)(nil), "hyperlane.core.interchain_security.v1.MsgCreateAggregationIsm")
+	proto.RegisterType((*MsgCreateAggregationIsmResponse)(nil), "hyperlane.core.interchain_security.v1.MsgCreateAggregationIsmResponse")
+	proto.RegisterType((*MsgSetAggregationIsmModules)(nil), "hyperlane.core.interchain_security.v1.MsgSetAggregationIsmModules")
+	proto.RegisterType((*MsgSetAggregationIsmModulesResponse)(nil), "hyperlane.core.interchain_security.v1.MsgSetAggregationIsmModulesResponse")
+	proto.RegisterType((*MsgUpdateAggregationIsmOwner)(nil), "hyperlane.core.interchain_security.v1.MsgUpdateAggregationIsmOwner")
+	proto.RegisterType((*MsgUpdateAggregationIsmOwnerResponse)(nil), "hyperlane.core.interchain_security.v1.MsgUpdateAggregationIsmOwnerResponse")
 }
 
 func init() {
@@ -844,71 +1144,82 @@ func init() {
 }
 
 var fileDescriptor_4ee100bdd8d27ecb = []byte{
-	// 1009 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xce, 0x38, 0x75, 0xa8, 0x1f, 0x8a, 0x48, 0xb6, 0x21, 0xb8, 0xdb, 0x76, 0xeb, 0x2e, 0x4a,
-	0x15, 0x02, 0xd9, 0xc5, 0x81, 0x82, 0xe4, 0x80, 0xa0, 0x4e, 0x23, 0x12, 0x54, 0x13, 0x69, 0x23,
-	0x38, 0x54, 0x48, 0xd6, 0x7a, 0x77, 0xb4, 0x1e, 0xe1, 0x9d, 0xb1, 0x76, 0xd6, 0x4e, 0x22, 0x81,
-	0x84, 0xb8, 0xc1, 0x09, 0x21, 0x21, 0x0e, 0x3d, 0x21, 0x71, 0xe0, 0x04, 0x91, 0xa8, 0xf8, 0x1b,
-	0x7a, 0xac, 0x38, 0x21, 0x84, 0x2a, 0x94, 0x1c, 0xf2, 0x6f, 0xa0, 0xfd, 0xe9, 0x1f, 0x19, 0xbb,
-	0x76, 0x12, 0xf7, 0x62, 0x79, 0xde, 0xcc, 0xfb, 0xde, 0xf7, 0xbe, 0xf7, 0xf6, 0xed, 0x2c, 0x68,
-	0xf5, 0x83, 0x26, 0xf6, 0x1a, 0x26, 0xc5, 0xba, 0xc5, 0x3c, 0xac, 0x13, 0xea, 0x63, 0xcf, 0xaa,
-	0x9b, 0x84, 0x56, 0x39, 0xb6, 0x5a, 0x1e, 0xf1, 0x0f, 0xf4, 0x76, 0x51, 0xf7, 0xf7, 0xb5, 0xa6,
-	0xc7, 0x7c, 0x26, 0x2d, 0xa5, 0xe7, 0xb5, 0xe0, 0xbc, 0x26, 0x38, 0xaf, 0xb5, 0x8b, 0xf2, 0x55,
-	0x8b, 0x71, 0x97, 0xf1, 0x6a, 0xe8, 0xa4, 0x47, 0x8b, 0x08, 0x41, 0x7e, 0x25, 0x5a, 0xe9, 0x2e,
-	0x77, 0x02, 0x64, 0x97, 0x3b, 0xf1, 0xc6, 0xbc, 0xe9, 0x12, 0xca, 0xf4, 0xf0, 0x37, 0x36, 0x15,
-	0x47, 0x64, 0x77, 0xd0, 0xc4, 0x09, 0xfc, 0x82, 0xc3, 0x1c, 0x16, 0x85, 0x0d, 0xfe, 0x45, 0x56,
-	0xf5, 0x11, 0x82, 0x1b, 0x15, 0xee, 0x6c, 0x78, 0xd8, 0xf4, 0x71, 0x05, 0x73, 0x6e, 0x3a, 0x78,
-	0xdb, 0xae, 0xb4, 0x1a, 0x3e, 0xe1, 0xc4, 0xd9, 0xe6, 0xae, 0x94, 0x87, 0x17, 0xac, 0x60, 0x97,
-	0x79, 0x79, 0x54, 0x40, 0xcb, 0x39, 0x23, 0x59, 0x4a, 0x0a, 0x40, 0xdb, 0x6c, 0x10, 0x3b, 0x58,
-	0xf0, 0x7c, 0xa6, 0x30, 0xbd, 0x9c, 0x33, 0xba, 0x2c, 0xd2, 0x75, 0xc8, 0xf9, 0x75, 0x0f, 0xf3,
-	0x3a, 0x6b, 0xd8, 0xf9, 0xe9, 0x02, 0x5a, 0x9e, 0x35, 0x3a, 0x86, 0xd2, 0xfa, 0x37, 0x27, 0x87,
-	0x2b, 0x09, 0xd6, 0x77, 0x27, 0x87, 0x2b, 0x2b, 0x9d, 0x9c, 0xda, 0x45, 0x7d, 0x28, 0x29, 0xf5,
-	0x4b, 0x58, 0x1a, 0x7a, 0xc0, 0xc0, 0xbc, 0xc9, 0x28, 0xc7, 0xd2, 0x2e, 0x64, 0x88, 0x1d, 0x11,
-	0x2f, 0x6f, 0x3c, 0x7e, 0x7a, 0x73, 0xea, 0x9f, 0xa7, 0x37, 0xd7, 0x1d, 0xe2, 0xd7, 0x5b, 0x35,
-	0xcd, 0x62, 0xae, 0x5e, 0xb3, 0x9a, 0xab, 0x84, 0x52, 0xd6, 0x36, 0x7d, 0xc2, 0x28, 0xd7, 0x53,
-	0x0e, 0xab, 0x71, 0x35, 0x5a, 0x3e, 0x69, 0x68, 0x5b, 0x78, 0xff, 0xae, 0x6d, 0x7b, 0x98, 0x73,
-	0x23, 0x43, 0x6c, 0xf5, 0x4f, 0x04, 0x4a, 0x57, 0x78, 0xef, 0x8b, 0x06, 0x36, 0x18, 0xf3, 0x9f,
-	0x87, 0x6a, 0xef, 0xf5, 0xab, 0xf6, 0xfa, 0x20, 0xd5, 0x04, 0xac, 0xd4, 0xaf, 0xe0, 0xf6, 0xf0,
-	0x13, 0x93, 0xd5, 0xed, 0x73, 0x98, 0x4b, 0xc3, 0x7f, 0xc2, 0x58, 0x73, 0xa8, 0x50, 0x25, 0xad,
-	0x3f, 0xd5, 0x1b, 0xe2, 0x54, 0x63, 0x24, 0x95, 0x41, 0xbe, 0xdf, 0x36, 0xd9, 0x74, 0x7e, 0xcf,
-	0xc0, 0x42, 0x85, 0x3b, 0x77, 0x29, 0x65, 0x2d, 0x6a, 0xe1, 0xcf, 0x92, 0x1a, 0x06, 0x25, 0x4c,
-	0x0b, 0x1a, 0x67, 0xd5, 0x31, 0x48, 0xaf, 0xc1, 0x1c, 0xf7, 0x99, 0x67, 0x3a, 0xb8, 0xda, 0x60,
-	0x56, 0x18, 0x30, 0x9f, 0x09, 0x0f, 0xbd, 0x14, 0xdb, 0xef, 0xc7, 0xe6, 0x00, 0x88, 0x13, 0x87,
-	0x9a, 0x7e, 0xcb, 0xc3, 0x61, 0x2f, 0xe4, 0x8c, 0x8e, 0x41, 0xaa, 0x01, 0xb8, 0x26, 0x69, 0xd4,
-	0xd8, 0x7e, 0x95, 0xd8, 0xf9, 0x4b, 0x17, 0x97, 0x5c, 0x2e, 0x86, 0xdd, 0xb6, 0xbb, 0xcb, 0x93,
-	0xed, 0x2d, 0xcf, 0x5a, 0x7f, 0x79, 0x6e, 0xf5, 0x97, 0xe7, 0x94, 0x30, 0xaa, 0x02, 0xd7, 0x45,
-	0xf6, 0xa4, 0x4c, 0xea, 0x6f, 0x08, 0xae, 0xa4, 0x35, 0x34, 0x58, 0xcb, 0x27, 0xf4, 0x19, 0x4f,
-	0xd3, 0xc7, 0x30, 0xe3, 0xb1, 0x96, 0x8f, 0xa3, 0x27, 0xe9, 0xc5, 0xb5, 0x37, 0xb4, 0x91, 0xe6,
-	0xb0, 0x16, 0x80, 0xe3, 0xf2, 0xa5, 0x40, 0x2d, 0x23, 0x46, 0x28, 0x15, 0xfb, 0x33, 0x2a, 0x88,
-	0x1b, 0xae, 0x43, 0x4c, 0xf5, 0xe0, 0x9a, 0xc0, 0x3c, 0xd9, 0xb6, 0x7b, 0x98, 0x81, 0xc5, 0x0a,
-	0x77, 0x76, 0xb1, 0xdf, 0x89, 0x78, 0x8f, 0xb9, 0x26, 0xa1, 0xd2, 0x03, 0x98, 0x21, 0xdc, 0xad,
-	0x5e, 0x6c, 0xcc, 0x2c, 0xe1, 0xee, 0xb6, 0x2d, 0x6d, 0x41, 0x36, 0xd4, 0x29, 0xec, 0xd5, 0xb3,
-	0x09, 0x1d, 0x01, 0x48, 0x0b, 0x90, 0x65, 0x7b, 0x14, 0x7b, 0x71, 0x47, 0x47, 0x8b, 0xd2, 0x66,
-	0xa0, 0x7e, 0xf4, 0x3f, 0xd0, 0xfe, 0x9d, 0x41, 0xda, 0x8b, 0x53, 0x4f, 0x2b, 0x52, 0x08, 0x47,
-	0xb3, 0xe0, 0x44, 0xda, 0x64, 0xff, 0x22, 0xb8, 0x5a, 0xe1, 0x8e, 0x81, 0x5d, 0xd6, 0xc6, 0xcf,
-	0x55, 0xc2, 0x45, 0x98, 0xb1, 0xc3, 0x28, 0xa1, 0x86, 0xb3, 0x46, 0xbc, 0x1a, 0x20, 0xc8, 0x9d,
-	0x5e, 0x41, 0x6e, 0xf7, 0x0b, 0x22, 0x4e, 0x40, 0x7d, 0x15, 0x6e, 0x0d, 0xdc, 0x4c, 0x35, 0xf8,
-	0x35, 0x13, 0x0e, 0xcb, 0x4f, 0x9b, 0x76, 0x4f, 0xe3, 0xee, 0x04, 0xc1, 0x26, 0x2a, 0x41, 0x9a,
-	0x6a, 0xa6, 0x2b, 0x55, 0xe9, 0x0e, 0xe4, 0x28, 0xde, 0xab, 0x76, 0x89, 0x50, 0xce, 0xff, 0xf5,
-	0x68, 0x75, 0x21, 0xbe, 0x1f, 0xc5, 0x18, 0xbb, 0xbe, 0x47, 0xa8, 0x63, 0x5c, 0xa6, 0x78, 0x2f,
-	0x22, 0xba, 0x0a, 0x92, 0x87, 0xa3, 0x59, 0x12, 0xf9, 0xf2, 0x3a, 0x69, 0x86, 0x83, 0xf0, 0xb2,
-	0x31, 0x9f, 0xec, 0xec, 0x24, 0x1b, 0xa5, 0xb7, 0x7b, 0x05, 0x5d, 0xea, 0x17, 0x54, 0xa8, 0x86,
-	0xaa, 0x42, 0x61, 0xd0, 0x5e, 0x22, 0xe7, 0xda, 0x4f, 0x00, 0xd3, 0x15, 0xee, 0x48, 0x87, 0x08,
-	0xe4, 0x21, 0x57, 0xa9, 0x7b, 0x23, 0x3e, 0x33, 0x43, 0xaf, 0x36, 0xf2, 0xfd, 0x8b, 0x40, 0x49,
-	0x47, 0xd4, 0x1f, 0x08, 0xae, 0x0d, 0xbb, 0xc8, 0x6c, 0x8e, 0x1f, 0x4d, 0x00, 0x23, 0x57, 0x2e,
-	0x04, 0x26, 0x65, 0xfd, 0x2d, 0x82, 0xd9, 0xde, 0x7b, 0xc4, 0xbb, 0xe3, 0x06, 0x88, 0x1d, 0xe5,
-	0x0f, 0xce, 0xe8, 0x98, 0x72, 0xf9, 0x01, 0xc1, 0xdc, 0xa9, 0x37, 0x56, 0x69, 0x5c, 0xd4, 0x8e,
-	0xaf, 0x5c, 0x3e, 0xbb, 0x6f, 0x4a, 0xea, 0x21, 0x82, 0x2b, 0xa2, 0x37, 0xc4, 0xfb, 0xa3, 0x63,
-	0x0b, 0xdc, 0xe5, 0xcd, 0x73, 0xb9, 0xa7, 0xec, 0x7e, 0x41, 0xb0, 0x38, 0x60, 0xfe, 0x7e, 0x38,
-	0x7a, 0x04, 0x31, 0x82, 0xbc, 0x75, 0x5e, 0x84, 0x94, 0xe6, 0xcf, 0x08, 0x5e, 0x16, 0x8f, 0xc8,
-	0x31, 0x9a, 0x46, 0x08, 0x20, 0x7f, 0x74, 0x4e, 0x80, 0x94, 0xe3, 0x8f, 0x08, 0xe6, 0x4f, 0xdf,
-	0x40, 0xd7, 0x47, 0x87, 0x3f, 0xe5, 0x2c, 0x6f, 0x9c, 0xc3, 0x39, 0xe1, 0x25, 0x67, 0xbf, 0x3e,
-	0x39, 0x5c, 0x41, 0x65, 0xf2, 0xf8, 0x48, 0x41, 0x4f, 0x8e, 0x14, 0xf4, 0xdf, 0x91, 0x82, 0xbe,
-	0x3f, 0x56, 0xa6, 0x9e, 0x1c, 0x2b, 0x53, 0x7f, 0x1f, 0x2b, 0x53, 0x0f, 0x76, 0xc6, 0x79, 0x9b,
-	0xec, 0x47, 0x9f, 0xb9, 0x6f, 0x16, 0xab, 0xa2, 0x2f, 0xdd, 0xf0, 0x33, 0xb7, 0x36, 0x13, 0x7e,
-	0xd1, 0xbe, 0xf5, 0x7f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x17, 0x95, 0xd6, 0x16, 0xba, 0x0f, 0x00,
-	0x00,
+	// 1192 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x58, 0xdd, 0x6f, 0x1b, 0x45,
+	0x10, 0xcf, 0x3a, 0x1f, 0xad, 0x07, 0x05, 0x92, 0x6b, 0x48, 0x9d, 0x6b, 0xeb, 0xb8, 0xd7, 0x26,
+	0x4a, 0x03, 0xb1, 0x71, 0x20, 0x14, 0x39, 0x7c, 0xc5, 0x69, 0x20, 0x29, 0x35, 0x91, 0x2e, 0x82,
+	0x87, 0x0a, 0x64, 0x5d, 0x7c, 0xab, 0xf3, 0x0a, 0xdf, 0xad, 0x75, 0x7b, 0x76, 0x12, 0x09, 0x24,
+	0xc4, 0x1b, 0x3c, 0x21, 0xa4, 0x3e, 0x55, 0x42, 0x42, 0xe2, 0x01, 0x21, 0x01, 0x91, 0xa8, 0xf8,
+	0x0f, 0x90, 0xfa, 0x58, 0xf1, 0x84, 0x10, 0xaa, 0x50, 0xf2, 0x90, 0x7f, 0x03, 0xdd, 0x87, 0xd7,
+	0x3e, 0x67, 0xed, 0xda, 0xb1, 0x5d, 0x24, 0x5e, 0x2c, 0xef, 0xec, 0xce, 0x6f, 0x66, 0x7e, 0x33,
+	0x37, 0x37, 0x7b, 0x90, 0x2c, 0x1e, 0x94, 0xb1, 0x5d, 0xd2, 0x2c, 0x9c, 0x2a, 0x50, 0x1b, 0xa7,
+	0x88, 0xe5, 0x60, 0xbb, 0x50, 0xd4, 0x88, 0x95, 0x67, 0xb8, 0x50, 0xb1, 0x89, 0x73, 0x90, 0xaa,
+	0xa6, 0x53, 0xce, 0x7e, 0xb2, 0x6c, 0x53, 0x87, 0x4a, 0x73, 0xfc, 0x7c, 0xd2, 0x3d, 0x9f, 0x14,
+	0x9c, 0x4f, 0x56, 0xd3, 0xf2, 0x4c, 0x81, 0x32, 0x93, 0xb2, 0xbc, 0xa7, 0x94, 0xf2, 0x17, 0x3e,
+	0x82, 0x7c, 0xd1, 0x5f, 0xa5, 0x4c, 0x66, 0xb8, 0xc8, 0x26, 0x33, 0x82, 0x8d, 0x49, 0xcd, 0x24,
+	0x16, 0x4d, 0x79, 0xbf, 0x81, 0x28, 0xdd, 0xa1, 0x77, 0x07, 0x65, 0x5c, 0x83, 0x9f, 0x32, 0xa8,
+	0x41, 0x7d, 0xb3, 0xee, 0x3f, 0x5f, 0xaa, 0x3c, 0x40, 0x70, 0x25, 0xc7, 0x8c, 0x75, 0x1b, 0x6b,
+	0x0e, 0xce, 0x61, 0xc6, 0x34, 0x03, 0x6f, 0xe9, 0xb9, 0x4a, 0xc9, 0x21, 0x8c, 0x18, 0x5b, 0xcc,
+	0x94, 0x62, 0x70, 0xae, 0xe0, 0xee, 0x52, 0x3b, 0x86, 0x12, 0x68, 0x21, 0xaa, 0xd6, 0x96, 0x52,
+	0x1c, 0xa0, 0xaa, 0x95, 0x88, 0xee, 0x2e, 0x58, 0x2c, 0x92, 0x18, 0x5e, 0x88, 0xaa, 0x0d, 0x12,
+	0xe9, 0x32, 0x44, 0x9d, 0xa2, 0x8d, 0x59, 0x91, 0x96, 0xf4, 0xd8, 0x70, 0x02, 0x2d, 0x8c, 0xab,
+	0x75, 0x41, 0x66, 0xf5, 0x8b, 0x93, 0xc3, 0xc5, 0x1a, 0xd6, 0x57, 0x27, 0x87, 0x8b, 0x8b, 0xf5,
+	0x98, 0xaa, 0xe9, 0x54, 0x5b, 0xa7, 0x94, 0x4f, 0x61, 0xae, 0xed, 0x01, 0x15, 0xb3, 0x32, 0xb5,
+	0x18, 0x96, 0x76, 0x20, 0x42, 0x74, 0xdf, 0xf1, 0xec, 0xfa, 0xc3, 0xc7, 0xb3, 0x43, 0x7f, 0x3d,
+	0x9e, 0x5d, 0x35, 0x88, 0x53, 0xac, 0xec, 0x26, 0x0b, 0xd4, 0x4c, 0xed, 0x16, 0xca, 0x4b, 0xc4,
+	0xb2, 0x68, 0x55, 0x73, 0x08, 0xb5, 0x58, 0x8a, 0xfb, 0xb0, 0x14, 0x64, 0xa3, 0xe2, 0x90, 0x52,
+	0x72, 0x13, 0xef, 0xaf, 0xe9, 0xba, 0x8d, 0x19, 0x53, 0x23, 0x44, 0x57, 0x7e, 0x43, 0x10, 0x6f,
+	0x30, 0x6f, 0x7f, 0x52, 0xc2, 0x2a, 0xa5, 0xce, 0xd3, 0x60, 0xed, 0xf5, 0x66, 0xd6, 0x5e, 0x68,
+	0xc5, 0x9a, 0xc0, 0x2b, 0xe5, 0x33, 0x98, 0x6f, 0x7f, 0x62, 0xb0, 0xbc, 0x7d, 0x04, 0x13, 0xdc,
+	0xfc, 0xfb, 0x94, 0x96, 0xdb, 0x12, 0x95, 0x49, 0x36, 0x87, 0x7a, 0x45, 0x1c, 0x6a, 0x80, 0xa4,
+	0x50, 0x88, 0x35, 0xcb, 0x06, 0x1b, 0xce, 0x2f, 0x11, 0x98, 0xca, 0x31, 0x63, 0xcd, 0xb2, 0x68,
+	0xc5, 0x2a, 0xe0, 0x0f, 0x6b, 0x39, 0x74, 0x53, 0xc8, 0x13, 0x1a, 0x44, 0x55, 0x17, 0x48, 0x37,
+	0x60, 0x82, 0x39, 0xd4, 0xd6, 0x0c, 0x9c, 0x2f, 0xd1, 0x82, 0x67, 0x30, 0x16, 0xf1, 0x0e, 0x3d,
+	0x17, 0xc8, 0xef, 0x04, 0x62, 0x17, 0x88, 0x11, 0xc3, 0xd2, 0x9c, 0x8a, 0x8d, 0xbd, 0x5a, 0x88,
+	0xaa, 0x75, 0x81, 0xb4, 0x0b, 0x60, 0x6a, 0xa4, 0xb4, 0x4b, 0xf7, 0xf3, 0x44, 0x8f, 0x8d, 0xf4,
+	0x2f, 0xb8, 0x68, 0x00, 0xbb, 0xa5, 0x37, 0xa6, 0x67, 0x34, 0x9c, 0x9e, 0xe5, 0xe6, 0xf4, 0x5c,
+	0x6d, 0x4e, 0xcf, 0x29, 0x62, 0x94, 0x38, 0x5c, 0x16, 0xc9, 0x6b, 0x69, 0x52, 0x7e, 0x46, 0x70,
+	0x81, 0xe7, 0x50, 0xa5, 0x15, 0x87, 0x58, 0x4f, 0x78, 0x9a, 0x6e, 0xc3, 0x98, 0x4d, 0x2b, 0x0e,
+	0xf6, 0x9f, 0xa4, 0x67, 0x96, 0x5f, 0x4c, 0x76, 0xd4, 0x87, 0x93, 0x2e, 0x38, 0xce, 0x8e, 0xb8,
+	0x6c, 0xa9, 0x01, 0x42, 0x26, 0xdd, 0x1c, 0x51, 0x42, 0x5c, 0x70, 0x75, 0xc7, 0x14, 0x1b, 0x2e,
+	0x09, 0xc4, 0x83, 0x2d, 0xbb, 0xfb, 0x11, 0x98, 0xce, 0x31, 0x63, 0x07, 0x3b, 0x75, 0x8b, 0xb7,
+	0xa8, 0xa9, 0x11, 0x4b, 0xba, 0x0b, 0x63, 0x84, 0x99, 0xf9, 0xfe, 0xda, 0x1c, 0x25, 0xcc, 0xdc,
+	0xd2, 0xa5, 0x4d, 0x18, 0xf5, 0x78, 0xf2, 0x6a, 0xf5, 0x6c, 0x44, 0xfb, 0x00, 0xd2, 0x14, 0x8c,
+	0xd2, 0x3d, 0x0b, 0xdb, 0x41, 0x45, 0xfb, 0x8b, 0xcc, 0x86, 0xcb, 0xbe, 0xff, 0xdf, 0xe5, 0xfe,
+	0xd5, 0x56, 0xdc, 0x8b, 0x43, 0xe7, 0x19, 0x49, 0x78, 0xad, 0x59, 0x70, 0x82, 0x17, 0xd9, 0xdf,
+	0x08, 0x66, 0x72, 0xcc, 0x50, 0xb1, 0x49, 0xab, 0xf8, 0xa9, 0x52, 0x38, 0x0d, 0x63, 0xba, 0x67,
+	0xc5, 0xe3, 0x70, 0x5c, 0x0d, 0x56, 0x2d, 0x08, 0x59, 0x09, 0x13, 0x32, 0xdf, 0x4c, 0x88, 0x38,
+	0x00, 0xe5, 0x1a, 0x5c, 0x6d, 0xb9, 0xc9, 0x39, 0xf8, 0x21, 0xe2, 0x35, 0xcb, 0x0f, 0xca, 0x7a,
+	0xa8, 0x70, 0xb7, 0x5d, 0x63, 0x03, 0xa5, 0x80, 0x87, 0x1a, 0x69, 0x08, 0x55, 0x5a, 0x81, 0xa8,
+	0x85, 0xf7, 0xf2, 0x0d, 0x24, 0x64, 0x63, 0x7f, 0x3c, 0x58, 0x9a, 0x0a, 0xe6, 0xa3, 0x00, 0x63,
+	0xc7, 0xb1, 0x89, 0x65, 0xa8, 0xe7, 0x2d, 0xbc, 0xe7, 0x3b, 0xba, 0x04, 0x92, 0x8d, 0xfd, 0x5e,
+	0xe2, 0xeb, 0xb2, 0x22, 0x29, 0x7b, 0x8d, 0xf0, 0xbc, 0x3a, 0x59, 0xdb, 0xd9, 0xae, 0x6d, 0x64,
+	0x5e, 0x09, 0x13, 0x3a, 0xd7, 0x4c, 0xa8, 0x90, 0x0d, 0x45, 0x81, 0x44, 0xab, 0x3d, 0x4e, 0xe7,
+	0x09, 0x82, 0x8b, 0xbc, 0x44, 0xd7, 0x0c, 0xc3, 0xc6, 0x86, 0xc7, 0x4b, 0xfb, 0xde, 0xf5, 0x31,
+	0x9c, 0x33, 0xa9, 0x5e, 0x29, 0x05, 0xcd, 0xab, 0x4f, 0x44, 0xd7, 0x30, 0x9f, 0x30, 0x48, 0xac,
+	0x34, 0x37, 0xbb, 0xeb, 0xe2, 0x07, 0x2e, 0x1c, 0x8d, 0x52, 0x85, 0xd9, 0x16, 0x5b, 0x83, 0x6d,
+	0x7a, 0xbf, 0x47, 0xbc, 0x4e, 0xbb, 0x83, 0x9d, 0xb0, 0xd5, 0x5c, 0x10, 0xec, 0x20, 0x6b, 0xf6,
+	0xbf, 0xcc, 0x53, 0xfd, 0x81, 0x19, 0x69, 0xec, 0x0d, 0x37, 0xc3, 0xa5, 0xbc, 0xd0, 0x9c, 0xbb,
+	0x56, 0x3c, 0x29, 0x73, 0x70, 0xad, 0xcd, 0x36, 0x2f, 0xe8, 0xc3, 0x88, 0xf7, 0xa6, 0xf6, 0xab,
+	0x3e, 0x7c, 0xf4, 0xff, 0xdd, 0x23, 0x5e, 0x0b, 0x13, 0x7b, 0x43, 0xdc, 0x23, 0x04, 0x8c, 0x28,
+	0xf3, 0x70, 0xbd, 0xdd, 0x7e, 0x8d, 0xda, 0xe5, 0x7b, 0xcf, 0xc2, 0x70, 0x8e, 0x19, 0xd2, 0x21,
+	0x02, 0xb9, 0xcd, 0xb5, 0xeb, 0x56, 0x87, 0xef, 0xd7, 0xb6, 0xd7, 0x20, 0xf9, 0x4e, 0x3f, 0x50,
+	0xf8, 0x93, 0xfd, 0x2b, 0x82, 0x4b, 0xed, 0x2e, 0x3d, 0x1b, 0xdd, 0x5b, 0x13, 0xc0, 0xc8, 0xb9,
+	0xbe, 0xc0, 0x70, 0xaf, 0xbf, 0x44, 0x30, 0x1e, 0xbe, 0x73, 0xdc, 0xec, 0xd6, 0x40, 0xa0, 0x28,
+	0xbf, 0x75, 0x46, 0x45, 0xee, 0xcb, 0x37, 0x08, 0x26, 0x4e, 0x4d, 0xb7, 0x99, 0x6e, 0x51, 0xeb,
+	0xba, 0x72, 0xf6, 0xec, 0xba, 0xdc, 0xa9, 0xfb, 0x08, 0x2e, 0x88, 0xa6, 0xc9, 0x37, 0x3a, 0xc7,
+	0x16, 0xa8, 0xcb, 0x1b, 0x3d, 0xa9, 0x73, 0xef, 0xbe, 0x47, 0x30, 0xdd, 0x62, 0x56, 0x7b, 0xbb,
+	0x73, 0x0b, 0x62, 0x04, 0x79, 0xb3, 0x57, 0x04, 0xee, 0xe6, 0x77, 0x08, 0x9e, 0x17, 0x8f, 0x53,
+	0x5d, 0x14, 0x8d, 0x10, 0x40, 0x7e, 0xb7, 0x47, 0x00, 0xee, 0xe3, 0x3d, 0x04, 0x93, 0xa7, 0x6f,
+	0xab, 0xab, 0x9d, 0xc3, 0x9f, 0x52, 0x96, 0xd7, 0x7b, 0x50, 0xe6, 0x7e, 0x7d, 0x8b, 0x60, 0x4a,
+	0x38, 0x3b, 0xbd, 0xd9, 0x6d, 0x75, 0x87, 0xf5, 0xe5, 0x77, 0x7a, 0xd3, 0xe7, 0x0e, 0xfe, 0x88,
+	0x20, 0xd6, 0x72, 0xf4, 0xc8, 0x76, 0x55, 0xe7, 0x42, 0x0c, 0xf9, 0x76, 0xef, 0x18, 0xdc, 0xd9,
+	0x9f, 0x10, 0xcc, 0xb4, 0x7e, 0x71, 0xaf, 0x77, 0x5b, 0x4c, 0x02, 0x10, 0xf9, 0xbd, 0x3e, 0x80,
+	0xd4, 0xfc, 0x95, 0x47, 0x3f, 0x3f, 0x39, 0x5c, 0x44, 0x59, 0xf2, 0xf0, 0x28, 0x8e, 0x1e, 0x1d,
+	0xc5, 0xd1, 0x3f, 0x47, 0x71, 0xf4, 0xf5, 0x71, 0x7c, 0xe8, 0xd1, 0x71, 0x7c, 0xe8, 0xcf, 0xe3,
+	0xf8, 0xd0, 0xdd, 0xed, 0x6e, 0x66, 0x8a, 0x7d, 0xff, 0x83, 0xe8, 0x4b, 0xe9, 0xbc, 0xe8, 0x9b,
+	0xa8, 0xf7, 0x41, 0x74, 0x77, 0xcc, 0xfb, 0xf6, 0xf9, 0xf2, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff,
+	0x1a, 0x2f, 0xfd, 0x21, 0xe4, 0x15, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -939,6 +1250,12 @@ type MsgClient interface {
 	UpdateRoutingIsmOwner(ctx context.Context, in *MsgUpdateRoutingIsmOwner, opts ...grpc.CallOption) (*MsgUpdateRoutingIsmOwnerResponse, error)
 	// AnnounceValidator ...
 	AnnounceValidator(ctx context.Context, in *MsgAnnounceValidator, opts ...grpc.CallOption) (*MsgAnnounceValidatorResponse, error)
+	// CreateAggregationIsm ...
+	CreateAggregationIsm(ctx context.Context, in *MsgCreateAggregationIsm, opts ...grpc.CallOption) (*MsgCreateAggregationIsmResponse, error)
+	// SetAggregationIsmModules ...
+	SetAggregationIsmModules(ctx context.Context, in *MsgSetAggregationIsmModules, opts ...grpc.CallOption) (*MsgSetAggregationIsmModulesResponse, error)
+	// UpdateAggregationIsmOwner ...
+	UpdateAggregationIsmOwner(ctx context.Context, in *MsgUpdateAggregationIsmOwner, opts ...grpc.CallOption) (*MsgUpdateAggregationIsmOwnerResponse, error)
 }
 
 type msgClient struct {
@@ -1021,6 +1338,33 @@ func (c *msgClient) AnnounceValidator(ctx context.Context, in *MsgAnnounceValida
 	return out, nil
 }
 
+func (c *msgClient) CreateAggregationIsm(ctx context.Context, in *MsgCreateAggregationIsm, opts ...grpc.CallOption) (*MsgCreateAggregationIsmResponse, error) {
+	out := new(MsgCreateAggregationIsmResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/CreateAggregationIsm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetAggregationIsmModules(ctx context.Context, in *MsgSetAggregationIsmModules, opts ...grpc.CallOption) (*MsgSetAggregationIsmModulesResponse, error) {
+	out := new(MsgSetAggregationIsmModulesResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/SetAggregationIsmModules", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateAggregationIsmOwner(ctx context.Context, in *MsgUpdateAggregationIsmOwner, opts ...grpc.CallOption) (*MsgUpdateAggregationIsmOwnerResponse, error) {
+	out := new(MsgUpdateAggregationIsmOwnerResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.interchain_security.v1.Msg/UpdateAggregationIsmOwner", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// CreateMessageIdMultisigIsm ...
@@ -1039,6 +1383,12 @@ type MsgServer interface {
 	UpdateRoutingIsmOwner(context.Context, *MsgUpdateRoutingIsmOwner) (*MsgUpdateRoutingIsmOwnerResponse, error)
 	// AnnounceValidator ...
 	AnnounceValidator(context.Context, *MsgAnnounceValidator) (*MsgAnnounceValidatorResponse, error)
+	// CreateAggregationIsm ...
+	CreateAggregationIsm(context.Context, *MsgCreateAggregationIsm) (*MsgCreateAggregationIsmResponse, error)
+	// SetAggregationIsmModules ...
+	SetAggregationIsmModules(context.Context, *MsgSetAggregationIsmModules) (*MsgSetAggregationIsmModulesResponse, error)
+	// UpdateAggregationIsmOwner ...
+	UpdateAggregationIsmOwner(context.Context, *MsgUpdateAggregationIsmOwner) (*MsgUpdateAggregationIsmOwnerResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -1068,6 +1418,15 @@ func (*UnimplementedMsgServer) UpdateRoutingIsmOwner(ctx context.Context, req *M
 }
 func (*UnimplementedMsgServer) AnnounceValidator(ctx context.Context, req *MsgAnnounceValidator) (*MsgAnnounceValidatorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnnounceValidator not implemented")
+}
+func (*UnimplementedMsgServer) CreateAggregationIsm(ctx context.Context, req *MsgCreateAggregationIsm) (*MsgCreateAggregationIsmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAggregationIsm not implemented")
+}
+func (*UnimplementedMsgServer) SetAggregationIsmModules(ctx context.Context, req *MsgSetAggregationIsmModules) (*MsgSetAggregationIsmModulesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetAggregationIsmModules not implemented")
+}
+func (*UnimplementedMsgServer) UpdateAggregationIsmOwner(ctx context.Context, req *MsgUpdateAggregationIsmOwner) (*MsgUpdateAggregationIsmOwnerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAggregationIsmOwner not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -1218,6 +1577,60 @@ func _Msg_AnnounceValidator_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateAggregationIsm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateAggregationIsm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateAggregationIsm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/CreateAggregationIsm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateAggregationIsm(ctx, req.(*MsgCreateAggregationIsm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetAggregationIsmModules_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetAggregationIsmModules)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetAggregationIsmModules(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/SetAggregationIsmModules",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetAggregationIsmModules(ctx, req.(*MsgSetAggregationIsmModules))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateAggregationIsmOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateAggregationIsmOwner)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateAggregationIsmOwner(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.interchain_security.v1.Msg/UpdateAggregationIsmOwner",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateAggregationIsmOwner(ctx, req.(*MsgUpdateAggregationIsmOwner))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "hyperlane.core.interchain_security.v1.Msg",
@@ -1254,6 +1667,18 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AnnounceValidator",
 			Handler:    _Msg_AnnounceValidator_Handler,
+		},
+		{
+			MethodName: "CreateAggregationIsm",
+			Handler:    _Msg_CreateAggregationIsm_Handler,
+		},
+		{
+			MethodName: "SetAggregationIsmModules",
+			Handler:    _Msg_SetAggregationIsmModules_Handler,
+		},
+		{
+			MethodName: "UpdateAggregationIsmOwner",
+			Handler:    _Msg_UpdateAggregationIsmOwner_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1859,6 +2284,250 @@ func (m *MsgUpdateRoutingIsmOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgCreateAggregationIsm) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateAggregationIsm) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateAggregationIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Threshold != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Threshold))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Modules) > 0 {
+		for iNdEx := len(m.Modules) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size := m.Modules[iNdEx].Size()
+				i -= size
+				if _, err := m.Modules[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintTx(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateAggregationIsmResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateAggregationIsmResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateAggregationIsmResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Id.Size()
+		i -= size
+		if _, err := m.Id.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetAggregationIsmModules) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetAggregationIsmModules) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetAggregationIsmModules) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Threshold != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Threshold))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Modules) > 0 {
+		for iNdEx := len(m.Modules) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size := m.Modules[iNdEx].Size()
+				i -= size
+				if _, err := m.Modules[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintTx(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	{
+		size := m.IsmId.Size()
+		i -= size
+		if _, err := m.IsmId.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetAggregationIsmModulesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetAggregationIsmModulesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetAggregationIsmModulesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateAggregationIsmOwner) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateAggregationIsmOwner) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateAggregationIsmOwner) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RenounceOwnership {
+		i--
+		if m.RenounceOwnership {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.NewOwner) > 0 {
+		i -= len(m.NewOwner)
+		copy(dAtA[i:], m.NewOwner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NewOwner)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size := m.IsmId.Size()
+		i -= size
+		if _, err := m.IsmId.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateAggregationIsmOwnerResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateAggregationIsmOwnerResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateAggregationIsmOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -2102,6 +2771,103 @@ func (m *MsgUpdateRoutingIsmOwner) Size() (n int) {
 }
 
 func (m *MsgUpdateRoutingIsmOwnerResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgCreateAggregationIsm) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Modules) > 0 {
+		for _, e := range m.Modules {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	if m.Threshold != 0 {
+		n += 1 + sovTx(uint64(m.Threshold))
+	}
+	return n
+}
+
+func (m *MsgCreateAggregationIsmResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Id.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgSetAggregationIsmModules) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.IsmId.Size()
+	n += 1 + l + sovTx(uint64(l))
+	if len(m.Modules) > 0 {
+		for _, e := range m.Modules {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	if m.Threshold != 0 {
+		n += 1 + sovTx(uint64(m.Threshold))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgSetAggregationIsmModulesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateAggregationIsmOwner) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.IsmId.Size()
+	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NewOwner)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.RenounceOwnership {
+		n += 2
+	}
+	return n
+}
+
+func (m *MsgUpdateAggregationIsmOwnerResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3757,6 +4523,666 @@ func (m *MsgUpdateRoutingIsmOwnerResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUpdateRoutingIsmOwnerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateAggregationIsm) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateAggregationIsm: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateAggregationIsm: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Modules", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress
+			m.Modules = append(m.Modules, v)
+			if err := m.Modules[len(m.Modules)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Threshold", wireType)
+			}
+			m.Threshold = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Threshold |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateAggregationIsmResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateAggregationIsmResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateAggregationIsmResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetAggregationIsmModules) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetAggregationIsmModules: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetAggregationIsmModules: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.IsmId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Modules", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress
+			m.Modules = append(m.Modules, v)
+			if err := m.Modules[len(m.Modules)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Threshold", wireType)
+			}
+			m.Threshold = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Threshold |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetAggregationIsmModulesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetAggregationIsmModulesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetAggregationIsmModulesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateAggregationIsmOwner) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateAggregationIsmOwner: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateAggregationIsmOwner: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.IsmId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewOwner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NewOwner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RenounceOwnership", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.RenounceOwnership = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateAggregationIsmOwnerResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateAggregationIsmOwnerResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateAggregationIsmOwnerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

@@ -120,3 +120,55 @@ message EventCreateRoutingIsm {
   ];
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
+
+// EventCreateAggregationIsm ...
+message EventCreateAggregationIsm {
+  string ism_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  repeated string modules = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  uint32 threshold = 4;
+}
+
+// EventSetAggregationIsmModules ...
+message EventSetAggregationIsmModules {
+  string ism_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  repeated string modules = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  uint32 threshold = 4;
+}
+
+// EventSetAggregationIsm ...
+message EventSetAggregationIsm {
+  string ism_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  string new_owner = 3;
+  bool renounce_ownership = 4;
+}

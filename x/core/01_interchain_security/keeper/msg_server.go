@@ -446,3 +446,178 @@ func (k *Keeper) getRoutingIsm(ctx context.Context, ismId util.HexAddress, owner
 
 	return routingISM, nil
 }
+
+func (k *Keeper) getAggregationIsm(ctx context.Context, ismId util.HexAddress, owner string) (*types.AggregationISM, error) {
+	// check if the ism exists
+	ism, err := k.isms.Get(ctx, ismId.GetInternalId())
+	if err != nil {
+		return nil, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", ismId.String())
+	}
+	// check if the ism is an aggregation ism
+	if ism.ModuleType() != types.INTERCHAIN_SECURITY_MODULE_TYPE_AGGREGATION {
+		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not an aggregation ISM", ismId.String())
+	}
+
+	// this should never happen
+	aggregationISM, ok := ism.(*types.AggregationISM)
+	if !ok {
+		return nil, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not an aggregation ISM", ismId.String())
+	}
+
+	// check if the tx sender is the owner of the ism
+	if aggregationISM.Owner != owner {
+		return nil, errors.Wrapf(types.ErrUnauthorized, "owner %s is not the owner of the ism %s", owner, aggregationISM.Id.String())
+	}
+
+	return aggregationISM, nil
+}
+
+func (k *Keeper) CreateAggregationIsm(ctx context.Context, req *types.MsgCreateAggregationIsm) (util.HexAddress, error) {
+	ismId, err := k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_AGGREGATION)
+	if err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	// Validate the aggregation ISM configuration
+	if err := types.ValidateAggregationISM(req.Modules, req.Threshold); err != nil {
+		return util.HexAddress{}, err
+	}
+
+	// Validate that all referenced ISMs exist
+	for _, moduleId := range req.Modules {
+		exists, err := k.coreKeeper.IsmExists(ctx, moduleId)
+		if err != nil || !exists {
+			return util.HexAddress{}, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", moduleId.String())
+		}
+	}
+
+	newIsm := types.AggregationISM{
+		Id:        ismId,
+		Owner:     req.Creator,
+		Modules:   req.Modules,
+		Threshold: req.Threshold,
+	}
+
+	if err = k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateAggregationIsm{
+		IsmId:     ismId,
+		Owner:     req.Creator,
+		Modules:   req.Modules,
+		Threshold: req.Threshold,
+	})
+
+	return ismId, nil
+}
+
+// CreateAggregationIsm creates a new Aggregation ISM after validating that all modules
+// reference existing ISMs and the threshold configuration is valid.
+func (m msgServer) CreateAggregationIsm(ctx context.Context, req *types.MsgCreateAggregationIsm) (*types.MsgCreateAggregationIsmResponse, error) {
+	ismId, err := m.k.CreateAggregationIsm(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgCreateAggregationIsmResponse{Id: ismId}, nil
+}
+
+func (k *Keeper) SetAggregationIsmModules(ctx context.Context, req *types.MsgSetAggregationIsmModules) error {
+	// get aggregation ism
+	aggregationISM, err := k.getAggregationIsm(ctx, req.IsmId, req.Owner)
+	if err != nil {
+		return err
+	}
+
+	// Validate the new configuration
+	if err := types.ValidateAggregationISM(req.Modules, req.Threshold); err != nil {
+		return err
+	}
+
+	// Validate that all referenced ISMs exist
+	for _, moduleId := range req.Modules {
+		exists, err := k.coreKeeper.IsmExists(ctx, moduleId)
+		if err != nil || !exists {
+			return errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", moduleId.String())
+		}
+	}
+
+	// Update the modules and threshold
+	aggregationISM.Modules = req.Modules
+	aggregationISM.Threshold = req.Threshold
+
+	// write to kv store
+	if err = k.isms.Set(ctx, aggregationISM.Id.GetInternalId(), aggregationISM); err != nil {
+		return errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetAggregationIsmModules{
+		Owner:     req.Owner,
+		IsmId:     aggregationISM.Id,
+		Modules:   req.Modules,
+		Threshold: req.Threshold,
+	})
+
+	return nil
+}
+
+// SetAggregationIsmModules updates the modules and threshold of an Aggregation ISM.
+func (m msgServer) SetAggregationIsmModules(ctx context.Context, req *types.MsgSetAggregationIsmModules) (*types.MsgSetAggregationIsmModulesResponse, error) {
+	err := m.k.SetAggregationIsmModules(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgSetAggregationIsmModulesResponse{}, nil
+}
+
+func (k *Keeper) UpdateAggregationIsmOwner(ctx context.Context, req *types.MsgUpdateAggregationIsmOwner) error {
+	// get aggregation ism
+	aggregationISM, err := k.getAggregationIsm(ctx, req.IsmId, req.Owner)
+	if err != nil {
+		return err
+	}
+
+	if req.NewOwner != "" {
+		_, err = sdk.AccAddressFromBech32(req.NewOwner)
+		if err != nil {
+			return errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
+		}
+	}
+	aggregationISM.Owner = req.NewOwner
+
+	// only renounce if new owner is empty
+	if req.RenounceOwnership && req.NewOwner != "" {
+		return errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
+	}
+
+	// don't allow new owner to be empty if not renouncing ownership
+	if !req.RenounceOwnership && req.NewOwner == "" {
+		return errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
+	}
+
+	// write to kv store
+	if err = k.isms.Set(ctx, aggregationISM.Id.GetInternalId(), aggregationISM); err != nil {
+		return errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetAggregationIsm{
+		Owner:             req.Owner,
+		IsmId:             aggregationISM.Id,
+		NewOwner:          req.NewOwner,
+		RenounceOwnership: req.RenounceOwnership,
+	})
+
+	return nil
+}
+
+// UpdateAggregationIsmOwner updates or renounces the owner of an Aggregation ISM.
+func (m msgServer) UpdateAggregationIsmOwner(ctx context.Context, req *types.MsgUpdateAggregationIsmOwner) (*types.MsgUpdateAggregationIsmOwnerResponse, error) {
+	err := m.k.UpdateAggregationIsmOwner(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateAggregationIsmOwnerResponse{}, nil
+}
