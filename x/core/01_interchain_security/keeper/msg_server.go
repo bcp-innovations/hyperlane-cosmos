@@ -4,15 +4,12 @@ import (
 	"bytes"
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"cosmossdk.io/errors"
-
 	"cosmossdk.io/collections"
-
-	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	"cosmossdk.io/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/crypto"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
 )
 
@@ -25,6 +22,39 @@ var _ types.MsgServer = msgServer{}
 // NewMsgServerImpl returns an implementation of the module MsgServer interface.
 func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
+}
+
+// validateOwnershipTransfer validates ownership transfer or renouncement request
+func validateOwnershipTransfer(newOwner string, renounce bool) error {
+	// Validate new owner address format if provided
+	if newOwner != "" {
+		if _, err := sdk.AccAddressFromBech32(newOwner); err != nil {
+			return errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
+		}
+	}
+
+	// Cannot both set new owner and renounce
+	if renounce && newOwner != "" {
+		return errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
+	}
+
+	// Cannot set empty owner without renouncing
+	if !renounce && newOwner == "" {
+		return errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
+	}
+
+	return nil
+}
+
+// validateModulesExist validates that all referenced ISM modules exist
+func (k *Keeper) validateModulesExist(ctx context.Context, modules []util.HexAddress) error {
+	for _, moduleId := range modules {
+		exists, err := k.coreKeeper.IsmExists(ctx, moduleId)
+		if err != nil || !exists {
+			return errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", moduleId.String())
+		}
+	}
+	return nil
 }
 
 func (k *Keeper) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRoutingIsm) (util.HexAddress, error) {
@@ -96,23 +126,13 @@ func (k *Keeper) UpdateRoutingIsmOwner(ctx context.Context, req *types.MsgUpdate
 		return err
 	}
 
-	if req.NewOwner != "" {
-		_, err = sdk.AccAddressFromBech32(req.NewOwner)
-		if err != nil {
-			return errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
-		}
+	// Validate ownership transfer
+	if err := validateOwnershipTransfer(req.NewOwner, req.RenounceOwnership); err != nil {
+		return err
 	}
+
+	// Update owner
 	routingISM.Owner = req.NewOwner
-
-	// only renounce if new owner is empty
-	if req.RenounceOwnership && req.NewOwner != "" {
-		return errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
-	}
-
-	// don't allow new owner to be empty if not renouncing ownership
-	if !req.RenounceOwnership && req.NewOwner == "" {
-		return errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
-	}
 
 	// write to kv store
 	if err = k.isms.Set(ctx, routingISM.Id.GetInternalId(), routingISM); err != nil {
@@ -484,11 +504,8 @@ func (k *Keeper) CreateAggregationIsm(ctx context.Context, req *types.MsgCreateA
 	}
 
 	// Validate that all referenced ISMs exist
-	for _, moduleId := range req.Modules {
-		exists, err := k.coreKeeper.IsmExists(ctx, moduleId)
-		if err != nil || !exists {
-			return util.HexAddress{}, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", moduleId.String())
-		}
+	if err := k.validateModulesExist(ctx, req.Modules); err != nil {
+		return util.HexAddress{}, err
 	}
 
 	newIsm := types.AggregationISM{
@@ -536,11 +553,8 @@ func (k *Keeper) SetAggregationIsmModules(ctx context.Context, req *types.MsgSet
 	}
 
 	// Validate that all referenced ISMs exist
-	for _, moduleId := range req.Modules {
-		exists, err := k.coreKeeper.IsmExists(ctx, moduleId)
-		if err != nil || !exists {
-			return errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", moduleId.String())
-		}
+	if err := k.validateModulesExist(ctx, req.Modules); err != nil {
+		return err
 	}
 
 	// Update the modules and threshold
@@ -579,23 +593,13 @@ func (k *Keeper) UpdateAggregationIsmOwner(ctx context.Context, req *types.MsgUp
 		return err
 	}
 
-	if req.NewOwner != "" {
-		_, err = sdk.AccAddressFromBech32(req.NewOwner)
-		if err != nil {
-			return errors.Wrap(types.ErrInvalidOwner, "invalid new owner")
-		}
+	// Validate ownership transfer
+	if err := validateOwnershipTransfer(req.NewOwner, req.RenounceOwnership); err != nil {
+		return err
 	}
+
+	// Update owner
 	aggregationISM.Owner = req.NewOwner
-
-	// only renounce if new owner is empty
-	if req.RenounceOwnership && req.NewOwner != "" {
-		return errors.Wrap(types.ErrInvalidOwner, "cannot set new owner and renounce ownership at the same time")
-	}
-
-	// don't allow new owner to be empty if not renouncing ownership
-	if !req.RenounceOwnership && req.NewOwner == "" {
-		return errors.Wrap(types.ErrInvalidOwner, "cannot set owner to empty address without renouncing ownership")
-	}
 
 	// write to kv store
 	if err = k.isms.Set(ctx, aggregationISM.Id.GetInternalId(), aggregationISM); err != nil {

@@ -1365,6 +1365,30 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Modules[0].String()).To(Equal(noopIsmId1.String()))
 		Expect(ism.Modules[1].String()).To(Equal(noopIsmId2.String()))
 		Expect(ism.Modules[2].String()).To(Equal(noopIsmId3.String()))
+
+		// Verify event emission
+		events := res.Events
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.interchain_security.v1.EventCreateAggregationIsm" {
+				found = true
+				// Verify event attributes
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("ism_id"),
+					"Value": ContainSubstring(response.Id.String()),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("owner"),
+					"Value": ContainSubstring(creator.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("threshold"),
+					"Value": Equal("\"2\""),
+				})))
+				break
+			}
+		}
+		Expect(found).To(BeTrue(), "EventCreateAggregationIsm should be emitted")
 	})
 
 	It("SetAggregationIsmModules (invalid) with non-existing ISM", func() {
@@ -1475,7 +1499,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act - update modules and threshold
-		_, err = s.RunTx(&types.MsgSetAggregationIsmModules{
+		res, err = s.RunTx(&types.MsgSetAggregationIsmModules{
 			Owner:     creator.Address,
 			IsmId:     createResponse.Id,
 			Modules:   []util.HexAddress{noopIsmId2, noopIsmId3},
@@ -1491,6 +1515,30 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Modules).To(HaveLen(2))
 		Expect(ism.Modules[0].String()).To(Equal(noopIsmId2.String()))
 		Expect(ism.Modules[1].String()).To(Equal(noopIsmId3.String()))
+
+		// Verify event emission
+		events := res.Events
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.interchain_security.v1.EventSetAggregationIsmModules" {
+				found = true
+				// Verify event attributes
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("ism_id"),
+					"Value": ContainSubstring(createResponse.Id.String()),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("owner"),
+					"Value": ContainSubstring(creator.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("threshold"),
+					"Value": Equal("\"2\""),
+				})))
+				break
+			}
+		}
+		Expect(found).To(BeTrue(), "EventSetAggregationIsmModules should be emitted")
 	})
 
 	It("UpdateAggregationIsmOwner (invalid) with non-owner", func() {
@@ -1615,7 +1663,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
+		res, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
 			Owner:    creator.Address,
 			IsmId:    createResponse.Id,
 			NewOwner: nonOwner.Address,
@@ -1627,6 +1675,34 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var ism types.AggregationISM
 		queryISM(&ism, s, createResponse.Id.String())
 		Expect(ism.Owner).To(Equal(nonOwner.Address))
+
+		// Verify event emission
+		events := res.Events
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.interchain_security.v1.EventSetAggregationIsm" {
+				found = true
+				// Verify event attributes
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("ism_id"),
+					"Value": ContainSubstring(createResponse.Id.String()),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("owner"),
+					"Value": ContainSubstring(creator.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("new_owner"),
+					"Value": ContainSubstring(nonOwner.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("renounce_ownership"),
+					"Value": Equal("false"),
+				})))
+				break
+			}
+		}
+		Expect(found).To(BeTrue(), "EventSetAggregationIsm should be emitted")
 	})
 
 	It("UpdateAggregationIsmOwner (valid) renounce ownership", func() {
@@ -1645,7 +1721,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err).To(BeNil())
 
 		// Act
-		_, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
+		res, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
 			Owner:             creator.Address,
 			IsmId:             createResponse.Id,
 			NewOwner:          "",
@@ -1658,6 +1734,30 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		var ism types.AggregationISM
 		queryISM(&ism, s, createResponse.Id.String())
 		Expect(ism.Owner).To(Equal(""))
+
+		// Verify event emission
+		events := res.Events
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.interchain_security.v1.EventSetAggregationIsm" {
+				found = true
+				// Verify event attributes
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("ism_id"),
+					"Value": ContainSubstring(createResponse.Id.String()),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("owner"),
+					"Value": ContainSubstring(creator.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("renounce_ownership"),
+					"Value": Equal("true"),
+				})))
+				break
+			}
+		}
+		Expect(found).To(BeTrue(), "EventSetAggregationIsm should be emitted")
 	})
 })
 

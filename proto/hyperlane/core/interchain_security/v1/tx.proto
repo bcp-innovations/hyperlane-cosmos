@@ -44,15 +44,21 @@ service Msg {
   rpc AnnounceValidator(MsgAnnounceValidator)
       returns (MsgAnnounceValidatorResponse);
 
-  // CreateAggregationIsm ...
+  // CreateAggregationIsm creates a new Aggregation ISM that requires a threshold
+  // of child ISMs to pass verification. The creator becomes the owner of the ISM.
+  // Emits EventCreateAggregationIsm on success.
   rpc CreateAggregationIsm(MsgCreateAggregationIsm)
       returns (MsgCreateAggregationIsmResponse);
 
-  // SetAggregationIsmModules ...
+  // SetAggregationIsmModules updates the modules and threshold of an existing
+  // Aggregation ISM. Only the owner can perform this operation.
+  // Emits EventSetAggregationIsmModules on success.
   rpc SetAggregationIsmModules(MsgSetAggregationIsmModules)
       returns (MsgSetAggregationIsmModulesResponse);
 
-  // UpdateAggregationIsmOwner ...
+  // UpdateAggregationIsmOwner transfers ownership of an Aggregation ISM to a new
+  // address or renounces ownership entirely. Only the current owner can perform
+  // this operation. Emits EventSetAggregationIsm on success.
   rpc UpdateAggregationIsmOwner(MsgUpdateAggregationIsmOwner)
       returns (MsgUpdateAggregationIsmOwnerResponse);
 }
@@ -244,27 +250,29 @@ message MsgUpdateRoutingIsmOwner {
 // MsgUpdateRoutingIsmOwnerResponse ...
 message MsgUpdateRoutingIsmOwnerResponse {}
 
-// MsgCreateAggregationIsm ...
+// MsgCreateAggregationIsm creates an Aggregation ISM that verifies messages by
+// requiring a threshold number of child ISMs to pass verification (M-of-N pattern).
 message MsgCreateAggregationIsm {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "hyperlane/v1/MsgCreateAggregationIsm";
 
-  // creator ...
-  string creator = 1;
+  // creator is the address that will become the owner of the ISM
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // modules - list of ISM IDs to aggregate
+  // modules is the list of child ISM IDs to aggregate
   repeated string modules = 2 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = false
   ];
 
-  // threshold - number of ISMs that must pass verification
+  // threshold is the number of child ISMs that must pass (must be > 0 and <= len(modules))
   uint32 threshold = 3;
 }
 
-// MsgCreateAggregationIsmResponse ...
+// MsgCreateAggregationIsmResponse returns the ID of the newly created Aggregation ISM
 message MsgCreateAggregationIsmResponse {
+  // id is the unique identifier of the created Aggregation ISM
   string id = 1 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
@@ -272,54 +280,56 @@ message MsgCreateAggregationIsmResponse {
   ];
 }
 
-// MsgSetAggregationIsmModules ...
+// MsgSetAggregationIsmModules updates the child ISMs and threshold of an existing
+// Aggregation ISM. Only the current owner can execute this operation.
 message MsgSetAggregationIsmModules {
   option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/v1/MsgSetAggregationIsmModules";
 
-  // ism_id ...
+  // ism_id is the identifier of the Aggregation ISM to update
   string ism_id = 1 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = false
   ];
 
-  // modules - list of ISM IDs to aggregate
+  // modules is the new list of child ISM IDs to aggregate
   repeated string modules = 2 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = false
   ];
 
-  // threshold - number of ISMs that must pass verification
+  // threshold is the new number of child ISMs that must pass verification
   uint32 threshold = 3;
 
-  // owner ...
-  string owner = 4;
+  // owner is the current owner address (must match the ISM's owner)
+  string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 // MsgSetAggregationIsmModulesResponse ...
 message MsgSetAggregationIsmModulesResponse {}
 
-// MsgUpdateAggregationIsmOwner ...
+// MsgUpdateAggregationIsmOwner transfers ownership of an Aggregation ISM to a new
+// address or renounces ownership entirely. Only the current owner can execute this.
 message MsgUpdateAggregationIsmOwner {
   option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/v1/MsgUpdateAggregationIsmOwner";
 
-  // ism_id ...
+  // ism_id is the identifier of the Aggregation ISM
   string ism_id = 1 [
     (gogoproto.customtype) =
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = false
   ];
 
-  // owner ...
-  string owner = 2;
+  // owner is the current owner address (must match the ISM's owner)
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // new owner
+  // new_owner is the address to transfer ownership to (ignored if renounce_ownership is true)
   string new_owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // renounce_ownership
+  // renounce_ownership removes ownership permanently if true (new_owner must be empty)
   bool renounce_ownership = 4;
 }
 

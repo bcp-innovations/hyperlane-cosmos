@@ -29,21 +29,17 @@ func (m *AggregationISMHandler) Verify(ctx context.Context, ismId util.HexAddres
 		return false, errors.Wrapf(types.ErrInvalidISMType, "ISM %s is not an aggregation ISM", ismId.String())
 	}
 
-	// verify that the aggregation ISM configuration is valid
-	if err := types.ValidateAggregationISM(aggregationIsm.Modules, aggregationIsm.Threshold); err != nil {
-		return false, errors.Wrapf(types.ErrInvalidISM, "invalid aggregation ISM configuration: %v", err)
-	}
-
 	// count how many ISMs pass verification
 	passCount := uint32(0)
+	var verificationErrors []error
 
 	for _, moduleId := range aggregationIsm.Modules {
 		// call the top level Verify method on the core module
 		// this method will then recursively invoke the Verify method on all the sub ISMs
 		verified, err := m.keeper.coreKeeper.Verify(ctx, moduleId, metadata, message)
 		if err != nil {
-			// If an ISM fails with an error, we treat it as not verified
-			// and continue to the next ISM
+			// Track errors for diagnostic purposes
+			verificationErrors = append(verificationErrors, errors.Wrapf(err, "ISM %s verification error", moduleId.String()))
 			continue
 		}
 
@@ -56,14 +52,17 @@ func (m *AggregationISMHandler) Verify(ctx context.Context, ismId util.HexAddres
 		}
 	}
 
-	// Check if we met the threshold
-	if passCount >= aggregationIsm.Threshold {
-		return true, nil
-	}
-
-	return false, errors.Wrapf(types.ErrInsufficientVerifications,
+	// Build detailed error message with verification failures
+	errMsg := errors.Wrapf(types.ErrInsufficientVerifications,
 		"insufficient verifications: %d/%d (threshold: %d)",
 		passCount, len(aggregationIsm.Modules), aggregationIsm.Threshold)
+
+	// Append individual verification errors for debugging
+	for _, verErr := range verificationErrors {
+		errMsg = errors.Wrap(errMsg, verErr.Error())
+	}
+
+	return false, errMsg
 }
 
 func (m *AggregationISMHandler) Exists(ctx context.Context, ismId util.HexAddress) (bool, error) {
