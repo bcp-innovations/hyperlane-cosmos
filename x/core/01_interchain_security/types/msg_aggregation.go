@@ -34,7 +34,7 @@ func (m *MsgSetAggregationIsmModules) ValidateBasic() error {
 	}
 
 	// Validate ISM ID is not zero
-	if m.IsmId.IsZero() {
+	if m.IsmId.IsZeroAddress() {
 		return errors.Wrap(ErrInvalidISM, "ism_id cannot be zero")
 	}
 
@@ -57,7 +57,7 @@ func (m *MsgUpdateAggregationIsmOwner) ValidateBasic() error {
 	}
 
 	// Validate ISM ID is not zero
-	if m.IsmId.IsZero() {
+	if m.IsmId.IsZeroAddress() {
 		return errors.Wrap(ErrInvalidISM, "ism_id cannot be zero")
 	}
 
