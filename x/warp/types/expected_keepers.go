@@ -14,6 +14,7 @@ type BankKeeper interface {
 	BurnCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
 	MintCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
 	GetSupply(ctx context.Context, denom string) sdk.Coin
+	HasSupply(ctx context.Context, denom string) bool
 }
 
 type CoreKeeper interface {
