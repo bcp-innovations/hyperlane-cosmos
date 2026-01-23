@@ -69,7 +69,8 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	}
 
 	if amount.IsZero() {
-		return fmt.Errorf("amount must be greater than zero")
+		// Nothing to charge
+		return nil
 	}
 
 	senderAcc, err := sdk.AccAddressFromBech32(sender)

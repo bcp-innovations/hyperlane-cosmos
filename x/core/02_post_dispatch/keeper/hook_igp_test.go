@@ -50,6 +50,57 @@ var _ = Describe("hook_igp_test.go", Ordered, func() {
 		Expect(err).To(BeNil())
 	})
 
+	It("IGP PayForGas should not fail on free IGP", func() {
+		// Set gas config to be gas-free
+		_, err := s.RunTx(&types.MsgSetDestinationGasConfig{
+			Owner: creator.Address,
+			IgpId: hookId,
+			DestinationGasConfig: &types.DestinationGasConfig{
+				RemoteDomain: 2,
+				GasOracle: &types.GasOracle{
+					TokenExchangeRate: math.NewInt(1e10),
+					GasPrice:          math.ZeroInt(), // NO GAS PAYMENT NEEDED
+				},
+				GasOverhead: math.NewInt(100000),
+			},
+		})
+		Expect(err).To(BeNil())
+
+		recipient, err := util.DecodeHexAddress("0x00000000000000000000000000000000000000000000000000000000deadbeef")
+		Expect(err).To(BeNil())
+
+		sender, err := util.DecodeHexAddress("0x0000000000000000000000007fa9385be102ac3eac297483dd6233d62b3e1496")
+		Expect(err).To(BeNil())
+
+		message := util.HyperlaneMessage{
+			Version:     1,
+			Nonce:       0,
+			Origin:      1,
+			Sender:      sender,
+			Destination: 2,
+			Recipient:   recipient,
+			Body:        []byte("test"),
+		}
+
+		metadata := util.StandardHookMetadata{
+			Address:            creator.AccAddress,
+			GasLimit:           math.NewInt(100000),
+			CustomHookMetadata: nil,
+		}
+
+		// Try PostDispatch with different maxFee denom
+
+		// igpDenom != actualDenom
+		maxFee := sdk.NewCoins(sdk.NewCoin(igpDenom, math.NewInt(50)))
+		_, err = s.App().HyperlaneKeeper.PostDispatch(s.Ctx(), mailboxId, hookId, metadata, message, maxFee)
+		Expect(err).To(BeNil())
+
+		// igpDenom == actualDenom
+		maxFee = sdk.NewCoins(sdk.NewCoin(actualDenom, math.NewInt(50)))
+		_, err = s.App().HyperlaneKeeper.PostDispatch(s.Ctx(), mailboxId, hookId, metadata, message, maxFee)
+		Expect(err).To(BeNil())
+	})
+
 	It("IGP PayForGas should fail when any required payment exceeds maxFee", func() {
 		recipient, err := util.DecodeHexAddress("0x00000000000000000000000000000000000000000000000000000000deadbeef")
 		Expect(err).To(BeNil())
