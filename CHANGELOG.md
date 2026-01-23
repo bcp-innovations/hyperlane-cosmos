@@ -6,7 +6,7 @@
 "Bug Fixes" for any bug fixes.
 "Client Breaking" for breaking CLI commands and REST routes used by end-users.
 "API Breaking" for breaking exported APIs used by developers building on SDK.
-"State Machine Breaking" for any changes that result in a different AppState given same genesisState and txList.
+"State Machine Breaking" for any changes that result in a different AppState given the same genesisState and txList.
 
 -->
 
@@ -16,9 +16,13 @@ An '!' indicates a state machine breaking change.
 
 ## Unreleased
 
+### Improvements
+
+- ! [#154](https://github.com/bcp-innovations/hyperlane-cosmos/pull/154) Charge gas for signature verification.
+
 ### Bug Fixes
 
-- [#153](https://github.com/bcp-innovations/hyperlane-cosmos/pull/153) Fix SetDomain for RoutingISM.
+- ! [#153](https://github.com/bcp-innovations/hyperlane-cosmos/pull/153) Fix SetDomain for RoutingISM.
 
 ## [v1.0.1](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.1) - 2025-06-05
 
