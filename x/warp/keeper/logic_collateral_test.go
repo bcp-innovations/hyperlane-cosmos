@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"bytes"
 	"fmt"
 	"math/big"
 
@@ -402,13 +401,8 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
 		Expect(err).To(BeNil())
 
-		zeroPaddedPrefix := make([]byte, 12)
 		warpRecipient := address.Module(types.ModuleName, []byte("collateral-receiver"))
-		if bytes.HasPrefix(warpRecipient, zeroPaddedPrefix) {
-			warpRecipient = address.Module(types.ModuleName, []byte("collateral-receiver-2"))
-		}
 		Expect(len(warpRecipient)).To(Equal(address.Len))
-		Expect(bytes.HasPrefix(warpRecipient, zeroPaddedPrefix)).To(BeFalse())
 
 		warpPayload, err := types.NewWarpPayload(warpRecipient, *big.NewInt(amount.Int64()))
 		Expect(err).To(BeNil())
