@@ -21,6 +21,9 @@ service Msg {
   // CreateSyntheticToken ...
   rpc CreateSyntheticToken(MsgCreateSyntheticToken)
       returns (MsgCreateSyntheticTokenResponse);
+  // CreateNativeSyntheticToken ...
+  rpc CreateNativeSyntheticToken(MsgCreateNativeSyntheticToken)
+      returns (MsgCreateSyntheticTokenResponse);
 
   // SetToken ...
   rpc SetToken(MsgSetToken) returns (MsgSetTokenResponse);
@@ -75,6 +78,22 @@ message MsgCreateSyntheticToken {
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = false
   ];
+}
+
+// MsgCreateNativeSyntheticToken ...
+message MsgCreateNativeSyntheticToken {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/warp/v1/MsgCreateNativeSyntheticToken";
+
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  string origin_mailbox = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  string origin_denom = 3;
 }
 
 // MsgCreateSyntheticTokenResponse ...
