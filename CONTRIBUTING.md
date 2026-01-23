@@ -13,7 +13,7 @@ Cosmos-SDK principles and design architectures.
 
 ## Creating a Pull Request
 
-- Check out the latest state from main and always keep the PR in sync with main.
+- Check out the latest state from `main` and always keep the PR in sync with `main`.
 - Use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification).
 - Only one feature per pull request.
 - Write an entry for the Changelog.
@@ -23,7 +23,7 @@ Cosmos-SDK principles and design architectures.
 ## Coding Guidelines
 
 - Write readable and maintainable code. `Premature Optimization Is the Root of All Evil`.
-  Concentrate on clean interfaces first and only optimize for performance if it is needed.
+  Concentrate on clean interfaces first and only optimize for performance if it is necessary.
 - The keeper directory is structured the following:
   - `msg_server_*`-files are the entry point for message handling. This file
       should be very clean to read and outsource most of the part to the logic files.
@@ -32,6 +32,10 @@ Cosmos-SDK principles and design architectures.
   - `query_server_*`-files are the entry point for query handling. This file
       should be very clean to read. Most queries can make use of the pagination
       provided in `./util`.
+  - AI Usage: AI can significantly speed up development, but you are responsible 
+    for the code you submit. Before opening a PR, thoroughly review all changes. 
+    Do not submit PRs containing code you haven’t personally reviewed, 
+    as this creates an unnecessary burden for reviewers.
 
 ## Code Structure
 
