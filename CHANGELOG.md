@@ -14,6 +14,12 @@
 
 An '!' indicates a state machine breaking change.
 
+## Unreleased
+
+### Bug Fixes
+
+- [#153](https://github.com/bcp-innovations/hyperlane-cosmos/pull/153) Fix SetDomain for RoutingISM.
+
 ## [v1.0.1](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.1) - 2025-06-05
 
 ### Improvements
