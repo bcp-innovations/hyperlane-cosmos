@@ -505,9 +505,9 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 
 		// Act
 		verify, err := merkleRootMultiSig.Verify(s.Ctx(), validMetadata, validMessage)
-		Expect(int(s.Ctx().GasMeter().GasConsumed())).To(Equal(1000))
 
 		// Assert
+		Expect(int(s.Ctx().GasMeter().GasConsumed())).To(Equal(1000))
 		Expect(err).To(BeNil())
 		Expect(verify).To(BeTrue())
 	})

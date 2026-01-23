@@ -418,6 +418,7 @@ var _ = Describe("message_id_multisig.go", Ordered, func() {
 		verify, err := messageIdMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
 
 		// Assert
+		Expect(int(s.Ctx().GasMeter().GasConsumed())).To(Equal(3000))
 		Expect(err).To(BeNil())
 		Expect(verify).To(BeTrue())
 	})
