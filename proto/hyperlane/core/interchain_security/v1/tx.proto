@@ -44,9 +44,9 @@ service Msg {
   rpc AnnounceValidator(MsgAnnounceValidator)
       returns (MsgAnnounceValidatorResponse);
 
-  // CreateAggregationIsm creates a new Aggregation ISM that requires a threshold
-  // of child ISMs to pass verification. The creator becomes the owner of the ISM.
-  // Emits EventCreateAggregationIsm on success.
+  // CreateAggregationIsm creates a new Aggregation ISM that requires a
+  // threshold of child ISMs to pass verification. The creator becomes the owner
+  // of the ISM. Emits EventCreateAggregationIsm on success.
   rpc CreateAggregationIsm(MsgCreateAggregationIsm)
       returns (MsgCreateAggregationIsmResponse);
 
@@ -56,9 +56,9 @@ service Msg {
   rpc SetAggregationIsmModules(MsgSetAggregationIsmModules)
       returns (MsgSetAggregationIsmModulesResponse);
 
-  // UpdateAggregationIsmOwner transfers ownership of an Aggregation ISM to a new
-  // address or renounces ownership entirely. Only the current owner can perform
-  // this operation. Emits EventSetAggregationIsm on success.
+  // UpdateAggregationIsmOwner transfers ownership of an Aggregation ISM to a
+  // new address or renounces ownership entirely. Only the current owner can
+  // perform this operation. Emits EventSetAggregationIsm on success.
   rpc UpdateAggregationIsmOwner(MsgUpdateAggregationIsmOwner)
       returns (MsgUpdateAggregationIsmOwnerResponse);
 }
@@ -250,7 +250,8 @@ message MsgUpdateRoutingIsmOwner {
 message MsgUpdateRoutingIsmOwnerResponse {}
 
 // MsgCreateAggregationIsm creates an Aggregation ISM that verifies messages by
-// requiring a threshold number of child ISMs to pass verification (M-of-N pattern).
+// requiring a threshold number of child ISMs to pass verification (M-of-N
+// pattern).
 message MsgCreateAggregationIsm {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "hyperlane/v1/MsgCreateAggregationIsm";
@@ -265,11 +266,13 @@ message MsgCreateAggregationIsm {
     (gogoproto.nullable) = false
   ];
 
-  // threshold is the number of child ISMs that must pass (must be > 0 and <= len(modules))
+  // threshold is the number of child ISMs that must pass (must be > 0 and <=
+  // len(modules))
   uint32 threshold = 3;
 }
 
-// MsgCreateAggregationIsmResponse returns the ID of the newly created Aggregation ISM
+// MsgCreateAggregationIsmResponse returns the ID of the newly created
+// Aggregation ISM
 message MsgCreateAggregationIsmResponse {
   // id is the unique identifier of the created Aggregation ISM
   string id = 1 [
@@ -279,8 +282,8 @@ message MsgCreateAggregationIsmResponse {
   ];
 }
 
-// MsgSetAggregationIsmModules updates the child ISMs and threshold of an existing
-// Aggregation ISM. Only the current owner can execute this operation.
+// MsgSetAggregationIsmModules updates the child ISMs and threshold of an
+// existing Aggregation ISM. Only the current owner can execute this operation.
 message MsgSetAggregationIsmModules {
   option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/v1/MsgSetAggregationIsmModules";
@@ -309,8 +312,9 @@ message MsgSetAggregationIsmModules {
 // MsgSetAggregationIsmModulesResponse ...
 message MsgSetAggregationIsmModulesResponse {}
 
-// MsgUpdateAggregationIsmOwner transfers ownership of an Aggregation ISM to a new
-// address or renounces ownership entirely. Only the current owner can execute this.
+// MsgUpdateAggregationIsmOwner transfers ownership of an Aggregation ISM to a
+// new address or renounces ownership entirely. Only the current owner can
+// execute this.
 message MsgUpdateAggregationIsmOwner {
   option (cosmos.msg.v1.signer) = "owner";
   option (amino.name) = "hyperlane/v1/MsgUpdateAggregationIsmOwner";
@@ -325,10 +329,12 @@ message MsgUpdateAggregationIsmOwner {
   // owner is the current owner address (must match the ISM's owner)
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // new_owner is the address to transfer ownership to (ignored if renounce_ownership is true)
+  // new_owner is the address to transfer ownership to (ignored if
+  // renounce_ownership is true)
   string new_owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // renounce_ownership removes ownership permanently if true (new_owner must be empty)
+  // renounce_ownership removes ownership permanently if true (new_owner must be
+  // empty)
   bool renounce_ownership = 4;
 }
 

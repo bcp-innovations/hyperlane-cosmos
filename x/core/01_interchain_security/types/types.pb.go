@@ -205,15 +205,18 @@ func (m *MerkleRootMultisigISM) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MerkleRootMultisigISM proto.InternalMessageInfo
 
-// AggregationISM ...
+// AggregationISM verifies messages by requiring a threshold number of child
+// ISMs to pass verification (M-of-N pattern). This allows combining multiple
+// security mechanisms with flexible threshold requirements.
 type AggregationISM struct {
-	// id ...
+	// id is the unique identifier for this Aggregation ISM
 	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`
-	// owner ...
+	// owner is the address that can update the modules and threshold or transfer
+	// ownership
 	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
-	// modules - list of ISM IDs to aggregate
+	// modules is the list of child ISM IDs whose verifications are aggregated
 	Modules []github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,3,rep,name=modules,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"modules"`
-	// threshold - number of ISMs that must pass verification
+	// threshold is the minimum number of child ISMs that must pass verification
 	Threshold uint32 `protobuf:"varint,4,opt,name=threshold,proto3" json:"threshold,omitempty"`
 }
 

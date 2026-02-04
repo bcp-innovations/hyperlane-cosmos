@@ -93,9 +93,9 @@ message MerkleRootMultisigISM {
   uint32 threshold = 4;
 }
 
-// AggregationISM verifies messages by requiring a threshold number of child ISMs
-// to pass verification (M-of-N pattern). This allows combining multiple security
-// mechanisms with flexible threshold requirements.
+// AggregationISM verifies messages by requiring a threshold number of child
+// ISMs to pass verification (M-of-N pattern). This allows combining multiple
+// security mechanisms with flexible threshold requirements.
 message AggregationISM {
   option (gogoproto.goproto_getters) = false;
   option (cosmos_proto.implements_interface) =
@@ -108,7 +108,8 @@ message AggregationISM {
     (gogoproto.nullable) = false
   ];
 
-  // owner is the address that can update the modules and threshold or transfer ownership
+  // owner is the address that can update the modules and threshold or transfer
+  // ownership
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // modules is the list of child ISM IDs whose verifications are aggregated

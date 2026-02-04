@@ -144,7 +144,8 @@ message EventCreateAggregationIsm {
   uint32 threshold = 4;
 }
 
-// EventSetAggregationIsmModules is emitted when an Aggregation ISM's modules are updated
+// EventSetAggregationIsmModules is emitted when an Aggregation ISM's modules
+// are updated
 message EventSetAggregationIsmModules {
   // ism_id is the identifier of the updated Aggregation ISM
   string ism_id = 1 [
@@ -167,7 +168,8 @@ message EventSetAggregationIsmModules {
   uint32 threshold = 4;
 }
 
-// EventSetAggregationIsm is emitted when an Aggregation ISM's ownership is updated
+// EventSetAggregationIsm is emitted when an Aggregation ISM's ownership is
+// updated
 message EventSetAggregationIsm {
   // ism_id is the identifier of the Aggregation ISM
   string ism_id = 1 [

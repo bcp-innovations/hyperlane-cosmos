@@ -17,6 +17,7 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	. "github.com/onsi/gomega/gstruct"
 )
 
 /*
@@ -1383,7 +1384,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 				})))
 				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
 					"Key":   Equal("threshold"),
-					"Value": Equal("\"2\""),
+					"Value": Equal("2"),
 				})))
 				break
 			}
@@ -1533,7 +1534,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 				})))
 				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
 					"Key":   Equal("threshold"),
-					"Value": Equal("\"2\""),
+					"Value": Equal("2"),
 				})))
 				break
 			}
@@ -1644,7 +1645,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(err.Error()).To(ContainSubstring("invalid new owner"))
+		Expect(err.Error()).To(ContainSubstring("invalid new_owner address"))
 	})
 
 	It("UpdateAggregationIsmOwner (valid) new owner", func() {
