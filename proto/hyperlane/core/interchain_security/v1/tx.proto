@@ -88,7 +88,7 @@ message MsgCreateMessageIdMultisigIsmResponse {
   ];
 }
 
-// MsgCreateMultisigIsm ...
+// MsgCreateMerkleRootMultisigIsm ...
 message MsgCreateMerkleRootMultisigIsm {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "hyperlane/v1/MsgCreateMerkleRootMultisigIsm";
@@ -104,7 +104,7 @@ message MsgCreateMerkleRootMultisigIsm {
   uint32 threshold = 3;
 }
 
-// MsgCreateMultisigIsmResponse ...
+// MsgCreateMerkleRootMultisigIsmResponse ...
 message MsgCreateMerkleRootMultisigIsmResponse {
   string id = 1 [
     (gogoproto.customtype) =
@@ -183,8 +183,7 @@ message MsgCreateRoutingIsmResponse {
 // MsgSetRoutingIsmDomain ...
 message MsgSetRoutingIsmDomain {
   option (cosmos.msg.v1.signer) = "owner";
-  option (amino.name) =
-      "hyperlane/v1/MsgCreateRoMsgSetRoutingIsmDomainutingIsm";
+  option (amino.name) = "hyperlane/v1/MsgSetRoutingIsmDomain";
 
   // ism_id ...
   string ism_id = 1 [

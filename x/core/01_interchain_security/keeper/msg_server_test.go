@@ -929,7 +929,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
-		Expect(ism.Routes[0].Ism.String()).To(Equal(noopIsmId.String()))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(routingIsm.Id.String()))
 	})
 
 	It("RemoveRoutingIsmDomain (invalid) on non routing ism", func() {

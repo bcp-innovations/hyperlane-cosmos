@@ -135,7 +135,7 @@ func (m *MsgCreateMessageIdMultisigIsmResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateMessageIdMultisigIsmResponse proto.InternalMessageInfo
 
-// MsgCreateMultisigIsm ...
+// MsgCreateMerkleRootMultisigIsm ...
 type MsgCreateMerkleRootMultisigIsm struct {
 	// creator is the message sender.
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
@@ -200,7 +200,7 @@ func (m *MsgCreateMerkleRootMultisigIsm) GetThreshold() uint32 {
 	return 0
 }
 
-// MsgCreateMultisigIsmResponse ...
+// MsgCreateMerkleRootMultisigIsmResponse ...
 type MsgCreateMerkleRootMultisigIsmResponse struct {
 	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`
 }

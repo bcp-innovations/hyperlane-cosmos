@@ -89,6 +89,10 @@ func (ms msgServer) SetIgpOwner(ctx context.Context, req *types.MsgSetIgpOwner) 
 
 // PayForGas executes an InterchainGasPayment without for the specified payment amount.
 func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*types.MsgPayForGasResponse, error) {
+	if req.Amount.IsZero() {
+		return nil, fmt.Errorf("amount must be greater than zero")
+	}
+
 	handler := InterchainGasPaymasterHookHandler{*ms.k}
 
 	return &types.MsgPayForGasResponse{}, handler.PayForGasWithoutQuote(ctx, req.IgpId, req.Sender, req.MessageId, req.DestinationDomain, req.GasLimit, sdk.NewCoins(req.Amount))

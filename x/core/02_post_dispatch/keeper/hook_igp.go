@@ -52,7 +52,7 @@ func (i InterchainGasPaymasterHookHandler) PayForGas(ctx context.Context, hookId
 		return sdk.NewCoins(), err
 	}
 
-	if requiredPayment.IsAllGT(maxFee) {
+	if !maxFee.IsAllGTE(requiredPayment) {
 		return sdk.NewCoins(), fmt.Errorf("required payment exceeds max hyperlane fee: %v", requiredPayment)
 	}
 
@@ -69,7 +69,8 @@ func (i InterchainGasPaymasterHookHandler) PayForGasWithoutQuote(ctx context.Con
 	}
 
 	if amount.IsZero() {
-		return fmt.Errorf("amount must be greater than zero")
+		// Nothing to charge
+		return nil
 	}
 
 	senderAcc, err := sdk.AccAddressFromBech32(sender)
