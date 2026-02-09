@@ -251,3 +251,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 func (app *App) AppCodec() codec.Codec {
 	return app.appCodec
 }
+
+func (app *App) TxConfig() client.TxConfig {
+	return app.txConfig
+}
