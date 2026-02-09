@@ -3,7 +3,7 @@ package hyperlane.warp.v1;
 
 option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/warp/types";
 
-import "hyperlane/warp/v1/types.proto";
+import "hyperlane/warp/v1/models.proto";
 
 import "gogoproto/gogo.proto";
 
