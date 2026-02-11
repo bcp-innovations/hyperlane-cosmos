@@ -279,7 +279,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		warpRecipient, err := sdk.GetFromBech32(sender.Address, "hyp")
 		Expect(err).To(BeNil())
 
-		warpPayload, err := types.NewWarpPayload(warpRecipient, *big.NewInt(amount.Int64()))
+		warpPayload, err := types.NewWarpPayload(warpRecipient, *big.NewInt(amount.Int64()), nil)
 		Expect(err).To(BeNil())
 
 		message := util.HyperlaneMessage{
@@ -342,7 +342,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		warpRecipient, err := sdk.GetFromBech32(sender.Address, "hyp")
 		Expect(err).To(BeNil())
 
-		warpPayload, err := types.NewWarpPayload(warpRecipient, *big.NewInt(amount.Int64()))
+		warpPayload, err := types.NewWarpPayload(warpRecipient, *big.NewInt(amount.Int64()), nil)
 		Expect(err).To(BeNil())
 
 		message := util.HyperlaneMessage{

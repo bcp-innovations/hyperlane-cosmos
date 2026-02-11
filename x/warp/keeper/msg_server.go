@@ -274,13 +274,13 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 
 	var messageResultId util.HexAddress
 	if token.TokenType == types.HYP_TOKEN_TYPE_COLLATERAL {
-		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata)
+		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata, nil)
 		if err != nil {
 			return nil, err
 		}
 		messageResultId = result
 	} else if token.TokenType == types.HYP_TOKEN_TYPE_SYNTHETIC {
-		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata)
+		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.DestinationDomain, msg.Recipient, msg.Amount, msg.CustomHookId, msg.GasLimit, msg.MaxFee, customHookMetadata, nil)
 		if err != nil {
 			return nil, err
 		}
