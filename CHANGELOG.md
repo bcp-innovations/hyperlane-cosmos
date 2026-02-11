@@ -14,6 +14,12 @@
 
 An '!' indicates a state machine breaking change.
 
+## [v1.1.0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.1.0) - 2026-02-11
+
+### Bug Fixes
+
+- ! [#157](https://github.com/bcp-innovations/hyperlane-cosmos/pull/157) Fix Amino JSON signing for `MsgSetRoutingIsmDomain`.
+
 ## [v1.0.1](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.1) - 2025-06-05
 
 ### Improvements
