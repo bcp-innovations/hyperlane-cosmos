@@ -3,9 +3,9 @@ package types_test
 import (
 	"fmt"
 
+	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -33,6 +33,12 @@ TEST CASES - merkle_root_multisig.go
 */
 
 var _ = Describe("merkle_root_multisig.go", Ordered, func() {
+	var s *i.KeeperTestSuite
+
+	BeforeEach(func() {
+		s = i.NewCleanChain()
+	})
+
 	It("Validate (invalid) invalid validators", func() {
 		// Arrange
 		validators := []string{
@@ -158,7 +164,7 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		metadata := bytesFromHexString("")
 
 		// Act
-		verify, err := merkleRootMultisigIsm.Verify(sdk.Context{}, metadata, util.HyperlaneMessage{})
+		verify, err := merkleRootMultisigIsm.Verify(s.Ctx(), metadata, util.HyperlaneMessage{})
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid metadata length: got 0, expected at least 1096 bytes"))
@@ -202,7 +208,7 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		metadata.Signatures = signatures
 
 		// Act
-		verify, err := merkleRootMultisigIsm.Verify(sdk.Context{}, metadata.Bytes(), message)
+		verify, err := merkleRootMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid signatures length in metadata"))
@@ -245,7 +251,7 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		metadata.Signatures = signatures
 
 		// Act
-		verify, err := merkleRootMultisigIsm.Verify(sdk.Context{}, metadata.Bytes(), message)
+		verify, err := merkleRootMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid signed index"))
@@ -288,7 +294,7 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		metadata.Signatures = signatures
 
 		// Act
-		verify, err := merkleRootMultisigIsm.Verify(sdk.Context{}, metadata.Bytes(), message)
+		verify, err := merkleRootMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
 
 		// Assert
 		Expect(err.Error()).To(Equal("threshold can not be reached"))
@@ -329,7 +335,7 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		metadata.Signatures = signatures
 
 		// Act
-		verify, err := merkleRootMultisigIsm.Verify(sdk.Context{}, metadata.Bytes(), message)
+		verify, err := merkleRootMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
 
 		// Assert
 		Expect(err.Error()).To(Equal("failed to recover validator signature: invalid signature recovery id"))
@@ -372,7 +378,7 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		metadata.Signatures = signatures
 
 		// Act
-		verify, err := merkleRootMultisigIsm.Verify(sdk.Context{}, metadata.Bytes(), message)
+		verify, err := merkleRootMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
 
 		// Assert
 		Expect(err).To(BeNil())
@@ -422,7 +428,7 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		metadata.Signatures = duplicatedSignatures
 
 		// Act
-		verify, err := merkleRootMultisigIsm.Verify(sdk.Context{}, metadata.Bytes(), message)
+		verify, err := merkleRootMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
 
 		// Assert
 		Expect(err).To(BeNil())
@@ -473,11 +479,12 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		metadata.Signatures = signatures
 
 		// Act
-		verify, err := merkleRootMultisigIsm.Verify(sdk.Context{}, metadata.Bytes(), message)
+		verify, err := merkleRootMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
 
 		// Assert
 		Expect(err).To(BeNil())
 		Expect(verify).To(BeTrue())
+		Expect(int(s.Ctx().GasMeter().GasConsumed())).To(Equal(3000))
 	})
 
 	// Verifies metadata and messages submitted by a Hyperlane Relayer.
@@ -497,9 +504,10 @@ var _ = Describe("merkle_root_multisig.go", Ordered, func() {
 		}
 
 		// Act
-		verify, err := merkleRootMultiSig.Verify(sdk.Context{}, validMetadata, validMessage)
+		verify, err := merkleRootMultiSig.Verify(s.Ctx(), validMetadata, validMessage)
 
 		// Assert
+		Expect(int(s.Ctx().GasMeter().GasConsumed())).To(Equal(1000))
 		Expect(err).To(BeNil())
 		Expect(verify).To(BeTrue())
 	})

@@ -6,7 +6,7 @@
 "Bug Fixes" for any bug fixes.
 "Client Breaking" for breaking CLI commands and REST routes used by end-users.
 "API Breaking" for breaking exported APIs used by developers building on SDK.
-"State Machine Breaking" for any changes that result in a different AppState given same genesisState and txList.
+"State Machine Breaking" for any changes that result in a different AppState given the same genesisState and txList.
 
 -->
 
@@ -18,6 +18,7 @@ An '!' indicates a state machine breaking change.
 
 ### Features
 
+- ! [#154](https://github.com/bcp-innovations/hyperlane-cosmos/pull/154) Charge gas for signature verification.
 - ! [#135](https://github.com/bcp-innovations/hyperlane-cosmos/pull/135) Allow authority to create native synthetic tokens.
 
 ### Bug Fixes

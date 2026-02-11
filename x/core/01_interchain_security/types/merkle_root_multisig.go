@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"slices"
 
+	storetypes "cosmossdk.io/store/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -20,7 +22,7 @@ func (m *MerkleRootMultisigISM) ModuleType() uint8 {
 	return INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG
 }
 
-func (m *MerkleRootMultisigISM) Verify(_ context.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {
+func (m *MerkleRootMultisigISM) Verify(ctx context.Context, rawMetadata []byte, message util.HyperlaneMessage) (bool, error) {
 	metadata, err := NewMerkleRootMultisigMetadata(rawMetadata)
 	if err != nil {
 		return false, err
@@ -31,6 +33,9 @@ func (m *MerkleRootMultisigISM) Verify(_ context.Context, rawMetadata []byte, me
 	}
 
 	digest := metadata.Digest(&message)
+
+	// Charge Cosmos gas for each signature verification.
+	sdk.UnwrapSDKContext(ctx).GasMeter().ConsumeGas(storetypes.Gas(1000*len(metadata.Signatures)), "ism signature verification")
 
 	return VerifyMultisig(m.Validators, m.Threshold, metadata.Signatures, digest)
 }
