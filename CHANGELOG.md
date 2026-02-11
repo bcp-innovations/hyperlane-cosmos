@@ -16,13 +16,19 @@ An '!' indicates a state machine breaking change.
 
 ## Unreleased
 
-### Improvements
+### Features
 
 - ! [#154](https://github.com/bcp-innovations/hyperlane-cosmos/pull/154) Charge gas for signature verification.
+- ! [#135](https://github.com/bcp-innovations/hyperlane-cosmos/pull/135) Allow authority to create native synthetic tokens.
 
 ### Bug Fixes
 
+- ! [#148](https://github.com/bcp-innovations/hyperlane-cosmos/pull/148) Fix Amino name typos in warp.
 - ! [#153](https://github.com/bcp-innovations/hyperlane-cosmos/pull/153) Fix SetDomain for RoutingISM.
+- ! [#123](https://github.com/bcp-innovations/hyperlane-cosmos/pull/123) Fix Amino name typos in core.
+- ! [#143](https://github.com/bcp-innovations/hyperlane-cosmos/pull/143) Allow IGP to charge zero fees.
+- ! [#151](https://github.com/bcp-innovations/hyperlane-cosmos/pull/151) Support 32 byte addresses in remote recv collateral.
+- ! [#141](https://github.com/bcp-innovations/hyperlane-cosmos/pull/141) Corrected coin comparison.
 
 ## [v1.0.1](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.1) - 2025-06-05
 
