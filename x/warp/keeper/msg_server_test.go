@@ -258,9 +258,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgEnrollRemoteRouter (invalid) update with non-owner address", func() {
 		// Arrange
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -341,9 +342,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgEnrollRemoteRouter (valid)", func() {
 		// Arrange
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -385,16 +387,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	It("MsgUnrollRemoteRouter (invalid) non-existing Token ID", func() {
 		// Arrange
 		nonExistingTokenId, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		receiverContract1, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+		receiverContract2, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1")
 
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract1,
 			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			ReceiverContract: receiverContract2,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -471,15 +475,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgUnrollRemoteRouter (invalid) non-owner address", func() {
 		// Arrange
+		receiverContract1, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+		receiverContract2, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1")
+
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract1,
 			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			ReceiverContract: receiverContract2,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -557,15 +564,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgUnrollRemoteRouter (invalid) non-existing remote domain", func() {
 		// Arrange
+		receiverContract1, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+		receiverContract2, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1")
+
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract1,
 			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			ReceiverContract: receiverContract2,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -641,15 +651,18 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 	It("MsgUnrollRemoteRouter (valid)", func() {
 		// Arrange
+		receiverContract1, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+		receiverContract2, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1")
+
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract1,
 			Gas:              math.NewInt(50000),
 		}
 
 		secondRemoteRouter := types.RemoteRouter{
 			ReceiverDomain:   2,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def1",
+			ReceiverContract: receiverContract2,
 			Gas:              math.NewInt(50000),
 		}
 

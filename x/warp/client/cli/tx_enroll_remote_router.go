@@ -43,7 +43,7 @@ func CmdEnrollRemoteRouter() *cobra.Command {
 				return err
 			}
 
-			_, err = util.DecodeHexAddress(args[2])
+			receiverContract, err := util.DecodeHexAddress(args[2])
 			if err != nil {
 				return fmt.Errorf("failed to decode receiver contract address %s", args[2])
 			}
@@ -53,7 +53,7 @@ func CmdEnrollRemoteRouter() *cobra.Command {
 				TokenId: tokenId,
 				RemoteRouter: &types.RemoteRouter{
 					ReceiverDomain:   uint32(receiverDomain),
-					ReceiverContract: args[2],
+					ReceiverContract: receiverContract,
 					Gas:              gas,
 				},
 			}

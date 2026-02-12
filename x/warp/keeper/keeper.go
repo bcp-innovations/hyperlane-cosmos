@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"slices"
-	"strings"
 
 	"cosmossdk.io/math"
 
@@ -123,7 +122,7 @@ func (k *Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, message 
 		return fmt.Errorf("no enrolled router found for origin %d", message.Origin)
 	}
 
-	if message.Sender.String() != strings.ToLower(remoteRouter.ReceiverContract) {
+	if !message.Sender.Equal(remoteRouter.ReceiverContract) {
 		return fmt.Errorf("invalid receiver contract")
 	}
 

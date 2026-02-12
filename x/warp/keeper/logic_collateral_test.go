@@ -81,9 +81,10 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 	It("MsgRemoteTransfer (invalid) empty cosmos sender (Collateral)", func() {
 		// Arrange
 		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -117,9 +118,10 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 	It("MsgRemoteTransfer (invalid) invalid cosmos sender (Collateral)", func() {
 		// Arrange
 		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -153,9 +155,10 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 	It("MsgRemoteTransfer (invalid) no enrolled router for destination (Collateral)", func() {
 		// Arrange
 		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -186,48 +189,13 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
 	})
 
-	It("MsgRemoteTransfer (invalid) receiver contract (Collateral)", func() {
-		// Arrange
-		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
-		remoteRouter := types.RemoteRouter{
-			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865de",
-			Gas:              math.NewInt(50000),
-		}
-
-		amount := math.NewInt(100)
-		maxFee := sdk.NewCoin(denom, math.NewInt(250000))
-
-		tokenId, _, igpId, _ := createToken(s, &remoteRouter, owner.Address, sender.Address, types.HYP_TOKEN_TYPE_COLLATERAL)
-
-		err := s.MintBaseCoins(sender.Address, 1_000_000)
-		Expect(err).To(BeNil())
-
-		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
-
-		// Act
-		_, err = s.RunTx(&types.MsgRemoteTransfer{
-			Sender:            sender.Address,
-			TokenId:           tokenId,
-			DestinationDomain: remoteRouter.ReceiverDomain,
-			Recipient:         receiverAddress,
-			Amount:            amount,
-			CustomHookId:      &igpId,
-			GasLimit:          math.ZeroInt(),
-			MaxFee:            maxFee,
-		})
-
-		// Assert
-		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to decode receiver contract address %s", remoteRouter.ReceiverContract)))
-		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount))
-	})
-
 	It("MsgRemoteTransfer (invalid) insufficient funds (Collateral)", func() {
 		// Arrange
 		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -257,9 +225,10 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 
 	It("MsgRemoteTransfer & MsgRemoteReceiveCollateral (invalid) not enough collateral (Collateral)", func() {
 		// Arrange
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -273,9 +242,6 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 		senderBalance := s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom)
 
 		// Act
-		receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
-		Expect(err).To(BeNil())
-
 		warpRecipient, err := sdk.GetFromBech32(sender.Address, "hyp")
 		Expect(err).To(BeNil())
 
@@ -305,11 +271,13 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 	})
 
 	It("MsgRemoteTransfer && MsgRemoteReceiveCollateral (valid) (Collateral)", func() {
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
+
 		// Arrange
 		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -336,9 +304,6 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 
 		Expect(s.App().BankKeeper.GetBalance(s.Ctx(), sender.AccAddress, denom).Amount).To(Equal(senderBalance.Amount.Sub(amount.Add(maxFee.Amount))))
 
-		receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
-		Expect(err).To(BeNil())
-
 		warpRecipient, err := sdk.GetFromBech32(sender.Address, "hyp")
 		Expect(err).To(BeNil())
 
@@ -349,7 +314,7 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 			Version:     3,
 			Nonce:       1,
 			Origin:      remoteRouter.ReceiverDomain,
-			Sender:      receiverContract,
+			Sender:      remoteRouter.ReceiverContract,
 			Destination: 0,
 			Recipient:   tokenId,
 			Body:        warpPayload.Bytes(),
@@ -372,9 +337,10 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 	It("MsgRemoteTransfer && MsgRemoteReceiveCollateral (valid) 32-byte address (Collateral)", func() {
 		// Arrange
 		receiverAddress, _ := util.DecodeHexAddress("0xd7194459d45619d04a5a0f9e78dc9594a0f37fd6da8382fe12ddda6f2f46d647")
+		receiverContract, _ := util.DecodeHexAddress("0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0")
 		remoteRouter := types.RemoteRouter{
 			ReceiverDomain:   1,
-			ReceiverContract: "0x934b867052ca9c65e33362112f35fb548f8732c2fe45f07b9c591958e865def0",
+			ReceiverContract: receiverContract,
 			Gas:              math.NewInt(50000),
 		}
 
@@ -396,9 +362,6 @@ var _ = Describe("logic_collateral.go", Ordered, func() {
 			GasLimit:          math.ZeroInt(),
 			MaxFee:            maxFee,
 		})
-		Expect(err).To(BeNil())
-
-		receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
 		Expect(err).To(BeNil())
 
 		warpRecipient := address.Module(types.ModuleName, []byte("collateral-receiver"))
