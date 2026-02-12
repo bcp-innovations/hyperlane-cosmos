@@ -23,6 +23,7 @@ An '!' indicates a state machine breaking change.
 
 ### Bug Fixes
 
+- ! [#163](https://github.com/bcp-innovations/hyperlane-cosmos/pull/163) Fix warp payload length check
 - [#157](https://github.com/bcp-innovations/hyperlane-cosmos/pull/157) Fix Amino JSON signing for ISM `MsgSetRoutingIsmDomain`, warp `MsgEnrollRemoteRouter`, and post_dispatch `MsgSetDestinationGasConfig`.
 - ! [#148](https://github.com/bcp-innovations/hyperlane-cosmos/pull/148) Fix Amino name typos in warp.
 - ! [#153](https://github.com/bcp-innovations/hyperlane-cosmos/pull/153) Fix SetDomain for RoutingISM.
