@@ -24,6 +24,7 @@ TEST CASES - logic_gas_payment.go
 * PayForGas (invalid) with zero amount
 * PayForGas (invalid) with an invalid sender
 * PayForGas (invalid) with a non-funded sender
+* PayForGas (invalid) insufficient amount
 * PayForGas (valid)
 * Claim (invalid) for non-existing IGP
 * Claim (invalid) from non-owner address
@@ -90,8 +91,8 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			IgpId:             nonExistingIgp,
 			MessageId:         messageIdTest,
 			DestinationDomain: 1,
-			GasLimit:          math.NewInt(1),
-			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
+			GasLimit:          math.NewInt(50000),
+			Amount:            sdk.NewCoin(denom, math.NewInt(250000)),
 		})
 
 		// Assert
@@ -132,12 +133,54 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			IgpId:             igpId,
 			MessageId:         messageIdTest,
 			DestinationDomain: 1,
-			GasLimit:          math.NewInt(1),
+			GasLimit:          math.NewInt(50000),
 			Amount:            sdk.NewCoin(denom, math.ZeroInt()),
 		})
 
 		// Assert
 		Expect(err.Error()).To(Equal("amount must be greater than zero"))
+	})
+
+	It("PayForGas (invalid) insufficient amount", func() {
+		// NOTE: Negative amount panics at sdk.NewCoins()
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateIgp{
+			Owner: creator.Address,
+			Denom: denom,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateIgpResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		igpId := response.Id
+
+		_, err = s.RunTx(&types.MsgSetDestinationGasConfig{
+			Owner: creator.Address,
+			IgpId: igpId,
+			DestinationGasConfig: &types.DestinationGasConfig{
+				RemoteDomain: 1,
+				GasOracle: &types.GasOracle{
+					TokenExchangeRate: math.NewInt(1e10),
+					GasPrice:          math.NewInt(1),
+				},
+				GasOverhead: math.NewInt(200000),
+			},
+		})
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgPayForGas{
+			Sender:            gasPayer.Address,
+			IgpId:             igpId,
+			MessageId:         messageIdTest,
+			DestinationDomain: 1,
+			GasLimit:          math.NewInt(50000),
+			Amount:            sdk.NewCoin(denom, math.NewInt(5)),
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("required payment exceeds max hyperlane fee: 250000acoin"))
 	})
 
 	It("PayForGas (invalid) with an invalid sender", func() {
@@ -174,7 +217,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         messageIdTest,
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(50000),
-			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
+			Amount:            sdk.NewCoin(denom, math.NewInt(250000)),
 		})
 
 		// Assert
@@ -215,16 +258,16 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         messageIdTest,
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(50000),
-			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
+			Amount:            sdk.NewCoin(denom, math.NewInt(250000)),
 		})
 
 		// Assert
-		Expect(err.Error()).To(Equal("spendable balance 0acoin is smaller than 10acoin: insufficient funds"))
+		Expect(err.Error()).To(Equal("spendable balance 0acoin is smaller than 250000acoin: insufficient funds"))
 	})
 
 	It("PayForGas (valid)", func() {
 		// Arrange
-		gasAmount := math.NewInt(10)
+		gasAmount := math.NewInt(250000)
 
 		err := s.MintBaseCoins(gasPayer.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -263,7 +306,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 			MessageId:         messageIdTest,
 			DestinationDomain: 1,
 			GasLimit:          math.NewInt(50000),
-			Amount:            sdk.NewCoin(denom, math.NewInt(10)),
+			Amount:            sdk.NewCoin(denom, math.NewInt(250000)),
 		})
 
 		// Assert
@@ -293,7 +336,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 
 	It("Claim (invalid) from non-owner address", func() {
 		// Arrange
-		gasAmount := math.NewInt(10)
+		gasAmount := math.NewInt(200000)
 
 		err := s.MintBaseCoins(gasPayer.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -355,7 +398,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 
 	It("Claim (invalid) with invalid address", func() {
 		// Arrange
-		gasAmount := math.NewInt(10)
+		gasAmount := math.NewInt(250000)
 
 		err := s.MintBaseCoins(gasPayer.Address, 1_000_000)
 		Expect(err).To(BeNil())
@@ -445,7 +488,7 @@ var _ = Describe("logic_gas_payment.go", Ordered, func() {
 
 	It("Claim (valid)", func() {
 		// Arrange
-		gasAmount := math.NewInt(10)
+		gasAmount := math.NewInt(250000)
 
 		err := s.MintBaseCoins(gasPayer.Address, 1_000_000)
 		Expect(err).To(BeNil())

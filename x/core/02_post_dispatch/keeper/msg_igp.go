@@ -95,7 +95,9 @@ func (ms msgServer) PayForGas(ctx context.Context, req *types.MsgPayForGas) (*ty
 
 	handler := InterchainGasPaymasterHookHandler{*ms.k}
 
-	return &types.MsgPayForGasResponse{}, handler.PayForGasWithoutQuote(ctx, req.IgpId, req.Sender, req.MessageId, req.DestinationDomain, req.GasLimit, sdk.NewCoins(req.Amount))
+	_, err := handler.PayForGas(ctx, req.IgpId, req.Sender, req.MessageId, req.DestinationDomain, req.GasLimit, sdk.NewCoins(req.Amount))
+
+	return &types.MsgPayForGasResponse{}, err
 }
 
 func (ms msgServer) SetDestinationGasConfig(ctx context.Context, req *types.MsgSetDestinationGasConfig) (*types.MsgSetDestinationGasConfigResponse, error) {
