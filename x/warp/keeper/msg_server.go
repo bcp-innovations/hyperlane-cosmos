@@ -209,10 +209,6 @@ func (ms msgServer) EnrollRemoteRouter(ctx context.Context, msg *types.MsgEnroll
 		return nil, fmt.Errorf("invalid remote router")
 	}
 
-	if msg.RemoteRouter.ReceiverContract == "" {
-		return nil, fmt.Errorf("invalid receiver contract")
-	}
-
 	if err = ms.k.EnrolledRouters.Set(ctx, collections.Join(tokenId.GetInternalId(), msg.RemoteRouter.ReceiverDomain), *msg.RemoteRouter); err != nil {
 		return nil, err
 	}

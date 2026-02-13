@@ -33,6 +33,10 @@ An '!' indicates a state machine breaking change.
 - ! [#151](https://github.com/bcp-innovations/hyperlane-cosmos/pull/151) Support 32 byte addresses in remote recv collateral.
 - ! [#141](https://github.com/bcp-innovations/hyperlane-cosmos/pull/141) Corrected coin comparison.
 
+### Improvements
+
+- ! [#165](https://github.com/bcp-innovations/hyperlane-cosmos/pull/165) Constrain ReceiverContract to HexAddress type.
+
 ## [v1.0.1](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.1) - 2025-06-05
 
 ### Improvements

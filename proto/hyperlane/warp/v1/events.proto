@@ -57,7 +57,11 @@ message EventEnrollRemoteRouter {
   string owner = 2;
 
   uint32 receiver_domain = 3;
-  string receiver_contract = 4;
+  string receiver_contract = 4 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
   string gas = 5 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false

@@ -33,7 +33,7 @@ func TestAminoJSONSigningMsgEnrollRemoteRouter(t *testing.T) {
 		TokenId: tokenId,
 		RemoteRouter: &types.RemoteRouter{
 			ReceiverDomain:   42,
-			ReceiverContract: "0x0000000000000000000000000000000000000001",
+			ReceiverContract: util.CreateMockHexAddress("token", 1),
 			Gas:              math.NewInt(100000),
 		},
 	}

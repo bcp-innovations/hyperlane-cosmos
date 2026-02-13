@@ -36,11 +36,6 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		return util.HexAddress{}, fmt.Errorf("no enrolled router found for destination domain %d", destinationDomain)
 	}
 
-	receiverContract, err := util.DecodeHexAddress(remoteRouter.ReceiverContract)
-	if err != nil {
-		return util.HexAddress{}, fmt.Errorf("failed to decode receiver contract address %s", remoteRouter.ReceiverContract)
-	}
-
 	gas := remoteRouter.Gas
 	if !gasLimit.IsZero() {
 		gas = gasLimit
@@ -67,7 +62,7 @@ func (k *Keeper) RemoteTransferSynthetic(ctx sdk.Context, token types.HypToken, 
 		sdk.NewCoins(maxFee),
 
 		remoteRouter.ReceiverDomain,
-		receiverContract,
+		remoteRouter.ReceiverContract,
 
 		warpPayload.Bytes(),
 		util.StandardHookMetadata{
