@@ -14,7 +14,7 @@
 
 An '!' indicates a state machine breaking change.
 
-## Unreleased
+## [v1.2.0-rc.0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.2.0-rc.0) - 2026-02-13
 
 ### Features
 
@@ -25,7 +25,6 @@ An '!' indicates a state machine breaking change.
 
 - ! [#164](https://github.com/bcp-innovations/hyperlane-cosmos/pull/164) Fix MsgPayForGas to account for the IGP quote.
 - ! [#163](https://github.com/bcp-innovations/hyperlane-cosmos/pull/163) Fix warp payload length check.
-- ! [#157](https://github.com/bcp-innovations/hyperlane-cosmos/pull/157) Fix Amino JSON signing for ISM `MsgSetRoutingIsmDomain`, warp `MsgEnrollRemoteRouter`, and post_dispatch `MsgSetDestinationGasConfig`.
 - ! [#148](https://github.com/bcp-innovations/hyperlane-cosmos/pull/148) Fix Amino name typos in warp.
 - ! [#153](https://github.com/bcp-innovations/hyperlane-cosmos/pull/153) Fix SetDomain for RoutingISM.
 - ! [#123](https://github.com/bcp-innovations/hyperlane-cosmos/pull/123) Fix Amino name typos in core.
@@ -36,6 +35,12 @@ An '!' indicates a state machine breaking change.
 ### Improvements
 
 - ! [#165](https://github.com/bcp-innovations/hyperlane-cosmos/pull/165) Constrain ReceiverContract to HexAddress type.
+
+## [v1.1.0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.1.0) - 2026-02-11
+
+### Bug Fixes
+
+- ! [#157](https://github.com/bcp-innovations/hyperlane-cosmos/pull/157) Fix Amino JSON signing for `MsgSetRoutingIsmDomain`.
 
 ## [v1.0.1](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.0.1) - 2025-06-05
 
