@@ -62,6 +62,9 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 
 	// routing ism
 	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING, &RoutingISMHandler{keeper: k})
+
+	// aggregation ism
+	router.RegisterModule(types.INTERCHAIN_SECURITY_MODULE_TYPE_AGGREGATION, &AggregationISMHandler{keeper: k})
 }
 
 // Verify checks if the metadata has signed the message correctly.

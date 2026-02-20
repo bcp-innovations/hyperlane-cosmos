@@ -17,6 +17,7 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	. "github.com/onsi/gomega/gstruct"
 )
 
 /*
@@ -1254,6 +1255,510 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.RoutingISM"))
 		Expect(ism.Owner).To(Equal(""))
 		Expect(ism.Id.String()).To(Equal(response.Id.String()))
+	})
+
+	// AGGREGATION ISM TESTS
+	It("Create (invalid) AggregationISM with non-existing child ISM", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+		nonExistingIsmId := util.CreateMockHexAddress("ism", 0)
+
+		modules := []util.HexAddress{noopIsmId, nonExistingIsmId}
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   modules,
+			Threshold: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("ISM"))
+		Expect(err.Error()).To(ContainSubstring("not found"))
+	})
+
+	It("Create (invalid) AggregationISM with empty modules list", func() {
+		// Arrange & Act
+		_, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{},
+			Threshold: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("modules list cannot be empty"))
+	})
+
+	It("Create (invalid) AggregationISM with threshold zero", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 0,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("threshold must be greater than 0"))
+	})
+
+	It("Create (invalid) AggregationISM with threshold exceeding modules", func() {
+		// Arrange
+		noopIsmId1 := createNoopIsm(s, creator.Address)
+		noopIsmId2 := createNoopIsm(s, creator.Address)
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId1, noopIsmId2},
+			Threshold: 3, // threshold > number of modules
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("threshold (3) cannot exceed number of modules (2)"))
+	})
+
+	It("Create (invalid) AggregationISM with duplicate modules", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId, noopIsmId}, // duplicate
+			Threshold: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("duplicate module found"))
+	})
+
+	It("Create (valid) AggregationISM", func() {
+		// Arrange
+		noopIsmId1 := createNoopIsm(s, creator.Address)
+		noopIsmId2 := createNoopIsm(s, creator.Address)
+		noopIsmId3 := createNoopIsm(s, creator.Address)
+
+		modules := []util.HexAddress{noopIsmId1, noopIsmId2, noopIsmId3}
+
+		// Act
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   modules,
+			Threshold: 2,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		var ism types.AggregationISM
+		typeUrl := queryISM(&ism, s, response.Id.String())
+		Expect(typeUrl).To(Equal("/hyperlane.core.interchain_security.v1.AggregationISM"))
+		Expect(ism.Owner).To(Equal(creator.Address))
+		Expect(ism.Threshold).To(Equal(uint32(2)))
+		Expect(ism.Modules).To(HaveLen(3))
+		Expect(ism.Modules[0].String()).To(Equal(noopIsmId1.String()))
+		Expect(ism.Modules[1].String()).To(Equal(noopIsmId2.String()))
+		Expect(ism.Modules[2].String()).To(Equal(noopIsmId3.String()))
+
+		// Verify event emission
+		events := res.Events
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.interchain_security.v1.EventCreateAggregationIsm" {
+				found = true
+				// Verify event attributes
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("ism_id"),
+					"Value": ContainSubstring(response.Id.String()),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("owner"),
+					"Value": ContainSubstring(creator.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("threshold"),
+					"Value": Equal("2"),
+				})))
+				break
+			}
+		}
+		Expect(found).To(BeTrue(), "EventCreateAggregationIsm should be emitted")
+	})
+
+	It("SetAggregationIsmModules (invalid) with non-existing ISM", func() {
+		// Arrange
+		nonExistingIsmId := util.CreateMockHexAddress("ism", 999)
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetAggregationIsmModules{
+			Owner:     creator.Address,
+			IsmId:     nonExistingIsmId,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("not found"))
+	})
+
+	It("SetAggregationIsmModules (invalid) on non-aggregation ISM", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetAggregationIsmModules{
+			Owner:     creator.Address,
+			IsmId:     noopIsmId,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("not an aggregation ISM"))
+	})
+
+	It("SetAggregationIsmModules (invalid) with non-owner", func() {
+		// Arrange
+		noopIsmId1 := createNoopIsm(s, creator.Address)
+		noopIsmId2 := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId1},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetAggregationIsmModules{
+			Owner:     nonOwner.Address, // non-owner trying to update
+			IsmId:     response.Id,
+			Modules:   []util.HexAddress{noopIsmId2},
+			Threshold: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("is not the owner"))
+	})
+
+	It("SetAggregationIsmModules (invalid) with non-existing module ISM", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		nonExistingIsmId := util.CreateMockHexAddress("ism", 999)
+
+		// Act
+		_, err = s.RunTx(&types.MsgSetAggregationIsmModules{
+			Owner:     creator.Address,
+			IsmId:     response.Id,
+			Modules:   []util.HexAddress{nonExistingIsmId},
+			Threshold: 1,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("not found"))
+	})
+
+	It("SetAggregationIsmModules (valid)", func() {
+		// Arrange
+		noopIsmId1 := createNoopIsm(s, creator.Address)
+		noopIsmId2 := createNoopIsm(s, creator.Address)
+		noopIsmId3 := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId1},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var createResponse types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &createResponse)
+		Expect(err).To(BeNil())
+
+		// Act - update modules and threshold
+		res, err = s.RunTx(&types.MsgSetAggregationIsmModules{
+			Owner:     creator.Address,
+			IsmId:     createResponse.Id,
+			Modules:   []util.HexAddress{noopIsmId2, noopIsmId3},
+			Threshold: 2,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		var ism types.AggregationISM
+		queryISM(&ism, s, createResponse.Id.String())
+		Expect(ism.Threshold).To(Equal(uint32(2)))
+		Expect(ism.Modules).To(HaveLen(2))
+		Expect(ism.Modules[0].String()).To(Equal(noopIsmId2.String()))
+		Expect(ism.Modules[1].String()).To(Equal(noopIsmId3.String()))
+
+		// Verify event emission
+		events := res.Events
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.interchain_security.v1.EventSetAggregationIsmModules" {
+				found = true
+				// Verify event attributes
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("ism_id"),
+					"Value": ContainSubstring(createResponse.Id.String()),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("owner"),
+					"Value": ContainSubstring(creator.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("threshold"),
+					"Value": Equal("2"),
+				})))
+				break
+			}
+		}
+		Expect(found).To(BeTrue(), "EventSetAggregationIsmModules should be emitted")
+	})
+
+	It("UpdateAggregationIsmOwner (invalid) with non-owner", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
+			Owner:    nonOwner.Address, // non-owner trying to update
+			IsmId:    response.Id,
+			NewOwner: nonOwner.Address,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("is not the owner"))
+	})
+
+	It("UpdateAggregationIsmOwner (invalid) with both renounce and new owner", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
+			Owner:             creator.Address,
+			IsmId:             response.Id,
+			NewOwner:          nonOwner.Address,
+			RenounceOwnership: true, // both set
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("cannot set new owner and renounce ownership at the same time"))
+	})
+
+	It("UpdateAggregationIsmOwner (invalid) with empty new owner without renounce", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
+			Owner:             creator.Address,
+			IsmId:             response.Id,
+			NewOwner:          "", // empty without renounce
+			RenounceOwnership: false,
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("cannot set owner to empty address without renouncing ownership"))
+	})
+
+	It("UpdateAggregationIsmOwner (invalid) with incorrectly formatted owner address", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
+			Owner:    creator.Address,
+			IsmId:    response.Id,
+			NewOwner: "invalid_address",
+		})
+
+		// Assert
+		Expect(err.Error()).To(ContainSubstring("invalid new_owner address"))
+	})
+
+	It("UpdateAggregationIsmOwner (valid) new owner", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var createResponse types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &createResponse)
+		Expect(err).To(BeNil())
+
+		// Act
+		res, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
+			Owner:    creator.Address,
+			IsmId:    createResponse.Id,
+			NewOwner: nonOwner.Address,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		var ism types.AggregationISM
+		queryISM(&ism, s, createResponse.Id.String())
+		Expect(ism.Owner).To(Equal(nonOwner.Address))
+
+		// Verify event emission
+		events := res.Events
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.interchain_security.v1.EventSetAggregationIsm" {
+				found = true
+				// Verify event attributes
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("ism_id"),
+					"Value": ContainSubstring(createResponse.Id.String()),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("owner"),
+					"Value": ContainSubstring(creator.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("new_owner"),
+					"Value": ContainSubstring(nonOwner.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("renounce_ownership"),
+					"Value": Equal("false"),
+				})))
+				break
+			}
+		}
+		Expect(found).To(BeTrue(), "EventSetAggregationIsm should be emitted")
+	})
+
+	It("UpdateAggregationIsmOwner (valid) renounce ownership", func() {
+		// Arrange
+		noopIsmId := createNoopIsm(s, creator.Address)
+
+		res, err := s.RunTx(&types.MsgCreateAggregationIsm{
+			Creator:   creator.Address,
+			Modules:   []util.HexAddress{noopIsmId},
+			Threshold: 1,
+		})
+		Expect(err).To(BeNil())
+
+		var createResponse types.MsgCreateAggregationIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &createResponse)
+		Expect(err).To(BeNil())
+
+		// Act
+		res, err = s.RunTx(&types.MsgUpdateAggregationIsmOwner{
+			Owner:             creator.Address,
+			IsmId:             createResponse.Id,
+			NewOwner:          "",
+			RenounceOwnership: true,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		var ism types.AggregationISM
+		queryISM(&ism, s, createResponse.Id.String())
+		Expect(ism.Owner).To(Equal(""))
+
+		// Verify event emission
+		events := res.Events
+		var found bool
+		for _, event := range events {
+			if event.Type == "hyperlane.core.interchain_security.v1.EventSetAggregationIsm" {
+				found = true
+				// Verify event attributes
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("ism_id"),
+					"Value": ContainSubstring(createResponse.Id.String()),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("owner"),
+					"Value": ContainSubstring(creator.Address),
+				})))
+				Expect(event.Attributes).To(ContainElement(MatchFields(IgnoreExtras, Fields{
+					"Key":   Equal("renounce_ownership"),
+					"Value": Equal("true"),
+				})))
+				break
+			}
+		}
+		Expect(found).To(BeTrue(), "EventSetAggregationIsm should be emitted")
 	})
 })
 

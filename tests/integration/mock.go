@@ -126,23 +126,29 @@ func (m MockApp) ReceiverIsmId(_ context.Context, recipient util.HexAddress) (*u
 const MOCK_ISM uint8 = 202
 
 type MockIsm struct {
-	router   *util.Router[util.InterchainSecurityModule]
-	isms     map[util.HexAddress]struct{}
-	calls    *int
-	moduleId uint8
+	router       *util.Router[util.InterchainSecurityModule]
+	isms         map[util.HexAddress]bool // maps ISM ID to verification result
+	calls        *int
+	moduleId     uint8
+	shouldVerify bool
 }
 
 func CreateMockIsm(router *util.Router[util.InterchainSecurityModule]) *MockIsm {
 	handler := MockIsm{
-		isms:     make(map[util.HexAddress]struct{}),
-		router:   router,
-		calls:    new(int),
-		moduleId: MOCK_ISM,
+		isms:         make(map[util.HexAddress]bool),
+		router:       router,
+		calls:        new(int),
+		moduleId:     MOCK_ISM,
+		shouldVerify: true, // default to passing verification
 	}
 
 	router.RegisterModule(handler.moduleId, handler)
 
 	return &handler
+}
+
+func (m *MockIsm) SetShouldVerify(shouldVerify bool) {
+	m.shouldVerify = shouldVerify
 }
 
 func (m MockIsm) Exists(ctx context.Context, ismId util.HexAddress) (bool, error) {
@@ -155,18 +161,19 @@ func (m MockIsm) Exists(ctx context.Context, ismId util.HexAddress) (bool, error
 
 func (m MockIsm) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	*m.calls++
-	if _, ok := m.isms[ismId]; !ok {
+	result, ok := m.isms[ismId]
+	if !ok {
 		return false, nil
 	}
-	return true, nil
+	return result, nil
 }
 
-func (m MockIsm) RegisterIsm(ctx context.Context) (util.HexAddress, error) {
+func (m *MockIsm) RegisterIsm(ctx context.Context) (util.HexAddress, error) {
 	sequence, err := m.router.GetNextSequence(ctx, m.moduleId)
 	if err != nil {
 		return util.HexAddress{}, err
 	}
-	m.isms[sequence] = struct{}{}
+	m.isms[sequence] = m.shouldVerify
 	return sequence, nil
 }
 

@@ -14,4 +14,7 @@ var (
 	ErrUnauthorized                 = errors.Register(SubModuleName, 9, "unauthorized")
 	ErrInvalidOwner                 = errors.Register(SubModuleName, 10, "invalid owner")
 	ErrDuplicatedDomains            = errors.Register(SubModuleName, 11, "route for domain already exists")
+	ErrInvalidThreshold             = errors.Register(SubModuleName, 12, "invalid threshold")
+	ErrInvalidISM                   = errors.Register(SubModuleName, 13, "invalid ism")
+	ErrInsufficientVerifications    = errors.Register(SubModuleName, 14, "insufficient verifications")
 )
