@@ -93,6 +93,36 @@ message MerkleRootMultisigISM {
   uint32 threshold = 4;
 }
 
+// AggregationISM verifies messages by requiring a threshold number of child
+// ISMs to pass verification (M-of-N pattern). This allows combining multiple
+// security mechanisms with flexible threshold requirements.
+message AggregationISM {
+  option (gogoproto.goproto_getters) = false;
+  option (cosmos_proto.implements_interface) =
+      "hyperlane.core.interchain_security.v1.HyperlaneInterchainSecurityModule";
+
+  // id is the unique identifier for this Aggregation ISM
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner is the address that can update the modules and threshold or transfer
+  // ownership
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // modules is the list of child ISM IDs whose verifications are aggregated
+  repeated string modules = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // threshold is the minimum number of child ISMs that must pass verification
+  uint32 threshold = 4;
+}
+
 // NoopISM ...
 message NoopISM {
   option (gogoproto.goproto_getters) = false;

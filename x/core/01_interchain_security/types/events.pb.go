@@ -476,6 +476,192 @@ func (m *EventCreateRoutingIsm) GetOwner() string {
 	return ""
 }
 
+// EventCreateAggregationIsm is emitted when a new Aggregation ISM is created
+type EventCreateAggregationIsm struct {
+	// ism_id is the unique identifier of the created Aggregation ISM
+	IsmId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=ism_id,json=ismId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"ism_id"`
+	// owner is the address that owns the ISM
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// modules is the list of child ISM IDs
+	Modules []github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,3,rep,name=modules,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"modules"`
+	// threshold is the number of child ISMs that must pass verification
+	Threshold uint32 `protobuf:"varint,4,opt,name=threshold,proto3" json:"threshold,omitempty"`
+}
+
+func (m *EventCreateAggregationIsm) Reset()         { *m = EventCreateAggregationIsm{} }
+func (m *EventCreateAggregationIsm) String() string { return proto.CompactTextString(m) }
+func (*EventCreateAggregationIsm) ProtoMessage()    {}
+func (*EventCreateAggregationIsm) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d9752d6bb2f92366, []int{8}
+}
+func (m *EventCreateAggregationIsm) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventCreateAggregationIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventCreateAggregationIsm.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventCreateAggregationIsm) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventCreateAggregationIsm.Merge(m, src)
+}
+func (m *EventCreateAggregationIsm) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventCreateAggregationIsm) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventCreateAggregationIsm.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventCreateAggregationIsm proto.InternalMessageInfo
+
+func (m *EventCreateAggregationIsm) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *EventCreateAggregationIsm) GetThreshold() uint32 {
+	if m != nil {
+		return m.Threshold
+	}
+	return 0
+}
+
+// EventSetAggregationIsmModules is emitted when an Aggregation ISM's modules
+// are updated
+type EventSetAggregationIsmModules struct {
+	// ism_id is the identifier of the updated Aggregation ISM
+	IsmId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=ism_id,json=ismId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"ism_id"`
+	// owner is the address that performed the update
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// modules is the new list of child ISM IDs
+	Modules []github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,3,rep,name=modules,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"modules"`
+	// threshold is the new number of child ISMs that must pass verification
+	Threshold uint32 `protobuf:"varint,4,opt,name=threshold,proto3" json:"threshold,omitempty"`
+}
+
+func (m *EventSetAggregationIsmModules) Reset()         { *m = EventSetAggregationIsmModules{} }
+func (m *EventSetAggregationIsmModules) String() string { return proto.CompactTextString(m) }
+func (*EventSetAggregationIsmModules) ProtoMessage()    {}
+func (*EventSetAggregationIsmModules) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d9752d6bb2f92366, []int{9}
+}
+func (m *EventSetAggregationIsmModules) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventSetAggregationIsmModules) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventSetAggregationIsmModules.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventSetAggregationIsmModules) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventSetAggregationIsmModules.Merge(m, src)
+}
+func (m *EventSetAggregationIsmModules) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventSetAggregationIsmModules) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventSetAggregationIsmModules.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventSetAggregationIsmModules proto.InternalMessageInfo
+
+func (m *EventSetAggregationIsmModules) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *EventSetAggregationIsmModules) GetThreshold() uint32 {
+	if m != nil {
+		return m.Threshold
+	}
+	return 0
+}
+
+// EventSetAggregationIsm is emitted when an Aggregation ISM's ownership is
+// updated
+type EventSetAggregationIsm struct {
+	// ism_id is the identifier of the Aggregation ISM
+	IsmId github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=ism_id,json=ismId,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"ism_id"`
+	// owner is the previous owner address
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// new_owner is the new owner address (empty if ownership is renounced)
+	NewOwner string `protobuf:"bytes,3,opt,name=new_owner,json=newOwner,proto3" json:"new_owner,omitempty"`
+	// renounce_ownership indicates if ownership was permanently renounced
+	RenounceOwnership bool `protobuf:"varint,4,opt,name=renounce_ownership,json=renounceOwnership,proto3" json:"renounce_ownership,omitempty"`
+}
+
+func (m *EventSetAggregationIsm) Reset()         { *m = EventSetAggregationIsm{} }
+func (m *EventSetAggregationIsm) String() string { return proto.CompactTextString(m) }
+func (*EventSetAggregationIsm) ProtoMessage()    {}
+func (*EventSetAggregationIsm) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d9752d6bb2f92366, []int{10}
+}
+func (m *EventSetAggregationIsm) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventSetAggregationIsm) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventSetAggregationIsm.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventSetAggregationIsm) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventSetAggregationIsm.Merge(m, src)
+}
+func (m *EventSetAggregationIsm) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventSetAggregationIsm) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventSetAggregationIsm.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventSetAggregationIsm proto.InternalMessageInfo
+
+func (m *EventSetAggregationIsm) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *EventSetAggregationIsm) GetNewOwner() string {
+	if m != nil {
+		return m.NewOwner
+	}
+	return ""
+}
+
+func (m *EventSetAggregationIsm) GetRenounceOwnership() bool {
+	if m != nil {
+		return m.RenounceOwnership
+	}
+	return false
+}
+
 func init() {
 	proto.RegisterType((*EventCreateNoopIsm)(nil), "hyperlane.core.interchain_security.v1.EventCreateNoopIsm")
 	proto.RegisterType((*EventCreateMerkleRootMultisigIsm)(nil), "hyperlane.core.interchain_security.v1.EventCreateMerkleRootMultisigIsm")
@@ -485,6 +671,9 @@ func init() {
 	proto.RegisterType((*EventRemoveRoutingIsmDomain)(nil), "hyperlane.core.interchain_security.v1.EventRemoveRoutingIsmDomain")
 	proto.RegisterType((*EventSetRoutingIsm)(nil), "hyperlane.core.interchain_security.v1.EventSetRoutingIsm")
 	proto.RegisterType((*EventCreateRoutingIsm)(nil), "hyperlane.core.interchain_security.v1.EventCreateRoutingIsm")
+	proto.RegisterType((*EventCreateAggregationIsm)(nil), "hyperlane.core.interchain_security.v1.EventCreateAggregationIsm")
+	proto.RegisterType((*EventSetAggregationIsmModules)(nil), "hyperlane.core.interchain_security.v1.EventSetAggregationIsmModules")
+	proto.RegisterType((*EventSetAggregationIsm)(nil), "hyperlane.core.interchain_security.v1.EventSetAggregationIsm")
 }
 
 func init() {
@@ -492,44 +681,49 @@ func init() {
 }
 
 var fileDescriptor_d9752d6bb2f92366 = []byte{
-	// 592 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x95, 0xc1, 0x4f, 0xd4, 0x4e,
-	0x14, 0xc7, 0x77, 0xd8, 0x1f, 0x84, 0x9d, 0x9f, 0x46, 0x6d, 0x30, 0xa9, 0x40, 0xca, 0xda, 0xc4,
-	0x04, 0x0f, 0xdb, 0x82, 0x1e, 0x3d, 0x01, 0x9a, 0xb8, 0x89, 0x48, 0x52, 0x6e, 0x5c, 0x9a, 0x6e,
-	0xfb, 0xd2, 0x4e, 0x6c, 0xe7, 0x35, 0x33, 0xd3, 0x02, 0xff, 0x85, 0x7f, 0x82, 0x89, 0xff, 0x80,
-	0x07, 0xff, 0x08, 0x0e, 0x1e, 0x88, 0x27, 0xe3, 0x81, 0x18, 0x38, 0xca, 0xbf, 0x60, 0x62, 0x3a,
-	0xd3, 0x05, 0x56, 0x39, 0x68, 0xc2, 0x61, 0xe3, 0x6d, 0xf7, 0xbd, 0xf7, 0x9d, 0xf9, 0x7e, 0xde,
-	0x4c, 0xe7, 0xd1, 0x27, 0xd9, 0x61, 0x09, 0x22, 0x8f, 0x38, 0xf8, 0x31, 0x0a, 0xf0, 0x19, 0x57,
-	0x20, 0xe2, 0x2c, 0x62, 0x3c, 0x94, 0x10, 0x57, 0x82, 0xa9, 0x43, 0xbf, 0x5e, 0xf7, 0xa1, 0x06,
-	0xae, 0xa4, 0x57, 0x0a, 0x54, 0x68, 0x3d, 0xba, 0xd0, 0x78, 0x8d, 0xc6, 0xbb, 0x46, 0xe3, 0xd5,
-	0xeb, 0x8b, 0x0b, 0x29, 0xa6, 0xa8, 0x15, 0x7e, 0xf3, 0xcb, 0x88, 0x17, 0x1f, 0xc4, 0x28, 0x0b,
-	0x94, 0xa1, 0x49, 0x98, 0x3f, 0x26, 0xe5, 0xbe, 0x23, 0xd4, 0x7a, 0xd1, 0x6c, 0xb4, 0x25, 0x20,
-	0x52, 0xf0, 0x1a, 0xb1, 0x1c, 0xca, 0xc2, 0xda, 0xa3, 0x73, 0x4c, 0x16, 0x21, 0x4b, 0x6c, 0xd2,
-	0x27, 0xab, 0xbd, 0xcd, 0xad, 0xa3, 0x93, 0x95, 0xce, 0xd7, 0x93, 0x95, 0x67, 0x29, 0x53, 0x59,
-	0x35, 0xf2, 0x62, 0x2c, 0xfc, 0x51, 0x5c, 0x0e, 0x18, 0xe7, 0x58, 0x47, 0x8a, 0x21, 0x97, 0xfe,
-	0x85, 0xc3, 0x81, 0xd9, 0xc1, 0xaf, 0x14, 0xcb, 0xbd, 0x97, 0x70, 0xb0, 0x91, 0x24, 0x02, 0xa4,
-	0x0c, 0x66, 0x99, 0x2c, 0x86, 0x89, 0xe5, 0xd1, 0x59, 0xdc, 0xe7, 0x20, 0xec, 0x19, 0xbd, 0xb4,
-	0xfd, 0xf9, 0xe3, 0x60, 0xa1, 0xf5, 0xd4, 0x56, 0xee, 0x2a, 0xc1, 0x78, 0x1a, 0x98, 0x32, 0xf7,
-	0x9c, 0xd0, 0xfe, 0x15, 0x8b, 0xdb, 0x20, 0xde, 0xe4, 0x10, 0x20, 0xaa, 0xed, 0x2a, 0x57, 0x4c,
-	0xb2, 0x74, 0xca, 0x0c, 0x5b, 0x0e, 0xa5, 0x75, 0x94, 0xb3, 0x24, 0x52, 0x28, 0xa4, 0xdd, 0xed,
-	0x77, 0x57, 0x7b, 0xc1, 0x95, 0x88, 0xb5, 0x4c, 0x7b, 0x2a, 0x13, 0x20, 0x33, 0xcc, 0x13, 0xfb,
-	0xbf, 0x3e, 0x59, 0xbd, 0x1d, 0x5c, 0x06, 0xdc, 0xef, 0x84, 0xae, 0x4c, 0xe0, 0x4a, 0x19, 0xa5,
-	0x30, 0x4c, 0xfe, 0x4d, 0xda, 0x1f, 0x84, 0x2e, 0x6b, 0xda, 0x0d, 0xce, 0xb1, 0xe2, 0x31, 0xec,
-	0x2a, 0x14, 0x51, 0x0a, 0xaf, 0x30, 0xd6, 0xbe, 0xad, 0x11, 0xa5, 0x45, 0xc4, 0xf2, 0x11, 0x1e,
-	0xdc, 0x30, 0x6e, 0xaf, 0x5d, 0x76, 0x98, 0x58, 0x6b, 0x74, 0x4e, 0x02, 0x4f, 0xfe, 0x80, 0xb9,
-	0xad, 0x6b, 0xa0, 0x2e, 0x10, 0xed, 0x6e, 0x23, 0x0a, 0x2e, 0x03, 0xd6, 0x63, 0x7a, 0x57, 0x1a,
-	0x8c, 0x30, 0x6f, 0x39, 0x34, 0x79, 0x2f, 0xb8, 0x23, 0x27, 0xf1, 0xdc, 0x0f, 0x33, 0xd4, 0xd6,
-	0xfc, 0xbb, 0xa0, 0x02, 0xac, 0x14, 0xe3, 0xcd, 0x01, 0x3f, 0xc7, 0x22, 0x62, 0x7c, 0xaa, 0x8e,
-	0x19, 0xe8, 0x2d, 0x81, 0x95, 0x82, 0xb0, 0x75, 0xd4, 0xbd, 0x39, 0x47, 0x54, 0x2f, 0x3c, 0xd4,
-	0xb6, 0x1e, 0x8e, 0xb7, 0x49, 0x74, 0x0b, 0xda, 0x0b, 0xf3, 0xbf, 0x8e, 0x99, 0xae, 0xb8, 0x9f,
-	0x08, 0x5d, 0xd2, 0x2d, 0x0b, 0xa0, 0xc0, 0x1a, 0xa6, 0xba, 0x6b, 0xbf, 0xe2, 0x74, 0x7f, 0xc7,
-	0x39, 0x1f, 0xbf, 0xc0, 0x13, 0x37, 0x60, 0xaa, 0x28, 0x96, 0x68, 0x8f, 0xc3, 0x7e, 0x68, 0x34,
-	0xe6, 0xb6, 0xcf, 0x73, 0xd8, 0xdf, 0xd1, 0xc9, 0x01, 0xb5, 0x04, 0x98, 0x6f, 0xd7, 0x54, 0xc8,
-	0x8c, 0x95, 0xfa, 0xdc, 0xe6, 0x83, 0x7b, 0xe3, 0xcc, 0xce, 0x38, 0xe1, 0xbe, 0x27, 0xf4, 0xfe,
-	0x95, 0xe7, 0x6d, 0x3a, 0x89, 0x37, 0xd9, 0xd1, 0xa9, 0x43, 0x8e, 0x4f, 0x1d, 0xf2, 0xed, 0xd4,
-	0x21, 0x6f, 0xcf, 0x9c, 0xce, 0xf1, 0x99, 0xd3, 0xf9, 0x72, 0xe6, 0x74, 0xf6, 0x76, 0xfe, 0xc6,
-	0xcd, 0x81, 0x19, 0xf0, 0x6b, 0xeb, 0xe1, 0x75, 0x33, 0x5e, 0x1d, 0x96, 0x20, 0x47, 0x73, 0x7a,
-	0x10, 0x3f, 0xfd, 0x19, 0x00, 0x00, 0xff, 0xff, 0x1d, 0x07, 0xf5, 0x93, 0x16, 0x08, 0x00, 0x00,
+	// 666 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x96, 0x4f, 0x6b, 0xd4, 0x4e,
+	0x18, 0xc7, 0x37, 0xbb, 0xbf, 0xf6, 0xd7, 0x1d, 0x15, 0x35, 0x54, 0x49, 0xff, 0x98, 0xae, 0x01,
+	0xa1, 0x1e, 0x36, 0x69, 0x15, 0x4f, 0x9e, 0xda, 0x2a, 0xb8, 0x60, 0x2d, 0xa4, 0xb7, 0x82, 0x84,
+	0x6c, 0xf2, 0x90, 0x1d, 0x4c, 0xe6, 0x59, 0x66, 0x26, 0xdb, 0xf6, 0x2d, 0x78, 0xf2, 0x25, 0x08,
+	0x7a, 0xf0, 0xe8, 0xc1, 0x17, 0xd1, 0x83, 0x87, 0xe2, 0x49, 0x3c, 0x14, 0x69, 0x8f, 0xf6, 0x2d,
+	0x08, 0xb2, 0x33, 0xd9, 0x76, 0xd7, 0x16, 0xff, 0xb1, 0x87, 0x20, 0xde, 0x76, 0xe7, 0x99, 0xef,
+	0xcc, 0xf7, 0xf3, 0x9d, 0xc9, 0xc3, 0x90, 0x3b, 0x9d, 0xdd, 0x2e, 0xf0, 0x34, 0x64, 0xe0, 0x45,
+	0xc8, 0xc1, 0xa3, 0x4c, 0x02, 0x8f, 0x3a, 0x21, 0x65, 0x81, 0x80, 0x28, 0xe7, 0x54, 0xee, 0x7a,
+	0xbd, 0x65, 0x0f, 0x7a, 0xc0, 0xa4, 0x70, 0xbb, 0x1c, 0x25, 0x9a, 0xb7, 0x4e, 0x34, 0x6e, 0x5f,
+	0xe3, 0x9e, 0xa3, 0x71, 0x7b, 0xcb, 0xb3, 0xd3, 0x09, 0x26, 0xa8, 0x14, 0x5e, 0xff, 0x97, 0x16,
+	0xcf, 0xce, 0x44, 0x28, 0x32, 0x14, 0x81, 0x2e, 0xe8, 0x3f, 0xba, 0xe4, 0xbc, 0x34, 0x88, 0xf9,
+	0xb0, 0xbf, 0xd1, 0x1a, 0x87, 0x50, 0xc2, 0x13, 0xc4, 0x6e, 0x4b, 0x64, 0xe6, 0x16, 0x99, 0xa4,
+	0x22, 0x0b, 0x68, 0x6c, 0x19, 0x0d, 0x63, 0xb1, 0xbe, 0xba, 0xb6, 0x77, 0xb0, 0x50, 0xf9, 0x74,
+	0xb0, 0x70, 0x3f, 0xa1, 0xb2, 0x93, 0xb7, 0xdd, 0x08, 0x33, 0xaf, 0x1d, 0x75, 0x9b, 0x94, 0x31,
+	0xec, 0x85, 0x92, 0x22, 0x13, 0xde, 0x89, 0xc3, 0xa6, 0xde, 0xc1, 0xcb, 0x25, 0x4d, 0xdd, 0x47,
+	0xb0, 0xb3, 0x12, 0xc7, 0x1c, 0x84, 0xf0, 0x27, 0xa8, 0xc8, 0x5a, 0xb1, 0xe9, 0x92, 0x09, 0xdc,
+	0x66, 0xc0, 0xad, 0xaa, 0x5a, 0xda, 0xfa, 0xf0, 0xae, 0x39, 0x5d, 0x78, 0x2a, 0x66, 0x6e, 0x4a,
+	0x4e, 0x59, 0xe2, 0xeb, 0x69, 0xce, 0xb1, 0x41, 0x1a, 0x43, 0x16, 0xd7, 0x81, 0x3f, 0x4b, 0xc1,
+	0x47, 0x94, 0xeb, 0x79, 0x2a, 0xa9, 0xa0, 0x49, 0xc9, 0x0c, 0x9b, 0x36, 0x21, 0xbd, 0x30, 0xa5,
+	0x71, 0x28, 0x91, 0x0b, 0xab, 0xd6, 0xa8, 0x2d, 0xd6, 0xfd, 0xa1, 0x11, 0x73, 0x9e, 0xd4, 0x65,
+	0x87, 0x83, 0xe8, 0x60, 0x1a, 0x5b, 0xff, 0x35, 0x8c, 0xc5, 0x4b, 0xfe, 0xe9, 0x80, 0xf3, 0xc5,
+	0x20, 0x0b, 0x23, 0xb8, 0x42, 0x84, 0x09, 0xb4, 0xe2, 0xbf, 0x93, 0xf6, 0xab, 0x41, 0xe6, 0x15,
+	0xed, 0x0a, 0x63, 0x98, 0xb3, 0x08, 0x36, 0x25, 0xf2, 0x30, 0x81, 0xc7, 0x18, 0x29, 0xdf, 0x66,
+	0x9b, 0x90, 0x2c, 0xa4, 0x69, 0x1b, 0x77, 0xc6, 0x8c, 0x5b, 0x2f, 0x96, 0x6d, 0xc5, 0xe6, 0x12,
+	0x99, 0x14, 0xc0, 0xe2, 0x5f, 0x60, 0x2e, 0xe6, 0xf5, 0xa1, 0x4e, 0x10, 0xad, 0x5a, 0x5f, 0xe4,
+	0x9f, 0x0e, 0x98, 0xb7, 0xc9, 0x15, 0xa1, 0x31, 0x82, 0xb4, 0xe0, 0x50, 0xe4, 0x75, 0xff, 0xb2,
+	0x18, 0xc5, 0x73, 0xde, 0x56, 0x89, 0xa5, 0xf8, 0x37, 0x41, 0xfa, 0x98, 0x4b, 0xca, 0xfa, 0x07,
+	0xfc, 0x00, 0xb3, 0x90, 0xb2, 0x52, 0x1d, 0x33, 0x90, 0x8b, 0x1c, 0x73, 0x09, 0x41, 0xe1, 0xa8,
+	0x36, 0x3e, 0x47, 0x44, 0x2d, 0xdc, 0x52, 0xb6, 0x6e, 0x0e, 0xb6, 0x89, 0x55, 0x04, 0xc5, 0x85,
+	0xb9, 0xa0, 0xc6, 0x74, 0x2a, 0xce, 0x7b, 0x83, 0xcc, 0xa9, 0xc8, 0x7c, 0xc8, 0xb0, 0x07, 0xa5,
+	0x4e, 0xed, 0x7b, 0x9c, 0xda, 0x59, 0x9c, 0xe3, 0x41, 0x07, 0x1e, 0xb9, 0x01, 0xa5, 0xa2, 0x98,
+	0x23, 0x75, 0x06, 0xdb, 0x81, 0xd6, 0xe8, 0xdb, 0x3e, 0xc5, 0x60, 0x7b, 0x43, 0x15, 0x9b, 0xc4,
+	0xe4, 0xa0, 0xbf, 0x5d, 0x3d, 0x43, 0x74, 0x68, 0x57, 0x9d, 0xdb, 0x94, 0x7f, 0x75, 0x50, 0xd9,
+	0x18, 0x14, 0x9c, 0x57, 0x06, 0xb9, 0x36, 0xd4, 0xde, 0xca, 0x49, 0xec, 0xbc, 0xae, 0x92, 0x99,
+	0x21, 0x97, 0x2b, 0x49, 0xc2, 0x21, 0x51, 0x7b, 0x96, 0xed, 0x6c, 0x9e, 0x92, 0xff, 0x33, 0x8c,
+	0xf3, 0x14, 0x8a, 0xde, 0x3b, 0x1e, 0x33, 0x83, 0x35, 0x7f, 0xd2, 0xbd, 0xdf, 0x54, 0xc9, 0x8d,
+	0xc1, 0xdd, 0x1d, 0xcd, 0x68, 0xbd, 0xd0, 0xff, 0x8b, 0xaa, 0x88, 0xea, 0x79, 0x95, 0x5c, 0x3f,
+	0x3f, 0xaa, 0x52, 0x65, 0x74, 0xef, 0xcc, 0xa7, 0xfe, 0x03, 0xcd, 0x9f, 0x36, 0x81, 0x55, 0xba,
+	0x77, 0x68, 0x1b, 0xfb, 0x87, 0xb6, 0xf1, 0xf9, 0xd0, 0x36, 0x5e, 0x1c, 0xd9, 0x95, 0xfd, 0x23,
+	0xbb, 0xf2, 0xf1, 0xc8, 0xae, 0x6c, 0x6d, 0xfc, 0x0e, 0xf3, 0x8e, 0x7e, 0x3f, 0x2f, 0x2d, 0x07,
+	0xe7, 0x3d, 0xa1, 0xe5, 0x6e, 0x17, 0x44, 0x7b, 0x52, 0xbd, 0x73, 0xef, 0x7e, 0x0b, 0x00, 0x00,
+	0xff, 0xff, 0x95, 0x43, 0xb1, 0xdd, 0x75, 0x0b, 0x00, 0x00,
 }
 
 func (m *EventCreateNoopIsm) Marshal() (dAtA []byte, err error) {
@@ -931,6 +1125,181 @@ func (m *EventCreateRoutingIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *EventCreateAggregationIsm) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventCreateAggregationIsm) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventCreateAggregationIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Threshold != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Threshold))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Modules) > 0 {
+		for iNdEx := len(m.Modules) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size := m.Modules[iNdEx].Size()
+				i -= size
+				if _, err := m.Modules[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintEvents(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size := m.IsmId.Size()
+		i -= size
+		if _, err := m.IsmId.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintEvents(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *EventSetAggregationIsmModules) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventSetAggregationIsmModules) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventSetAggregationIsmModules) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Threshold != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Threshold))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Modules) > 0 {
+		for iNdEx := len(m.Modules) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size := m.Modules[iNdEx].Size()
+				i -= size
+				if _, err := m.Modules[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintEvents(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size := m.IsmId.Size()
+		i -= size
+		if _, err := m.IsmId.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintEvents(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *EventSetAggregationIsm) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventSetAggregationIsm) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventSetAggregationIsm) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RenounceOwnership {
+		i--
+		if m.RenounceOwnership {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.NewOwner) > 0 {
+		i -= len(m.NewOwner)
+		copy(dAtA[i:], m.NewOwner)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.NewOwner)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size := m.IsmId.Size()
+		i -= size
+		if _, err := m.IsmId.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintEvents(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	offset -= sovEvents(v)
 	base := offset
@@ -1099,6 +1468,76 @@ func (m *EventCreateRoutingIsm) Size() (n int) {
 	l = len(m.Owner)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
+	}
+	return n
+}
+
+func (m *EventCreateAggregationIsm) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.IsmId.Size()
+	n += 1 + l + sovEvents(uint64(l))
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if len(m.Modules) > 0 {
+		for _, e := range m.Modules {
+			l = e.Size()
+			n += 1 + l + sovEvents(uint64(l))
+		}
+	}
+	if m.Threshold != 0 {
+		n += 1 + sovEvents(uint64(m.Threshold))
+	}
+	return n
+}
+
+func (m *EventSetAggregationIsmModules) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.IsmId.Size()
+	n += 1 + l + sovEvents(uint64(l))
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if len(m.Modules) > 0 {
+		for _, e := range m.Modules {
+			l = e.Size()
+			n += 1 + l + sovEvents(uint64(l))
+		}
+	}
+	if m.Threshold != 0 {
+		n += 1 + sovEvents(uint64(m.Threshold))
+	}
+	return n
+}
+
+func (m *EventSetAggregationIsm) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.IsmId.Size()
+	n += 1 + l + sovEvents(uint64(l))
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.NewOwner)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.RenounceOwnership {
+		n += 2
 	}
 	return n
 }
@@ -2306,6 +2745,516 @@ func (m *EventCreateRoutingIsm) Unmarshal(dAtA []byte) error {
 			}
 			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventCreateAggregationIsm) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventCreateAggregationIsm: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventCreateAggregationIsm: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.IsmId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Modules", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress
+			m.Modules = append(m.Modules, v)
+			if err := m.Modules[len(m.Modules)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Threshold", wireType)
+			}
+			m.Threshold = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Threshold |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventSetAggregationIsmModules) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventSetAggregationIsmModules: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventSetAggregationIsmModules: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.IsmId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Modules", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress
+			m.Modules = append(m.Modules, v)
+			if err := m.Modules[len(m.Modules)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Threshold", wireType)
+			}
+			m.Threshold = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Threshold |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventSetAggregationIsm) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventSetAggregationIsm: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventSetAggregationIsm: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsmId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.IsmId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewOwner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NewOwner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RenounceOwnership", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.RenounceOwnership = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipEvents(dAtA[iNdEx:])
