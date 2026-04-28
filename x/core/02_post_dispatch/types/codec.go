@@ -17,6 +17,8 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgCreateMerkleTreeHook{},
 		&MsgCreateNoopHook{},
 		&MsgCreateAggregationHook{},
+		&MsgCreatePausableHook{},
+		&MsgSetPausableHookPaused{},
 		&MsgCreateRateLimitedHook{},
 		&MsgSetRateLimit{},
 		&MsgRemoveRateLimit{},

@@ -125,6 +125,29 @@ message AggregationHook {
   ];
 }
 
+// PausableHook ...
+message PausableHook {
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // mailbox_id ...
+  string mailbox_id = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // paused ...
+  bool paused = 4;
+}
+
 // RateLimitedHook ...
 message RateLimitedHook {
   // id ...

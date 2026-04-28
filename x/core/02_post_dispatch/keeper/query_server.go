@@ -252,6 +252,37 @@ func (qs queryServer) AggregationHooks(ctx context.Context, req *types.QueryAggr
 }
 
 //
+// Pausable Hook
+
+func (qs queryServer) PausableHook(ctx context.Context, req *types.QueryPausableHookRequest) (*types.QueryPausableHookResponse, error) {
+	hookId, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	hook, err := qs.k.pausableHooks.Get(ctx, hookId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryPausableHookResponse{
+		PausableHook: &hook,
+	}, nil
+}
+
+func (qs queryServer) PausableHooks(ctx context.Context, req *types.QueryPausableHooksRequest) (*types.QueryPausableHooksResponse, error) {
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.pausableHooks, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryPausableHooksResponse{
+		PausableHooks: values,
+		Pagination:    pagination,
+	}, nil
+}
+
+//
 // Rate Limited Hook
 
 func (qs queryServer) RateLimitedHook(ctx context.Context, req *types.QueryRateLimitedHookRequest) (*types.QueryRateLimitedHookResponse, error) {

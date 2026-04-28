@@ -15,6 +15,7 @@ var (
 	AggregationHooksKey              = []byte{SubModuleId, 6}
 	RateLimitedHooksKey              = []byte{SubModuleId, 7}
 	TokenRateLimitsKey               = []byte{SubModuleId, 8}
+	PausableHooksKey                 = []byte{SubModuleId, 9}
 )
 
 const (

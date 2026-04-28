@@ -20,6 +20,7 @@ message GenesisState {
       [ (gogoproto.nullable) = false ];
   repeated TokenRateLimit token_rate_limits = 7
       [ (gogoproto.nullable) = false ];
+  repeated PausableHook pausable_hooks = 8 [ (gogoproto.nullable) = false ];
 }
 
 // GenesisDestinationGasConfigWrapper ...

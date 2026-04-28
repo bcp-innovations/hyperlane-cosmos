@@ -44,11 +44,11 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 		}
 	}
 
-	for _, aggregationHook := range data.AggregationHooks {
-		if err := k.validateAggregationHooks(ctx, aggregationHook.Hooks); err != nil {
-			panic(err)
+	for _, hook := range data.PausableHooks {
+		if exists, err := k.coreKeeper.MailboxIdExists(ctx, hook.MailboxId); !exists || err != nil {
+			panic(types.ErrMailboxDoesNotExist)
 		}
-		if err := k.aggregationHooks.Set(ctx, aggregationHook.Id.GetInternalId(), aggregationHook); err != nil {
+		if err := k.pausableHooks.Set(ctx, hook.Id.GetInternalId(), hook); err != nil {
 			panic(err)
 		}
 	}
@@ -58,6 +58,15 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 			panic(types.ErrMailboxDoesNotExist)
 		}
 		if err := k.rateLimitedHooks.Set(ctx, hook.Id.GetInternalId(), hook); err != nil {
+			panic(err)
+		}
+	}
+
+	for _, aggregationHook := range data.AggregationHooks {
+		if err := k.validateAggregationHooks(ctx, aggregationHook.Hooks); err != nil {
+			panic(err)
+		}
+		if err := k.aggregationHooks.Set(ctx, aggregationHook.Id.GetInternalId(), aggregationHook); err != nil {
 			panic(err)
 		}
 	}
@@ -137,6 +146,16 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 		panic(err)
 	}
 
+	iterPausableHooks, err := k.pausableHooks.Iterate(ctx, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	pausableHooks, err := iterPausableHooks.Values()
+	if err != nil {
+		panic(err)
+	}
+
 	iterRateLimitedHooks, err := k.rateLimitedHooks.Iterate(ctx, nil)
 	if err != nil {
 		panic(err)
@@ -163,6 +182,7 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 		MerkleTreeHooks:  merkleTreeHooks,
 		NoopHooks:        noopHooks,
 		AggregationHooks: aggregationHooks,
+		PausableHooks:    pausableHooks,
 		RateLimitedHooks: rateLimitedHooks,
 		TokenRateLimits:  tokenRateLimits,
 	}

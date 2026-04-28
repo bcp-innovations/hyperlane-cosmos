@@ -129,6 +129,47 @@ message EventCreateRateLimitedHook {
   ];
 }
 
+// EventCreatePausableHook ...
+message EventCreatePausableHook {
+
+  // pausable_hook_id ...
+  string pausable_hook_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2;
+
+  // mailbox_id ...
+  string mailbox_id = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // paused ...
+  bool paused = 4;
+}
+
+// EventSetPausableHookPaused ...
+message EventSetPausableHookPaused {
+
+  // pausable_hook_id ...
+  string pausable_hook_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2;
+
+  // paused ...
+  bool paused = 3;
+}
+
 // EventSetRateLimit ...
 message EventSetRateLimit {
 

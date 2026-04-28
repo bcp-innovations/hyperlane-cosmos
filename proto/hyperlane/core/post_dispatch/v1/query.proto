@@ -70,6 +70,18 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/aggregation_hooks/{id}";
   }
 
+  // PausableHooks ...
+  rpc PausableHooks(QueryPausableHooksRequest)
+      returns (QueryPausableHooksResponse) {
+    option (google.api.http).get = "/hyperlane/v1/pausable_hooks";
+  }
+
+  // PausableHook ...
+  rpc PausableHook(QueryPausableHookRequest)
+      returns (QueryPausableHookResponse) {
+    option (google.api.http).get = "/hyperlane/v1/pausable_hooks/{id}";
+  }
+
   // RateLimitedHooks ...
   rpc RateLimitedHooks(QueryRateLimitedHooksRequest)
       returns (QueryRateLimitedHooksResponse) {
@@ -224,6 +236,24 @@ message QueryAggregationHooksRequest {
 // QueryAggregationHooksResponse ...
 message QueryAggregationHooksResponse {
   repeated AggregationHook aggregation_hooks = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryPausableHookRequest ...
+message QueryPausableHookRequest { string id = 1; }
+
+// QueryPausableHookResponse ...
+message QueryPausableHookResponse { PausableHook pausable_hook = 1; }
+
+// QueryPausableHooksRequest ...
+message QueryPausableHooksRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryPausableHooksResponse ...
+message QueryPausableHooksResponse {
+  repeated PausableHook pausable_hooks = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

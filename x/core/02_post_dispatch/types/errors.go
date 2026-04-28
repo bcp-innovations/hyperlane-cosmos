@@ -14,4 +14,6 @@ var (
 	ErrRateLimitExceeded                 = errors.Register(SubModuleName, 9, "rate limit exceeded")
 	ErrInvalidDispatchedMessage          = errors.Register(SubModuleName, 11, "invalid dispatched message")
 	ErrRateLimitNotSet                   = errors.Register(SubModuleName, 12, "rate limit not set")
+	ErrInvalidPausableHook               = errors.Register(SubModuleName, 13, "invalid pausable hook")
+	ErrPausableHookPaused                = errors.Register(SubModuleName, 14, "pausable hook paused")
 )

@@ -139,6 +139,76 @@ func (ms msgServer) CreateAggregationHook(ctx context.Context, msg *types.MsgCre
 	}, nil
 }
 
+func (k *Keeper) CreatePausableHook(ctx context.Context, msg *types.MsgCreatePausableHook) (util.HexAddress, error) {
+	if exists, err := k.coreKeeper.MailboxIdExists(ctx, msg.MailboxId); !exists || err != nil {
+		return util.HexAddress{}, errors.Wrapf(types.ErrMailboxDoesNotExist, "%s", msg.MailboxId)
+	}
+
+	nextId, err := k.coreKeeper.PostDispatchRouter().GetNextSequence(ctx, types.POST_DISPATCH_HOOK_TYPE_PAUSABLE)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	hook := types.PausableHook{
+		Id:        nextId,
+		Owner:     msg.Owner,
+		MailboxId: msg.MailboxId,
+		Paused:    false,
+	}
+
+	if err := k.pausableHooks.Set(ctx, hook.Id.GetInternalId(), hook); err != nil {
+		return util.HexAddress{}, err
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreatePausableHook{
+		PausableHookId: hook.Id,
+		Owner:          hook.Owner,
+		MailboxId:      hook.MailboxId,
+		Paused:         hook.Paused,
+	})
+
+	return nextId, nil
+}
+
+func (ms msgServer) CreatePausableHook(ctx context.Context, msg *types.MsgCreatePausableHook) (*types.MsgCreatePausableHookResponse, error) {
+	nextId, err := ms.k.CreatePausableHook(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgCreatePausableHookResponse{
+		Id: nextId,
+	}, nil
+}
+
+func (ms msgServer) SetPausableHookPaused(ctx context.Context, msg *types.MsgSetPausableHookPaused) (*types.MsgSetPausableHookPausedResponse, error) {
+	if msg.HookId.IsZeroAddress() || msg.HookId.GetType() != uint32(types.POST_DISPATCH_HOOK_TYPE_PAUSABLE) {
+		return nil, errors.Wrapf(types.ErrInvalidPausableHook, "%s", msg.HookId.String())
+	}
+
+	hook, err := ms.k.pausableHooks.Get(ctx, msg.HookId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	if hook.Owner != msg.Owner {
+		return nil, errors.Wrapf(types.ErrUnauthorized, "owner %s is not hook owner", msg.Owner)
+	}
+
+	hook.Paused = msg.Paused
+	if err := ms.k.pausableHooks.Set(ctx, hook.Id.GetInternalId(), hook); err != nil {
+		return nil, err
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetPausableHookPaused{
+		PausableHookId: msg.HookId,
+		Owner:          msg.Owner,
+		Paused:         msg.Paused,
+	})
+
+	return &types.MsgSetPausableHookPausedResponse{}, nil
+}
+
 func (k *Keeper) CreateRateLimitedHook(ctx context.Context, msg *types.MsgCreateRateLimitedHook) (util.HexAddress, error) {
 	if exists, err := k.coreKeeper.MailboxIdExists(ctx, msg.MailboxId); !exists || err != nil {
 		return util.HexAddress{}, errors.Wrapf(types.ErrMailboxDoesNotExist, "%s", msg.MailboxId)

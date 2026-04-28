@@ -31,6 +31,8 @@ func GetQueryCmd() *cobra.Command {
 		CmdNoopHook(),
 		CmdAggregationHooks(),
 		CmdAggregationHook(),
+		CmdPausableHooks(),
+		CmdPausableHook(),
 		CmdRateLimitedHooks(),
 		CmdRateLimitedHook(),
 		CmdTokenRateLimits(),
@@ -364,6 +366,73 @@ func CmdAggregationHook() *cobra.Command {
 			}
 
 			res, err := queryClient.AggregationHook(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdPausableHooks() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pausable-hooks",
+		Short: "List all pausable hooks",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryPausableHooksRequest{
+				Pagination: pageReq,
+			}
+
+			res, err := queryClient.PausableHooks(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "pausable-hooks")
+
+	return cmd
+}
+
+func CmdPausableHook() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pausable-hook [id]",
+		Short: "Get details for a specific pausable hook",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryPausableHookRequest{
+				Id: args[0],
+			}
+
+			res, err := queryClient.PausableHook(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

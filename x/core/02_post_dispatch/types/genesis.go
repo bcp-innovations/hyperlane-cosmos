@@ -11,6 +11,7 @@ func NewGenesisState() *GenesisState {
 		MerkleTreeHooks:  []MerkleTreeHook{},
 		NoopHooks:        []NoopHook{},
 		AggregationHooks: []AggregationHook{},
+		PausableHooks:    []PausableHook{},
 		RateLimitedHooks: []RateLimitedHook{},
 		TokenRateLimits:  []TokenRateLimit{},
 	}
@@ -37,6 +38,14 @@ func (gs *GenesisState) Validate() error {
 			return fmt.Errorf("duplicate aggregation hook: %s", aggregationHook.Id)
 		}
 		aggregationHookMap[aggregationHook.Id.GetInternalId()] = struct{}{}
+	}
+
+	pausableHookMap := make(map[uint64]struct{})
+	for _, hook := range gs.PausableHooks {
+		if _, ok := pausableHookMap[hook.Id.GetInternalId()]; ok {
+			return fmt.Errorf("duplicate pausable hook: %s", hook.Id)
+		}
+		pausableHookMap[hook.Id.GetInternalId()] = struct{}{}
 	}
 
 	rateLimitedHookMap := make(map[uint64]struct{})
