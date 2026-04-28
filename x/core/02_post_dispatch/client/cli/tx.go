@@ -24,6 +24,7 @@ func GetTxCmd() *cobra.Command {
 		NewMerkleCmd(),
 		NewNoopHookCmd(),
 		NewAggregationHookCmd(),
+		NewRateLimitedHookCmd(),
 	)
 
 	return txCmd

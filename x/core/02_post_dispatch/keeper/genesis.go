@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/collections"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -47,6 +49,27 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 			panic(err)
 		}
 		if err := k.aggregationHooks.Set(ctx, aggregationHook.Id.GetInternalId(), aggregationHook); err != nil {
+			panic(err)
+		}
+	}
+
+	for _, hook := range data.RateLimitedHooks {
+		if exists, err := k.coreKeeper.MailboxIdExists(ctx, hook.MailboxId); !exists || err != nil {
+			panic(types.ErrMailboxDoesNotExist)
+		}
+		if err := k.rateLimitedHooks.Set(ctx, hook.Id.GetInternalId(), hook); err != nil {
+			panic(err)
+		}
+	}
+
+	for _, tokenRateLimit := range data.TokenRateLimits {
+		if _, err := k.rateLimitedHooks.Get(ctx, tokenRateLimit.HookId.GetInternalId()); err != nil {
+			panic(err)
+		}
+		if tokenRateLimit.MaxCapacity.LT(types.RateLimitDuration) {
+			panic(fmt.Sprintf("max capacity must be at least %s", types.RateLimitDuration.String()))
+		}
+		if err := k.tokenRateLimits.Set(ctx, types.TokenRateLimitKey(tokenRateLimit.HookId, tokenRateLimit.TokenId), tokenRateLimit); err != nil {
 			panic(err)
 		}
 	}
@@ -114,11 +137,33 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 		panic(err)
 	}
 
+	iterRateLimitedHooks, err := k.rateLimitedHooks.Iterate(ctx, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	rateLimitedHooks, err := iterRateLimitedHooks.Values()
+	if err != nil {
+		panic(err)
+	}
+
+	iterTokenRateLimits, err := k.tokenRateLimits.Iterate(ctx, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	tokenRateLimits, err := iterTokenRateLimits.Values()
+	if err != nil {
+		panic(err)
+	}
+
 	return &types.GenesisState{
 		Igps:             igps,
 		IgpGasConfigs:    gasConfigs,
 		MerkleTreeHooks:  merkleTreeHooks,
 		NoopHooks:        noopHooks,
 		AggregationHooks: aggregationHooks,
+		RateLimitedHooks: rateLimitedHooks,
+		TokenRateLimits:  tokenRateLimits,
 	}
 }

@@ -16,6 +16,10 @@ message GenesisState {
   repeated NoopHook noop_hooks = 4 [ (gogoproto.nullable) = false ];
   repeated AggregationHook aggregation_hooks = 5
       [ (gogoproto.nullable) = false ];
+  repeated RateLimitedHook rate_limited_hooks = 6
+      [ (gogoproto.nullable) = false ];
+  repeated TokenRateLimit token_rate_limits = 7
+      [ (gogoproto.nullable) = false ];
 }
 
 // GenesisDestinationGasConfigWrapper ...

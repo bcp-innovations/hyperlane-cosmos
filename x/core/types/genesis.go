@@ -33,6 +33,9 @@ func (gs *GenesisState) Validate() error {
 
 	messages := make(map[uint64]map[util.HexAddress]struct{})
 	for _, m := range gs.Messages {
+		if _, ok := messages[m.MailboxId]; !ok {
+			messages[m.MailboxId] = make(map[util.HexAddress]struct{})
+		}
 		if _, ok := messages[m.MailboxId][m.MessageId]; ok {
 			return fmt.Errorf("duplicated message (%s) for mailbox %d, ", m.MessageId, m.MailboxId)
 		}

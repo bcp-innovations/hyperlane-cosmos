@@ -31,6 +31,10 @@ func GetQueryCmd() *cobra.Command {
 		CmdNoopHook(),
 		CmdAggregationHooks(),
 		CmdAggregationHook(),
+		CmdRateLimitedHooks(),
+		CmdRateLimitedHook(),
+		CmdTokenRateLimits(),
+		CmdTokenRateLimit(),
 	)
 	return cmd
 }
@@ -360,6 +364,142 @@ func CmdAggregationHook() *cobra.Command {
 			}
 
 			res, err := queryClient.AggregationHook(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdRateLimitedHooks() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rate-limited-hooks",
+		Short: "List all rate limited hooks",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryRateLimitedHooksRequest{
+				Pagination: pageReq,
+			}
+
+			res, err := queryClient.RateLimitedHooks(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "rate-limited-hooks")
+
+	return cmd
+}
+
+func CmdRateLimitedHook() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rate-limited-hook [id]",
+		Short: "Get details for a specific rate limited hook",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryRateLimitedHookRequest{
+				Id: args[0],
+			}
+
+			res, err := queryClient.RateLimitedHook(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdTokenRateLimits() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "token-rate-limits [hook-id]",
+		Short: "List token rate limits for a rate limited hook",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryTokenRateLimitsRequest{
+				HookId:     args[0],
+				Pagination: pageReq,
+			}
+
+			res, err := queryClient.TokenRateLimits(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "token-rate-limits")
+
+	return cmd
+}
+
+func CmdTokenRateLimit() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "token-rate-limit [hook-id] [token-id]",
+		Short: "Get a token rate limit for a rate limited hook",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryTokenRateLimitRequest{
+				HookId:  args[0],
+				TokenId: args[1],
+			}
+
+			res, err := queryClient.TokenRateLimit(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

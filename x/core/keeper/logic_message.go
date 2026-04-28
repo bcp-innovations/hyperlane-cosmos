@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	"cosmossdk.io/collections"
@@ -184,4 +185,25 @@ func (k Keeper) DispatchMessage(
 	}
 
 	return hypMsg.Id(), nil
+}
+
+func (k Keeper) IsLatestDispatchedMessage(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) (bool, error) {
+	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.GetInternalId())
+	if err != nil {
+		return false, fmt.Errorf("failed to find mailbox with id: %s", mailboxId.String())
+	}
+
+	if mailbox.MessageSent == 0 {
+		return false, nil
+	}
+
+	if message.Origin != mailbox.LocalDomain {
+		return false, nil
+	}
+
+	if message.Nonce != mailbox.MessageSent-1 {
+		return false, nil
+	}
+
+	return k.Messages.Has(ctx, collections.Join(mailboxId.GetInternalId(), message.Id().Bytes()))
 }

@@ -40,6 +40,16 @@ service Msg {
   // CreateAggregationHook ...
   rpc CreateAggregationHook(MsgCreateAggregationHook)
       returns (MsgCreateAggregationHookResponse);
+
+  // CreateRateLimitedHook ...
+  rpc CreateRateLimitedHook(MsgCreateRateLimitedHook)
+      returns (MsgCreateRateLimitedHookResponse);
+
+  // SetRateLimit ...
+  rpc SetRateLimit(MsgSetRateLimit) returns (MsgSetRateLimitResponse);
+
+  // RemoveRateLimit ...
+  rpc RemoveRateLimit(MsgRemoveRateLimit) returns (MsgRemoveRateLimitResponse);
 }
 
 // MsgCreateIgp ...
@@ -234,3 +244,86 @@ message MsgCreateAggregationHookResponse {
     (gogoproto.nullable) = false
   ];
 }
+
+// MsgCreateRateLimitedHook ...
+message MsgCreateRateLimitedHook {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/v1/MsgCreateRateLimitedHook";
+
+  // owner ...
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // mailbox_id ...
+  string mailbox_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgCreateRateLimitedHookResponse ...
+message MsgCreateRateLimitedHookResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgSetRateLimit ...
+message MsgSetRateLimit {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/v1/MsgSetRateLimit";
+
+  // owner ...
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // hook_id ...
+  string hook_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // token_id ...
+  string token_id = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // max_capacity ...
+  string max_capacity = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgSetRateLimitResponse ...
+message MsgSetRateLimitResponse {}
+
+// MsgRemoveRateLimit ...
+message MsgRemoveRateLimit {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/v1/MsgRemoveRateLimit";
+
+  // owner ...
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // hook_id ...
+  string hook_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // token_id ...
+  string token_id = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgRemoveRateLimitResponse ...
+message MsgRemoveRateLimitResponse {}

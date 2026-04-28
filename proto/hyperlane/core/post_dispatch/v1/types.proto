@@ -1,12 +1,12 @@
 syntax = "proto3";
 package hyperlane.core.post_dispatch.v1;
 
-option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
-
 import "amino/amino.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
 
 // InterchainGasPaymaster ...
 message InterchainGasPaymaster {
@@ -123,4 +123,71 @@ message AggregationHook {
         "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
     (gogoproto.nullable) = false
   ];
+}
+
+// RateLimitedHook ...
+message RateLimitedHook {
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // mailbox_id ...
+  string mailbox_id = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// TokenRateLimit stores the token-bucket rate limit state for one token on a
+// rate-limited post-dispatch hook. The limit is keyed by hook_id and token_id,
+// refills over the module's fixed one-day duration, and is consumed when the
+// hook dispatches a matching outbound Warp token transfer.
+message TokenRateLimit {
+  // hook_id identifies the rate-limited hook that owns this token limit.
+  string hook_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // token_id identifies the token this limit applies to. For Warp token
+  // dispatches, this is the outbound message sender address.
+  string token_id = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // max_capacity is the configured maximum token amount over the refill
+  // duration, expressed in raw token message units.
+  string max_capacity = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // filled_level is the last persisted available capacity in the token bucket.
+  // The current level is computed lazily by adding elapsed refill capacity and
+  // capping the result at the effective capacity.
+  string filled_level = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // refill_rate is the integer amount of capacity restored per second. It is
+  // derived from max_capacity divided by the fixed refill duration.
+  string refill_rate = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // last_updated is the Unix timestamp, in seconds, when filled_level was last
+  // persisted.
+  uint64 last_updated = 6;
 }

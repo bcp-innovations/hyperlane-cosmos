@@ -112,3 +112,21 @@ func createDummyAggregationHook(s *i.KeeperTestSuite, creator string, hooks []ut
 
 	return response.Id, nil
 }
+
+func createDummyRateLimitedHook(s *i.KeeperTestSuite, creator string, mailboxId util.HexAddress) (util.HexAddress, error) {
+	res, err := s.RunTx(&types.MsgCreateRateLimitedHook{
+		Owner:     creator,
+		MailboxId: mailboxId,
+	})
+	if err != nil {
+		return [32]byte{}, err
+	}
+
+	var response types.MsgCreateRateLimitedHookResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	if err != nil {
+		return [32]byte{}, err
+	}
+
+	return response.Id, nil
+}

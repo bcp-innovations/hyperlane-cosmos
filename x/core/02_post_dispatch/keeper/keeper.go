@@ -18,6 +18,9 @@ type Keeper struct {
 
 	aggregationHooks collections.Map[uint64, types.AggregationHook]
 
+	rateLimitedHooks collections.Map[uint64, types.RateLimitedHook]
+	tokenRateLimits  collections.Map[collections.Pair[uint64, []byte], types.TokenRateLimit]
+
 	schema collections.Schema
 
 	coreKeeper types.CoreKeeper
@@ -35,6 +38,9 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ba
 		noopHooks:       collections.NewMap(sb, types.NoopHooksKey, "noop_hooks_key", collections.Uint64Key, codec.CollValue[types.NoopHook](cdc)),
 
 		aggregationHooks: collections.NewMap(sb, types.AggregationHooksKey, "aggregation_hooks_key", collections.Uint64Key, codec.CollValue[types.AggregationHook](cdc)),
+
+		rateLimitedHooks: collections.NewMap(sb, types.RateLimitedHooksKey, "rate_limited_hooks_key", collections.Uint64Key, codec.CollValue[types.RateLimitedHook](cdc)),
+		tokenRateLimits:  collections.NewMap(sb, types.TokenRateLimitsKey, "token_rate_limits_key", collections.PairKeyCodec(collections.Uint64Key, collections.BytesKey), codec.CollValue[types.TokenRateLimit](cdc)),
 
 		bankKeeper: bankKeeper,
 	}
@@ -62,4 +68,5 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_INTERCHAIN_GAS_PAYMASTER, InterchainGasPaymasterHookHandler{*k})
 	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_UNUSED, NoopHookHandler{*k})
 	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_AGGREGATION, AggregationHookHandler{*k})
+	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_RATE_LIMITED, RateLimitedHookHandler{*k})
 }

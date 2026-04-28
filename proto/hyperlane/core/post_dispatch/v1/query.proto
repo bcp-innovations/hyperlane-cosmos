@@ -1,18 +1,17 @@
 syntax = "proto3";
 package hyperlane.core.post_dispatch.v1;
 
-option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
-
-import "cosmos/base/query/v1beta1/pagination.proto";
-import "google/api/annotations.proto";
 import "amino/amino.proto";
-import "gogoproto/gogo.proto";
-import "hyperlane/core/post_dispatch/v1/types.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "hyperlane/core/post_dispatch/v1/types.proto";
+
+option go_package = "github.com/bcp-innovations/hyperlane-cosmos/x/core/02_post_dispatch/types";
 
 // Msg defines the module Msg service.
 service Query {
-
   // Igps ...
   rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
     option (google.api.http).get = "/hyperlane/v1/igps";
@@ -69,6 +68,32 @@ service Query {
   rpc AggregationHook(QueryAggregationHookRequest)
       returns (QueryAggregationHookResponse) {
     option (google.api.http).get = "/hyperlane/v1/aggregation_hooks/{id}";
+  }
+
+  // RateLimitedHooks ...
+  rpc RateLimitedHooks(QueryRateLimitedHooksRequest)
+      returns (QueryRateLimitedHooksResponse) {
+    option (google.api.http).get = "/hyperlane/v1/rate_limited_hooks";
+  }
+
+  // RateLimitedHook ...
+  rpc RateLimitedHook(QueryRateLimitedHookRequest)
+      returns (QueryRateLimitedHookResponse) {
+    option (google.api.http).get = "/hyperlane/v1/rate_limited_hooks/{id}";
+  }
+
+  // TokenRateLimits ...
+  rpc TokenRateLimits(QueryTokenRateLimitsRequest)
+      returns (QueryTokenRateLimitsResponse) {
+    option (google.api.http).get =
+        "/hyperlane/v1/rate_limited_hooks/{hook_id}/token_rate_limits";
+  }
+
+  // TokenRateLimit ...
+  rpc TokenRateLimit(QueryTokenRateLimitRequest)
+      returns (QueryTokenRateLimitResponse) {
+    option (google.api.http).get = "/hyperlane/v1/rate_limited_hooks/{hook_id}/"
+                                   "token_rate_limits/{token_id}";
   }
 }
 
@@ -134,7 +159,6 @@ message QueryMerkleTreeHooksRequest {
 message QueryMerkleTreeHooksResponse {
   repeated WrappedMerkleTreeHookResponse merkle_tree_hooks = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-  ;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -145,7 +169,6 @@ message QueryMerkleTreeHookRequest { string id = 1; }
 message QueryMerkleTreeHookResponse {
   WrappedMerkleTreeHookResponse merkle_tree_hook = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-  ;
 }
 
 // WrappedMerkleTreeHookResponse
@@ -203,4 +226,61 @@ message QueryAggregationHooksResponse {
   repeated AggregationHook aggregation_hooks = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryRateLimitedHookRequest ...
+message QueryRateLimitedHookRequest { string id = 1; }
+
+// QueryRateLimitedHookResponse ...
+message QueryRateLimitedHookResponse { RateLimitedHook rate_limited_hook = 1; }
+
+// QueryRateLimitedHooksRequest ...
+message QueryRateLimitedHooksRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryRateLimitedHooksResponse ...
+message QueryRateLimitedHooksResponse {
+  repeated RateLimitedHook rate_limited_hooks = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTokenRateLimitsRequest ...
+message QueryTokenRateLimitsRequest {
+  string hook_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryTokenRateLimitsResponse ...
+message QueryTokenRateLimitsResponse {
+  repeated EffectiveTokenRateLimit effective_token_rate_limits = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryTokenRateLimitRequest ...
+message QueryTokenRateLimitRequest {
+  string hook_id = 1;
+  string token_id = 2;
+}
+
+// QueryTokenRateLimitResponse ...
+message QueryTokenRateLimitResponse {
+  EffectiveTokenRateLimit effective_token_rate_limit = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// EffectiveTokenRateLimit ...
+message EffectiveTokenRateLimit {
+  TokenRateLimit token_rate_limit = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  string current_level = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string effective_capacity = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }

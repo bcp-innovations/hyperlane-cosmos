@@ -11,6 +11,7 @@ import (
 type CoreKeeper interface {
 	LocalDomain(ctx context.Context, mailboxId util.HexAddress) (uint32, error)
 	MailboxIdExists(ctx context.Context, mailboxId util.HexAddress) (bool, error)
+	IsLatestDispatchedMessage(ctx context.Context, mailboxId util.HexAddress, message util.HyperlaneMessage) (bool, error)
 	PostDispatchRouter() *util.Router[util.PostDispatchModule]
 }
 

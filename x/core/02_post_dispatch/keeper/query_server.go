@@ -250,3 +250,91 @@ func (qs queryServer) AggregationHooks(ctx context.Context, req *types.QueryAggr
 		Pagination:       pagination,
 	}, nil
 }
+
+//
+// Rate Limited Hook
+
+func (qs queryServer) RateLimitedHook(ctx context.Context, req *types.QueryRateLimitedHookRequest) (*types.QueryRateLimitedHookResponse, error) {
+	hookId, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	hook, err := qs.k.rateLimitedHooks.Get(ctx, hookId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryRateLimitedHookResponse{
+		RateLimitedHook: &hook,
+	}, nil
+}
+
+func (qs queryServer) RateLimitedHooks(ctx context.Context, req *types.QueryRateLimitedHooksRequest) (*types.QueryRateLimitedHooksResponse, error) {
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.rateLimitedHooks, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryRateLimitedHooksResponse{
+		RateLimitedHooks: values,
+		Pagination:       pagination,
+	}, nil
+}
+
+func (qs queryServer) TokenRateLimits(ctx context.Context, req *types.QueryTokenRateLimitsRequest) (*types.QueryTokenRateLimitsResponse, error) {
+	hookId, err := util.DecodeHexAddress(req.HookId)
+	if err != nil {
+		return nil, err
+	}
+
+	rng := collections.NewPrefixedPairRange[uint64, []byte](hookId.GetInternalId())
+	iter, err := qs.k.tokenRateLimits.Iterate(ctx, rng)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenRateLimits, err := iter.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]types.EffectiveTokenRateLimit, len(tokenRateLimits))
+	for i := range tokenRateLimits {
+		responses[i] = qs.effectiveTokenRateLimit(ctx, tokenRateLimits[i])
+	}
+
+	return &types.QueryTokenRateLimitsResponse{
+		EffectiveTokenRateLimits: responses,
+	}, nil
+}
+
+func (qs queryServer) TokenRateLimit(ctx context.Context, req *types.QueryTokenRateLimitRequest) (*types.QueryTokenRateLimitResponse, error) {
+	hookId, err := util.DecodeHexAddress(req.HookId)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenId, err := util.DecodeHexAddress(req.TokenId)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenRateLimit, err := qs.k.tokenRateLimits.Get(ctx, types.TokenRateLimitKey(hookId, tokenId))
+	if err != nil {
+		return nil, err
+	}
+
+	response := qs.effectiveTokenRateLimit(ctx, tokenRateLimit)
+	return &types.QueryTokenRateLimitResponse{
+		EffectiveTokenRateLimit: response,
+	}, nil
+}
+
+func (qs queryServer) effectiveTokenRateLimit(ctx context.Context, tokenRateLimit types.TokenRateLimit) types.EffectiveTokenRateLimit {
+	return types.EffectiveTokenRateLimit{
+		TokenRateLimit:    tokenRateLimit,
+		CurrentLevel:      qs.k.CurrentRateLimitLevel(ctx, tokenRateLimit),
+		EffectiveCapacity: tokenRateLimit.EffectiveCapacity(),
+	}
+}

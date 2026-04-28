@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
+	stderrors "errors"
 
+	"cosmossdk.io/collections"
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -135,6 +137,144 @@ func (ms msgServer) CreateAggregationHook(ctx context.Context, msg *types.MsgCre
 	return &types.MsgCreateAggregationHookResponse{
 		Id: nextId,
 	}, nil
+}
+
+func (k *Keeper) CreateRateLimitedHook(ctx context.Context, msg *types.MsgCreateRateLimitedHook) (util.HexAddress, error) {
+	if exists, err := k.coreKeeper.MailboxIdExists(ctx, msg.MailboxId); !exists || err != nil {
+		return util.HexAddress{}, errors.Wrapf(types.ErrMailboxDoesNotExist, "%s", msg.MailboxId)
+	}
+
+	nextId, err := k.coreKeeper.PostDispatchRouter().GetNextSequence(ctx, types.POST_DISPATCH_HOOK_TYPE_RATE_LIMITED)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	hook := types.RateLimitedHook{
+		Id:        nextId,
+		Owner:     msg.Owner,
+		MailboxId: msg.MailboxId,
+	}
+
+	if err := k.rateLimitedHooks.Set(ctx, hook.Id.GetInternalId(), hook); err != nil {
+		return util.HexAddress{}, err
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateRateLimitedHook{
+		RateLimitedHookId: hook.Id,
+		Owner:             hook.Owner,
+		MailboxId:         hook.MailboxId,
+	})
+
+	return nextId, nil
+}
+
+func (ms msgServer) CreateRateLimitedHook(ctx context.Context, msg *types.MsgCreateRateLimitedHook) (*types.MsgCreateRateLimitedHookResponse, error) {
+	nextId, err := ms.k.CreateRateLimitedHook(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgCreateRateLimitedHookResponse{
+		Id: nextId,
+	}, nil
+}
+
+func (ms msgServer) SetRateLimit(ctx context.Context, msg *types.MsgSetRateLimit) (*types.MsgSetRateLimitResponse, error) {
+	if msg.HookId.IsZeroAddress() || msg.HookId.GetType() != uint32(types.POST_DISPATCH_HOOK_TYPE_RATE_LIMITED) {
+		return nil, errors.Wrapf(types.ErrInvalidRateLimitedHook, "%s", msg.HookId.String())
+	}
+
+	if msg.TokenId.IsZeroAddress() {
+		return nil, errors.Wrap(types.ErrInvalidRateLimitedHook, "token id cannot be zero")
+	}
+
+	if msg.MaxCapacity.LT(types.RateLimitDuration) {
+		return nil, errors.Wrapf(types.ErrRateLimitNotSet, "max capacity must be at least %s", types.RateLimitDuration.String())
+	}
+
+	hook, err := ms.k.rateLimitedHooks.Get(ctx, msg.HookId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	if hook.Owner != msg.Owner {
+		return nil, errors.Wrapf(types.ErrUnauthorized, "owner %s is not hook owner", msg.Owner)
+	}
+
+	refillRate := msg.MaxCapacity.Quo(types.RateLimitDuration)
+	now := currentBlockUnix(ctx)
+
+	tokenRateLimit := types.TokenRateLimit{
+		HookId:      msg.HookId,
+		TokenId:     msg.TokenId,
+		MaxCapacity: msg.MaxCapacity,
+		RefillRate:  refillRate,
+		LastUpdated: now,
+	}
+	effectiveCapacity := tokenRateLimit.EffectiveCapacity()
+	tokenRateLimit.FilledLevel = effectiveCapacity
+
+	key := types.TokenRateLimitKey(msg.HookId, msg.TokenId)
+	existing, err := ms.k.tokenRateLimits.Get(ctx, key)
+	if err == nil {
+		currentLevel := ms.k.CurrentRateLimitLevel(ctx, existing)
+		if currentLevel.GT(effectiveCapacity) {
+			currentLevel = effectiveCapacity
+		}
+		tokenRateLimit.FilledLevel = currentLevel
+	} else if !stderrors.Is(err, collections.ErrNotFound) {
+		return nil, err
+	}
+
+	if err := ms.k.tokenRateLimits.Set(ctx, key, tokenRateLimit); err != nil {
+		return nil, err
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventSetRateLimit{
+		RateLimitedHookId: msg.HookId,
+		Owner:             msg.Owner,
+		TokenId:           msg.TokenId,
+		MaxCapacity:       msg.MaxCapacity,
+		RefillRate:        refillRate,
+	})
+
+	return &types.MsgSetRateLimitResponse{}, nil
+}
+
+func (ms msgServer) RemoveRateLimit(ctx context.Context, msg *types.MsgRemoveRateLimit) (*types.MsgRemoveRateLimitResponse, error) {
+	if msg.HookId.IsZeroAddress() || msg.HookId.GetType() != uint32(types.POST_DISPATCH_HOOK_TYPE_RATE_LIMITED) {
+		return nil, errors.Wrapf(types.ErrInvalidRateLimitedHook, "%s", msg.HookId.String())
+	}
+
+	if msg.TokenId.IsZeroAddress() {
+		return nil, errors.Wrap(types.ErrInvalidRateLimitedHook, "token id cannot be zero")
+	}
+
+	hook, err := ms.k.rateLimitedHooks.Get(ctx, msg.HookId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	if hook.Owner != msg.Owner {
+		return nil, errors.Wrapf(types.ErrUnauthorized, "owner %s is not hook owner", msg.Owner)
+	}
+
+	key := types.TokenRateLimitKey(msg.HookId, msg.TokenId)
+	if has, err := ms.k.tokenRateLimits.Has(ctx, key); err != nil {
+		return nil, err
+	} else if has {
+		if err := ms.k.tokenRateLimits.Remove(ctx, key); err != nil {
+			return nil, err
+		}
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventRemoveRateLimit{
+		RateLimitedHookId: msg.HookId,
+		Owner:             msg.Owner,
+		TokenId:           msg.TokenId,
+	})
+
+	return &types.MsgRemoveRateLimitResponse{}, nil
 }
 
 func (k *Keeper) validateAggregationHooks(ctx context.Context, hooks []util.HexAddress) error {
