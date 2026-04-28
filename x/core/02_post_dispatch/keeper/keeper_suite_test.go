@@ -77,3 +77,38 @@ func createDummyMerkleTreeHook(s *i.KeeperTestSuite, creator string, mailboxId u
 
 	return response.Id, nil
 }
+
+func createDummyNoopHook(s *i.KeeperTestSuite, creator string) (util.HexAddress, error) {
+	res, err := s.RunTx(&types.MsgCreateNoopHook{
+		Owner: creator,
+	})
+	if err != nil {
+		return [32]byte{}, err
+	}
+
+	var response types.MsgCreateNoopHookResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	if err != nil {
+		return [32]byte{}, err
+	}
+
+	return response.Id, nil
+}
+
+func createDummyAggregationHook(s *i.KeeperTestSuite, creator string, hooks []util.HexAddress) (util.HexAddress, error) {
+	res, err := s.RunTx(&types.MsgCreateAggregationHook{
+		Owner: creator,
+		Hooks: hooks,
+	})
+	if err != nil {
+		return [32]byte{}, err
+	}
+
+	var response types.MsgCreateAggregationHookResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	if err != nil {
+		return [32]byte{}, err
+	}
+
+	return response.Id, nil
+}

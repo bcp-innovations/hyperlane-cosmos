@@ -14,6 +14,8 @@ message GenesisState {
   repeated MerkleTreeHook merkle_tree_hooks = 3
       [ (gogoproto.nullable) = false ];
   repeated NoopHook noop_hooks = 4 [ (gogoproto.nullable) = false ];
+  repeated AggregationHook aggregation_hooks = 5
+      [ (gogoproto.nullable) = false ];
 }
 
 // GenesisDestinationGasConfigWrapper ...

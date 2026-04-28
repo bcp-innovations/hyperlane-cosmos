@@ -16,6 +16,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgClaim{},
 		&MsgCreateMerkleTreeHook{},
 		&MsgCreateNoopHook{},
+		&MsgCreateAggregationHook{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

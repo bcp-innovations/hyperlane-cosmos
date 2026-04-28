@@ -29,6 +29,8 @@ func GetQueryCmd() *cobra.Command {
 		CmdMerkleTreeHook(),
 		CmdNoopHooks(),
 		CmdNoopHook(),
+		CmdAggregationHooks(),
+		CmdAggregationHook(),
 	)
 	return cmd
 }
@@ -291,6 +293,73 @@ func CmdNoopHook() *cobra.Command {
 			}
 
 			res, err := queryClient.NoopHook(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdAggregationHooks() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "aggregation-hooks",
+		Short: "List all aggregation hooks",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryAggregationHooksRequest{
+				Pagination: pageReq,
+			}
+
+			res, err := queryClient.AggregationHooks(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "aggregation-hooks")
+
+	return cmd
+}
+
+func CmdAggregationHook() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "aggregation-hook [id]",
+		Short: "Get details for a specific aggregation hook",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryAggregationHookRequest{
+				Id: args[0],
+			}
+
+			res, err := queryClient.AggregationHook(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

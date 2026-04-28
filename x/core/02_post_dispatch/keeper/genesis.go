@@ -41,6 +41,15 @@ func InitGenesis(ctx sdk.Context, k Keeper, data *types.GenesisState) {
 			panic(err)
 		}
 	}
+
+	for _, aggregationHook := range data.AggregationHooks {
+		if err := k.validateAggregationHooks(ctx, aggregationHook.Hooks); err != nil {
+			panic(err)
+		}
+		if err := k.aggregationHooks.Set(ctx, aggregationHook.Id.GetInternalId(), aggregationHook); err != nil {
+			panic(err)
+		}
+	}
 }
 
 func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
@@ -95,10 +104,21 @@ func ExportGenesis(ctx sdk.Context, k Keeper) *types.GenesisState {
 		panic(err)
 	}
 
+	iterAggregationHooks, err := k.aggregationHooks.Iterate(ctx, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	aggregationHooks, err := iterAggregationHooks.Values()
+	if err != nil {
+		panic(err)
+	}
+
 	return &types.GenesisState{
-		Igps:            igps,
-		IgpGasConfigs:   gasConfigs,
-		MerkleTreeHooks: merkleTreeHooks,
-		NoopHooks:       noopHooks,
+		Igps:             igps,
+		IgpGasConfigs:    gasConfigs,
+		MerkleTreeHooks:  merkleTreeHooks,
+		NoopHooks:        noopHooks,
+		AggregationHooks: aggregationHooks,
 	}
 }

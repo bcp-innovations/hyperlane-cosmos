@@ -219,3 +219,34 @@ func (qs queryServer) NoopHooks(ctx context.Context, req *types.QueryNoopHooksRe
 		Pagination: pagination,
 	}, nil
 }
+
+//
+// Aggregation Hook
+
+func (qs queryServer) AggregationHook(ctx context.Context, req *types.QueryAggregationHookRequest) (*types.QueryAggregationHookResponse, error) {
+	hookId, err := util.DecodeHexAddress(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	aggregationHook, err := qs.k.aggregationHooks.Get(ctx, hookId.GetInternalId())
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryAggregationHookResponse{
+		AggregationHook: &aggregationHook,
+	}, nil
+}
+
+func (qs queryServer) AggregationHooks(ctx context.Context, req *types.QueryAggregationHooksRequest) (*types.QueryAggregationHooksResponse, error) {
+	values, pagination, err := util.GetPaginatedFromMap(ctx, qs.k.aggregationHooks, req.Pagination)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryAggregationHooksResponse{
+		AggregationHooks: values,
+		Pagination:       pagination,
+	}, nil
+}

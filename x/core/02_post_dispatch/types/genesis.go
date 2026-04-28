@@ -6,10 +6,11 @@ import (
 
 func NewGenesisState() *GenesisState {
 	return &GenesisState{
-		Igps:            []InterchainGasPaymaster{},
-		IgpGasConfigs:   []GenesisDestinationGasConfigWrapper{},
-		MerkleTreeHooks: []MerkleTreeHook{},
-		NoopHooks:       []NoopHook{},
+		Igps:             []InterchainGasPaymaster{},
+		IgpGasConfigs:    []GenesisDestinationGasConfigWrapper{},
+		MerkleTreeHooks:  []MerkleTreeHook{},
+		NoopHooks:        []NoopHook{},
+		AggregationHooks: []AggregationHook{},
 	}
 }
 
@@ -26,6 +27,14 @@ func (gs *GenesisState) Validate() error {
 		if _, ok := igpMap[config.IgpId]; !ok {
 			return fmt.Errorf("igp does not exist: %d", config.IgpId)
 		}
+	}
+
+	aggregationHookMap := make(map[uint64]struct{})
+	for _, aggregationHook := range gs.AggregationHooks {
+		if _, ok := aggregationHookMap[aggregationHook.Id.GetInternalId()]; ok {
+			return fmt.Errorf("duplicate aggregation hook: %s", aggregationHook.Id)
+		}
+		aggregationHookMap[aggregationHook.Id.GetInternalId()] = struct{}{}
 	}
 
 	return nil

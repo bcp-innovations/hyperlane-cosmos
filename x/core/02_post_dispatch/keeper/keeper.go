@@ -16,6 +16,8 @@ type Keeper struct {
 
 	noopHooks collections.Map[uint64, types.NoopHook]
 
+	aggregationHooks collections.Map[uint64, types.AggregationHook]
+
 	schema collections.Schema
 
 	coreKeeper types.CoreKeeper
@@ -31,6 +33,8 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ba
 
 		merkleTreeHooks: collections.NewMap(sb, types.MerkleTreeHooksKey, "merkle_tree_hooks_key", collections.Uint64Key, codec.CollValue[types.MerkleTreeHook](cdc)),
 		noopHooks:       collections.NewMap(sb, types.NoopHooksKey, "noop_hooks_key", collections.Uint64Key, codec.CollValue[types.NoopHook](cdc)),
+
+		aggregationHooks: collections.NewMap(sb, types.AggregationHooksKey, "aggregation_hooks_key", collections.Uint64Key, codec.CollValue[types.AggregationHook](cdc)),
 
 		bankKeeper: bankKeeper,
 	}
@@ -57,4 +61,5 @@ func (k *Keeper) SetCoreKeeper(coreKeeper types.CoreKeeper) {
 	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_MERKLE_TREE, MerkleTreeHookHandler{*k})
 	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_INTERCHAIN_GAS_PAYMASTER, InterchainGasPaymasterHookHandler{*k})
 	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_UNUSED, NoopHookHandler{*k})
+	router.RegisterModule(types.POST_DISPATCH_HOOK_TYPE_AGGREGATION, AggregationHookHandler{*k})
 }

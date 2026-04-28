@@ -87,6 +87,27 @@ message EventCreateNoopHook {
   string owner = 2;
 }
 
+// EventCreateAggregationHook ...
+message EventCreateAggregationHook {
+
+  // id ...
+  string aggregation_hook_id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2;
+
+  // hooks ...
+  repeated string hooks = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
 // EventCreateIgp ...
 message EventCreateIgp {
   string igp_id = 1 [

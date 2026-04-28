@@ -9,6 +9,7 @@ var (
 	InterchainGasPaymasterConfigsKey = []byte{SubModuleId, 3}
 	MerkleTreeHooksKey               = []byte{SubModuleId, 4}
 	NoopHooksKey                     = []byte{SubModuleId, 5}
+	AggregationHooksKey              = []byte{SubModuleId, 6}
 )
 
 const (

@@ -104,3 +104,23 @@ message NoopHook {
   // owner ...
   string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
+
+// AggregationHook ...
+message AggregationHook {
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // hooks ...
+  repeated string hooks = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}

@@ -30,6 +30,7 @@ go.work.sum
 # Depinject debug file
 debug_container.dot
 
+.DS_Store
 .idea
 /release/
 **/node_modules

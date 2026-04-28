@@ -8,4 +8,5 @@ var (
 	ErrHookDoesNotExistOrIsNotRegistered = errors.Register(SubModuleName, 3, "hook does not exist or isn't registered")
 	ErrUnauthorized                      = errors.Register(SubModuleName, 4, "unauthorized")
 	ErrInvalidOwner                      = errors.Register(SubModuleName, 5, "invalid owner")
+	ErrInvalidAggregationHook            = errors.Register(SubModuleName, 6, "invalid aggregation hook")
 )

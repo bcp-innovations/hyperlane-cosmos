@@ -23,6 +23,7 @@ func GetTxCmd() *cobra.Command {
 		NewIgpCmd(),
 		NewMerkleCmd(),
 		NewNoopHookCmd(),
+		NewAggregationHookCmd(),
 	)
 
 	return txCmd
