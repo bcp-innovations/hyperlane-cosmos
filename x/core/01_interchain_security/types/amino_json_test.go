@@ -93,6 +93,7 @@ func TestAminoJSONSigningMsgSetRoutingIsmDomain(t *testing.T) {
 // TestAminoJSONSigningMsgCreateAggregationIsm ensures that MsgCreateAggregationIsm,
 // which contains a repeated HexAddress field, can be signed with Amino JSON (e.g. Ledger).
 func TestAminoJSONSigningMsgCreateAggregationIsm(t *testing.T) {
+	// Arrange
 	msg := &types.MsgCreateAggregationIsm{
 		Creator: "cosmos1testowner",
 		Modules: []util.HexAddress{
@@ -120,6 +121,7 @@ func TestAminoJSONSigningMsgCreateAggregationIsm(t *testing.T) {
 
 	handler := aminojson.NewSignModeHandler(aminojson.SignModeHandlerOptions{})
 
+	// Act
 	signBytes, err := handler.GetSignBytes(context.Background(), signing.SignerData{
 		Address:       "cosmos1testowner",
 		ChainID:       "test-chain",
@@ -131,6 +133,7 @@ func TestAminoJSONSigningMsgCreateAggregationIsm(t *testing.T) {
 		BodyBytes:     bodyBytes,
 		AuthInfoBytes: authInfoBytes,
 	})
+	// Assert
 	require.NoError(t, err)
 	require.Contains(t, string(signBytes), `"type":"hyperlane/v1/MsgCreateAggregationIsm"`)
 	require.Contains(t, string(signBytes), msg.Modules[0].String())
