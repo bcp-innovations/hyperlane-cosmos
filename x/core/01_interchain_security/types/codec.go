@@ -14,6 +14,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgCreateNoopIsm{},
 		&MsgAnnounceValidator{},
 		&MsgCreateRoutingIsm{},
+		&MsgCreateAggregationIsm{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
@@ -24,5 +25,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MessageIdMultisigISM{},
 		&MerkleRootMultisigISM{},
 		&RoutingISM{},
+		&AggregationISM{},
 	)
 }

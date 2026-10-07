@@ -130,6 +130,10 @@ type MockIsm struct {
 	isms     map[util.HexAddress]struct{}
 	calls    *int
 	moduleId uint8
+	// rejecting contains ISMs that exist but fail every verification
+	rejecting map[util.HexAddress]struct{}
+	// receivedMetadata records the metadata passed to the last Verify call per ISM
+	receivedMetadata map[util.HexAddress][]byte
 }
 
 func CreateMockIsm(router *util.Router[util.InterchainSecurityModule]) *MockIsm {
@@ -138,6 +142,9 @@ func CreateMockIsm(router *util.Router[util.InterchainSecurityModule]) *MockIsm 
 		router:   router,
 		calls:    new(int),
 		moduleId: MOCK_ISM,
+
+		rejecting:        make(map[util.HexAddress]struct{}),
+		receivedMetadata: make(map[util.HexAddress][]byte),
 	}
 
 	router.RegisterModule(handler.moduleId, handler)
@@ -155,7 +162,11 @@ func (m MockIsm) Exists(ctx context.Context, ismId util.HexAddress) (bool, error
 
 func (m MockIsm) Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message util.HyperlaneMessage) (bool, error) {
 	*m.calls++
+	m.receivedMetadata[ismId] = metadata
 	if _, ok := m.isms[ismId]; !ok {
+		return false, nil
+	}
+	if _, ok := m.rejecting[ismId]; ok {
 		return false, nil
 	}
 	return true, nil
@@ -175,4 +186,20 @@ func (m MockIsm) CallCount() int {
 		return 0
 	}
 	return *m.calls
+}
+
+// RegisterRejectingIsm registers an ISM that exists but fails every verification.
+func (m MockIsm) RegisterRejectingIsm(ctx context.Context) (util.HexAddress, error) {
+	ismId, err := m.RegisterIsm(ctx)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+	m.rejecting[ismId] = struct{}{}
+	return ismId, nil
+}
+
+// ReceivedMetadata returns the metadata of the last Verify call for the given ISM.
+func (m MockIsm) ReceivedMetadata(ismId util.HexAddress) ([]byte, bool) {
+	metadata, ok := m.receivedMetadata[ismId]
+	return metadata, ok
 }

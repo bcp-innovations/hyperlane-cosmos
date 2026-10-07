@@ -40,6 +40,10 @@ service Msg {
   rpc UpdateRoutingIsmOwner(MsgUpdateRoutingIsmOwner)
       returns (MsgUpdateRoutingIsmOwnerResponse);
 
+  // CreateAggregationIsm ...
+  rpc CreateAggregationIsm(MsgCreateAggregationIsm)
+      returns (MsgCreateAggregationIsmResponse);
+
   // AnnounceValidator ...
   rpc AnnounceValidator(MsgAnnounceValidator)
       returns (MsgAnnounceValidatorResponse);
@@ -230,3 +234,31 @@ message MsgUpdateRoutingIsmOwner {
 
 // MsgUpdateRoutingIsmOwnerResponse ...
 message MsgUpdateRoutingIsmOwnerResponse {}
+
+// MsgCreateAggregationIsm ...
+message MsgCreateAggregationIsm {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "hyperlane/v1/MsgCreateAggregationIsm";
+
+  // creator ...
+  string creator = 1;
+
+  // modules are the ISM ids of the sub-ISMs.
+  repeated string modules = 2 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // threshold is the number of modules that must verify a message.
+  uint32 threshold = 3;
+}
+
+// MsgCreateAggregationIsmResponse ...
+message MsgCreateAggregationIsmResponse {
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+}

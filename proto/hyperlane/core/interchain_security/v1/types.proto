@@ -45,6 +45,36 @@ message RoutingISM {
   repeated Route routes = 3 [ (gogoproto.nullable) = false ];
 }
 
+// AggregationISM verifies a message if at least `threshold` of its `modules`
+// verify it. It mirrors the StaticAggregationIsm on EVM: the set of modules
+// and the threshold are immutable once created.
+message AggregationISM {
+  option (gogoproto.goproto_getters) = false;
+  option (cosmos_proto.implements_interface) =
+      "hyperlane.core.interchain_security.v1.HyperlaneInterchainSecurityModule";
+
+  // id ...
+  string id = 1 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // owner ...
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // modules are the ISM ids of the sub-ISMs. The order matters, as the
+  // aggregation metadata references sub-ISMs by their index in this list.
+  repeated string modules = 3 [
+    (gogoproto.customtype) =
+        "github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress",
+    (gogoproto.nullable) = false
+  ];
+
+  // threshold is the number of modules that must verify a message.
+  uint32 threshold = 4;
+}
+
 // MessageIdMultisigISM ...
 message MessageIdMultisigISM {
   option (gogoproto.goproto_getters) = false;

@@ -14,4 +14,6 @@ var (
 	ErrUnauthorized                 = errors.Register(SubModuleName, 9, "unauthorized")
 	ErrInvalidOwner                 = errors.Register(SubModuleName, 10, "invalid owner")
 	ErrDuplicatedDomains            = errors.Register(SubModuleName, 11, "route for domain already exists")
+	ErrInvalidAggregationConfig     = errors.Register(SubModuleName, 12, "invalid aggregation ism configuration")
+	ErrInvalidAggregationMetadata   = errors.Register(SubModuleName, 13, "invalid aggregation ism metadata")
 )

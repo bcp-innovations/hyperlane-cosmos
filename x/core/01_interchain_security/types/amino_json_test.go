@@ -89,3 +89,50 @@ func TestAminoJSONSigningMsgSetRoutingIsmDomain(t *testing.T) {
 	require.NoError(t, err, "GetSignBytes should succeed for MsgSetRoutingIsmDomain")
 	require.NotEmpty(t, signBytes)
 }
+
+// TestAminoJSONSigningMsgCreateAggregationIsm ensures that MsgCreateAggregationIsm,
+// which contains a repeated HexAddress field, can be signed with Amino JSON (e.g. Ledger).
+func TestAminoJSONSigningMsgCreateAggregationIsm(t *testing.T) {
+	msg := &types.MsgCreateAggregationIsm{
+		Creator: "cosmos1testowner",
+		Modules: []util.HexAddress{
+			util.CreateMockHexAddress("ism", 1),
+			util.CreateMockHexAddress("ism", 2),
+		},
+		Threshold: 2,
+	}
+
+	msgBytes, err := gogoproto.Marshal(msg)
+	require.NoError(t, err)
+
+	body := &txv1beta1.TxBody{
+		Messages: []*anypb.Any{{
+			TypeUrl: "/" + gogoproto.MessageName(msg),
+			Value:   msgBytes,
+		}},
+	}
+	bodyBytes, err := proto.Marshal(body)
+	require.NoError(t, err)
+
+	authInfo := &txv1beta1.AuthInfo{Fee: &txv1beta1.Fee{GasLimit: 200000}}
+	authInfoBytes, err := proto.Marshal(authInfo)
+	require.NoError(t, err)
+
+	handler := aminojson.NewSignModeHandler(aminojson.SignModeHandlerOptions{})
+
+	signBytes, err := handler.GetSignBytes(context.Background(), signing.SignerData{
+		Address:       "cosmos1testowner",
+		ChainID:       "test-chain",
+		AccountNumber: 1,
+		Sequence:      0,
+	}, signing.TxData{
+		Body:          body,
+		AuthInfo:      authInfo,
+		BodyBytes:     bodyBytes,
+		AuthInfoBytes: authInfoBytes,
+	})
+	require.NoError(t, err)
+	require.Contains(t, string(signBytes), `"type":"hyperlane/v1/MsgCreateAggregationIsm"`)
+	require.Contains(t, string(signBytes), msg.Modules[0].String())
+	require.Contains(t, string(signBytes), msg.Modules[1].String())
+}

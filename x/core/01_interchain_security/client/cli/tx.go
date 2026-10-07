@@ -40,6 +40,7 @@ func GetTxCmd() *cobra.Command {
 		CmdSetRoutingIsmDomain(),
 		CmdRemoveRoutingIsmDomain(),
 		CmdUpdateRoutingIsmOwner(),
+		CmdCreateAggregationIsm(),
 	)
 
 	return txCmd
@@ -328,6 +329,47 @@ func CmdUpdateRoutingIsmOwner() *cobra.Command {
 
 	cmd.Flags().StringVar(&newOwner, "new-owner", "", "new owner")
 	cmd.Flags().BoolVar(&renounceOwnership, "renounce-ownership", false, "renounce ownership")
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdCreateAggregationIsm() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-aggregation [modules] [threshold]",
+		Short: "Create a Hyperlane Aggregation ISM",
+		Long:  "Create a Hyperlane Aggregation ISM from a comma-separated list of ISM ids. The order of the modules determines their index in the aggregation metadata.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			var modules []util.HexAddress
+			for _, module := range strings.Split(args[0], ",") {
+				ismId, err := util.DecodeHexAddress(strings.TrimSpace(module))
+				if err != nil {
+					return err
+				}
+				modules = append(modules, ismId)
+			}
+
+			threshold, err := strconv.ParseUint(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgCreateAggregationIsm{
+				Creator:   clientCtx.GetFromAddress().String(),
+				Modules:   modules,
+				Threshold: uint32(threshold),
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
 
 	flags.AddTxFlagsToCmd(cmd)
 

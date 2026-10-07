@@ -214,6 +214,55 @@ func (m msgServer) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRou
 	return &types.MsgSetRoutingIsmDomainResponse{}, nil
 }
 
+func (k *Keeper) CreateAggregationIsm(ctx context.Context, req *types.MsgCreateAggregationIsm) (util.HexAddress, error) {
+	ismId, err := k.coreKeeper.IsmRouter().GetNextSequence(ctx, types.INTERCHAIN_SECURITY_MODULE_TYPE_AGGREGATION)
+	if err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	newIsm := types.AggregationISM{
+		Id:        ismId,
+		Owner:     req.Creator,
+		Modules:   req.Modules,
+		Threshold: req.Threshold,
+	}
+
+	if err = newIsm.Validate(); err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrInvalidAggregationConfig, err.Error())
+	}
+
+	for _, module := range newIsm.Modules {
+		exists, err := k.coreKeeper.IsmExists(ctx, module)
+		if err != nil || !exists {
+			return util.HexAddress{}, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", module.String())
+		}
+	}
+
+	if err = k.isms.Set(ctx, ismId.GetInternalId(), &newIsm); err != nil {
+		return util.HexAddress{}, errors.Wrap(types.ErrUnexpectedError, err.Error())
+	}
+
+	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.EventCreateAggregationIsm{
+		IsmId:     newIsm.Id,
+		Owner:     newIsm.Owner,
+		Modules:   newIsm.Modules,
+		Threshold: newIsm.Threshold,
+	})
+
+	return ismId, nil
+}
+
+// CreateAggregationIsm creates a new immutable Aggregation ISM after validating
+// the threshold and that all modules reference existing ISMs.
+func (m msgServer) CreateAggregationIsm(ctx context.Context, req *types.MsgCreateAggregationIsm) (*types.MsgCreateAggregationIsmResponse, error) {
+	ismId, err := m.k.CreateAggregationIsm(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgCreateAggregationIsmResponse{Id: ismId}, nil
+}
+
 // AnnounceValidator lets a validator store a string in the state, which is queryable.
 // The string should contain the storage location for the proofs (e.g. an S3 bucket)
 // The Relayer uses this information to fetch the signatures for messages.

@@ -38,4 +38,5 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&types.MsgSetRoutingIsmDomain{}, "hyperlane/v1/MsgSetRoutingIsmDomain", nil)
 	cdc.RegisterConcrete(&types.MsgRemoveRoutingIsmDomain{}, "hyperlane/v1/MsgRemoveRoutingIsmDomain", nil)
 	cdc.RegisterConcrete(&types.MsgUpdateRoutingIsmOwner{}, "hyperlane/v1/MsgUpdateRoutingIsmOwner", nil)
+	cdc.RegisterConcrete(&types.MsgCreateAggregationIsm{}, "hyperlane/v1/MsgCreateAggregationIsm", nil)
 }

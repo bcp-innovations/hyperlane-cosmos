@@ -14,6 +14,12 @@
 
 An '!' indicates a state machine breaking change.
 
+## Unreleased
+
+### Features
+
+- ! Add Aggregation ISM, compatible with the EVM `StaticAggregationIsm` metadata format.
+
 ## [v1.2.0-rc.0](https://github.com/bcp-innovations/hyperlane-cosmos/releases/tag/v1.2.0-rc.0) - 2026-02-13
 
 ### Features
