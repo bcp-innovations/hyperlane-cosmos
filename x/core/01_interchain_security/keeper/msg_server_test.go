@@ -30,12 +30,14 @@ TEST CASES - msg_server.go
 * Create (invalid) MessageIdMultisig ISM with less addresses
 * Create (invalid) MessageIdMultisig ISM with invalid threshold
 * Create (invalid) MessageIdMultisig ISM with duplicate validator addresses
+* Create (invalid) MessageIdMultisig ISM with duplicate validator addresses with different casing
 * Create (invalid) MessageIdMultisig ISM with invalid validator addresses
 * Create (invalid) MessageIdMultisig ISM with unsorted validator addresses
 * Create (valid) MessageIdMultisig ISM
 * Create (invalid) MerkleRootMultisig ISM with less addresses
 * Create (invalid) MerkleRootMultisig ISM with invalid threshold
 * Create (invalid) MerkleRootMultisig ISM with duplicate validator addresses
+* Create (invalid) MerkleRootMultisig ISM with duplicate validator addresses with different casing
 * Create (invalid) MerkleRootMultisig ISM with invalid validator addresses
 * Create (invalid) MerkleRootMultisig ISM with unsorted validator addresses
 * Create (valid) MerkleRootMultisig ISM
@@ -231,6 +233,25 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v: invalid multisig configuration", invalidAddress[0])))
 	})
 
+	It("Create (invalid) MessageIdMultisig ISM with duplicate validator addresses with different casing", func() {
+		// Arrange
+		// Both entries decode to the same address, only the hex casing differs.
+		invalidAddress := []string{
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xB05B6A0AA112B61A7AA16C19CAC27D970692995E",
+		}
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMessageIdMultisigIsm{
+			Creator:    creator.Address,
+			Validators: invalidAddress,
+			Threshold:  2,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v: invalid multisig configuration", invalidAddress[1])))
+	})
+
 	It("Create (invalid) MessageIdMultisig ISM with invalid validator addresses", func() {
 		// Arrange
 		validValidatorAddress := "0xa04b6a0aa112b61a7aa16c19cac27d970692995e"
@@ -354,6 +375,25 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v: invalid multisig configuration", invalidAddress[0])))
+	})
+
+	It("Create (invalid) MerkleRootMultisig ISM with duplicate validator addresses with different casing", func() {
+		// Arrange
+		// Both entries decode to the same address, only the hex casing differs.
+		invalidAddress := []string{
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xB05B6A0AA112B61A7AA16C19CAC27D970692995E",
+		}
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMerkleRootMultisigIsm{
+			Creator:    creator.Address,
+			Validators: invalidAddress,
+			Threshold:  2,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v: invalid multisig configuration", invalidAddress[1])))
 	})
 
 	It("Create (invalid) MerkleRootMultisig ISM with invalid validator addresses", func() {

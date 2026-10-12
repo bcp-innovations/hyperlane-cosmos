@@ -2,6 +2,7 @@ package types_test
 
 import (
 	"fmt"
+	"strings"
 
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -18,6 +19,7 @@ TEST CASES - message_id_multisig.go
 * Validate (invalid) invalid validator ethereum address
 * Validate (invalid) unsorted validators
 * Validate (invalid) duplicated validators
+* Validate (invalid) duplicate validators with different casing are rejected
 * Validate (invalid) too high threshold
 * Validate (invalid) zero threshold
 * Verify (invalid) empty metadata
@@ -26,6 +28,7 @@ TEST CASES - message_id_multisig.go
 * Verify (invalid) invalid signature
 * Verify (invalid) wrong signature
 * Verify (invalid) duplicated signature
+* Verify (invalid) duplicate validators with different casing are rejected
 * Verify (valid) multi-sig signature
 
 */
@@ -111,6 +114,23 @@ var _ = Describe("message_id_multisig.go", Ordered, func() {
 
 		// Assert
 		Expect(messageIdMultisigIsm.Validate().Error()).To(Equal(fmt.Sprintf("duplicate validator address: %s", PrivateKeys[0].address)))
+	})
+
+	It("Validate (invalid) duplicate validators with different casing are rejected", func() {
+		// Arrange
+		validators := []string{
+			PrivateKeys[0].address,
+			strings.ToLower(PrivateKeys[0].address),
+		}
+
+		// Act
+		messageIdMultisigIsm := types.MessageIdMultisigISM{
+			Validators: validators,
+			Threshold:  2,
+		}
+
+		// Assert
+		Expect(messageIdMultisigIsm.Validate()).To(MatchError(fmt.Sprintf("duplicate validator address: %s", validators[1])))
 	})
 
 	It("Validate (invalid) too high threshold", func() {
@@ -372,6 +392,35 @@ var _ = Describe("message_id_multisig.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
+		Expect(verify).To(BeFalse())
+	})
+
+	It("Verify (invalid) duplicate validators with different casing are rejected", func() {
+		// Arrange
+		// Both entries are the same 20-byte address, only the hex casing differs.
+		messageIdMultisigIsm := types.MessageIdMultisigISM{
+			Validators: []string{
+				PrivateKeys[0].address,
+				strings.ToLower(PrivateKeys[0].address),
+			},
+			Threshold: 2,
+		}
+
+		message := util.HyperlaneMessage{}
+		metadata := types.MessageIdMultisigMetadata{}
+		digest := metadata.Digest(&message)
+
+		// One key signs once, the signature is relayed twice.
+		metadata.Signatures = [][]byte{
+			signDigest(digest[:], PrivateKeys[0].privateKey),
+			signDigest(digest[:], PrivateKeys[0].privateKey),
+		}
+
+		// Act
+		verify, err := messageIdMultisigIsm.Verify(s.Ctx(), metadata.Bytes(), message)
+
+		// Assert
+		Expect(err).To(MatchError(fmt.Sprintf("invalid multisig validator set: duplicate validator address: %s", strings.ToLower(PrivateKeys[0].address))))
 		Expect(verify).To(BeFalse())
 	})
 

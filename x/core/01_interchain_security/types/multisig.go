@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 	"slices"
-	"strings"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -15,15 +15,20 @@ type MultisigISM interface {
 	GetThreshold() uint32
 }
 
-// VerifyMultisig checks if a message digest is signed by a sufficient number of validators.
-// It recovers public keys from signatures and ensures the threshold is met before returning success.
+// VerifyMultisig reports whether enough validators signed the message digest.
 func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, digest [32]byte) (bool, error) {
 	// Check if the number of provided signatures meets the threshold requirement
 	if len(signatures) < int(threshold) {
 		return false, fmt.Errorf("threshold can not be reached")
 	}
 
-	validatorCount := len(validators)
+	// Decode on every verification to protect against previously stored duplicates.
+	validatorAddresses, err := decodeValidators(validators)
+	if err != nil {
+		return false, fmt.Errorf("invalid multisig validator set: %w", err)
+	}
+
+	validatorCount := len(validatorAddresses)
 	validatorIndex := 0
 
 	// It is assumed that the signatures are ordered the same way as the validators.
@@ -33,11 +38,10 @@ func VerifyMultisig(validators []string, threshold uint32, signatures [][]byte, 
 			return false, fmt.Errorf("failed to recover validator signature: %w", err)
 		}
 
-		signerBytes := crypto.PubkeyToAddress(*recoveredPubkey)
-		signer := util.EncodeEthHex(signerBytes[:])
+		signer := crypto.PubkeyToAddress(*recoveredPubkey)
 
 		// Loop through remaining validators to find a match for the recovered signer
-		for validatorIndex < validatorCount && signer != strings.ToLower(validators[validatorIndex]) {
+		for validatorIndex < validatorCount && signer != validatorAddresses[validatorIndex] {
 			// If no match, increment the validator index and continue searching
 			validatorIndex++
 		}
@@ -64,29 +68,46 @@ func ValidateNewMultisig(m MultisigISM) error {
 		return fmt.Errorf("validator addresses less than threshold")
 	}
 
-	// Ensure that validators are sorted in ascending order.
-	if !slices.IsSorted(validators) {
+	validatorAddresses, err := decodeValidators(validators)
+	if err != nil {
+		return err
+	}
+
+	// Compare decoded addresses so hex casing does not affect their order.
+	if !slices.IsSortedFunc(validatorAddresses, common.Address.Cmp) {
 		return fmt.Errorf("validator addresses are not sorted correctly in ascending order")
 	}
 
-	count := map[string]int{}
-	for _, validatorAddress := range validators {
-		bytes, err := util.DecodeEthHex(validatorAddress)
+	return nil
+}
+
+// decodeValidators rejects malformed and duplicate addresses. Duplicates are
+// detected on the decoded bytes rather than the hex string, so case variants of
+// one address cannot occupy multiple validator slots.
+func decodeValidators(validators []string) ([]common.Address, error) {
+	decoded := make([]common.Address, 0, len(validators))
+	seen := make(map[common.Address]struct{}, len(validators))
+
+	for _, validator := range validators {
+		raw, err := util.DecodeEthHex(validator)
 		if err != nil {
-			return fmt.Errorf("invalid validator address: %s", validatorAddress)
+			return nil, fmt.Errorf("invalid validator address: %s", validator)
 		}
 
 		// Ensure that the address is an eth address with 20 bytes.
-		if len(bytes) != 20 {
-			return fmt.Errorf("invalid validator address: must be 20 bytes")
+		if len(raw) != common.AddressLength {
+			return nil, fmt.Errorf("invalid validator address: must be %d bytes", common.AddressLength)
 		}
 
-		// Check for duplications.
-		count[validatorAddress]++
-		if count[validatorAddress] > 1 {
-			return fmt.Errorf("duplicate validator address: %v", validatorAddress)
+		address := common.Address(raw)
+
+		if _, duplicate := seen[address]; duplicate {
+			return nil, fmt.Errorf("duplicate validator address: %s", validator)
 		}
+		seen[address] = struct{}{}
+
+		decoded = append(decoded, address)
 	}
 
-	return nil
+	return decoded, nil
 }
