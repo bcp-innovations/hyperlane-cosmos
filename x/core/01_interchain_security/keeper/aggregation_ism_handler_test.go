@@ -25,10 +25,11 @@ TEST CASES - aggregation_ism_handler_test.go
 * Create (invalid) - too many modules
 * Create (invalid) - non-existing module
 * Create (invalid) - nested aggregation ISM
+* Create (invalid) - routing ISM as module
 * Create (valid)
 * Verify (valid) - threshold of modules provided
 * Verify (valid) - each module receives its own metadata slice
-* Verify (valid) - nested aggregation and routing ISMs
+* Verify (valid) - aggregation ISM behind routing ISM
 * Verify (valid) - real MessageIdMultisig sub-ISM
 * Verify (invalid) - real MessageIdMultisig sub-ISM with signature for another message
 * Verify (invalid) - non-existing aggregation ISM
@@ -183,6 +184,23 @@ var _ = Describe("aggregation_ism_handler.go", Ordered, func() {
 		Expect(err.Error()).To(Equal(fmt.Sprintf("module %s is an aggregation ISM, nested aggregation ISMs are not allowed: invalid aggregation ism configuration", inner.String())))
 	})
 
+	It("Create (invalid) - routing ISM as module", func() {
+		// Arrange
+		modules := registerMockIsms(1)
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+		Expect(err).To(BeNil())
+		var routingResponse types.MsgCreateRoutingIsmResponse
+		Expect(proto.Unmarshal(res.MsgResponses[0].Value, &routingResponse)).To(Succeed())
+
+		// Act
+		_, err = createAggregationIsm([]util.HexAddress{modules[0], routingResponse.Id}, 1)
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("module %s is a routing ISM, routing ISMs are not allowed as aggregation modules: invalid aggregation ism configuration", routingResponse.Id.String())))
+	})
+
 	It("Create (valid)", func() {
 		// Arrange
 		modules := registerMockIsms(3)
@@ -237,27 +255,23 @@ var _ = Describe("aggregation_ism_handler.go", Ordered, func() {
 		Expect(received).To(Equal([]byte("third-metadata")))
 	})
 
-	It("Verify (valid) - nested aggregation and routing ISMs", func() {
+	It("Verify (valid) - aggregation ISM behind routing ISM", func() {
 		// Arrange
 		modules := registerMockIsms(2)
-		inner := mustCreateAggregationIsm(modules, 2)
+		aggregationIsm := mustCreateAggregationIsm(modules, 2)
 
 		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
-			Routes:  []types.Route{{Domain: 1, Ism: inner}},
+			Routes:  []types.Route{{Domain: 1, Ism: aggregationIsm}},
 		})
 		Expect(err).To(BeNil())
 		var routingResponse types.MsgCreateRoutingIsmResponse
 		Expect(proto.Unmarshal(res.MsgResponses[0].Value, &routingResponse)).To(Succeed())
 
-		noop := createNoopIsm(s, creator.Address)
-		outer := mustCreateAggregationIsm([]util.HexAddress{noop, routingResponse.Id}, 2)
-
-		innerMetadata := types.FormatAggregationMetadata([][]byte{{0xaa}, {0xbb}})
-		metadata := types.FormatAggregationMetadata([][]byte{{0x00}, innerMetadata})
+		metadata := types.FormatAggregationMetadata([][]byte{{0xaa}, {0xbb}})
 
 		// Act
-		result, err := s.App().HyperlaneKeeper.Verify(s.Ctx(), outer, metadata, util.HyperlaneMessage{Origin: 1})
+		result, err := s.App().HyperlaneKeeper.Verify(s.Ctx(), routingResponse.Id, metadata, util.HyperlaneMessage{Origin: 1})
 
 		// Assert
 		Expect(err).To(BeNil())

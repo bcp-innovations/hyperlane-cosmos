@@ -58,9 +58,13 @@ func (m *AggregationISM) Validate() error {
 		}
 		seen[module] = struct{}{}
 
-		// Nesting aggregation ISMs directly is not allowed to bound the call depth of Verify.
-		if module.GetType() == uint32(INTERCHAIN_SECURITY_MODULE_TYPE_AGGREGATION) {
+		// Aggregation and routing ISMs are not allowed as modules to bound the call depth of Verify.
+		// Routing ISMs are mutable, so allowing them would make cycles between routing and aggregation ISMs possible.
+		switch module.GetType() {
+		case uint32(INTERCHAIN_SECURITY_MODULE_TYPE_AGGREGATION):
 			return fmt.Errorf("module %s is an aggregation ISM, nested aggregation ISMs are not allowed", module.String())
+		case uint32(INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING):
+			return fmt.Errorf("module %s is a routing ISM, routing ISMs are not allowed as aggregation modules", module.String())
 		}
 	}
 
