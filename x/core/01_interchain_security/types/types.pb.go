@@ -113,9 +113,12 @@ func (m *RoutingISM) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_RoutingISM proto.InternalMessageInfo
 
-// AggregationISM verifies a message if at least `threshold` of its `modules`
-// verify it. It mirrors the StaticAggregationIsm on EVM: the set of modules
-// and the threshold are immutable once created.
+// AggregationISM verifies a message if exactly `threshold` of its `modules`
+// are provided with metadata and each of them verifies it. Providing metadata
+// for more or fewer than `threshold` modules fails verification, matching the
+// `!threshold` check of the AbstractAggregationIsm on EVM. It mirrors the
+// StaticAggregationIsm on EVM: the set of modules and the threshold are
+// immutable once created.
 type AggregationISM struct {
 	// id ...
 	Id github_com_bcp_innovations_hyperlane_cosmos_util.HexAddress `protobuf:"bytes,1,opt,name=id,proto3,customtype=github.com/bcp-innovations/hyperlane-cosmos/util.HexAddress" json:"id"`

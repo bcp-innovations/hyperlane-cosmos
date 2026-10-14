@@ -45,9 +45,12 @@ message RoutingISM {
   repeated Route routes = 3 [ (gogoproto.nullable) = false ];
 }
 
-// AggregationISM verifies a message if at least `threshold` of its `modules`
-// verify it. It mirrors the StaticAggregationIsm on EVM: the set of modules
-// and the threshold are immutable once created.
+// AggregationISM verifies a message if exactly `threshold` of its `modules`
+// are provided with metadata and each of them verifies it. Providing metadata
+// for more or fewer than `threshold` modules fails verification, matching the
+// `!threshold` check of the AbstractAggregationIsm on EVM. It mirrors the
+// StaticAggregationIsm on EVM: the set of modules and the threshold are
+// immutable once created.
 message AggregationISM {
   option (gogoproto.goproto_getters) = false;
   option (cosmos_proto.implements_interface) =
