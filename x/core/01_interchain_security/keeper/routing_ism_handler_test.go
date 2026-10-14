@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	storetypes "cosmossdk.io/store/types"
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -15,12 +17,12 @@ import (
 TEST CASES - routing_ism_handler_test.go
 
 * Verify (valid)
-* Verify (valid) with nested RoutingISM
 * Verify (valid) - multiple registered routes
 * Verify (invalid) - non-existing ISM
 * Verify (invalid) - message for non-enrolled domain
-* Verify (invalid) overflow due to self reference with large gas
 * Verify (valid) gas costs for 1000 registered routes
+* SetRoute (invalid) - nested RoutingISM
+* SetRoute (invalid) - self reference
 */
 
 var _ = Describe("msg_server.go", Ordered, func() {
@@ -77,34 +79,6 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Act
 		result, err := s.App().HyperlaneKeeper.Verify(s.Ctx(), routingIsm, []byte{}, util.HyperlaneMessage{
-			Origin: 1,
-		})
-
-		// Assert
-		Expect(err).To(BeNil())
-		Expect(result).To(BeTrue())
-
-		// verify mock ISM was called
-		Expect(mockIsm.CallCount()).To(Equal(1))
-	})
-
-	It("Verify (valid) with nested RoutingISM", func() {
-		// Arrange
-
-		// registry mock ISM
-		mockIsm := i.CreateMockIsm(s.App().HyperlaneKeeper.IsmRouter())
-
-		mockIsmId, err := mockIsm.RegisterIsm(s.Ctx())
-		Expect(err).To(BeNil())
-
-		routingIsmB := createRoutingIsm()
-		setRoute(routingIsmB, mockIsmId, 1)
-
-		routingIsmA := createRoutingIsm()
-		setRoute(routingIsmA, routingIsmB, 1)
-
-		// Act
-		result, err := s.App().HyperlaneKeeper.Verify(s.Ctx(), routingIsmA, []byte{}, util.HyperlaneMessage{
 			Origin: 1,
 		})
 
@@ -176,37 +150,6 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(result).To(BeFalse())
 	})
 
-	It("Verify (invalid) overflow due to self reference with large gas", func() {
-		// Arrange
-		routingIsm := createRoutingIsm()
-		setRoute(routingIsm, routingIsm, 1)
-
-		message := util.HyperlaneMessage{
-			Origin: 1,
-		}
-
-		// set an explict gas limit
-		ctx := s.Ctx().WithGasMeter(storetypes.NewGasMeter(1_000_000_000)).WithBlockGasMeter(storetypes.NewGasMeter(1_000_000_000))
-
-		hasPanicked := false
-
-		act := func() {
-			defer func() {
-				if r := recover(); r != nil {
-					hasPanicked = true
-				}
-			}()
-			// satisfy linter
-			result, err := s.App().HyperlaneKeeper.Verify(ctx, routingIsm, []byte{}, message)
-			Expect(err).To(BeNil())
-			Expect(result).To(BeTrue())
-		}
-		// Act
-		act()
-
-		Expect(hasPanicked).To(BeTrue())
-	})
-
 	It("Verify (valid) gas costs for 1000 registered routes", func() {
 		// Arrange
 		routingIsm := createRoutingIsm()
@@ -233,5 +176,36 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(result).To(BeTrue())
 		Expect(mockIsm.CallCount()).To(Equal(1))
 		Expect(ctx.GasMeter().GasConsumed()).Should(BeNumerically("<", 300_000))
+	})
+
+	It("SetRoute (invalid) - nested RoutingISM", func() {
+		// Arrange
+		routingIsmA := createRoutingIsm()
+		routingIsmB := createRoutingIsm()
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetRoutingIsmDomain{
+			Owner: creator.Address,
+			IsmId: routingIsmA,
+			Route: types.Route{Ism: routingIsmB, Domain: 1},
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("ISM %s is a routing ISM, nested routing ISMs are not allowed: invalid ism type", routingIsmB.String())))
+	})
+
+	It("SetRoute (invalid) - self reference", func() {
+		// Arrange
+		routingIsm := createRoutingIsm()
+
+		// Act
+		_, err := s.RunTx(&types.MsgSetRoutingIsmDomain{
+			Owner: creator.Address,
+			IsmId: routingIsm,
+			Route: types.Route{Ism: routingIsm, Domain: 1},
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("ISM %s is a routing ISM, nested routing ISMs are not allowed: invalid ism type", routingIsm.String())))
 	})
 })

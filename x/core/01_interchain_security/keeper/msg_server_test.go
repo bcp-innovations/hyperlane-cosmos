@@ -25,6 +25,7 @@ TEST CASES - msg_server.go
 
 * Create (invalid) Routing ISM with non-existing child ISM
 * Create (invalid) RoutingISM: multiple ISMs for one domain
+* Create (invalid) RoutingISM: nested RoutingISM
 * Create (valid) Routing ISM
 * Create (valid) Noop ISM
 * Create (invalid) MessageIdMultisig ISM with less addresses
@@ -133,6 +134,27 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("multiple ISMs for domain %v not allowed: route for domain already exists", 1338)))
+	})
+
+	It("Create (invalid) RoutingISM: nested RoutingISM", func() {
+		// Arrange
+		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+		})
+		Expect(err).To(BeNil())
+
+		var inner types.MsgCreateRoutingIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &inner)
+		Expect(err).To(BeNil())
+
+		// Act
+		_, err = s.RunTx(&types.MsgCreateRoutingIsm{
+			Creator: creator.Address,
+			Routes:  []types.Route{{Domain: 1337, Ism: inner.Id}},
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("ISM %s is a routing ISM, nested routing ISMs are not allowed: invalid ism type", inner.Id.String())))
 	})
 
 	It("Create (valid) Routing ISM", func() {
@@ -921,6 +943,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	It("SetRoutingIsmDomain (valid) update existing domain", func() {
 		// Arrange
 		noopIsmId := createNoopIsm(s, creator.Address)
+		newNoopIsmId := createNoopIsm(s, creator.Address)
 
 		res, err := s.RunTx(&types.MsgCreateRoutingIsm{
 			Creator: creator.Address,
@@ -956,7 +979,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Owner: creator.Address,
 			IsmId: routingIsm.Id,
 			Route: types.Route{
-				Ism:    routingIsm.Id,
+				Ism:    newNoopIsmId,
 				Domain: 1337,
 			},
 		})
@@ -969,7 +992,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		Expect(ism.Id.String()).To(Equal(routingIsm.Id.String()))
 		Expect(ism.Routes).To(HaveLen(1))
 		Expect(ism.Routes[0].Domain).To(Equal(uint32(1337)))
-		Expect(ism.Routes[0].Ism.String()).To(Equal(routingIsm.Id.String()))
+		Expect(ism.Routes[0].Ism.String()).To(Equal(newNoopIsmId.String()))
 	})
 
 	It("RemoveRoutingIsmDomain (invalid) on non routing ism", func() {

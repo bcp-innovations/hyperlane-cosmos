@@ -57,6 +57,11 @@ func (m *AggregationISM) Validate() error {
 			return fmt.Errorf("duplicated module %s", module.String())
 		}
 		seen[module] = struct{}{}
+
+		// Nesting aggregation ISMs directly is not allowed to bound the call depth of Verify.
+		if module.GetType() == uint32(INTERCHAIN_SECURITY_MODULE_TYPE_AGGREGATION) {
+			return fmt.Errorf("module %s is an aggregation ISM, nested aggregation ISMs are not allowed", module.String())
+		}
 	}
 
 	return nil

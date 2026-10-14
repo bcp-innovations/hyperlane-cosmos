@@ -48,6 +48,10 @@ func (k *Keeper) CreateRoutingIsm(ctx context.Context, req *types.MsgCreateRouti
 			return util.HexAddress{}, errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", route.Ism.String())
 		}
 
+		if err = validateRouteIsmType(route.Ism); err != nil {
+			return util.HexAddress{}, err
+		}
+
 		routes = append(routes, route)
 	}
 
@@ -184,6 +188,10 @@ func (k *Keeper) SetRoutingIsmDomain(ctx context.Context, req *types.MsgSetRouti
 	exists, err := k.coreKeeper.IsmExists(ctx, req.Route.Ism)
 	if err != nil || !exists {
 		return errors.Wrapf(types.ErrUnkownIsmId, "ISM %s not found", req.Route.Ism.String())
+	}
+
+	if err = validateRouteIsmType(req.Route.Ism); err != nil {
+		return err
 	}
 
 	// we don't check if the domain was overwritten
@@ -494,4 +502,13 @@ func (k *Keeper) getRoutingIsm(ctx context.Context, ismId util.HexAddress, owner
 	}
 
 	return routingISM, nil
+}
+
+// validateRouteIsmType rejects routes to another routing ISM. Nesting routing ISMs
+// directly is not allowed to bound the call depth of Verify.
+func validateRouteIsmType(ismId util.HexAddress) error {
+	if ismId.GetType() == uint32(types.INTERCHAIN_SECURITY_MODULE_TYPE_ROUTING) {
+		return errors.Wrapf(types.ErrInvalidISMType, "ISM %s is a routing ISM, nested routing ISMs are not allowed", ismId.String())
+	}
+	return nil
 }

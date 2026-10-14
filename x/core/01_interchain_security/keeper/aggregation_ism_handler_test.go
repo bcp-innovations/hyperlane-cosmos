@@ -24,6 +24,7 @@ TEST CASES - aggregation_ism_handler_test.go
 * Create (invalid) - duplicated modules
 * Create (invalid) - too many modules
 * Create (invalid) - non-existing module
+* Create (invalid) - nested aggregation ISM
 * Create (valid)
 * Verify (valid) - threshold of modules provided
 * Verify (valid) - each module receives its own metadata slice
@@ -168,6 +169,18 @@ var _ = Describe("aggregation_ism_handler.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("ISM %s not found: unknown ism id", unknown.String())))
+	})
+
+	It("Create (invalid) - nested aggregation ISM", func() {
+		// Arrange
+		modules := registerMockIsms(2)
+		inner := mustCreateAggregationIsm(modules, 2)
+
+		// Act
+		_, err := createAggregationIsm([]util.HexAddress{modules[0], inner}, 1)
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("module %s is an aggregation ISM, nested aggregation ISMs are not allowed: invalid aggregation ism configuration", inner.String())))
 	})
 
 	It("Create (valid)", func() {
