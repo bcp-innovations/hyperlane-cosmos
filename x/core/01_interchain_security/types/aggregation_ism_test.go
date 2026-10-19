@@ -1,6 +1,8 @@
 package types_test
 
 import (
+	"context"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/01_interchain_security/types"
 	. "github.com/onsi/ginkgo/v2"
@@ -27,7 +29,7 @@ var _ = Describe("aggregation_ism.go", Ordered, func() {
 		ism := types.AggregationISM{}
 
 		// Act
-		result, err := ism.Verify(nil, []byte{}, util.HyperlaneMessage{})
+		result, err := ism.Verify(context.TODO(), []byte{}, util.HyperlaneMessage{})
 
 		// Assert
 		Expect(err.Error()).To(Equal("Verify should not be called on AggregationISM: unexpected error"))
