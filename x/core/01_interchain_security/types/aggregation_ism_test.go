@@ -14,6 +14,8 @@ TEST CASES - aggregation_ism.go
 * Verify (invalid) - must be handled by the AggregationISMHandler
 * Validate (valid)
 * Validate (invalid) - too many modules
+* Validate (invalid) - duplicated internal id with different module specifier
+* Validate (invalid) - duplicated internal id with different type
 * ParseAggregationMetadata (valid) relayer encoding
 * ParseAggregationMetadata (valid) empty sub-metadata
 * ParseAggregationMetadata (invalid) range exceeding uint32 metadata length
@@ -58,6 +60,32 @@ var _ = Describe("aggregation_ism.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("too many modules: got 256, max 255"))
+	})
+
+	It("Validate (invalid) - duplicated internal id with different module specifier", func() {
+		// Arrange
+		module := util.GenerateHexAddress([20]byte{0x01}, uint32(types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG), 7)
+		alias := util.GenerateHexAddress([20]byte{0x02}, uint32(types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG), 7)
+		ism := types.AggregationISM{Modules: []util.HexAddress{module, alias}, Threshold: 2}
+
+		// Act
+		err := ism.Validate()
+
+		// Assert
+		Expect(err.Error()).To(Equal("duplicated module " + alias.String()))
+	})
+
+	It("Validate (invalid) - duplicated internal id with different type", func() {
+		// Arrange
+		module := util.GenerateHexAddress([20]byte{0x01}, uint32(types.INTERCHAIN_SECURITY_MODULE_TYPE_MESSAGE_ID_MULTISIG), 7)
+		alias := util.GenerateHexAddress([20]byte{0x01}, uint32(types.INTERCHAIN_SECURITY_MODULE_TYPE_MERKLE_ROOT_MULTISIG), 7)
+		ism := types.AggregationISM{Modules: []util.HexAddress{module, alias}, Threshold: 2}
+
+		// Act
+		err := ism.Validate()
+
+		// Assert
+		Expect(err.Error()).To(Equal("duplicated module " + alias.String()))
 	})
 
 	It("ParseAggregationMetadata (valid) relayer encoding", func() {

@@ -51,12 +51,14 @@ func (m *AggregationISM) Validate() error {
 	}
 
 	// Duplicated modules would allow a single ISM to count multiple times towards the threshold.
-	seen := make(map[util.HexAddress]struct{}, len(m.Modules))
+	// ISMs are uniquely identified by their internal id, so addresses that only differ in the
+	// module specifier or type bytes refer to the same ISM and are considered duplicates.
+	seen := make(map[uint64]struct{}, len(m.Modules))
 	for _, module := range m.Modules {
-		if _, ok := seen[module]; ok {
+		if _, ok := seen[module.GetInternalId()]; ok {
 			return fmt.Errorf("duplicated module %s", module.String())
 		}
-		seen[module] = struct{}{}
+		seen[module.GetInternalId()] = struct{}{}
 
 		// Aggregation and routing ISMs are not allowed as modules to bound the call depth of Verify.
 		// Routing ISMs are mutable, so allowing them would make cycles between routing and aggregation ISMs possible.

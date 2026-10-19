@@ -22,6 +22,7 @@ TEST CASES - aggregation_ism_handler_test.go
 * Create (invalid) - zero threshold
 * Create (invalid) - threshold exceeds modules
 * Create (invalid) - duplicated modules
+* Create (invalid) - same MessageIdMultisig ISM listed under an alias address
 * Create (invalid) - too many modules
 * Create (invalid) - non-existing module
 * Create (invalid) - nested aggregation ISM
@@ -146,6 +147,21 @@ var _ = Describe("aggregation_ism_handler.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicated module %s: invalid aggregation ism configuration", isms[0].String())))
+	})
+
+	It("Create (invalid) - same MessageIdMultisig ISM listed under an alias address", func() {
+		// Arrange
+		privateKey, err := crypto.GenerateKey()
+		Expect(err).To(BeNil())
+		multisigIsm := createMessageIdMultisigIsm(crypto.PubkeyToAddress(privateKey.PublicKey).Hex())
+		alias := multisigIsm
+		alias[0] ^= 0xff
+
+		// Act
+		_, err = createAggregationIsm([]util.HexAddress{multisigIsm, alias}, 2)
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicated module %s: invalid aggregation ism configuration", alias.String())))
 	})
 
 	It("Create (invalid) - too many modules", func() {
